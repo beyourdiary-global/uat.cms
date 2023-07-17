@@ -2,7 +2,7 @@
 <html>
 <head>
 <?php include "header.php"; ?>
-<link rel="stylesheet" href="./css/main.css">
+<link rel="stylesheet" href="./css/login.css">
 </head>
 
 <body>
@@ -26,7 +26,7 @@
                 <div class="form-group">
                     <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
                     <input class="form-control" type="email" name="email-addr" id="email-addr">
-                    <span class="error" id="email-addr_error"></span>
+                    <span id="email-addr_error"></span>
                 </div>
             </div>
 
@@ -41,7 +41,7 @@
                             <i class="fa fa-eye-slash icon"></i>
                         </div>
                         <input class="form-control" type="password" name="password" id="password">
-                        <span class="error" id="password_error"></span>
+                        <span id="password_error"></span>
                     </div>
                 </div>
             </div>
