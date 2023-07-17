@@ -1,113 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- Meta Tags -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
-
-<!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"  rel="stylesheet"/>
-
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"  rel="stylesheet"/>
-
-<!-- MDB -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"  rel="stylesheet"/>
-
-<title>Login</title>
+<?php include "header.php"; ?>
+<link rel="stylesheet" href="./css/main.css">
 </head>
-
-<style>
-body {
-    background-color: #F4F6F6;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-label, h3 {
-    /* font-weight: bold; */
-    color: black !important;
-}
-
-input {
-    font-weight: bold;
-    color: black !important;
-}
-
-h7 {
-    color: grey !important;
-}
-
-a#forgot-password_link {
-    color: grey !important;
-}
-
-.container {
-    min-width: 768px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.login-title {
-    text-align: center;
-}
-
-#loginForm {
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0px 0px 1px 1px #E4E6E6;
-}
-
-#login_btn {
-    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%);
-}
-
-#logo_element{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width:50%;
-}
-
-.icon {
-    padding: 10px;
-    min-width: 40px;
-}
-
-#forgot-password_link:hover {
-    text-decoration: underline;
-}
-
-#row-password-input i {
-    position: absolute;
-}
-
-#row-password-input i:hover {
-    cursor:pointer;
-}
-</style>
-
-<script>
-$(document).ready(() => {
-    $("#row-password-input i").on('click', () => {
-        if($("#password").attr("type") == "password") {
-            $("#password").attr("type", "text");
-            $("#row-password-input i").addClass("fa-eye");
-            $("#row-password-input i").removeClass("fa-eye-slash");
-        } else if ($("#password").attr("type") == "text") {
-            $("#password").attr("type", "password");
-            $("#row-password-input i").addClass("fa-eye-slash");
-            $("#row-password-input i").removeClass("fa-eye");
-        }
-    })
-})
-</script>
 
 <body>
 
@@ -128,8 +24,9 @@ $(document).ready(() => {
 
             <div class="mb-3">
                 <div class="form-group">
-                    <label class="form-label" id="email_addr_lbl" for="email_addr">Email Address</label>
-                    <input class="form-control" type="text" name="email_addr" id="email_addr">
+                    <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
+                    <input class="form-control" type="email" name="email-addr" id="email-addr">
+                    <span class="error" id="email-addr_error"></span>
                 </div>
             </div>
 
@@ -144,6 +41,7 @@ $(document).ready(() => {
                             <i class="fa fa-eye-slash icon"></i>
                         </div>
                         <input class="form-control" type="password" name="password" id="password">
+                        <span class="error" id="password_error"></span>
                     </div>
                 </div>
             </div>
@@ -159,4 +57,74 @@ $(document).ready(() => {
 </div>
 
 </body>
+
+<script>
+$(document).ready(() => {
+    $("#row-password-input i").on('click', () => {
+        if($("#password").attr("type") == "password") {
+            $("#password").attr("type", "text");
+            $("#row-password-input i").addClass("fa-eye");
+            $("#row-password-input i").removeClass("fa-eye-slash");
+        } else if ($("#password").attr("type") == "text") {
+            $("#password").attr("type", "password");
+            $("#row-password-input i").addClass("fa-eye-slash");
+            $("#row-password-input i").removeClass("fa-eye");
+        }
+    })
+});
+
+$('#email-addr').on('input', () => {
+    if(!(isEmail($('#email-addr').val()))) {
+        $("#email-addr_error").text("Wrong email format!");
+    } else {
+        $("#email-addr_error").text("");
+    }
+
+    if($('#email-addr').val() === '' || $('#email-addr').val() === null || $('#email-addr').val() === undefined) {
+        $("#email-addr_error").text("");
+    }
+})
+
+$('#login_btn').on('click', () => {
+    event.preventDefault();
+    var email_chk = 0;
+    var password_chk = 0;
+
+    if(!(isEmail($('#email-addr').val()))) {
+        email_chk = 0;
+        $("#email-addr_error").text("Wrong email format!");
+    } else { 
+        $("#email-addr_error").text("");
+        email_chk = 1; 
+    }
+
+    // Check sequence: Email empty? -> Email format correct?
+    if(($('#email-addr').val() === '' || $('#email-addr').val() === null || $('#email-addr').val() === undefined)) {
+        email_chk = 0;
+        $("#email-addr_error").text("Please enter your email");
+    } else { 
+        if(!(isEmail($('#email-addr').val()))) {
+            email_chk = 0;
+            $("#email-addr_error").text("Wrong email format!");
+        } else {
+            $("#email-addr_error").text("");
+            email_chk = 1; 
+        }
+    }
+
+    if($('#password').val() === '' || $('#password').val() === null || $('#password').val() === undefined) {
+        password_chk = 0;
+        $("#password_error").text("Please enter your password");
+    } else { 
+        $("#password_error").text("");
+        password_chk = 1;
+    }
+
+    if (email_chk == 1 && password_chk == 1)
+        $("#loginForm").submit();
+    else
+        return false;
+})
+</script>
+
 </html>

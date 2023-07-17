@@ -1,0 +1,72 @@
+body {
+    background-color: #F4F6F6;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+label, h3 {
+    /* font-weight: bold; */
+    color: black !important;
+}
+
+input {
+    font-weight: bold;
+    color: black !important;
+}
+
+h7 {
+    color: grey !important;
+}
+
+a#forgot-password_link {
+    color: grey !important;
+}
+
+.container {
+    min-width: 768px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-title {
+    text-align: center;
+}
+
+#loginForm {
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 1px #E4E6E6;
+}
+
+#login_btn {
+    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%);
+}
+
+#logo_element{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width:50%;
+}
+
+.icon {
+    padding: 10px;
+    min-width: 40px;
+}
+
+#forgot-password_link:hover {
+    text-decoration: underline;
+}
+
+#row-password-input i {
+    position: absolute;
+}
+
+#row-password-input i:hover {
+    cursor:pointer;
+}
+
+span.error{
+    color:red;
+}
