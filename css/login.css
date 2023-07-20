@@ -79,3 +79,8 @@ h7 {
 #email-addr_error, #password_error {
     color:#FF0000;
 }
+
+#err_msg {
+    color:#FF0000;
+    text-align: center;
+}

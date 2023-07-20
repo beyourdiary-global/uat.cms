@@ -5,17 +5,32 @@ include "include/connection.php";
 $email = post('email-addr');
 $password = md5(post('password'));
 
-$loginquery = "SELECT * FROM ".USR_USER." WHERE email='".$email."' AND password_alt='".$password."'";
+$loginquery = "SELECT * FROM ".USR_USER." WHERE email='".$email."'";
 $loginresult = mysqli_query($connect, $loginquery);
 
 if(!(mysqli_num_rows($loginresult) == 1))
 {
-     echo '<script type="text/javascript">alert("Wrong email or password entered.");</script>';
-     return false;
+     return header('Location: index.php?err=1');
 }
 else
 {
-     echo '<script type="text/javascript">alert("Matched.");</script>';
-     return false;
+     $loginrows = $loginresult->fetch_assoc();
+     if($loginrows['fail_count'] == 4)
+     {
+          return header('Location: index.php?err=3');
+     }
+
+     if($loginrows['password_alt'] != $password)
+     {
+          mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = fail_count + 1 WHERE email = '".$email."'");
+          return header('Location: index.php?err=2');
+     } 
+     else 
+     {
+          if($loginrows['fail_count'] >= 1 || $loginrows['fail_count'] <= 3)
+               mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = 0 WHERE email = '".$email."' AND password_alt = '".$password."'");
+
+               return header('Location: index.php');
+     }
 }
 ?>

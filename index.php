@@ -50,6 +50,26 @@
                 <div class="form-group">
                     <button class="btn btn-block btn-primary" name="login_btn" id="login_btn">Login</button>
                 </div>
+                <div id="err_msg">
+                    <span>
+                        <?php 
+                            switch(isset($_GET['err']) ? $_GET['err'] : '')
+                            {
+                                case '1':
+                                    echo "Email not existed.";
+                                    break;
+                                case '2':
+                                    echo "Wrong password entered. Please try again.";
+                                    break;
+                                case '3':
+                                    echo "Account is been blocked. Please reset your password.";
+                                    break;
+                                default:
+                                    echo "";
+                            }
+                        ?>
+                    </span>
+                </div>
             </div>
         </div>
         </form>
