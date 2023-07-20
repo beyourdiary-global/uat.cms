@@ -8,7 +8,7 @@ date_default_timezone_set('Asia/Singapore');
 define('dbuser', 'root');
 define('dbpwd', '');
 define('dbhost', '127.0.0.1');
-define('dbname', 'cms');
+define('dbname', 'byd_cms');
 define('SITEURL', 'https://localhost');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
@@ -18,14 +18,14 @@ define('date_dis', date("Y-m-d"));
 define('time_dis', date("G:i:s"));
 define('yearMonth', strtolower(date('YM')));
 define('comYMD', strtolower(date('Ymd')));
-define('GlobalPin', $_SESSION['usr_pin']);
+/* define('GlobalPin', $_SESSION['usr_pin']); */
 // define('memberImportDetail', yearMonth.'_importInfo');
 
 $email_collect = '';
 $cdate = date_dis;
 $ctime = time_dis;
 $comYMD = comYMD;
-$cby = $_SESSION['userid'];
+/* $cby = $_SESSION['userid']; */
 
 $act_1    = 'I'; //Insert/ Add
 $act_2    = 'E'; //Edit/ Update

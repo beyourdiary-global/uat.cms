@@ -13,7 +13,7 @@
             <img src="./image/logo2.png">
         </div>
 
-        <form id="loginForm" name="loginForm">
+        <form id="loginForm" name="loginForm" method="post" action="login.php">
         <div class="px-5 py-5 rounded">
             <div class="mb-3">
                 <div class="form-group login-title">
