@@ -57,7 +57,7 @@ include "./include/common.php";
                 <div id="err_msg">
                     <span>
                         <?php
-                            $var = input('err');
+                            $var = numberInput('err');
                             if($var)
                             {
                                 switch($var)
