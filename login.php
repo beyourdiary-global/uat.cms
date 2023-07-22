@@ -5,11 +5,11 @@ include "include/connection.php";
 $email = post('email-addr');
 $password = md5(post('password'));
 
-$loginquery = "SELECT * FROM ".USR_USER." WHERE email='".$email."'";
-$loginresult = mysqli_query($connect, $loginquery);
-
 if($email && $password)
 {
+     $loginquery = "SELECT * FROM ".USR_USER." WHERE email='".$email."'";
+     $loginresult = mysqli_query($connect, $loginquery);
+     
      if(!(mysqli_num_rows($loginresult) == 1))
      {
           return header('Location: index.php?err=1');
