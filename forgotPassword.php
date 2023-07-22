@@ -1,3 +1,114 @@
+<?php
+include "include/common.php";
+include "include/common_variable.php";
+include "include/connection.php";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$_POST['resetpass_btn'] = 1;
+};
+
+if(post('resetpass_btn'))
+{
+    $email = post('email-addr');
+    $datetime_add24h = date("Y-m-d H:i:s", strtotime('+24 hours'));
+    $token = md5($datetime_add24h.'forgotpassword');
+
+    if($email)
+    {
+        $query = "SELECT * FROM ".USR_USER." WHERE email = '".$email."'";
+        $result = mysqli_query($connect, $query);
+        $row = $result->fetch_assoc();
+
+        if(mysqli_num_rows($result) == 1)
+        { 
+            $name = $row['name'];
+
+            ob_start();
+
+            // Multiple recipients
+            $to = $email; // note the comma
+
+            // Subject
+            $subject = 'Request Reset Password';
+
+            // Message
+            $message_user = '
+            <html>
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
+                <head>
+                    <title></title>
+                </head>
+                <body style="margin: 0;background-color: #FFF0E3;font-family: sans-serif;">
+                    
+                <div class="container" style="display: grid;gap: 5px;min-width: 350px;margin-left: 15px;margin-right: 15px;width: 550px;height: 55rem;margin: auto;">
+
+                    <table class="header" style="border-spacing: 0;width: 100%;">
+                        <tr>
+                            <td class="logo" align="center" style="padding: 0;">
+                                <img src="'.img.byd_logo.'" style="border: 0;">
+                            </td>
+                        </tr>
+                    </table> <!-- End Header -->
+
+                    <table class="middle" style="border-spacing: 0;width: 100%;height: 600px;background-color: #FFFFFF;border-radius: 18px;">
+                        <tr class="resetpass_row">
+                            <td class="resetpass_pic" align="center" style="padding: 0;height: 360px;">
+                                <img src="'.img.'password_reset.png" style="border: 0;width: 310px;min-width: 310px;height: auto;">
+                            </td>
+                        </tr>
+                        <tr class="content_row">
+                            <td class="content" align="center" style="padding: 0;">
+                                <p class="h1" style="font-size: 22;font-weight: bold;margin-top: -60px;">Forgot Your Password?</p>
+                                <p class="h2" style="font-size: 12;">Hi, <b>'.$name.'</b>,</p>
+                                <p class="center" style="font-size: 10;width: 60%;line-height: 1.4;margin-top: -8px;text-align: left !important;">
+                                    You recently requested to reset your password for your ['.$to.'] account. Use the button below to reset it. <b>This password reset is only valid for the next 24 hours</b>.
+                                </p>
+                                <p class="btn_row" style="margin-top: 35px;">
+                                    <a class="btn" href="reset_password.php?token='.$token.'" style="font-size: 13;border: 1px solid black;color: #FFFFFF;text-decoration: none;background-color: #000000;border-radius: 5px;padding: 10px 15px;">Reset Password</a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table> <!-- End Middle -->
+
+                    <table class="footer" style="border-spacing: 0;width: 100%;margin-top: -85px;">
+                        <tr class="social-media" align="center" style="text-align: center;">
+                            <td style="padding: 0;">
+                                <a href="#"><img class="icon" src="'.img.facebook.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="#"><img class="icon" src="'.img.twitter.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="#"><img class="icon" src="'.img.linkedin.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="#"><img class="icon" src="'.img.instagram.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                            </td>
+                        </tr>
+                    </table> <!-- End Footer -->
+                </div> <!-- End Container -->
+                </body>
+            </html>
+            ';
+            
+            $message_admin = 'Username: '.$name."\r\n".'Email: '.$to.'';
+
+            // To send HTML mail, the Content-type header must be set
+            $headers[] = 'MIME-Version: 1.0';
+            $headers[] = 'Content-type: text/html; charset=utf-8';
+
+            // Additional headers
+            $headers[] = 'To: <'.$to.'>';
+            $headers[] = 'From: noreply <noreply@example.com>';
+            $headers[] = 'Cc:'.email_cc.'';
+            $headers[] = 'Bcc:';
+
+            // Mail it
+            mail($to, $subject, $message_user, implode("\r\n", $headers));
+            mail(email_cc, 'User Request Reset Password Action', $message_admin);
+
+            ob_get_clean();
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -90,114 +201,3 @@ $('#resetpass_btn').on('click', () => {
 </script>
 
 </html>
-
-<?php
-include "include/common.php";
-include "include/connection.php";
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$_POST['resetpass_btn'] = 1;
-};
-
-if(post('resetpass_btn'))
-{
-    $email = post('email-addr');
-    $datetime_add24h = date("Y-m-d H:i:s", strtotime('+24 hours'));
-    $token = md5($datetime_add24h.'forgotpassword');
-
-    if($email)
-    {
-        $query = "SELECT * FROM ".USR_USER." WHERE email = '".$email."'";
-        $result = mysqli_query($connect, $query);
-        $row = $result->fetch_assoc();
-
-        if(mysqli_num_rows($result) == 1)
-        { 
-            define('email_cc', "admin@beyourdiary.co");
-            $name = $row['name'];
-
-            ob_start();
-
-            // Multiple recipients
-            $to = $email; // note the comma
-
-            // Subject
-            $subject = 'Request Reset Password';
-
-            // Message
-            $message_user = '
-            <html>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
-                <head>
-                    <title></title>
-                </head>
-                <body style="margin: 0;background-color: #FFF0E3;font-family: sans-serif;">
-                    
-                <div class="container" style="display: grid;gap: 5px;min-width: 350px;margin-left: 15px;margin-right: 15px;width: 550px;height: 55rem;margin: auto;">
-
-                    <table class="header" style="border-spacing: 0;width: 100%;">
-                        <tr>
-                            <td class="logo" align="center" style="padding: 0;">
-                                <img src="./image/logo2.png" style="border: 0;">
-                            </td>
-                        </tr>
-                    </table> <!-- End Header -->
-
-                    <table class="middle" style="border-spacing: 0;width: 100%;height: 600px;background-color: #FFFFFF;border-radius: 18px;">
-                        <tr class="resetpass_row">
-                            <td class="resetpass_pic" align="center" style="padding: 0;height: 360px;">
-                                <img src="./image/password_reset.png" style="border: 0;width: 310px;min-width: 310px;height: auto;">
-                            </td>
-                        </tr>
-                        <tr class="content_row">
-                            <td class="content" align="center" style="padding: 0;">
-                                <p class="h1" style="font-size: 22;font-weight: bold;margin-top: -60px;">Forgot Your Password?</p>
-                                <p class="h2" style="font-size: 12;">Hi, <b>'.$name.'</b>,</p>
-                                <p class="center" style="font-size: 10;width: 60%;line-height: 1.4;margin-top: -8px;text-align: left !important;">
-                                    You recently requested to reset your password for your ['.$to.'] account. Use the button below to reset it. <b>This password reset is only valid for the next 24 hours</b>.
-                                </p>
-                                <p class="btn_row" style="margin-top: 35px;">
-                                    <a class="btn" href="reset_password.php?token='.$token.'" style="font-size: 13;border: 1px solid black;color: #FFFFFF;text-decoration: none;background-color: #000000;border-radius: 5px;padding: 10px 15px;">Reset Password</a>
-                                </p>
-                            </td>
-                        </tr>
-                    </table> <!-- End Middle -->
-
-                    <table class="footer" style="border-spacing: 0;width: 100%;margin-top: -85px;">
-                        <tr class="social-media" align="center" style="text-align: center;">
-                            <td style="padding: 0;">
-                                <a href="#"><img class="icon" src="./image/fb.png" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="./image/twitter.png" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="./image/linkedin.png" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="./image/instagram.png" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                            </td>
-                        </tr>
-                    </table> <!-- End Footer -->
-                </div> <!-- End Container -->
-                </body>
-            </html>
-            ';
-            
-            $message_admin = 'Username: '.$name."\r\n".'Email: '.$to.'';
-
-            // To send HTML mail, the Content-type header must be set
-            $headers[] = 'MIME-Version: 1.0';
-            $headers[] = 'Content-type: text/html; charset=utf-8';
-
-            // Additional headers
-            $headers[] = 'To: <'.$to.'>';
-            $headers[] = 'From: noreply <noreply@example.com>';
-            $headers[] = 'Cc:'.email_cc.'';
-            $headers[] = 'Bcc:';
-
-            // Mail it
-            mail($to, $subject, $message_user, implode("\r\n", $headers));
-            mail(email_cc, 'User Request Reset Password Action', $message_admin);
-
-            ob_get_clean();
-        }
-    }
-}
-?>

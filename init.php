@@ -12,6 +12,7 @@ define('dbname', 'byd_cms');
 define('SITEURL', 'https://localhost');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
+define('email_cc', "admin@beyourdiary.co");
 
 // //define date time
 define('date_dis', date("Y-m-d"));
