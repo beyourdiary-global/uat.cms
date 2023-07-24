@@ -1,0 +1,122 @@
+input {
+    font-weight: bold;
+    color: #000000 !important;
+}
+
+body {
+    background-color: #F4F6F6;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+label, h3 {
+    color: #000000 !important;
+}
+
+h7 {
+    color: #808080 !important;
+}
+
+/*------------------------------------------------------
+# Menu Header               
+------------------------------------------------------*/
+.topNav {
+    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%) !important;
+    color: #FFFFFF;
+}
+
+.logo_section {
+    /* border: 1px solid black; */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#logo{
+    margin: -2.5px 30px -2.5px 30px;
+    width: 1.5rem;
+    /* border: 1px dotted red; */
+}
+
+.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
+ }
+
+.dropdown-menu-center {
+left: 50% !important;
+right: auto !important;
+transform: translate(-50%, 0) !important;
+}
+ 
+.dropdown a {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#language_name {
+    font-size: 12px;
+}
+
+/* .menuheader-text {
+    font-weight: 500;
+} */
+
+#accpfp {
+    height: 25px;
+    width: 25px;
+    margin-right: 3px;
+}
+
+.fa-bars, .fa-ellipsis-vertical {
+    color: #FFFFFF !important;
+}
+
+.badge-color {
+    background-color: #7460EE !important;
+}
+
+/*------------------------------------------------------
+# Login page / Forgot Page               
+------------------------------------------------------*/
+.loginContainer, .forgotpassContainer {
+    min-width: 350px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#logo_element{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width:50%;
+}
+
+.login-title, .forgotpass-title {
+    text-align: center;
+}
+
+.login-title h3, .forgotpass-title h3{
+    margin-top:40px;
+}
+
+#loginForm, #forgotpassForm {
+    background-color: #FFFFFF;  
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 1px #E4E6E6;
+}
+
+#login_btn, #resetpass_btn {
+    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%);
+    height: 50px;
+    margin-bottom: 40px;
+}
+
+#email-addr_lbl, #password_lbl {
+    font-weight: bold;
+}
+
+#email-addr_error, #password_error {
+    color:#FF0000;
+}

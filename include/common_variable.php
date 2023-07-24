@@ -8,4 +8,5 @@ define('facebook', 'fb.png');
 define('twitter', 'twitter.png');
 define('linkedin', 'linkedin.png');
 define('instagram', 'instagram.png');
+define('defaultpfp', 'user.png');
 ?>

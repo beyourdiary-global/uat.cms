@@ -121,7 +121,7 @@ if(post('resetpass_btn'))
 <div class="forgotpassContainer container d-flex justify-content-center">
     <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5">
         <div class="mb-4 d-flex justify-content-center" id="logo_element">
-            <img src="./image/logo2.png">
+            <img src="<?php echo img.byd_logo?>">
         </div>
 
         <form id="forgotpassForm" name="forgotpassForm" method="post" action="">
