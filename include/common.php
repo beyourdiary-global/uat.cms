@@ -4,11 +4,13 @@ function post($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
 
-function input($key){
-	if(isset($_GET[$key]) && !is_array($_GET[$key])){
-		$results = isset($_GET[$key])&&strlen($_GET[$key])<=256 ? $_GET[$key] : '';
-	}
-	return xssFilter($results);
+function input($key)
+{
+    $results = '';
+    if (isset($_GET[$key]) && !is_array($_GET[$key])) {
+        $results = isset($_GET[$key])&&strlen($_GET[$key])<=256 ? globalSanitizeFilter($_GET[$key], $key) : '';
+    }
+    return xssFilter($results);
 }
 
 
@@ -44,13 +46,14 @@ function getSelfUrl(){
 	return parse_url($url);
 }
 
-function xssFilter($url){
-	$pattern = "/(<script|onstart|onfocus|onerror|onload|onmouseover|iframe|onblur)/i";
-	$url = urldecode($url);
-	while(preg_match($pattern, $url)){
-		$url = preg_replace($pattern, '', $url);
-	}
-	return $url;
+function xssFilter($url)
+{
+    $pattern = "/(<script|<\/script|onstart|onfocus|onerror|onload|onmouseover|iframe|onblur|payload|onmousemove|prompt|\")/i";
+    $url = urldecode($url);
+    while (preg_match($pattern, $url)) {
+        $url = preg_replace($pattern, '', $url);
+    }
+    return $url;
 }
 
 function redirect($addr, $alert=''){
