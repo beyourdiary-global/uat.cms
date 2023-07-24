@@ -3,11 +3,9 @@ include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$_POST['resetpass_btn'] = 1;
-};
+$resetpass_btn = 1;
 
-if(post('resetpass_btn'))
+if($resetpass_btn == 1)
 {
     $email = post('email-addr');
     $datetime_add24h = date("Y-m-d H:i:s", strtotime('+24 hours'));
@@ -119,9 +117,9 @@ if(post('resetpass_btn'))
 <body>
 
 <div class="forgotpassContainer container d-flex justify-content-center">
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5">
         <div class="mb-4 d-flex justify-content-center" id="logo_element">
-            <img src="<?php echo img.byd_logo?>">
+            <img src="./image/logo2.png">
         </div>
 
         <form id="forgotpassForm" name="forgotpassForm" method="post" action="">
