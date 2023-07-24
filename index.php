@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php include "header.php"; ?>
+<?php 
+include "header.php";
+include "./include/common.php";
+?>
+<link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/login.css">
 </head>
 
 <body>
 
-<div class="container d-flex justify-content-center">
+<div class="loginContainer container d-flex justify-content-center">
     <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5">
         <div class="mb-4 d-flex justify-content-center" id="logo_element">
             <img src="./image/logo2.png">
         </div>
 
-        <form id="loginForm" name="loginForm">
+        <form id="loginForm" name="loginForm" method="post" action="login.php">
         <div class="px-5 py-5 rounded">
             <div class="mb-3">
                 <div class="form-group login-title">
@@ -49,6 +53,30 @@
             <div class="mb-3">
                 <div class="form-group">
                     <button class="btn btn-block btn-primary" name="login_btn" id="login_btn">Login</button>
+                </div>
+                <div id="err_msg">
+                    <span>
+                        <?php
+                            $var = numberInput('err');
+                            if($var)
+                            {
+                                switch($var)
+                                {
+                                    case '1':
+                                        echo "Email not existed.";
+                                        break;
+                                    case '2':
+                                        echo "Wrong password entered. Please try again.";
+                                        break;
+                                    case '3':
+                                        echo "Account is been blocked. Please reset your password.";
+                                        break;
+                                    default:
+                                        echo "";
+                                }
+                            }
+                        ?>
+                    </span>
                 </div>
             </div>
         </div>
