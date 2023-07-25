@@ -29,8 +29,8 @@ else
      {
           if($loginrows['fail_count'] >= 1 || $loginrows['fail_count'] <= 3)
                mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = 0 WHERE email = '".$email."' AND password_alt = '".$password."'");
-
-               return header('Location: index.php');
+               $_SESSION['userid'] = $loginrows['id'];
+               return header('Location: dashboard.php');
      }
 }
 ?>

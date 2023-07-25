@@ -75,9 +75,9 @@ transform: translate(-50%, 0) !important;
     background-color: #7460EE !important;
 }
 
-/*------------------------------------------------------
-# Login page / Forgot Page               
-------------------------------------------------------*/
+/*---------------------------------------------------------
+# login Page / forgotPassword Page / changePassword Page              
+---------------------------------------------------------*/
 .loginContainer, .forgotpassContainer {
     min-width: 350px;
     position: absolute;
@@ -113,10 +113,10 @@ transform: translate(-50%, 0) !important;
     margin-bottom: 40px;
 }
 
-#email-addr_lbl, #password_lbl {
-    font-weight: bold;
+#email-addr_lbl, #password_lbl, #oldpass_lbl, #newpass_lbl, #confirmpass_lbl {
+    font-weight: 500;
 }
 
-#email-addr_error, #password_error {
+#email-addr_error, #password_error, #err_msg {
     color:#FF0000;
 }
