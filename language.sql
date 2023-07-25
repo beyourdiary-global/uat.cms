@@ -31,11 +31,11 @@ DROP TABLE IF EXISTS `language`;
 CREATE TABLE IF NOT EXISTS `language` (
   `id` int NOT NULL,
   `name` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL COMMENT 'language',
-  `create_date` date DEFAULT (curdate()),
-  `create_time` time DEFAULT (curtime()),
+  `create_date` date DEFAULT NULL,
+  `create_time` time DEFAULT NULL,
   `create_by` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
-  `update_date` date DEFAULT (curdate()),
-  `update_time` time DEFAULT (curtime()),
+  `update_date` date DEFAULT NULL,
+  `update_time` time DEFAULT NULL,
   `update_by` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `status` char(1) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
