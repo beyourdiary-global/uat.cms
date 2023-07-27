@@ -3,11 +3,9 @@ include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$_POST['resetpass_btn'] = 1;
-};
+$resetpass_btn = 1;
 
-if(post('resetpass_btn'))
+if($resetpass_btn == 1)
 {
     $email = post('email-addr');
     $datetime_add24h = date("Y-m-d H:i:s", strtotime('+24 hours'));
