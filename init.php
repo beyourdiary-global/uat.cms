@@ -54,6 +54,7 @@ $act_3    = 'D'; //Delete
 // //table name define
 define('USR_USER', 'user');
 define('LANG', 'language');
+define('PIN', 'pin');
 
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
