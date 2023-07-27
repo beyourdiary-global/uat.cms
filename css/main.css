@@ -17,6 +17,65 @@ h7 {
 }
 
 /*------------------------------------------------------
+# Menu Header               
+------------------------------------------------------*/
+.topNav {
+    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%) !important;
+    color: #FFFFFF;
+}
+
+.logo_section {
+    /* border: 1px solid black; */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+#logo{
+    margin: -2.5px 30px -2.5px 30px;
+    width: 1.5rem;
+    /* border: 1px dotted red; */
+}
+
+.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
+ }
+
+.dropdown-menu-center {
+left: 50% !important;
+right: auto !important;
+transform: translate(-50%, 0) !important;
+}
+ 
+.dropdown a {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#language_name {
+    font-size: 12px;
+}
+
+/* .menuheader-text {
+    font-weight: 500;
+} */
+
+#accpfp {
+    height: 25px;
+    width: 25px;
+    margin-right: 3px;
+}
+
+.fa-bars, .fa-ellipsis-vertical {
+    color: #FFFFFF !important;
+}
+
+.badge-color {
+    background-color: #7460EE !important;
+}
+
+/*------------------------------------------------------
 # Login page / Forgot Page               
 ------------------------------------------------------*/
 .loginContainer, .forgotpassContainer {
