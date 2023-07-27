@@ -64,7 +64,7 @@ if($resetpass_btn == 1)
                                     You recently requested to reset your password for your ['.$to.'] account. Use the button below to reset it. <b>This password reset is only valid for the next 24 hours</b>.
                                 </p>
                                 <p class="btn_row" style="margin-top: 35px;">
-                                    <a class="btn" href="reset_password.php?token='.$token.'" style="font-size: 13;border: 1px solid black;color: #FFFFFF;text-decoration: none;background-color: #000000;border-radius: 5px;padding: 10px 15px;">Reset Password</a>
+                                    <a class="btn" href="changePassword.php?token='.$token.'&email='.$to.'" style="font-size: 13;border: 1px solid black;color: #FFFFFF;text-decoration: none;background-color: #000000;border-radius: 5px;padding: 10px 15px;">Reset Password</a>
                                 </p>
                             </td>
                         </tr>
@@ -117,9 +117,9 @@ if($resetpass_btn == 1)
 <body>
 
 <div class="forgotpassContainer container d-flex justify-content-center">
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5">
         <div class="mb-4 d-flex justify-content-center" id="logo_element">
-            <img src="<?php echo img.byd_logo?>">
+            <img src="./image/logo2.png">
         </div>
 
         <form id="forgotpassForm" name="forgotpassForm" method="post" action="">

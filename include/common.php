@@ -8,7 +8,7 @@ function input($key)
 {
     $results = '';
     if (isset($_GET[$key]) && !is_array($_GET[$key])) {
-        $results = isset($_GET[$key])&&strlen($_GET[$key])<=256 ? globalSanitizeFilter($_GET[$key], $key) : '';
+        $results = isset($_GET[$key])&&strlen($_GET[$key])<=256 ? /* globalSanitizeFilter($_GET[$key], $key) */ $_GET[$key] : '';
     }
     return xssFilter($results);
 }
