@@ -394,3 +394,186 @@ function convertDate(date,current_Date){// format: DD/MM/YYYY (Check valid date 
 	else
 		return valid_date;
 }
+
+function createSortingTable(tableid) {
+	let table = new DataTable('#'+tableid, {
+		paging: $('#'+tableid+' tbody tr').length>10,
+		searching: false,
+		info: false,
+	})
+}
+
+async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
+    switch(act)
+    {
+        case 'I':   var title = "Insert " + pagename;
+                    var title2 = "Are you sure want to insert?";
+                    var btn = "Insert";
+                    break;
+        case 'E':   var title = "Edit " + pagename;
+                    var title2 = "Are you sure want to edit?";
+                    var btn = "Edit";
+                    break;
+        case 'D':   var title = "Delete " + pagename;
+                    var title2 = "Are you sure want to delete?";
+                    var btn = "Delete";
+                    break;
+        default:    var title = "Error";
+    }
+
+    var message = '';
+    if (msg.length >= 1)
+    {
+        for(let i=0; i<msg.length; i++) 
+            message += `<p class="mt-n3" style="text-align:center; font-weight:bold;">${msg[i]}</p>`;
+    }
+
+    const modalElem = document.createElement('div')
+    modalElem.id = "modal-confirm"
+    modalElem.className = "modal fade"
+    modalElem.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered " style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div class="modal-content">             
+            <div class="modal-body fs-6 mt-3">
+            <p style="text-align:center; font-weight:bold; font-size:25px;">${title}</p>
+            <p class="mt-n2" style="text-align:center;">${title2}</p>
+            ${message}
+        </div>
+        <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
+            <button id="acceptBtn" type="button" class="btn" 
+            style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">${btn}</button>
+            <button id="rejectBtn" type="button" class="btn" 
+            style="border: 1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">Cancel</button>
+        </div>
+        </div>
+    </div>
+    `;
+
+    const modelResult = document.createElement('div')
+    modelResult.id = "modal-confirm"
+    modelResult.className = "modal fade"
+    modelResult.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered " style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <div class="modal-content">             
+            <div class="modal-body fs-6 mt-3">
+            <p style="text-align:center; font-weight:bold; font-size:25px;">Successful ${title}</p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
+            <button id="contBtn" type="button" class="btn" 
+            style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow:0 0 !important; border-radius: 24px; text-transform:none;">Continue</button>
+        </div>
+        </div>
+    </div>
+    `;
+
+	if(act == 'D')
+	{
+		const myModal = new bootstrap.Modal(modalElem, {
+			keyboard: false,
+			backdrop: 'static'
+		})
+		myModal.show()
+	
+		const result = await new Promise((resolve, reject) => {
+			document.body.addEventListener('click', response)
+	
+			function response(e) {
+				let bool = false
+				if (e.target.id == 'rejectBtn') bool = false
+				else if (e.target.id == 'acceptBtn') bool = true
+				else return
+				document.body.removeEventListener('click', response);
+				document.body.querySelector('.modal-backdrop').remove();
+				modalElem.remove();
+				resolve(bool);
+			}
+		})
+	
+		if(result) 
+		{
+			$.ajax({
+				type: 'POST',
+				url: path,
+				data: {
+					id: id,
+					act: act
+				},
+				cache: false,
+				success: (result) => {	
+						const myModal2 = new bootstrap.Modal(modelResult, {
+							keyboard: false,
+							backdrop: 'static'
+						})
+						myModal2.show()
+	
+						return new Promise((resolve, reject) => {
+							document.body.addEventListener('click', response)
+	
+							var myTimeout = setTimeout(() => {
+								document.body.removeEventListener('click', response)
+								document.body.querySelector('.modal-backdrop').remove()
+								modelResult.remove()
+								resolve(true)
+								location.reload();
+							},5000);
+	
+							function response(e) {           
+								let bool = false
+								let timeOut = false
+	
+								if (e.target.id == 'contBtn') {
+									bool = true;
+									clearTimeout(myTimeout);
+								}
+								else return
+	
+								document.body.removeEventListener('click', response)
+								document.body.querySelector('.modal-backdrop').remove()
+								modelResult.remove()
+								resolve(bool)
+								location.reload();
+							}
+						})
+				}
+			})
+		} else console.log("Operation Cancelled.");
+	}
+
+	if(act == 'I' || act == 'E')
+	{
+		const myModal2 = new bootstrap.Modal(modelResult, {
+			keyboard: false,
+			backdrop: 'static'
+		})
+		myModal2.show()
+
+		return new Promise((resolve, reject) => {
+			document.body.addEventListener('click', response)
+
+			var myTimeout = setTimeout(() => {
+				document.body.removeEventListener('click', response)
+				document.body.querySelector('.modal-backdrop').remove()
+				modelResult.remove()
+				resolve(true)
+				window.location.href = pathreturn
+			},5000);
+
+			function response(e) {           
+				let bool = false
+				let timeOut = false
+
+				if (e.target.id == 'contBtn') {
+					bool = true;
+					clearTimeout(myTimeout);
+				}
+				else return
+
+				document.body.removeEventListener('click', response)
+				document.body.querySelector('.modal-backdrop').remove()
+				resolve(bool)
+				window.location.href = pathreturn
+			}
+		})
+	}
+    
+}
