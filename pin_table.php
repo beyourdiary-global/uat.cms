@@ -3,6 +3,9 @@ include './include/common.php';
 include './include/connection.php';
 
 $_SESSION['act'] = '';
+$_SESSION['viewChk'] = '';
+$_SESSION['delChk'] = '';
+
 $num = 1;  //for numbering
 $query = "SELECT * FROM ".PIN;
 $result = mysqli_query($connect, $query);

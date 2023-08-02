@@ -35,9 +35,35 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".PIN." (name, remark) VALUES ('".$pin_name."', '".$pin_remark."')";
+                        $query = "INSERT INTO ".PIN." (name, remark, create_by) VALUES ('".$pin_name."', '".$pin_remark."', '".$_SESSION['userid']."')";
                         mysqli_query($connect, $query);
+                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
+
+                        $newvalarr = array();
+
+                        // check value
+                        if($pin_name != '')
+                            array_push($newvalarr, $pin_name);
+
+                        if($pin_remark != '')
+                            array_push($newvalarr, $pin_remark);
+
+                        $newval = implode(",",$newvalarr);
+
+                        // audit log
+                        $log = array();
+                        $log['log_act'] = 'add';
+                        $log['cdate'] = $cdate;
+                        $log['ctime'] = $ctime;
+                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $pin_name into Pin Table.";
+                        $log['query_rec'] = $query;
+                        $log['query_table'] = PIN;
+                        $log['page'] = 'Pin';
+                        $log['newval'] = $newval;
+                        $log['connect'] = $connect;
+                        echo audit_log($log);
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -46,9 +72,48 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "UPDATE ".PIN." SET name ='".$pin_name."', remark ='".$pin_remark."' WHERE id = '".$pin_id."'";
+                        // take old value
+                        $query = "SELECT * FROM ".PIN." WHERE id = '".$pin_id."'";
+                        $result = mysqli_query($connect, $query);
+                        $row = $result->fetch_assoc();
+                        $oldvalarr = $chgvalarr = array();
+
+                        // edit
+                        $query = "UPDATE ".PIN." SET name ='".$pin_name."', remark ='".$pin_remark."', update_date = 'curdate()', update_time = 'curtime()', update_by ='".$_SESSION['userid']."' WHERE id = '".$pin_id."'";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
+
+                        // check value
+                        if($row['name'] != $pin_name)
+                        {
+                            array_push($oldvalarr, $row['name']);
+                            array_push($chgvalarr, $pin_name);
+                        }
+
+                        if($row['remark'] != $pin_remark)
+                        {
+                            array_push($oldvalarr, $row['remark']);
+                            array_push($chgvalarr, $pin_remark);
+                        }
+
+                        // convert into string
+                        $oldval = implode(",",$oldvalarr);
+                        $chgval = implode(",",$chgvalarr);
+
+                        // audit log
+                        $log = array();
+                        $log['log_act'] = 'edit';
+                        $log['cdate'] = $cdate;
+                        $log['ctime'] = $ctime;
+                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$pin_id] $pin_name from Pin Table.";
+                        $log['query_rec'] = $query;
+                        $log['query_table'] = PIN;
+                        $log['page'] = 'Pin';
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
+                        $log['connect'] = $connect;
+                        audit_log($log);
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -70,19 +135,58 @@ if(post('act') == 'D')
     {
         try
         {
+            // take name
+            $query = "SELECT * FROM ".PIN." WHERE id = '".$id."'";
+            $result = mysqli_query($connect, $query);
+            $row = $result->fetch_assoc();
+
+            $pin_id = $row['id'];
+            $pin_name = $row['name'];
+
             $query = "DELETE FROM ".PIN." WHERE id = ".$id;
             mysqli_query($connect, $query);
+
+            // audit log
+            $log = array();
+            $log['log_act'] = 'delete';
+            $log['cdate'] = $cdate;
+            $log['ctime'] = $ctime;
+            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$pin_id] $pin_name from Pin Table.";
+            $log['query_rec'] = $query;
+            $log['query_table'] = PIN;
+            $log['page'] = 'Pin';
+            $log['connect'] = $connect;
+            audit_log($log);
+
+            $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
+}
+
+if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+{
+    $pin_name = isset($dataExisted) ? $row['name'] : '';
+    $_SESSION['viewChk'] = 1;
+
+    // audit log
+    $log = array();
+    $log['log_act'] = 'view';
+    $log['cdate'] = $cdate;
+    $log['ctime'] = $ctime;
+    $log['uid'] = $log['cby'] = $_SESSION['userid'];
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$pin_id] $pin_name from Pin Table.";
+    $log['page'] = 'Pin';
+    $log['connect'] = $connect;
+    audit_log($log);
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-<?php /* include "header.php"; */ ?>
 <link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/pin.css">
 </head>
@@ -94,7 +198,14 @@ if(post('act') == 'D')
         <form id="pinForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
-                    Add Pin
+                    <?php
+                    switch($act)
+                    {
+                        case 'I': echo 'Add Pin'; break;
+                        case 'E': echo 'Edit Pin'; break;
+                        default: echo 'View Pin';
+                    }
+                    ?>
                 </h2>
             </div>
 

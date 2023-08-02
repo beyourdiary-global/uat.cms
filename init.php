@@ -55,6 +55,7 @@ $act_3    = 'D'; //Delete
 define('USR_USER', 'user');
 define('LANG', 'language');
 define('PIN', 'pin');
+define('AUDIT_LOG', 'audit_log');
 
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);

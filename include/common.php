@@ -1,5 +1,7 @@
 <?php
 
+use PgSql\Lob;
+
 function post($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
@@ -175,5 +177,44 @@ function convertSmallerCase($param){
 
 function convertFirstEachWordCap($param){
 	return trim(ucwords($param));
+}
+
+function audit_log($data=array()){
+	if(count($data) > 0)
+	{
+		extract($data);
+		
+		switch($log_act)
+		{
+			case 'view':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'edit':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, query_record, query_table, old_value, changes, user_id, action_message, create_date, create_time, create_by) VALUES ('2', '$page', \"$query_rec\", '$query_table', '$oldval', '$changes', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'delete':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('3', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'add':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, query_record, query_table, new_value, user_id, action_message, create_date, create_time, create_by) VALUES ('4', '$page', \"$query_rec\", '$query_table', '$newval', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'import':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, query_record, query_table, new_value, user_id, action_message, create_date, create_time, create_by) VALUES ('5', '$page', \"$query_rec\", '$query_table', '$newval', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'export':
+				$query = "INSERT INTO ".AUDIT_LOG." (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('6', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'login':
+				$query = "INSERT INTO ".AUDIT_LOG." (screen_type, log_action, user_id, action_message, create_date, create_time, create_by) VALUES ('Login Screen', '7', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'logout':
+				$query = "INSERT INTO ".AUDIT_LOG." (screen_type, log_action, user_id, action_message, create_date, create_time, create_by) VALUES ('Login Screen', '8', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+		}
+
+		if(isset($query))
+			mysqli_query($connect, $query);
+		/* return $query; */
+	}
 }
 ?>
