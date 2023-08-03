@@ -177,7 +177,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$pin_id] $pin_name from Pin Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$pin_id] $pin_name from Pin Table.";
     $log['page'] = 'Pin';
     $log['connect'] = $connect;
     audit_log($log);
