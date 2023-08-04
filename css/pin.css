@@ -25,7 +25,7 @@ h2, a {
     text-transform: none !important;
 }
 
-#pin_name_lbl, #pin_remark_lbl {
+#pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl {
     font-weight: 500;
 }
 
