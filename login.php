@@ -26,11 +26,11 @@ if($email && $password)
           {
                mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = fail_count + 1 WHERE email = '".$email."'");
                return header('Location: index.php?err=2');
-          }
           else 
           {
                if($loginrows['fail_count'] >= 1 || $loginrows['fail_count'] <= 3)
                     mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = 0 WHERE email = '".$email."' AND password_alt = '".$password."'");
+
                     $_SESSION['userid'] = $loginrows['id'];
                     $_SESSION['user_name'] = $loginrows['name'];
 
