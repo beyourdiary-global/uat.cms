@@ -6,24 +6,11 @@
     transform: translate(-50%, -50%);
 }
 
-#actionBtn {
-    background-color: #FF9B44;
-    box-shadow: 0 0 !important;
-    font-weight: bold;
-    font-size: 18px;
-    text-transform: none !important;
-}
-
 #addPinBtn {
     background-color: #FF9B44;
     box-shadow: 0 0 !important;
     font-size: 18px;
     text-transform: none !important;
-}
-
-#pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,
-#user_grp_name_lbl, #user_grp_remark_lbl, #permission_table_lbl {
-    font-weight: 500;
 }
 
 #permission_table tr,#permission_table td,#permission_table th{

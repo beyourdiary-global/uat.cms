@@ -136,7 +136,7 @@ transform: translate(-50%, 0) !important;
 }
 
 /*---------------------------------------------------------
-# User Group Page / Pin Group Page / Pin Page            
+# Common
 ---------------------------------------------------------*/
 #addBtn {
     background-color: #FF9B44;
@@ -147,4 +147,18 @@ transform: translate(-50%, 0) !important;
 
 #action_menu {
     color: #000000 !important;
+}
+
+#actionBtn {
+    background-color: #FF9B44;
+    box-shadow: 0 0 !important;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: none !important;
+}
+
+#pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,
+#user_grp_name_lbl, #user_grp_remark_lbl, #permission_table_lbl, #desig_name_lbl,
+#desig_remark_lbl{
+    font-weight: 500;
 }
