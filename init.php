@@ -57,6 +57,7 @@ define('LANG', 'language');
 define('PIN', 'pin');
 define('PIN_GRP', 'pin_group');
 define('AUDIT_LOG', 'audit_log');
+define('USR_GRP', 'user_group');
 
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);

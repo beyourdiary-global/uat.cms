@@ -25,10 +25,12 @@ h2, a {
     text-transform: none !important;
 }
 
-#pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl {
+#pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,
+#user_grp_name_lbl, #user_grp_remark_lbl, #permission_table_lbl {
     font-weight: 500;
 }
 
-#action_menu {
-    color: #000000 !important;
+#permission_table tr,#permission_table td,#permission_table th{
+    padding: 10px !important;
+    margin: 0 !important;
 }

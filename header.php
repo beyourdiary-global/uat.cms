@@ -11,33 +11,27 @@
 
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+<link href="./header/font/OpenSans.css" rel="stylesheet">
 
 <!-- Font Awesome -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"  rel="stylesheet"/>
+<link href="./header/fontawesome-free-6.0.0-web/css/all.min.css" rel="stylesheet">
 
 <!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="./header/js/jquery_1.11.1_jquery.min.js"></script>
 
 <!-- DataTable -->
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"/>
-<link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet"/>
+<script src="./header/DataTable/1.13.5_js_jquery.dataTables.min.js"></script>
+<script src="./header/DataTable/1.13.5_js_dataTables.bootstrap5.min.js"></script>
+<link href="./header/DataTable/twitter-bootstrap_5.3.0_css_bootstrap.min.css" rel="stylesheet"/>
+<link href="./header/DataTable/1.13.5_css_dataTables.bootstrap5.min.css" rel="stylesheet"/>
 
 <!-- Functions -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+<script src="./header/js/@popperjs_core@2.9.2_dist_umd_popper.min.js"></script>
+<script src="./header/bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
 <script src="./js/common.fun.js"></script>
 
 <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet"/>
+<link href="./header/font/Roboto.css" rel="stylesheet"/>
 
 <!-- MDB -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet"/>
-<!-- <script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script> -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/scss/mdb.free.scss"/>
-
-<!-- Icon -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+<link href="./header/MDB/mdb-ui-kit_6.4.0_mdb.min.css" rel="stylesheet"/>
