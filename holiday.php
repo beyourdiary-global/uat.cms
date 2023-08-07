@@ -3,13 +3,13 @@ include './include/common.php';
 include './include/connection.php';
 include "header.php";
 
-$desig_id = input('id');
+$holiday_id = input('id');
 $act = input('act');
 
 // to display data to input
-if($desig_id)
+if($holiday_id)
 {
-    $query = "SELECT * FROM ".DESIG." WHERE id = '".$desig_id."'";
+    $query = "SELECT * FROM ".HOLIDAY." WHERE id = '".$holiday_id."'";
     $result = mysqli_query($connect, $query);
 
     if(mysqli_num_rows($result) == 1)
@@ -25,17 +25,23 @@ if(post('actionBtn'))
 
     switch($action)
     {
-        case 'addDesig': case 'updDesig':
-            $desig_name = post('desig_name');
-            $desig_remark = post('desig_remark');
+        case 'addHoliday': case 'updHoliday':
+            $holiday_name = post('holiday_name');
+            $holiday_date = post('holiday_date');
 
-            if($desig_name)
+            if(!($holiday_name))
+                $err = "Holiday name cannot be empty.";
+            
+            if(!($holiday_date))
+                $err2 = "Holiday date cannot be empty.";
+
+            if($holiday_name && $holiday_date)
             {
-                if($action == 'addDesig')
+                if($action == 'addHoliday')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".DESIG."(name,remark,create_by) VALUES ('$desig_name','$desig_remark','".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".HOLIDAY."(name,date,create_by) VALUES ('$holiday_name','$holiday_date','".$_SESSION['userid']."')";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -43,11 +49,11 @@ if(post('actionBtn'))
                         $newvalarr = array();
 
                         // check value
-                        if($desig_name != '')
-                            array_push($newvalarr, $desig_name);
+                        if($holiday_name != '')
+                            array_push($newvalarr, $holiday_name);
 
-                        if($desig_remark != '')
-                            array_push($newvalarr, $desig_remark);
+                        if($holiday_date != '')
+                            array_push($newvalarr, $holiday_date);
 
                         $newval = implode(",",$newvalarr);
 
@@ -57,10 +63,10 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $desig_name into Designations Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $holiday_name into Holiday Table.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = DESIG;
-                        $log['page'] = 'Designations';
+                        $log['query_table'] = HOLIDAY;
+                        $log['page'] = 'Holiday';
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
@@ -73,27 +79,27 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".DESIG." WHERE id = '$desig_id'";
+                        $query = "SELECT * FROM ".HOLIDAY." WHERE id = '$holiday_id'";
                         $result = mysqli_query($connect, $query);
                         $row = $result->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
-                        $query = "UPDATE ".DESIG." SET name ='$desig_name', remark ='$desig_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$desig_id."'";
+                        $query = "UPDATE ".HOLIDAY." SET name ='$holiday_name', date ='$holiday_date', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$holiday_id."'";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         // check value
-                        if($row['name'] != $desig_name)
+                        if($row['name'] != $holiday_name)
                         {
                             array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $desig_name);
+                            array_push($chgvalarr, $holiday_name);
                         }
 
-                        if($row['remark'] != $desig_remark)
+                        if($row['date'] != $holiday_date)
                         {
-                            array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $desig_remark);
+                            array_push($oldvalarr, $row['date']);
+                            array_push($chgvalarr, $holiday_date);
                         }
 
                         // convert into string
@@ -106,10 +112,10 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$desig_id] $desig_name from Designations Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$holiday_id] $holiday_name from Holiday Table.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = DESIG;
-                        $log['page'] = 'Designations';
+                        $log['query_table'] = HOLIDAY;
+                        $log['page'] = 'Holiday';
                         $log['oldval'] = $oldval;
                         $log['changes'] = $chgval;
                         $log['connect'] = $connect;
@@ -119,10 +125,9 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "Designation name cannot be empty.";
             break;
         case 'back':
-            header('Location: designations_table.php');
+            header('Location: holiday_table.php');
             break;
     }
 }
@@ -136,14 +141,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".DESIG." WHERE id = '".$id."'";
+            $query = "SELECT * FROM ".HOLIDAY." WHERE id = '".$id."'";
             $result = mysqli_query($connect, $query);
             $row = $result->fetch_assoc();
 
-            $desig_id = $row['id'];
-            $desig_name = $row['name'];
+            $holiday_id = $row['id'];
+            $holiday_name = $row['name'];
 
-            $query = "DELETE FROM ".DESIG." WHERE id = ".$id;
+            $query = "DELETE FROM ".HOLIDAY." WHERE id = ".$id;
             mysqli_query($connect, $query);
 
             // audit log
@@ -152,10 +157,10 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$desig_id] $desig_name from Designations Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$holiday_id] $holiday_name from Holiday Table.";
             $log['query_rec'] = $query;
-            $log['query_table'] = DESIG;
-            $log['page'] = 'Designations';
+            $log['query_table'] = HOLIDAY;
+            $log['page'] = 'Holiday';
             $log['connect'] = $connect;
             audit_log($log);
 
@@ -166,9 +171,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $desig_name = isset($dataExisted) ? $row['name'] : '';
+    $holiday_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -177,8 +182,8 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$desig_id] $desig_name from Designations Table.";
-    $log['page'] = 'Designations';
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$holiday_id] $holiday_name from Holiday Table.";
+    $log['page'] = 'Holiday';
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -201,25 +206,28 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
                     <?php
                     switch($act)
                     {
-                        case 'I': echo 'Add Designation'; break;
-                        case 'E': echo 'Edit Designation'; break;
-                        default: echo 'View Designation';
+                        case 'I': echo 'Add Holiday'; break;
+                        case 'E': echo 'Edit Holiday'; break;
+                        default: echo 'View Holiday';
                     }
                     ?>
                 </h2>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="desig_name_lbl" for="desig_name">Designation Name</label>
-                <input class="form-control" type="text" name="desig_name" id="desig_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="holiday_name_lbl" for="holiday_name">Holiday Name</label>
+                <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="desig_remark_lbl" for="desig_remark">Designation Remark</label>
-                <textarea class="form-control" name="desig_remark" id="desig_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="holiday_date_lbl" for="holiday_date">Holiday Date</label>
+                <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if(isset($dataExisted)) echo $row['date'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; else echo ''; ?></span>
+                </div>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center">
@@ -227,10 +235,10 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addDesig">Add Designation</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addHoliday">Add Holiday</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updDesig">Edit Designation</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updHoliday">Edit Holiday</button>';
                         break;
                 }
             ?>
@@ -243,7 +251,7 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Designation","","designations_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Holiday","","holiday_table.php","'.$act.'");</script>';
 }
 ?>
 </body>
