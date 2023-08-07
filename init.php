@@ -59,6 +59,7 @@ define('PIN_GRP', 'pin_group');
 define('AUDIT_LOG', 'audit_log');
 define('USR_GRP', 'user_group');
 define('DESIG', 'designation');
+define('DEPT', 'department');
 
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
