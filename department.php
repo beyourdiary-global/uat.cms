@@ -79,7 +79,7 @@ if(post('actionBtn'))
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
-                        $query = "UPDATE ".DEPT." SET name ='$dept_name', remark ='$dept_remark', update_date = 'curdate()', update_time = 'curtime()', update_by ='".$_SESSION['userid']."' WHERE id = '".$dept_id."'";
+                        $query = "UPDATE ".DEPT." SET name ='$dept_name', remark ='$dept_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$dept_id."'";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
