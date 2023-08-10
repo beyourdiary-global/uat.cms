@@ -67,6 +67,7 @@ define('PROD_STATUS', 'product_status');
 define('WHSE', 'warehouse');
 define('MRTL_STATUS', 'marital_status');
 define('BANK', 'bank');
+define('EM_TYPE_STATUS', 'em_type_status');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
