@@ -210,7 +210,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="bank_name_lbl" for="em_type_status_name">Employment Type Status Name</label>
+                <label class="form-label" id="em_type_status_name_lbl" for="em_type_status_name">Employment Type Status Name</label>
                 <input class="form-control" type="text" name="em_type_status_name" id="em_type_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
@@ -218,7 +218,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="bank_remark_lbl" for="em_type_status_remark">Employment Type Status Remark</label>
+                <label class="form-label" id="em_type_status_remark_lbl" for="em_type_status_remark">Employment Type Status Remark</label>
                 <textarea class="form-control" name="em_type_status_remark" id="em_type_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
