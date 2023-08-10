@@ -19,7 +19,7 @@ define('date_dis', date("Y-m-d"));
 define('time_dis', date("G:i:s"));
 define('yearMonth', strtolower(date('YM')));
 define('comYMD', strtolower(date('Ymd')));
-/* define('GlobalPin', $_SESSION['usr_pin']); */
+define('GlobalPin', isset($_SESSION['usr_pin']) ? $_SESSION['usr_pin'] : '');
 // define('memberImportDetail', yearMonth.'_importInfo');
 
 $email_collect = '';

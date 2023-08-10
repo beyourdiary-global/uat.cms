@@ -3,7 +3,9 @@
 <head>
 <?php 
 include "header.php";
-include "include/common_variable.php"
+include "include/connection.php";
+include "include/common.php";
+include "include/common_variable.php";
 ?>
 <link rel="stylesheet" href="./css/main.css">
 </head>
@@ -19,10 +21,9 @@ include "include/common_variable.php"
         <!-- Toggle button -->
         <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse"
-            data-bs-target=""
-            aria-controls=""
+            data-bs-target="#sidebar-collapse"
             aria-expanded="false"
-            aria-label="Toggle navigation"
+            id="sidebarCollapse"
         >
             <i class="fas fa-bars"></i>
         </button>
@@ -190,3 +191,5 @@ include "include/common_variable.php"
 <!-- Navbar -->
 
 </html>
+
+<?php include "menu_bar.php";?>

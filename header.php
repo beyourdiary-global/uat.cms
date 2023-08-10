@@ -9,12 +9,12 @@
 <link rel="icon" type="image" href="./image/logo2.png">
 <title>Login</title>
 
-
 <!-- Fonts -->
 <link href="./header/font/OpenSans.css" rel="stylesheet">
 
-<!-- Font Awesome -->
+<!-- Icon -->
 <link href="./header/fontawesome-free-6.0.0-web/css/all.min.css" rel="stylesheet">
+<link href="./header/MaterialDesign-Webfont-master/css/materialdesignicons.css" rel="stylesheet">
 
 <!-- jQuery -->
 <script src="./header/js/jquery_1.11.1_jquery.min.js"></script>
