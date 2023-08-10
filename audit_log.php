@@ -29,14 +29,14 @@ $( document ).ready(() => {
 
 <body>
 
-<div class="container-fluid d-flex justify-content-center mt-3">
+<div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
 
             <div class="d-flex justify-content-between">
                 <div class="left">
                         <h2>Audit Log</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="bi bi-slash-lg"></i> Audit Log</p>
+                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Audit Log</p>
                 </div>
             </div>
 

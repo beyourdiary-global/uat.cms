@@ -12,8 +12,18 @@ label, h3 {
     color: #000000 !important;
 }
 
+h2, a {
+    color: #000000;
+}
+
 h7 {
     color: #808080 !important;
+}
+
+@media (max-width: 320px) {
+    .container, .container-fluid {
+          width: 90%;   
+    }
 }
 
 /*------------------------------------------------------
@@ -119,4 +129,22 @@ transform: translate(-50%, 0) !important;
 
 #email-addr_error, #password_error, #err_msg {
     color:#FF0000;
+}
+
+#dispTable {
+    min-width: 500px;
+}
+
+/*---------------------------------------------------------
+# User Group Page / Pin Group Page / Pin Page            
+---------------------------------------------------------*/
+#addBtn {
+    background-color: #FF9B44;
+    box-shadow: 0 0 !important;
+    font-size: 18px;
+    text-transform: none !important;
+}
+
+#action_menu {
+    color: #000000 !important;
 }
