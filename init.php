@@ -61,6 +61,7 @@ define('USR_GRP', 'user_group');
 define('DESIG', 'designation');
 define('DEPT', 'department');
 define('HOLIDAY', 'holiday');
+define('BRAND', 'brand');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 

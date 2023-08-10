@@ -398,7 +398,7 @@ function convertDate(date,current_Date){// format: DD/MM/YYYY (Check valid date 
 function createSortingTable(tableid) {
 	let table = new DataTable('#'+tableid, {
 		paging: $('#'+tableid+' tbody tr').length>10,
-		searching: false,
+		searching: $('#'+tableid+' tbody tr').length>10,
 		info: false,
 	})
 }
