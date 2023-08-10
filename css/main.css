@@ -282,6 +282,7 @@ transform: translate(-50%, 0) !important;
 #pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,
 #user_grp_name_lbl, #user_grp_remark_lbl, #permission_table_lbl, #desig_name_lbl,
 #desig_remark_lbl, #dept_name_lbl, #dept_remark_lbl, #holiday_name_lbl,
-#holiday_date_lbl, #brand_name_lbl, #brand_remark_lbl{
+#holiday_date_lbl, #brand_name_lbl, #brand_remark_lbl, #pltf_name_lbl, 
+#pltf_remark_lbl{
     font-weight: 500;
 }
