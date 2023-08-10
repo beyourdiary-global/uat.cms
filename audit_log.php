@@ -3,7 +3,7 @@ include './include/common.php';
 include './include/connection.php';
 
 $num = 1;  //for numbering
-$query = "SELECT * FROM ".AUDIT_LOG." ORDER BY create_date desc";
+$query = "SELECT *, concat(create_date,' ',create_time) as datetimes FROM ".AUDIT_LOG." ORDER BY datetimes desc";
 $result = mysqli_query($connect, $query);
 ?>
 
