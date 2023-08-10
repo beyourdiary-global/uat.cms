@@ -62,6 +62,7 @@ define('DESIG', 'designation');
 define('DEPT', 'department');
 define('HOLIDAY', 'holiday');
 define('BRAND', 'brand');
+define('PLTF', 'platform');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
