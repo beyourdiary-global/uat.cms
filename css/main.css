@@ -284,6 +284,6 @@ transform: translate(-50%, 0) !important;
 #desig_remark_lbl, #dept_name_lbl, #dept_remark_lbl, #holiday_name_lbl,
 #holiday_date_lbl, #brand_name_lbl, #brand_remark_lbl, #pltf_name_lbl, 
 #pltf_remark_lbl, #prod_status_name_lbl, #prod_status_remark_lbl, #warehouse_name_lbl,
-#warehouse_remark_lbl {
+#warehouse_remark_lbl, #mrtl_name_lbl, #mrtl_remark_lbl {
     font-weight: 500;
 }
