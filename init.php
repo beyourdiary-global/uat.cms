@@ -64,6 +64,7 @@ define('HOLIDAY', 'holiday');
 define('BRAND', 'brand');
 define('PLTF', 'platform');
 define('PROD_STATUS', 'product_status');
+define('WHSE', 'warehouse');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
