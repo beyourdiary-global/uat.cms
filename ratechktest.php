@@ -4,7 +4,7 @@ $domain = "https://demo.connect.easyparcel.my/?ac=";
 $action = "MPRateCheckingBulk";
 $postparam = array(
 'authentication'	=> 'MwxHG9i3Wu',
-'api'	=> 'EP-GDDwnNR72',
+'api'	=> 'EP-Jj0HYyEkp',
 'bulk'	=> array(
 array(
 'pick_code'	=> '059893',
