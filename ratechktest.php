@@ -1,5 +1,5 @@
 <?php 
-$domain = "https://demo.connect.easyparcel.sg/?ac=";
+$domain = "https://demo.connect.easyparcel.my/?ac=";
 
 $action = "MPRateCheckingBulk";
 $postparam = array(
