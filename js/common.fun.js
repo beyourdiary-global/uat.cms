@@ -577,3 +577,231 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 	}
     
 }
+
+/* Rate Checking */
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]).replace(/\+/g, ' ');
+        }
+    }
+    return false;
+};
+
+function countrySelector(param, disp_el) {
+	const countrySelect = document.createElement('div')
+    countrySelect.id = "country_selector"
+    countrySelect.className = "form-group"
+    countrySelect.innerHTML = `
+		<div class="row">
+			<div class="col-6 col-sm-9">
+				<label class="form-label form_lbl" id="country_lbl" for="country">From Which Country</label>
+				<select class="form-select mb-3" id="country" name="country" placeholder="State">
+					<option value="MY">Malaysia</option>
+					<option value="SG">Singapore</option>
+				</select>
+			</div>
+			<div class="col-6 col-sm-3 d-flex justify-content-center">
+				<button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="button">Confirm></button>
+			</div>
+		</div>
+    `;
+
+	if(!param)
+	{
+		$(disp_el).append(countrySelect);
+	}
+	else 
+	{
+		if($('#country_selector'))
+			$('#country_selector').remove();
+	}
+
+	$('#country_selector').on('change', () => {
+		switch($('#country_selector option:selected').val())
+		{
+			case 'MY':
+				console.log('Picked MY');
+				break;
+			case 'SG':
+				console.log('Picked SG');
+				break;
+		}
+	})
+
+	$('#actionBtn').on('click', () => {
+		switch($('#country_selector option:selected').val())
+		{
+			case 'MY':
+				$(location).attr('href',"rate_checking.php?country=MY");
+				break;
+			case 'SG':
+				$(location).attr('href',"rate_checking.php?country=SG");
+				break;
+		}
+	})
+}
+
+function deliveryOptions(param, disp_el) {
+	var MY_State = {
+		"Johor" : "jhr",
+		"Kedah" : "kdh",
+		"Kelantan" : "ktn",
+		"Melaka" : "mlk",
+		"Negeri Sembilan" : "nsn",
+		"Pahang" : "phg",
+		"Perak" : "prk",
+		"Perlis" : "pls",
+		"Pulau Pinang" : "png",
+		"Selangor" : "sgr",
+		"Terengganu" : "trg",
+		"Kuala Lumpur" : "kul",
+		"Putra Jaya" : "pjy",
+		"Sarawak" : "srw",
+		"Sabah" : "sbh",
+		"Labuan" : "lbn"
+	}
+	
+	var SG_Zone = {
+		"Central" : "Central",
+		"East" : "East",
+		"North" : "North",
+		"Northeast" : "Northeast",
+		"West" : "West"
+	}
+
+	// option value based on country
+	var domestic;
+	switch(param)
+	{
+		case "MY": case "my":
+			flag = `<i class="flag flag-malaysia"></i>`;
+			domestic = `<option value="MY" selected style="display:none;">Malaysia</option>`;
+			area = MY_State;
+			break;
+		case "SG": case "sg":
+			flag = `<i class="flag flag-singapore"></i>`;
+			domestic = `<option value="SG" selected style="display:none;">Singapore</option>`;
+			area = SG_Zone;
+			break;
+	}
+
+	const deliveryOption = document.createElement('div')
+	deliveryOption.id = "deliveryOption"
+	deliveryOption.className = ""
+	deliveryOption.innerHTML = `
+	<div id="nav-tabs_options">
+		<!-- Tabs navs -->
+		<ul class="nav nav-tabs nav-fill mb-3" id="dest-tab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link active" id="domestic-tab" data-bs-toggle="tab" href="#domestic-section" role="tab" aria-controls="domestic-section" aria-selected="true">Domestic</a
+				>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="international-tab" data-bs-toggle="tab" href="#international-section" role="tab" aria-controls="international-section" aria-selected="false">International</a>
+			</li>
+		</ul>
+		<!-- Tabs navs -->
+
+		<!-- Tabs content -->
+		<div class="tab-content" id="dest-form">
+			<div class="tab-pane fade show active" id="domestic-section" role="tabpanel" aria-labelledby="domestic-tab">
+				<form id="domestic" method="post">
+					<div class="form-group">
+						<div class="row">
+							<div class="col-12">
+								<label class="form-label form_lbl" id="" for="from">From:</label>
+								${flag}
+								<select class="disabledSelection form-select mb-3" id="from" name="from">
+									${domestic}
+								</select>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col">
+								<select class="form-select mb-3" id="area_from" name="area_from">
+									<option value="" disabled selected style="display:none;">Select your option</option>
+								</select>
+							</div>
+							
+							<div class="col">
+								<input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="row">
+							<div class="col-12">
+								<label class="form-label form_lbl" id="" for="to">To:</label>
+								${flag}
+								<select class="disabledSelection form-select mb-3" id="to" name="to">
+									${domestic}
+								</select>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col">
+								<select class="form-select mb-3" id="area_to" name="area_to">
+									<option value="" disabled selected style="display:none;">Select your option</option>
+								</select>
+							</div>
+							
+							<div class="col">
+								<input class="form-control" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;">
+							</div>
+						</div>
+					</div>
+
+					<hr class="hr" />
+
+					<div class="form-group">
+						<div class="row">
+							<div class="col-6">
+								<input class="form-control" type="text" id="weight" name="weight" placeholder="Weight" style="line-height:30px;">
+							</div>
+							<div class="col-6 d-flex">
+								<button class="btn btn-sm btn-primary" name="actionBtn" id="actionBtn" value="chkRate" style="width:100%">Submit</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="tab-pane fade" id="international-section" role="tabpanel" aria-labelledby="international-tab">
+				<form id="international-form">
+
+				</form>
+			</div>
+		</div>
+		<!-- Tabs content -->
+	</div>
+	`;
+
+	if(param)
+	{
+		$(disp_el).append(deliveryOption);
+		$('#from').on("click keypress", (function(e){
+			e.preventDefault();
+		}));
+		$.each(area, function(key,value) {
+			$('#area_from').append($("<option></option>")
+				.attr("value", value).text(key));
+			$('#area_to').append($("<option></option>")
+				.attr("value", value).text(key));
+			});
+	}
+	else 
+	{
+		if($('#deliveryOption'))
+			$('#deliveryOption').remove();
+	}
+}
