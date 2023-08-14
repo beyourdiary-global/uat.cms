@@ -68,6 +68,8 @@ define('WHSE', 'warehouse');
 define('MRTL_STATUS', 'marital_status');
 define('BANK', 'bank');
 define('EM_TYPE_STATUS', 'em_type_status');
+define('CUR_UNIT', 'currency_unit');
+define('CURRENCIES', 'currencies');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
