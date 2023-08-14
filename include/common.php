@@ -217,4 +217,107 @@ function audit_log($data=array()){
 		/* return $query; */
 	}
 }
+
+function rate_checking($data=array()){
+	$action = "MPRateCheckingBulk";
+	$auth = "MwxHG9i3Wu";
+	switch($data['country'])
+	{
+		case "MY": case "my":
+			$domain = "https://demo.connect.easyparcel.my/?ac=";
+			$api = "EP-mtWnaspy1";
+			$bulk = array(
+				array(
+				'pick_code'	=> $data['postcode_from'],
+				'pick_state'	=> $data['area_from'],
+				'pick_country'	=> $data['from'],
+				'send_code'	=> $data['postcode_to'],
+				'pick_state'	=> $data['area_to'],
+				'send_country'	=> $data['to'],
+				'weight'	=> $data['weight'],
+				'width'	=> '0',
+				'length'	=> '0',
+				'height'	=> '0',
+				'date_coll'	=> '',
+				),
+				array(
+				'pick_code'	=> $data['postcode_from'],
+				'pick_state'	=> $data['area_from'],
+				'pick_country'	=> $data['from'],
+				'send_code'	=> $data['postcode_to'],
+				'pick_state'	=> $data['area_to'],
+				'send_country'	=> $data['to'],
+				'weight'	=> $data['weight'],
+				'width'	=> '0',
+				'length'	=> '0',
+				'height'	=> '0',
+				'date_coll'	=> '',
+				),
+			);
+			$ex = `'exclude_fields'	=> array(
+				'rates.*.pickup_point',
+				),`;
+			break;
+		case "SG": case "sg":
+			$domain = "https://demo.connect.easyparcel.sg/?ac=";
+			$api = "EP-GDDwnNR72";
+			$bulk = array(
+				array(
+				'pick_code'	=> $data['postcode_from'],
+				'pick_country'	=> $data['from'],
+				'send_code'	=> $data['postcode_to'],
+				'send_country'	=> $data['to'],
+				'weight'	=> $data['weight'],
+				'width'	=> '0',
+				'length'	=> '0',
+				'height'	=> '0',
+				'date_coll'	=> '2023-08-14',
+				),
+				array(
+				'pick_code'	=> $data['postcode_from'],
+				'pick_country'	=> $data['from'],
+				'send_code'	=> $data['postcode_to'],
+				'send_country'	=> $data['to'],
+				'weight'	=> $data['weight'],
+				'width'	=> '0',
+				'length'	=> '0',
+				'height'	=> '0',
+				'date_coll'	=> '2023-08-14',
+				),
+				);
+				$ex = '';
+			break;
+		default:
+			$domain = '';
+			$api = '';
+			$bulk = '';
+			$ex = '';
+	}
+
+	$postparam = array(
+	'authentication'	=> $auth,
+	'api'	=> $api,
+	'bulk'	=> $bulk,
+	$ex
+	);
+
+	$url = $domain.$action;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postparam));
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+
+	ob_start(); 
+	$return = curl_exec($ch);
+	ob_end_clean();
+	curl_close($ch);
+
+	$json = json_decode($return);
+	echo "<pre>"; print_r($json); echo "</pre>";
+	/* echo $json['api_status']; */
+	var_dump($json);
+	/* print_r($postparam); */
+}
 ?>
