@@ -38,7 +38,7 @@ include "./include/common.php";
                 <div class="form-group">
                     <div class="d-flex justify-content-between" id="row-password-label">
                         <label class="form-label" id="password_lbl" for="password">Password</label>
-                        <a id="forgot-password_link" href="#">Forgot password?</a>
+                        <a id="forgot-password_link" href="forgotPassword.php">Forgot password?</a>
                     </div>
                     <div id="row-password-input">
                         <div class="d-flex justify-content-end">
