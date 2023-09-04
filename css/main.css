@@ -26,6 +26,11 @@ h7 {
     }
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
 /*------------------------------------------------------
 # Menu Header               
 ------------------------------------------------------*/
@@ -277,6 +282,19 @@ transform: translate(-50%, 0) !important;
     font-weight: bold;
     font-size: 18px;
     text-transform: none !important;
+}
+
+#backBtn {
+    background-color: #888888;
+    box-shadow: 0 0 !important;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: none !important;
+}
+
+.warning_input {
+    border-color: #FF0000 !important;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 129, 0.25) !important;
 }
 
 #pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,
