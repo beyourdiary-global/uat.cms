@@ -56,7 +56,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -235,7 +235,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-6 col-md-6">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

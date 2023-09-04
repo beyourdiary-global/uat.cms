@@ -31,7 +31,7 @@ $( document ).ready(() => {
 
 <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+        <div class="col-12 col-md-8">
 
             <div class="d-flex justify-content-between">
                 <div class="left">

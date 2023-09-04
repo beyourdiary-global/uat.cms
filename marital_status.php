@@ -35,7 +35,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".MRTL_STATUS."(name,remark,create_by) VALUES ('$mrtl_name','$mrtl_remark','".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".MRTL_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$mrtl_name','$mrtl_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -194,7 +194,7 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-6 col-md-6">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

@@ -35,7 +35,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".WHSE."(name,remark,create_by) VALUES ('$warehouse_name','$warehouse_remark','".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".WHSE."(name,remark,create_by,create_date,create_time) VALUES ('$warehouse_name','$warehouse_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;

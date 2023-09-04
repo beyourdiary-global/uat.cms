@@ -35,7 +35,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".PLTF."(name,remark,create_by) VALUES ('$pltf_name','$pltf_remark','".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".PLTF."(name,remark,create_by,create_date,create_time) VALUES ('$pltf_name','$pltf_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -194,7 +194,7 @@ if(($pltf_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <div class="col-6 col-md-6">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
