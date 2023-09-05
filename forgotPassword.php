@@ -3,7 +3,7 @@ include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";
 
-$resetpass_btn = 1;
+$resetpass_btn = post('resetpass_btn');
 
 if($resetpass_btn == 1)
 {
@@ -98,10 +98,13 @@ if($resetpass_btn == 1)
             $headers[] = 'Bcc:';
 
             // Mail it
-            mail($to, $subject, $message_user, implode("\r\n", $headers));
-            mail(email_cc, 'User Request Reset Password Action', $message_admin);
+            $email_to_user = mail($to, $subject, $message_user, implode("\r\n", $headers));
+            $email_to_admin = mail(email_cc, 'User Request Reset Password Action', $message_admin);
 
             ob_get_clean();
+
+            if($email_to_user && $email_to_admin)
+                return true;
         }
     }
 }
@@ -136,6 +139,12 @@ if($resetpass_btn == 1)
                     <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
                     <input class="form-control" type="email" name="email-addr" id="email-addr">
                     <span id="email-addr_error"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <div id="loader_div" class="mb-3 loader" style="display:none"></div>
+                <div id="loader_result_div" class="mb-3" style="display:none">
                 </div>
             </div>
         
@@ -192,7 +201,30 @@ $('#resetpass_btn').on('click', () => {
     }
 
     if (email_chk == 1)
-        $("#forgotpassForm").submit();
+    {
+        toggle('loader_div');
+        var fp_email = $('#email-addr').val();
+        $.ajax({
+            type: 'POST',
+            url: 'forgotPassword.php',
+            data: {
+                'email-addr': fp_email,
+                'resetpass_btn': email_chk
+            },
+            cache: false,
+            success: (result) => {
+                toggle('loader_div');
+                toggle('loader_result_div');
+                $('#loader_result_div').append('<span style="color:#23B200">Reset link has been sent to your email.</span>');
+            },
+            error: (result) => {
+                toggle('loader_div');
+                toggle('loader_result_div');
+                $('#loader_result_div').append('<span style="color:#FF0000">Error.</span>');
+            }
+        })
+    }
+        
     else
         return false;
 })
