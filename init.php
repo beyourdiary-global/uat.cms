@@ -51,6 +51,14 @@ $act_3    = 'D'; //Delete
 // //error message default mean
 // $error_msg = array('3'=>'Required api key', '4'=>'Invalid api key', '5'=>'Unauthorized user', '0'=>'Success', '1'=>'Required authentication key', '1'=>'Invalid authentication key', '6'=>'Invalid data format');
 
+// easyparcel demo auth & api
+define('EASYPARCEL_DOMAIN_MY', 'https://demo.connect.easyparcel.my/?ac=');
+define('EASYPARCEL_AUTH_MY', 'MwxHG9i3Wu');
+define('EASYPARCEL_API_MY', 'EP-Jj0HYyEkp');
+define('EASYPARCEL_DOMAIN_SG', 'https://demo.connect.easyparcel.sg/?ac=');
+define('EASYPARCEL_AUTH_SG', 'zKpyWplgj9');
+define('EASYPARCEL_API_SG', 'EP-Mqx0IKqqS');
+
 // //table name define
 define('USR_USER', 'user');
 define('LANG', 'language');
@@ -70,6 +78,9 @@ define('BANK', 'bank');
 define('EM_TYPE_STATUS', 'em_type_status');
 define('CUR_UNIT', 'currency_unit');
 define('CURRENCIES', 'currencies');
+define('CUST', 'customer');
+define('COURIER', 'courier');
+define('SHIPREQ', 'shipping_request');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 

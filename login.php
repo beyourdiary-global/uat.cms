@@ -35,6 +35,7 @@ if($email && $password)
                     mysqli_query($connect, "UPDATE ".USR_USER." SET fail_count = 0 WHERE email = '".$email."' AND password_alt = '".$password."'");
                     $_SESSION['userid'] = $loginrows['id'];
                     $_SESSION['user_name'] = $loginrows['name'];
+                    $_SESSION['user_email'] = $loginrows['email'];
                     $_SESSION['user_group'] = $loginrows['access_id'];
 
                     $pin_qry = "SELECT * FROM ".USR_GRP." WHERE id ='".$_SESSION['user_group']."'";
