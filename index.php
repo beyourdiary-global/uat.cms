@@ -102,15 +102,13 @@ $(document).ready(() => {
 });
 
 $('#email-addr').on('input', () => {
-    if(!(isEmail($('#email-addr').val()))) {
-        $("#email-addr_error").text("Wrong email format!");
-    } else {
-        $("#email-addr_error").text("");
-    }
+    $("#email-addr_error").text("");
+    $("#password_error").text("");
+})
 
-    if($('#email-addr').val() === '' || $('#email-addr').val() === null || $('#email-addr').val() === undefined) {
-        $("#email-addr_error").text("");
-    }
+$('#password').on('input', () => {
+    $("#email-addr_error").text("");
+    $("#password_error").text("");
 })
 
 $('#login_btn').on('click', () => {
