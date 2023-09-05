@@ -87,7 +87,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".USR_GRP."(name,pins,remark) VALUES ('$user_grp_name', '$permission_grp', '$user_grp_remark')";
+                        $query = "INSERT INTO ".USR_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$user_grp_name','$permission_grp','$user_grp_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -255,7 +255,7 @@ if(($user_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 <body>
 
 <div id="dispTable" class="container d-flex justify-content-center">
-    <div class="col-lg-7 col-md-9 col-sm-8 col-xs-6 col-8">
+    <div class="col-8 col-md-8">
         <form id="pinForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

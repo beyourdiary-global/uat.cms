@@ -39,7 +39,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".PIN_GRP."(name,pins,remark) VALUES ('$pin_grp_name', '$pin_grp_pin', '$pin_grp_remark')";
+                        $query = "INSERT INTO ".PIN_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$pin_grp_name','$pin_grp_pin','$pin_grp_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
