@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $cur_unit_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Currency Unit name cannot be empty.";
             break;
         case 'back':
-            header('Location: currency_unit_table.php');
+            echo("<script>location.href = 'currency_unit_table.php';</script>");
             break;
     }
 }

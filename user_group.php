@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $user_grp_id = input('id');
 $act = input('act');
@@ -183,7 +181,7 @@ if(post('actionBtn'))
             else $err = "User Group Name cannot be empty.";
             break;
         case 'back':
-            header('Location: user_group_table.php');
+            echo("<script>location.href = 'user_group_table.php';</script>");
             break;
     }
 }

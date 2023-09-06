@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $pin_grp_id = input('id');
 $act = input('act');
@@ -135,7 +133,7 @@ if(post('actionBtn'))
             else $pinnameErr = "Pin Group name cannot be empty.";
             break;
         case 'back':
-            header('Location: pin_group_table.php');
+            echo("<script>location.href = 'pin_group_table.php';</script>");
             break;
     }
 }

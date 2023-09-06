@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $currencies_id = input('id');
 $act = input('act');
@@ -161,7 +159,7 @@ if(post('actionBtn'))
             else $err = "Exchange Currency Rate cannot be empty.";
             break;
         case 'back':
-            header('Location: currencies_table.php');
+            echo("<script>location.href = 'currencies_table.php';</script>");
             break;
     }
 }

@@ -2,9 +2,7 @@
 <html>
 <head>
 <?php 
-include "header.php";
-include "./include/connection.php";
-include "./include/common.php";
+include 'menuHeader.php';
 
 $country = input('country') ? input('country') : input('from');
 $dispCountrySel = "";

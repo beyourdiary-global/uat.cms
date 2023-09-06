@@ -1,6 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
+include 'menuHeader.php';
 
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
@@ -14,7 +13,6 @@ $result = mysqli_query($connect, $query);
 <!DOCTYPE html>
 <html>
 <head>
-<?php include "header.php"; ?>
 <link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/pin.css">
 

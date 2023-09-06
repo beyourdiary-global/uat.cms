@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $dept_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Department name cannot be empty.";
             break;
         case 'back':
-            header('Location: department_table.php');
+            echo("<script>location.href = 'department_table.php';</script>");
             break;
     }
 }

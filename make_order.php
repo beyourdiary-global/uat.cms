@@ -2,9 +2,7 @@
 <html>
 <head>
 <?php 
-include "header.php";
-include "./include/connection.php";
-include "./include/common.php";
+include 'menuHeader.php';
 ?>
 <link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/form.css">
@@ -283,7 +281,7 @@ if(post('actionBtn'))
             }
             break;
         case 'back':
-            header('Location: rate_checking.php?country=' . $from);
+            echo("<script>location.href = 'rate_checking.php?country=$from';</script>");
             break;
     }
 }
