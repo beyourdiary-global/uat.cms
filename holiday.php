@@ -17,6 +17,9 @@ if($holiday_id)
     }
 }
 
+if(!($holiday_id) && !($act))
+    echo("<script>location.href = 'holiday_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

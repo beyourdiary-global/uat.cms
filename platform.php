@@ -17,6 +17,9 @@ if($pltf_id)
     }
 }
 
+if(!($pltf_id) && !($act))
+    echo("<script>location.href = 'platform_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

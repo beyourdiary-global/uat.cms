@@ -17,6 +17,9 @@ if($prod_status_id)
     }
 }
 
+if(!($prod_status_id) && !($act))
+    echo("<script>location.href = 'prod_status_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

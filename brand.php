@@ -17,6 +17,9 @@ if($brand_id)
     }
 }
 
+if(!($brand_id) && !($act))
+    echo("<script>location.href = 'brand_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

@@ -49,6 +49,9 @@ if($user_grp_id)
     }
 }
 
+if(!($user_grp_id) && !($act))
+    echo("<script>location.href = 'user_group_table.php';</script>");
+
 if(post('actionBtn'))
 {  
     $action = post('actionBtn');

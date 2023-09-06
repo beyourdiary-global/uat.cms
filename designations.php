@@ -17,6 +17,9 @@ if($desig_id)
     }
 }
 
+if(!($desig_id) && !($act))
+    echo("<script>location.href = 'designations_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

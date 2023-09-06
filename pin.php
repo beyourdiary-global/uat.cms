@@ -17,6 +17,9 @@ if($pin_id)
     }
 }
 
+if(!($pin_id) && !($act))
+    echo("<script>location.href = 'pin_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

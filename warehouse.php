@@ -17,6 +17,9 @@ if($warehouse_id)
     }
 }
 
+if(!($warehouse_id) && !($act))
+    echo("<script>location.href = 'warehouse_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

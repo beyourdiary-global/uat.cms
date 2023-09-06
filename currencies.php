@@ -17,6 +17,9 @@ if($currencies_id)
     }
 }
 
+if(!($currencies_id) && !($act))
+    echo("<script>location.href = 'currencies_table.php';</script>");
+
 // to list out the currency unit for selection 
 $cur_list_qry = "SELECT * FROM ".CUR_UNIT;
 $cur_list_result = $connect->query($cur_list_qry);
