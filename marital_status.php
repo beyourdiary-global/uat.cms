@@ -17,6 +17,9 @@ if($mrtl_id)
     }
 }
 
+if(!($mrtl_id) && !($act))
+    echo("<script>location.href = 'marital_status_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

@@ -17,6 +17,9 @@ if($bank_id)
     }
 }
 
+if(!($bank_id) && !($act))
+    echo("<script>location.href = 'bank_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

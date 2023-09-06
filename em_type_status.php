@@ -17,6 +17,9 @@ if($em_type_status_id)
     }
 }
 
+if(!($em_type_status_id) && !($act))
+    echo("<script>location.href = 'em_type_status_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

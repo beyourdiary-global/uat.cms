@@ -17,6 +17,9 @@ if($dept_id)
     }
 }
 
+if(!($dept_id) && !($act))
+    echo("<script>location.href = 'department_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

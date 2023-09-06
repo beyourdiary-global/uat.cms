@@ -19,6 +19,9 @@ if($pin_grp_id)
     }
 }
 
+if(!($pin_grp_id) && !($act))
+    echo("<script>location.href = 'pin_group_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');

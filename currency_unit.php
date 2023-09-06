@@ -17,6 +17,9 @@ if($cur_unit_id)
     }
 }
 
+if(!($cur_unit_id) && !($act))
+    echo("<script>location.href = 'currency_unit_table.php';</script>");
+
 if(post('actionBtn'))
 {
     $action = post('actionBtn');
