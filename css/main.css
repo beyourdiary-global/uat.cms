@@ -37,6 +37,7 @@ input::-webkit-inner-spin-button {
 .topNav {
     background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%) !important;
     color: #FFFFFF;
+    z-index: 99;
 }
 
 .logo_section {
@@ -112,6 +113,7 @@ transform: translate(-50%, 0) !important;
 .menuBar{
     background-color: #34444C !important;
     color: #AEB7C2;
+    z-index: 98;
 
     .dropdown-menu>li:first-child, .dropdown-menu>li:first-child .dropdown-item, .dropdown-menu>li:last-child, .dropdown-menu>li:last-child .dropdown-item {
         border-top-left-radius:0;
@@ -204,6 +206,7 @@ transform: translate(-50%, 0) !important;
     margin-left: -100%;
     height: 0px;
     overflow: auto;
+    z-index:1;
 }
 
 #sidebar.active {
@@ -278,10 +281,6 @@ transform: translate(-50%, 0) !important;
     color:#FF0000;
 }
 
-#dispTable {
-    min-width: 500px;
-}
-
 /*---------------------------------------------------------
 # Common
 ---------------------------------------------------------*/
@@ -302,6 +301,7 @@ transform: translate(-50%, 0) !important;
     font-weight: bold;
     font-size: 18px;
     text-transform: none !important;
+    white-space: nowrap;
 }
 
 #backBtn {

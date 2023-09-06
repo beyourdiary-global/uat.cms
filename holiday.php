@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $holiday_id = input('id');
 $act = input('act');
@@ -127,7 +125,7 @@ if(post('actionBtn'))
             }
             break;
         case 'back':
-            header('Location: holiday_table.php');
+            echo("<script>location.href = 'holiday_table.php';</script>");
             break;
     }
 }

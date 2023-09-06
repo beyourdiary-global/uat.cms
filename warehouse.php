@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $warehouse_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Warehouse name cannot be empty.";
             break;
         case 'back':
-            header('Location: warehouse_table.php');
+            echo("<script>location.href = 'warehouse_table.php';</script>");
             break;
     }
 }

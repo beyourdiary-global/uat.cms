@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $bank_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Bank name cannot be empty.";
             break;
         case 'back':
-            header('Location: bank_table.php');
+            echo("<script>location.href = 'bank_table.php';</script>");
             break;
     }
 }
@@ -194,7 +192,7 @@ if(($bank_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6">
+    <div class="col-8 col-md-6">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
@@ -227,14 +225,14 @@ if(($bank_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addBank">Add Bank</button>';
+                        echo '<button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addBank">Add Bank</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updBank">Edit Bank</button>';
+                        echo '<button class="btn btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updBank">Edit Bank</button>';
                         break;
                 }
             ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                <button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
             </div>
         </form>
     </div>

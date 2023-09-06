@@ -1,6 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
+include 'menuHeader.php';
 
 $num = 1;  //for numbering
 $query = "SELECT *, concat(create_date,' ',create_time) as datetimes FROM ".AUDIT_LOG." ORDER BY datetimes desc";
@@ -10,9 +9,7 @@ $result = mysqli_query($connect, $query);
 <!DOCTYPE html>
 <html>
 <head>
-<?php include "header.php"; ?>
 <link rel="stylesheet" href="./css/main.css">
-
 </head>
 
 <style>
@@ -40,6 +37,7 @@ $( document ).ready(() => {
                 </div>
             </div>
 
+            <div class="table-responsive">
             <table class="table table-striped" id="audit_log_table">
                 <thead>
                     <tr>
@@ -80,6 +78,7 @@ if(mysqli_num_rows($result) >= 1)
 ?>
                 </tbody>
             </table>
+            </div>
         </div>
 
 </div>

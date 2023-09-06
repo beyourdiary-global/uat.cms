@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $prod_status_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Product Status name cannot be empty.";
             break;
         case 'back':
-            header('Location: prod_status_table.php');
+            echo("<script>location.href = 'prod_status_table.php';</script>");
             break;
     }
 }

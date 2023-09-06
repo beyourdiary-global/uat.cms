@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $em_type_status_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Employment Type Status name cannot be empty.";
             break;
         case 'back':
-            header('Location: em_type_status_table.php');
+            echo("<script>location.href = 'em_type_status_table.php';</script>");
             break;
     }
 }

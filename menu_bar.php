@@ -1,6 +1,4 @@
 <?php
-/* include "menuHeader.php"; */
-
 $pinArr = array();
 $pin_query = "SELECT id FROM ".PIN;
 $pin_result = $connect->query($pin_query);
@@ -50,8 +48,7 @@ $menuList = array(
 
 ?>
 
-<!DOCTYPE html>
-<html>
+
 <head>
 <link rel="stylesheet" href="./css/main.css">
 </head>
@@ -163,4 +160,3 @@ $menuList = array(
 })(jQuery);
 </script>
 
-</html>

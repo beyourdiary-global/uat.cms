@@ -10,11 +10,8 @@ include "include/common_variable.php";
 <link rel="stylesheet" href="./css/main.css">
 </head>
 
-<script>
-
-</script>
- 
 <!-- Navbar -->
+<div class="sticky-top">
 <nav class="navbar navbar-expand-md topNav">
     <!-- Container wrapper -->
     <div class="container-fluid">
@@ -189,7 +186,6 @@ include "include/common_variable.php";
     <!-- Container wrapper -->
 </nav>
 <!-- Navbar -->
-
-</html>
-
 <?php include "menu_bar.php";?>
+</div>
+</html>

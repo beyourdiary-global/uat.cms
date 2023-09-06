@@ -1,7 +1,5 @@
 <?php
-include './include/common.php';
-include './include/connection.php';
-include "header.php";
+include 'menuHeader.php';
 
 $brand_id = input('id');
 $act = input('act');
@@ -122,7 +120,7 @@ if(post('actionBtn'))
             else $err = "Brand name cannot be empty.";
             break;
         case 'back':
-            header('Location: brand_table.php');
+            echo("<script>location.href = 'brand_table.php';</script>");
             break;
     }
 }
