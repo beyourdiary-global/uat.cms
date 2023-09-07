@@ -38,7 +38,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".BANK."(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -58,7 +57,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $bank_name into Bank Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$bank_name</b> into <b><i>Bank Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = BANK;
                         $log['page'] = 'Bank';
@@ -102,19 +101,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$bank_id] $bank_name from Bank Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = BANK;
-                        $log['page'] = 'Bank';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= " from <b><i>Bank Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = BANK;
+                            $log['page'] = 'Bank';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -153,7 +165,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$bank_id] $bank_name from Bank Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$bank_name</b> from <b><i>Bank Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = BANK;
             $log['page'] = 'Bank';
@@ -178,7 +190,7 @@ if(($bank_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$bank_id] $bank_name from Bank Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$bank_name</b> from <b><i>Bank Table</i></b>.";
     $log['page'] = 'Bank';
     $log['connect'] = $connect;
     audit_log($log);

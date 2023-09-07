@@ -38,7 +38,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".PLTF."(name,remark,create_by,create_date,create_time) VALUES ('$pltf_name','$pltf_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -58,7 +57,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $pltf_name into Platform Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$pltf_name</b> into <b><i>Platform Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = PLTF;
                         $log['page'] = 'Platform';
@@ -102,19 +101,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$pltf_id] $pltf_name from Platform Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = PLTF;
-                        $log['page'] = 'Platform';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {    
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= " from <b><i>Platform Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = PLTF;
+                            $log['page'] = 'Platform';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -153,7 +165,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$pltf_id] $pltf_name from Platform Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$pltf_name</b> from <b><i>Platform Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = PLTF;
             $log['page'] = 'Platform';
@@ -178,7 +190,7 @@ if(($pltf_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$pltf_id] $pltf_name from Platform Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$pltf_name</b> from <b><i>Platform Table</i></b>.";
     $log['page'] = 'Platform';
     $log['connect'] = $connect;
     audit_log($log);
