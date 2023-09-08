@@ -51,16 +51,26 @@ $( document ).ready(() => {
 <?php
 if(mysqli_num_rows($result) >= 1)
 {
+    // get username
+    $rst = getData('id, username','',USR_USER,$connect);
+    $username_arr = array();
+    if($rst != false)
+    {
+        while($row2 = $rst->fetch_assoc())
+        {
+            $username_arr[$row2['id']] = $row2['username'];
+        }
+    }
+    
+
     while($row = $result->fetch_assoc())
     {
-        $query2 = "SELECT `username` FROM ".USR_USER." WHERE id = '".$row['user_id']."'";
-        $result2 = mysqli_query($connect, $query2);
-        $row2 = $result2->fetch_assoc();
+        $id = $row['user_id'];
 ?>
                     <tr>
                         <th scope="row"><?php echo $num; ?></th>
                         <td scope="row"><?php echo $row['create_date'] . ', ' . $row['create_time'] ?></td>
-                        <td scope="row"><?php echo $row2['username']?></td>
+                        <td scope="row"><?php echo $username_arr["$id"]?></td>
                         <td scope="row"><?php echo $row['action_message']?></td>
                     </tr>
 <?php

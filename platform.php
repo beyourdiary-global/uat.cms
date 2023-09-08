@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($pltf_id)
 {
-    $query = "SELECT * FROM ".PLTF." WHERE id = '".$pltf_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$pltf_id'",PLTF,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -73,9 +72,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".PLTF." WHERE id = '$pltf_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$pltf_id'",PLTF,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".PLTF." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",PLTF,$connect);
+            $row = $rst->fetch_assoc();
 
             $pltf_id = $row['id'];
             $pltf_name = $row['name'];

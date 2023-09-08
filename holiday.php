@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($holiday_id)
 {
-    $query = "SELECT * FROM ".HOLIDAY." WHERE id = '".$holiday_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$holiday_id'",HOLIDAY,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -79,9 +78,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".HOLIDAY." WHERE id = '$holiday_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$holiday_id'",HOLIDAY,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -154,9 +152,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".HOLIDAY." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",HOLIDAY,$connect);
+            $row = $rst->fetch_assoc();
 
             $holiday_id = $row['id'];
             $holiday_name = $row['name'];

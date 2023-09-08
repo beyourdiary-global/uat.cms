@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($bank_id)
 {
-    $query = "SELECT * FROM ".BANK." WHERE id = '".$bank_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$bank_id'",BANK,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -73,9 +72,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".BANK." WHERE id = '$bank_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$bank_id'",BANK,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".BANK." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",BANK,$connect);
+            $row = $rst->fetch_assoc();
 
             $bank_id = $row['id'];
             $bank_name = $row['name'];

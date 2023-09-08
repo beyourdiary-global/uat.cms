@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($warehouse_id)
 {
-    $query = "SELECT * FROM ".WHSE." WHERE id = '".$warehouse_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$warehouse_id'",WHSE,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -73,9 +72,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".WHSE." WHERE id = '$warehouse_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$warehouse_id'",WHSE,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".WHSE." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",WHSE,$connect);
+            $row = $rst->fetch_assoc();
 
             $warehouse_id = $row['id'];
             $warehouse_name = $row['name'];
