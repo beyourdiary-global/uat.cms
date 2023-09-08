@@ -28,9 +28,19 @@ $menuList = array(
         'expand' => array(
             array('Pin', 'mdi mdi-pin', 'pin_table.php', '1'),
             array('Pin Group', 'mdi mdi-ungroup', 'pin_group_table.php', '2'),
-            array('User Group', 'mdi mdi-account-wrench-outline', 'user_group_table.php', '3')
+            array('User Group', 'mdi mdi-account-wrench-outline', 'user_group_table.php', '3'),
+            array('Bank', 'mdi mdi-bank', 'bank_table.php', '8'),
+            array('Brand', 'mdi mdi-label-outline', 'brand_table.php', '9'),
+            array('Currency Unit', 'mdi mdi-currency-usd', 'currency_unit_table.php', '10'),
+            array('Currencies', 'mdi mdi-swap-horizontal', 'currencies_table.php', '11'),
+            array('Employment Type Status', 'mdi mdi-account-question-outline', 'em_type_status_table.php', '12'),
+            array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
+            array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
+            array('Product Status', 'mdi mdi-package-variant-closed', 'prod_status_table.php', '15'),
+            array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
+            array('Audit Log', 'mdi mdi-text-box-search-outline', 'audit_log.php', '18')
         ),
-        'pin' => array('1','2','3')
+        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18')
     ),
     array(
         'Employees',
@@ -40,9 +50,10 @@ $menuList = array(
         'expand' => array(
             array('Designations', 'mdi mdi-badge-account-outline', 'designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', 'department_table.php', '5'),
-            array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6')
+            array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
+            array('Rate Checking', 'mdi mdi-package-variant', 'rate_checking.php', '17')
         ),
-        'pin' => array('4','5','6')
+        'pin' => array('4','5','6','17')
     )
 );
 
@@ -118,7 +129,7 @@ $menuList = array(
                     if(!empty(array_intersect($innerList['pin'], GlobalPin)))
                     {
                         $li = $innerList[3] == 'y' ? "class=\"nav-item dropdown\"" : "class=\"nav-item\"";
-                        $a = $innerList[3] == 'y' ? "class=\"nav-link dropdown-toggle\" data-bs-toggle=\"collapse\" data-bs-target=\"#$innerList[0]-collapse\" aria-expanded=\"false\"" : "class=\"nav-link\"";
+                        $a = $innerList[3] == 'y' ? "class=\"nav-link dropdown-toggle\" data-bs-toggle=\"collapse\" data-bs-target=\"#$innerList[0]-collapse\" aria-expanded=\"false\"" : "class=\"nav-link\" href=\"$innerList[2]\"";
 
                         echo "<li $li>";
                         echo "<a $a href=\"#\"><i class=\"$innerList[1]\"></i><span> $innerList[0]</span><a>";

@@ -1,5 +1,8 @@
 <?php
 include 'menuHeader.php';
+/* include 'header.php';
+include './include/connection.php';
+include './include/common.php'; */
 
 $user_grp_id = input('id');
 $act = input('act');
@@ -90,7 +93,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".USR_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$user_grp_name','$permission_grp','$user_grp_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -113,7 +115,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $user_grp_name into User Permission Group.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$user_grp_name</b> into <b><i>User Permission Group Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = USR_GRP;
                         $log['page'] = 'User Permission Group';
@@ -163,19 +165,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$user_grp_id] $user_grp_name from User Permission Group.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = USR_GRP;
-                        $log['page'] = 'User Permission Group';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data <b>$user_grp_name</b> from <b><i>User Permission Group Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = USR_GRP;
+                            $log['page'] = 'User Permission Group';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -214,7 +229,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$user_grp_id] $user_grp_name from Pin Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$user_grp_name</b> from <b><i>User Permission Group Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = USR_GRP;
             $log['page'] = 'User Permission Group';
@@ -239,7 +254,7 @@ if(($user_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$user_grp_id] $user_grp_name from User Permission Group.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$user_grp_name</b> from <b><i>User Permission Group Table</i></b>.";
     $log['page'] = 'User Permission Group';
     $log['connect'] = $connect;
     audit_log($log);
@@ -250,15 +265,27 @@ if(($user_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 <html>
 <head>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/pin.css">
 </head>
+
+<style>
+thead { 
+    position: sticky; top:0; z-index: 1;
+}
+
+tbody {
+    
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+</style>
 
 <body>
 
 <div id="dispTable" class="container d-flex justify-content-center">
-    <div class="col-8 col-md-8">
+    <div class="col-9 col-md-9">
         <form id="pinForm" method="post" action="">
-            <div class="form-group mb-5">
+            <div class="form-group mt-5 mb-5">
                 <h2>
                     <?php
                     switch($act)
@@ -279,11 +306,11 @@ if(($user_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
-                <div class="table-responsive">
+                <div class="table-responsive" style="max-height: 500px;">
                 <table class="table table-striped" id="permission_table">
-                    <thead>
+                    <thead class="table-dark">
                         <tr>
                             <th scope="col">#</th>
                             <?php 
@@ -369,7 +396,7 @@ if(($user_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
                 <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
-            <div class="form-group mt-5 d-flex justify-content-center">
+            <div class="form-group mt-5 mb-5 d-flex justify-content-center">
             <?php
                 switch($act)
                 {

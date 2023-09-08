@@ -38,7 +38,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".EM_TYPE_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$em_type_status_name','$em_type_status_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -58,7 +57,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $em_type_status_name into Employment Type Status Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$em_type_status_name</b> into <b><i>Employment Type Status Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = EM_TYPE_STATUS;
                         $log['page'] = 'Employment Type Status';
@@ -102,19 +101,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$em_type_status_id] $em_type_status_name from Employment Type Status Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = EM_TYPE_STATUS;
-                        $log['page'] = 'Employment Type Status';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= " from <b><i>Employment Type Status Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = EM_TYPE_STATUS;
+                            $log['page'] = 'Employment Type Status';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                    }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -153,7 +165,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$em_type_status_id] $em_type_status_name from Employment Type Status Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$em_type_status_name</b> from <b><i>Employment Type Status Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = EM_TYPE_STATUS;
             $log['page'] = 'Employment Type Status';
@@ -178,7 +190,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$em_type_status_id] $em_type_status_name from Employment Type Status Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$em_type_status_name</b> from <b><i>Employment Type Status Table</i></b>.";
     $log['page'] = 'Employment Type Status';
     $log['connect'] = $connect;
     audit_log($log);

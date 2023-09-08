@@ -42,7 +42,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".PIN_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$pin_grp_name','$pin_grp_pin','$pin_grp_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -65,7 +64,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $pin_grp_name into Pin Group Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$pin_grp_name</b> into <b><i>Pin Group Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = PIN_GRP;
                         $log['page'] = 'Pin Group';
@@ -115,19 +114,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$pin_grp_id] $pin_grp_name from Pin Group Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = PIN_GRP;
-                        $log['page'] = 'Pin Group';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= " from <b><i>Pin Group Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = PIN_GRP;
+                            $log['page'] = 'Pin Group';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -166,7 +178,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$pin_grp_id] $pin_grp_name from Pin Group Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$pin_grp_name</b> from <b><i>Pin Group Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = PIN_GRP;
             $log['page'] = 'Pin Group';
@@ -191,7 +203,7 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$pin_grp_id] $pin_grp_name from Pin Group Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$pin_grp_name</b> from <b><i>Pin Group Table</i></b>.";
     $log['page'] = 'Pin Group';
     $log['connect'] = $connect;
     audit_log($log);

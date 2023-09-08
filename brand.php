@@ -38,7 +38,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".BRAND."(name,remark,create_by,create_date,create_time) VALUES ('$brand_name','$brand_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -58,7 +57,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $brand_name into Brand Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$brand_name</b> into <b><i>Brand Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = BRAND;
                         $log['page'] = 'Brand';
@@ -101,20 +100,33 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$brand_id] $brand_name from Brand Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = BRAND;
-                        $log['page'] = 'Brand';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            // audit log
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data ";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= "  under <b><i>Brand Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = BRAND;
+                            $log['page'] = 'Brand';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -153,7 +165,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$brand_id] $brand_name from Brand Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$brand_name</b> under <b><i>Brand Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = BRAND;
             $log['page'] = 'Brand';
@@ -178,7 +190,7 @@ if(($brand_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$brand_id] $brand_name from Brand Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$brand_name</b> from <b><i>Brand Table</i></b>.";
     $log['page'] = 'Brand';
     $log['connect'] = $connect;
     audit_log($log);

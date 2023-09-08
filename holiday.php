@@ -44,7 +44,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".HOLIDAY."(name,date,create_by,create_date,create_time) VALUES ('$holiday_name','$holiday_date','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -64,7 +63,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $holiday_name into Holiday Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$holiday_name</b> into <b><i>Holiday Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = HOLIDAY;
                         $log['page'] = 'Holiday';
@@ -108,19 +107,32 @@ if(post('actionBtn'))
                         $chgval = implode(",",$chgvalarr);
 
                         // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$holiday_id] $holiday_name from Holiday Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = HOLIDAY;
-                        $log['page'] = 'Holiday';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {    
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= " from <b><i>Holiday Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = HOLIDAY;
+                            $log['page'] = 'Holiday';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -158,7 +170,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$holiday_id] $holiday_name from Holiday Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$holiday_name</b> from <b><i>Holiday Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = HOLIDAY;
             $log['page'] = 'Holiday';
@@ -183,7 +195,7 @@ if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$holiday_id] $holiday_name from Holiday Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$holiday_name</b> from <b><i>Holiday Table</i></b>.";
     $log['page'] = 'Holiday';
     $log['connect'] = $connect;
     audit_log($log);

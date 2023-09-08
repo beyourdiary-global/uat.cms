@@ -59,7 +59,6 @@ if(post('actionBtn'))
                     {
                         $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
-                        $last_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -85,7 +84,7 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$last_id] $dflt_cur_unit[1] -> $exchg_cur_unit[1] into Currencies Table.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$dflt_cur_unit[1] -> $exchg_cur_unit[1]</b> into <b><i>Currencies Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = CURRENCIES;
                         $log['page'] = 'Currencies';
@@ -112,7 +111,7 @@ if(post('actionBtn'))
                         $_SESSION['tempValConfirmBox'] = true;
 
                         // check value
-                        if($row['default_currency_unit'] != $dflt_cur_unit)
+                        if($row['default_currency_unit'] != $dflt_cur_unit[0])
                         {
                             array_push($oldvalarr, $row['default_currency_unit']);
                             array_push($chgvalarr, $dflt_cur_unit[0]);
@@ -124,7 +123,7 @@ if(post('actionBtn'))
                             array_push($chgvalarr, $exchg_cur_rate);
                         }
 
-                        if($row['exchange_currency_unit'] != $exchg_cur_unit)
+                        if($row['exchange_currency_unit'] != $exchg_cur_unit[0])
                         {
                             array_push($oldvalarr, $row['exchange_currency_unit']);
                             array_push($chgvalarr, $exchg_cur_unit[0]);
@@ -140,20 +139,33 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " edited the data [id=$currencies_id] $dflt_cur_unit[1] -> $exchg_cur_unit[1] from Currencies Table.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = CURRENCIES;
-                        $log['page'] = 'Currencies';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
+                        if($oldval != '' && $chgval != '')
+                        {
+                            // audit log
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+
+                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            for($i=0; $i<sizeof($oldvalarr); $i++)
+                            {
+                                if($i==0)
+                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            }
+                            $log['act_msg'] .= "  from <b><i>Currencies Table</i></b>.";
+
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = CURRENCIES;
+                            $log['page'] = 'Currencies';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -193,7 +205,7 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data [id=$currencies_id] $cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit] from Currencies Table.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = CURRENCIES;
             $log['page'] = 'Currencies';
@@ -219,7 +231,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data [id=$currencies_id] $cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit] from Currencies Table.";
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
     $log['page'] = 'Currencies';
     $log['connect'] = $connect;
     audit_log($log);
@@ -262,7 +274,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
                             {
                                 $selected = "";
                                 if(isset($dataExisted))
-                                    $selected = $row['dflt_currency_unit'] == $row2['id'] ? " selected" : "";
+                                    $selected = $row['default_currency_unit'] == $row2['id'] ? " selected" : "";
 
                                 echo "<option value=\"".$row2['id'].":".$row2['unit']."\"$selected>".$row2['unit']."</option>";
                             }
