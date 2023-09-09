@@ -273,6 +273,13 @@ transform: translate(-50%, 0) !important;
     margin-bottom: 40px;
 }
 
+#back_btn {
+    background-image: linear-gradient(to right, #c4c4c4 0%, #8b898a 100%);
+    color: #FFFFFF !important;
+    height: 50px;
+    margin-bottom: 40px;
+}
+
 #email-addr_lbl, #password_lbl, #oldpass_lbl, #newpass_lbl, #confirmpass_lbl {
     font-weight: 500;
 }
