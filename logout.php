@@ -24,5 +24,8 @@ if(isset($_SESSION['userid']))
     setcookie(session_name(), '', 100);
     session_unset();
     session_destroy();
+
+    // redirect
+    echo ("<script>location.href = 'index.php';</script>");
 }
 ?>
