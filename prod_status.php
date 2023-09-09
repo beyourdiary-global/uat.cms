@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $prod_status_id = input('id');
 $act = input('act');
+$redirect_page = 'prod_status_table.php';
 
 // to display data to input
 if($prod_status_id)
@@ -17,7 +18,7 @@ if($prod_status_id)
 }
 
 if(!($prod_status_id) && !($act))
-    echo("<script>location.href = 'prod_status_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $err = "Product Status name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'prod_status_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($prod_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($
                 <label class="form-label" id="prod_status_name_lbl" for="prod_status_name">Product Status Name</label>
                 <input class="form-control" type="text" name="prod_status_name" id="prod_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($prod_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product Status","","prod_status_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Product Status","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

@@ -1,11 +1,9 @@
 <?php
 include 'menuHeader.php';
-/* include 'header.php';
-include './include/connection.php';
-include './include/common.php'; */
 
 $user_grp_id = input('id');
 $act = input('act');
+$redirect_page = 'user_group_table.php';
 
 // pin
 $pin_result = getData('*','',PIN,$connect);
@@ -50,7 +48,7 @@ if($user_grp_id)
 }
 
 if(!($user_grp_id) && !($act))
-    echo("<script>location.href = 'user_group_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {  
@@ -195,7 +193,7 @@ if(post('actionBtn'))
             else $err = "User Group Name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'user_group_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -297,7 +295,7 @@ tbody {
                 <label class="form-label" id="user_grp_name_lbl" for="user_grp_name">User Group Name</label>
                 <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted)) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -412,7 +410,7 @@ tbody {
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","User Permission Group","","user_group_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","User Permission Group","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

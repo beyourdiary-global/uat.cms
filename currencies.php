@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $currencies_id = input('id');
 $act = input('act');
+$redirect_page = 'currencies_table.php';
 
 // to display data to input
 if($currencies_id)
@@ -17,7 +18,7 @@ if($currencies_id)
 }
 
 if(!($currencies_id) && !($act))
-    echo("<script>location.href = 'currencies_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 // to list out the currency unit for selection 
 $cur_list_result = getData('*','',CUR_UNIT,$connect);
@@ -171,7 +172,7 @@ if(post('actionBtn'))
             else $err = "Exchange Currency Rate cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'currencies_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -285,7 +286,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
                 <label class="form-label form_lbl" id="exchg_cur_rate_lbl" for="exchg_cur_rate">Exchange Currency Rate</label>
                 <input class="form-control" type="text" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if(isset($dataExisted)) echo $row['exchange_currency_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -337,7 +338,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Currencies","","currencies_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Currencies","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>
