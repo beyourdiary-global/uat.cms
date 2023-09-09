@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($mrtl_id)
 {
-    $query = "SELECT * FROM ".MRTL_STATUS." WHERE id = '".$mrtl_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -73,9 +72,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".MRTL_STATUS." WHERE id = '$mrtl_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".MRTL_STATUS." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",MRTL_STATUS,$connect);
+            $row = $rst->fetch_assoc();
 
             $mrtl_id = $row['id'];
             $mrtl_name = $row['name'];

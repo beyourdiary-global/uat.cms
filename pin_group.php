@@ -4,18 +4,16 @@ include 'menuHeader.php';
 $pin_grp_id = input('id');
 $act = input('act');
 
-$pin_qry = "SELECT * FROM ".PIN;
-$pin_result = mysqli_query($connect, $pin_qry);
+$pin_result = getData('*','',PIN,$connect);
 
 if($pin_grp_id)
 {
-    $query = "SELECT * FROM ".PIN_GRP." WHERE id = '".$pin_grp_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -80,9 +78,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".PIN_GRP." WHERE id = '".$pin_grp_id."'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -162,9 +159,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".PIN_GRP." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",PIN_GRP,$connect);
+            $row = $rst->fetch_assoc();
 
             $pin_grp_id = $row['id'];
             $pin_grp_name = $row['name'];

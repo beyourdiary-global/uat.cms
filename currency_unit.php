@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($cur_unit_id)
 {
-    $query = "SELECT * FROM ".CUR_UNIT." WHERE id = '".$cur_unit_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$cur_unit_id'",CUR_UNIT,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -72,10 +71,9 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        // take old value
-                        $query = "SELECT * FROM ".CUR_UNIT." WHERE id = '$cur_unit_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        // take old 
+                        $rst = getData('*',"id = '$cur_unit_id'",CUR_UNIT,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".CUR_UNIT." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",CUR_UNIT,$connect);
+            $row = $rst->fetch_assoc();
 
             $cur_unit_id = $row['id'];
             $cur_unit = $row['unit'];

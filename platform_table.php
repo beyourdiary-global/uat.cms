@@ -6,8 +6,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 
 $num = 1;  //for numbering
-$query = "SELECT * FROM ".PLTF;
-$result = mysqli_query($connect, $query);
+$result = getData('*','',PLTF,$connect);
 ?>
 
 <!DOCTYPE html>

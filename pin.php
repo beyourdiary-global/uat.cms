@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($pin_id)
 {
-    $query = "SELECT * FROM ".PIN." WHERE id = '".$pin_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$pin_id'",PIN,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -73,9 +72,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".PIN." WHERE id = '".$pin_id."'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$pin_id'",PIN,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -149,9 +147,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".PIN." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",PIN,$connect);
+            $row = $rst->fetch_assoc();
 
             $pin_id = $row['id'];
             $pin_name = $row['name'];

@@ -6,8 +6,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 
 $num = 1;  //for numbering
-$query = "SELECT * FROM ".CURRENCIES." ORDER BY concat(create_date,' ',create_time) ASC";
-$result = mysqli_query($connect, $query);
+$result = getData('*','',CURRENCIES,$connect);
 ?>
 
 <!DOCTYPE html>

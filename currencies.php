@@ -7,13 +7,12 @@ $act = input('act');
 // to display data to input
 if($currencies_id)
 {
-    $query = "SELECT * FROM ".CURRENCIES." WHERE id = '".$currencies_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$currencies_id'",CURRENCIES,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
     }
 }
 
@@ -21,12 +20,11 @@ if(!($currencies_id) && !($act))
     echo("<script>location.href = 'currencies_table.php';</script>");
 
 // to list out the currency unit for selection 
-$cur_list_qry = "SELECT * FROM ".CUR_UNIT;
-$cur_list_result = $connect->query($cur_list_qry);
+$cur_list_result = getData('*','',CUR_UNIT,$connect);
 
 // currency unit
 $cur_unit_arr = array();
-if($cur_list_result->num_rows >= 1)
+if($cur_list_result != false)
 {
     while($row2 = $cur_list_result->fetch_assoc())
     {
@@ -100,9 +98,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".CURRENCIES." WHERE id = '$currencies_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$currencies_id'",CURRENCIES,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -188,9 +185,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".CURRENCIES." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",CURRENCIES,$connect);
+            $row = $rst->fetch_assoc();
 
             $currencies_id = $row['id'];
             $dflt_cur_unit = $row['default_currency_unit'];

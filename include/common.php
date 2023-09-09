@@ -179,6 +179,15 @@ function convertFirstEachWordCap($param){
 	return trim(ucwords($param));
 }
 
+function getData($search_val, $val, $tbl, $conn){
+	$query = $val == '' ? "SELECT $search_val FROM $tbl" : "SELECT $search_val FROM $tbl WHERE $val";
+	$result = $conn->query($query);
+
+	if ($result->num_rows == 0)
+		return false;
+	else return $result;
+}
+
 function audit_log($data=array()){
 	if(count($data) > 0)
 	{

@@ -16,9 +16,8 @@ if(post('updBtn') == 'updpass')
     {
         if($new_password == $confirm_password)
         {
-            $query = "SELECT * FROM ".USR_USER." WHERE id = '".$id."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",USR_USER,$connect);
+            $row = $rst->fetch_assoc();
 
             if(mysqli_num_rows($result) == 1)
             {
@@ -52,9 +51,8 @@ if(post('updBtn') == 'rstpass')
     {
         if($new_password == $confirm_password)
         {
-            $query = "SELECT * FROM ".USR_USER." WHERE email = '".$email."'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"email = '$email'",USR_USER,$connect);
+            $row = $rst->fetch_assoc();
 
             if(mysqli_num_rows($result) == 1)
             {

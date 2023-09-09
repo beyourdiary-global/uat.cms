@@ -8,12 +8,10 @@ $user_grp_id = input('id');
 $act = input('act');
 
 // pin
-$pin_qry = "SELECT * FROM ".PIN;
-$pin_result = mysqli_query($connect, $pin_qry);
+$pin_result = getData('*','',PIN,$connect);
 
 // pin group
-$pin_grp_qry = "SELECT * FROM ".PIN_GRP;
-$pin_grp_result = mysqli_query($connect, $pin_grp_qry);
+$pin_grp_result = getData('*','',PIN_GRP,$connect);
 
 // check value
 $pin_arr = array(); // store exist pin id
@@ -21,13 +19,12 @@ $pin_arr = array(); // store exist pin id
 // to display data to input
 if($user_grp_id)
 {
-    $query = "SELECT * FROM ".USR_GRP." WHERE id = '".$user_grp_id."'";
-    $result = mysqli_query($connect, $query);
+    $rst = getData('*',"id = '$user_grp_id'",USR_GRP,$connect);
 
-    if(mysqli_num_rows($result) == 1)
+    if($rst != false)
     {
         $dataExisted = 1;
-        $row = $result->fetch_assoc();
+        $row = $rst->fetch_assoc();
         $permission_grp = array();
 
         // get pin group and pin
@@ -131,9 +128,8 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $query = "SELECT * FROM ".USR_GRP." WHERE id = '$user_grp_id'";
-                        $result = mysqli_query($connect, $query);
-                        $row = $result->fetch_assoc();
+                        $rst = getData('*',"id = '$user_grp_id'",USR_GRP,$connect);
+                        $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // edit
@@ -213,9 +209,8 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $query = "SELECT * FROM ".USR_GRP." WHERE id = '$id'";
-            $result = mysqli_query($connect, $query);
-            $row = $result->fetch_assoc();
+            $rst = getData('*',"id = '$id'",USR_GRP,$connect);
+            $row = $rst->fetch_assoc();
 
             $user_grp_id = $row['id'];
             $user_grp_name = $row['name'];
