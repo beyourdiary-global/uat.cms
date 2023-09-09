@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Audit Log";
 include 'menuHeader.php';
 
 $num = 1;  //for numbering

@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Employment Type Status";
 include 'menuHeader.php';
 
 $em_type_status_id = input('id');

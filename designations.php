@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Designations";
 include 'menuHeader.php';
 
 $desig_id = input('id');

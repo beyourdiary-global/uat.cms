@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Marital Status";
 include 'menuHeader.php';
 
 $mrtl_id = input('id');

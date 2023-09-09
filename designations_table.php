@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Designations Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

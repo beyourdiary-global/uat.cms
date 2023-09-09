@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "User Group";
 include 'menuHeader.php';
 
 $user_grp_id = input('id');

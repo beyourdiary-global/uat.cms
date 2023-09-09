@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Brand";
 include 'menuHeader.php';
 
 $brand_id = input('id');

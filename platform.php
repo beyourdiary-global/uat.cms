@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Platform";
 include 'menuHeader.php';
 
 $pltf_id = input('id');

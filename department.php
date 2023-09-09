@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Department";
 include 'menuHeader.php';
 
 $dept_id = input('id');

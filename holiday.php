@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Holiday";
 include 'menuHeader.php';
 
 $holiday_id = input('id');

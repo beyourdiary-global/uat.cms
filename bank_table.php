@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Bank Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

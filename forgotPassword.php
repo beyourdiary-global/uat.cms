@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Forgot Password";
 include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";

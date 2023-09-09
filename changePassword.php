@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Change Password";
 include "./include/common.php";
 include "./include/connection.php";
 

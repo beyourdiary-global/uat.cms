@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Product Status Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

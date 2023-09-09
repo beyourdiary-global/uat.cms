@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Currencies";
 include 'menuHeader.php';
 
 $currencies_id = input('id');
