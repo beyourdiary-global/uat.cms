@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Bank";
 include 'menuHeader.php';
 
 $bank_id = input('id');

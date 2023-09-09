@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "User Group Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

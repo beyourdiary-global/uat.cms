@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Warehouse";
 include 'menuHeader.php';
 
 $warehouse_id = input('id');

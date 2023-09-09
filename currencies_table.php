@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Currencies Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

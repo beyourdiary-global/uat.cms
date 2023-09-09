@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Dashboard";
 include 'menuHeader.php';
 ?>
 

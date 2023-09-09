@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Pin";
 include 'menuHeader.php';
 
 $pin_id = input('id');

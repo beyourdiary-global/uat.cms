@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Holiday Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

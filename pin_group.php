@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Pin Group";
 include 'menuHeader.php';
 
 $pin_grp_id = input('id');

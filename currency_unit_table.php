@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Currency Unit Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

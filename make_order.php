@@ -2,6 +2,7 @@
 <html>
 <head>
 <?php 
+$pageTitle = "Make Order";
 include 'menuHeader.php';
 ?>
 <link rel="stylesheet" href="./css/main.css">

@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Currency Unit";
 include 'menuHeader.php';
 
 $cur_unit_id = input('id');

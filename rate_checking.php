@@ -2,6 +2,7 @@
 <html>
 <head>
 <?php 
+$pageTitle = "Rate Checking";
 include 'menuHeader.php';
 
 $country = input('country') ? input('country') : input('from');

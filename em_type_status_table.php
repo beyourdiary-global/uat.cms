@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Employment Type Status Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

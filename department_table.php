@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Department Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

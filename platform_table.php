@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Platform Table";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "Product Status";
 include 'menuHeader.php';
 
 $prod_status_id = input('id');

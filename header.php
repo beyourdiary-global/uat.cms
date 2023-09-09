@@ -7,7 +7,7 @@
 
 <!-- Website -->
 <link rel="icon" type="image" href="./image/logo2.png">
-<title>Login</title>
+<title><?= $pageTitle ?></title>
 
 <!-- Fonts -->
 <link href="./header/font/OpenSans.css" rel="stylesheet">

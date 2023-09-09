@@ -2,6 +2,7 @@
 <html>
 <head>
 <?php 
+$pageTitle = "Login";
 include "header.php";
 include "./include/common.php";
 ?>
