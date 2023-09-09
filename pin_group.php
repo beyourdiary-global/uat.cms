@@ -4,6 +4,7 @@ include 'menuHeader.php';
 $pin_grp_id = input('id');
 $act = input('act');
 
+$redirect_page = 'pin_group_table.php';
 $pin_result = getData('*','',PIN,$connect);
 
 if($pin_grp_id)
@@ -18,7 +19,7 @@ if($pin_grp_id)
 }
 
 if(!($pin_grp_id) && !($act))
-    echo("<script>location.href = 'pin_group_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -145,7 +146,7 @@ if(post('actionBtn'))
             else $pinnameErr = "Pin Group name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'pin_group_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -235,7 +236,7 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
                 <label class="form-label" id="pin_grp_name_lbl" for="pin_grp_name">Pin Group Name</label>
                 <input class="form-control" type="text" name="pin_grp_name" id="pin_grp_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; ?></span>
                 </div>
             </div>
 
@@ -291,7 +292,7 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Pin Group","","pin_group_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Pin Group","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

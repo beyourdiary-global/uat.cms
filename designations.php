@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $desig_id = input('id');
 $act = input('act');
+$redirect_page = 'designations_table.php';
 
 // to display data to input
 if($desig_id)
@@ -17,7 +18,7 @@ if($desig_id)
 }
 
 if(!($desig_id) && !($act))
-    echo("<script>location.href = 'designations_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $err = "Designation name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'designations_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
                 <label class="form-label" id="desig_name_lbl" for="desig_name">Designation Name</label>
                 <input class="form-control" type="text" name="desig_name" id="desig_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Designation","","designations_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Designation","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $mrtl_id = input('id');
 $act = input('act');
+$redirect_page = 'marital_status_table.php';
 
 // to display data to input
 if($mrtl_id)
@@ -17,7 +18,7 @@ if($mrtl_id)
 }
 
 if(!($mrtl_id) && !($act))
-    echo("<script>location.href = 'marital_status_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $err = "Marital Status name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'marital_status_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                 <label class="form-label" id="mrtl_name_lbl" for="mrtl_name">Marital Status Name</label>
                 <input class="form-control" type="text" name="mrtl_name" id="mrtl_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Marital Status","","marital_status_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Marital Status","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $cur_unit_id = input('id');
 $act = input('act');
+$redirect_page = 'currency_unit_table.php';
 
 // to display data to input
 if($cur_unit_id)
@@ -17,7 +18,7 @@ if($cur_unit_id)
 }
 
 if(!($cur_unit_id) && !($act))
-    echo("<script>location.href = 'currency_unit_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $err = "Currency Unit name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'currency_unit_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($cur_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
                 <label class="form-label form_lbl" id="cur_unit_lbl" for="cur_unit">Currency Unit</label>
                 <input class="form-control" type="text" name="cur_unit" id="cur_unit" value="<?php if(isset($dataExisted)) echo $row['unit'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($cur_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Currency Unit","","currency_unit_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Currency Unit","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $em_type_status_id = input('id');
 $act = input('act');
+$redirect_page = 'em_type_status_table.php';
 
 // to display data to input
 if($em_type_status_id)
@@ -17,7 +18,7 @@ if($em_type_status_id)
 }
 
 if(!($em_type_status_id) && !($act))
-    echo("<script>location.href = 'em_type_status_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $err = "Employment Type Status name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'em_type_status_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
                 <label class="form-label" id="em_type_status_name_lbl" for="em_type_status_name">Employment Type Status Name</label>
                 <input class="form-control" type="text" name="em_type_status_name" id="em_type_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Employment Type Status","","em_type_status_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Employment Type Status","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

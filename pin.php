@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $pin_id = input('id');
 $act = input('act');
+$redirect_page = 'pin_table.php';
 
 // to display data to input
 if($pin_id)
@@ -17,7 +18,7 @@ if($pin_id)
 }
 
 if(!($pin_id) && !($act))
-    echo("<script>location.href = 'pin_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -133,7 +134,7 @@ if(post('actionBtn'))
             else $pinnameErr = "Pin name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = 'pin_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -223,7 +224,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
                 <label class="form-label" id="pin_name_lbl" for="pin_name">Pin Name</label>
                 <input class="form-control" type="text" name="pin_name" id="pin_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; ?></span>
                 </div>
             </div>
 
@@ -253,7 +254,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Pin","","pin_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Pin","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>

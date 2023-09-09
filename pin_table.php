@@ -5,7 +5,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 
-$num = 1;  //for numbering
+$redirect_page = 'pin.php';
 $result = getData('*','',PIN,$connect);
 ?>
 
@@ -37,7 +37,7 @@ $( document ).ready(() => {
 
                 <div class="right d-flex">
                     <div class="mt-auto mb-auto">
-                        <a class="btn btn-sm btn-rounded btn-primary" name="addPinBtn" id="addPinBtn" href="pin.php?act=<?php echo $act_1?>"><i class="fa-solid fa-plus"></i> Add Pin </a>
+                        <a class="btn btn-sm btn-rounded btn-primary" name="addPinBtn" id="addPinBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Pin </a>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@ $( document ).ready(() => {
             <table class="table table-striped" id="pin_table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
                         <th scope="col">Action</th>
@@ -54,9 +54,9 @@ $( document ).ready(() => {
                 <tbody>
                 <?php while($row = $result->fetch_assoc()) { ?>
                     <tr>
-                        <th scope="row"><?php echo $num ?></th>
-                        <td scope="row"><?php echo $row['name'] ?></td>
-                        <td scope="row"><?php echo $row['remark'] ?></td>
+                        <th scope="row"><?= $row['id'] ?></th>
+                        <td scope="row"><?= $row['name'] ?></td>
+                        <td scope="row"><?= $row['remark'] ?></td>
                         <td scope="row">
                         <div class="dropdown" style="text-align:center">
                             <a
@@ -71,19 +71,19 @@ $( document ).ready(() => {
                             </a>
                             <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                 <li>
-                                <a class="dropdown-item" href="pin.php?id=<?php echo $row['id']?>">View</a>
+                                <a class="dropdown-item" href="<?= $redirect_page."?id=".$row['id']?>">View</a>
                                 </li>
                                 <li>
-                                <a class="dropdown-item" href="pin.php?id=<?php echo $row['id'].'&act='.$act_2?>">Edit</a>
+                                <a class="dropdown-item" href="<?= $redirect_page."?id=".$row['id'].'&act='.$act_2?>">Edit</a>
                                 </li>
                                 <li>
-                                <a class="dropdown-item" onclick="confirmationDialog('<?php echo $row['id']?>',['<?php echo $row['name'] ?>','<?php echo $row['remark'] ?>'],'Pin','pin.php','pin_table.php','D')">Delete</a>
+                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id']?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'Pin','<?= $redirect_page ?>','pin_table.php','D')">Delete</a>
                                 </li>
                             </ul>
                             </div>
                         </td>
                     </tr>
-                    <?php $num++; } ?>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>

@@ -3,6 +3,7 @@ include 'menuHeader.php';
 
 $holiday_id = input('id');
 $act = input('act');
+$redirect_page = 'holiday_table.php';
 
 // to display data to input
 if($holiday_id)
@@ -17,7 +18,7 @@ if($holiday_id)
 }
 
 if(!($holiday_id) && !($act))
-    echo("<script>location.href = 'holiday_table.php';</script>");
+    echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
 {
@@ -138,7 +139,7 @@ if(post('actionBtn'))
             }
             break;
         case 'back':
-            echo("<script>location.href = 'holiday_table.php';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -228,7 +229,7 @@ if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
                 <label class="form-label" id="holiday_name_lbl" for="holiday_name">Holiday Name</label>
                 <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
@@ -236,7 +237,7 @@ if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
                 <label class="form-label" id="holiday_date_lbl" for="holiday_date">Holiday Date</label>
                 <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if(isset($dataExisted)) echo $row['date'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; else echo ''; ?></span>
+                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
                 </div>
             </div>
 
@@ -261,7 +262,7 @@ if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Holiday","","holiday_table.php","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Holiday","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>
