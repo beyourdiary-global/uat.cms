@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addPltf': case 'updPltf':
-            $pltf_name = post('pltf_name');
-            $pltf_remark = post('pltf_remark');
+            $pltf_name = trim(post('pltf_name'));
+            $pltf_remark = trim(post('pltf_remark'));
 
             if($pltf_name)
             {

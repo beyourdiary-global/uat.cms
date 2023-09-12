@@ -57,39 +57,39 @@ if(post('actionBtn'))
         case 'makeOrder':
             $dataMO = array();
             $dataMO['weight'] = $weight;
-            $dataMO['content'] = post('parcel_content');
-            $dataMO['value'] = post('parcel_value');
+            $dataMO['content'] = trim(post('parcel_content'));
+            $dataMO['value'] = trim(post('parcel_value'));
             $dataMO['sid'] = $sid;
             $dataMO['pick_point'] = post('sender_dropoffpoint') ? post('sender_dropoffpoint') : '';
-            $dataMO['pick_name'] = post('sender_name');
+            $dataMO['pick_name'] = trim(post('sender_name'));
             $dataMO['pick_company'] = post('sender_company');
-            $dataMO['pick_contact'] = post('sender_tel_code') . post('sender_tel');
-            $dataMO['pick_mobile'] = post('sender_alt_tel_code') . post('sender_alt_tel');
-            $dataMO['pick_addr1'] = post('sender_addr_1');
-            $dataMO['pick_addr2'] = post('sender_addr_2');
-            $dataMO['pick_city'] = post('sender_city');
+            $dataMO['pick_contact'] = post('sender_tel_code') . trim(post('sender_tel'));
+            $dataMO['pick_mobile'] = post('sender_alt_tel_code') . trim(post('sender_alt_tel'));
+            $dataMO['pick_addr1'] = trim(post('sender_addr_1'));
+            $dataMO['pick_addr2'] = trim(post('sender_addr_2'));
+            $dataMO['pick_city'] = trim(post('sender_city'));
             $dataMO['pick_state'] = $area_from;
             $dataMO['pick_code'] = post('sender_postcode');
             $dataMO['pick_country'] = $from;
             $dataMO['send_point'] = '';
-            $dataMO['send_name'] = post('receiver_name');
+            $dataMO['send_name'] = trim(post('receiver_name'));
             $dataMO['send_company'] = post('receiver_company');
-            $dataMO['send_contact'] = post('receiver_tel_code') . post('receiver_tel');
-            $dataMO['send_mobile'] = post('receiver_alt_tel_code') . post('receiver_alt_tel');
-            $dataMO['send_addr1'] = post('receiver_addr_1');
-            $dataMO['send_addr2'] = post('receiver_addr_2');
-            $dataMO['send_city'] = post('receiver_city');
+            $dataMO['send_contact'] = post('receiver_tel_code') . trim(post('receiver_tel'));
+            $dataMO['send_mobile'] = post('receiver_alt_tel_code') . trim(post('receiver_alt_tel'));
+            $dataMO['send_addr1'] = trim(post('receiver_addr_1'));
+            $dataMO['send_addr2'] = trim(post('receiver_addr_2'));
+            $dataMO['send_city'] = trim(post('receiver_city'));
             $dataMO['send_state'] = $area_to;
             $dataMO['send_code'] = post('receiver_postcode');
             $dataMO['send_country'] = $to;
             $dataMO['collect_date'] = $pickup_date;
-            $dataMO['send_email'] = post('receiver_email');
-            $dataMO['reference'] = post('parcel_reference');
+            $dataMO['send_email'] = trim(post('receiver_email'));
+            $dataMO['reference'] = trim(post('parcel_reference'));
 
             // get unit
             $currency_unit = getCurrencyUnit($from);
-            $cur_unit_id_qry = "SELECT * FROM ".CUR_UNIT." WHERE unit='$currency_unit'";
-            $currency_unit_id = $connect->query($cur_unit_id_qry)->fetch_assoc();
+            $currency_unit_id = getData('*',"unit='$currency_unit'",CUR_UNIT,$connect);
+            $currency_unit_id = $currency_unit_id->fetch_assoc();
             $currency_unit_id = $currency_unit_id['id'];
 
             $rstMakeOrder = make_order($dataMO);
