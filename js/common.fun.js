@@ -594,3 +594,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
     return false;
 };
+
+/* fix issue of dropdown menu display inside table responsive */
+function dropdownMenuDispFix() {
+	const dropdowns = document.querySelectorAll('.dropdown-toggle')
+	const dropdown = [...dropdowns].map((dropdownToggleEl) => new bootstrap.Dropdown(dropdownToggleEl, {
+    popperConfig(defaultBsPopperConfig) {
+        return { ...defaultBsPopperConfig, strategy: 'fixed' };
+    }
+}));
+}

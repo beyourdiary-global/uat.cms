@@ -320,6 +320,16 @@ transform: translate(-50%, 0) !important;
     color: #000000 !important;
 }
 
+#action_menu_btn {
+    border: 0px;
+    background-color: transparent;
+    width: 60px;
+}
+
+#action_col {
+    width: 60px;    
+}
+
 #actionBtn {
     background-color: #FF9B44;
     box-shadow: 0 0 !important;
@@ -327,6 +337,13 @@ transform: translate(-50%, 0) !important;
     font-size: 18px;
     text-transform: none !important;
     white-space: nowrap;
+}
+
+/* to fixed dropdown inside responsive table issue */
+.table-responsive .dropdown,
+.table-responsive .btn-group,
+.table-responsive .btn-group-vertical {
+    position: static !important;
 }
 
 #backBtn {

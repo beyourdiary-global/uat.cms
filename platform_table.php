@@ -48,7 +48,7 @@ $( document ).ready(() => {
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,7 +67,7 @@ $( document ).ready(() => {
                                 data-bs-toggle="dropdown"
                                 aria-expanded="false"
                             >
-                                <i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i>
+                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                 <li>
@@ -91,4 +91,7 @@ $( document ).ready(() => {
 </div>
 
 </body>
+<script>
+dropdownMenuDispFix();
+</script>
 </html>
