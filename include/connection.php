@@ -1,8 +1,12 @@
 <?php
 include 'init.php';
 
-if(!(isset($_SESSION['userid'])))
-    echo("<script>location.href = 'index.php';</script>");
+$path =  $_SERVER['PHP_SELF'];
+$path = explode("/", $path);
+
+if(!($path[sizeof($path)-1] == 'forgotPassword.php'))
+    if(!(isset($_SESSION['userid'])))
+        echo("<script>location.href = 'index.php';</script>");
 /* 
 include ROOT.'/include/access.php';
 
