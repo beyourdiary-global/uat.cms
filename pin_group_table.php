@@ -64,7 +64,7 @@ $( document ).ready(() => {
                                 $pinname_arr = array();
                                 foreach($pin_arr as $val)
                                 {
-                                    $pinname_result = getData('name',"id='$val'",PIN,$conenct);
+                                    $pinname_result = getData('name',"id='$val'",PIN,$connect);
                                     $pinname_row = $pinname_result->fetch_assoc();
                                     array_push($pinname_arr, $pinname_row['name']);
                                 }

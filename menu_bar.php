@@ -153,21 +153,46 @@ $menuList = array(
         </div>
         <!-- Container wrapper -->
     </nav>
+    <div id="filter_screen" class="filter_screen" style="display:none;">
+    </div>
 </aside>
 <!-- V.Navbar -->
 
 <script>
-(function ($) {
-    $("#sidebarCollapse").on("click", function () {
-        $("#sidebar").toggleClass("active");
+var sidebar = $("#sidebar");
+var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
+var opacityBackground = $('div#filter_screen');
 
-    if($("#sidebar").hasClass("active"))
-    {
-        $defaultColor = $("body").css('background-color');
-        document.body.style.backgroundColor = "rgba(0,0,0,0.2)";
+(function ($) {
+sidebar_toggleBtn.on("click", function () {
+    if(sidebar.hasClass("active")) {
+        sidebar.toggleClass("close",true);
+        opacityBackground.hide();
+
+        // timeout value based on .close css transition (0.3s)
+        setTimeout(() => {
+            sidebar.removeClass('active');
+            sidebar.removeClass('close');
+        }, 500);
     }   
-    else document.body.style.backgroundColor = $defaultColor;
-    });
+    else {
+        sidebar.toggleClass("active",true);
+        sidebar.toggleClass("close",false);
+        opacityBackground.show();
+    }
+});
+
+opacityBackground.on('click', function(e) {
+    var sidebar2 = $("#sidebar, #sidebarCollapse");
+    if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
+        sidebar.toggleClass('close', true);
+        opacityBackground.hide();
+        setTimeout(() => {
+            sidebar.removeClass('active');
+            sidebar.removeClass('close');
+        }, 300);
+    }
+});
 })(jQuery);
 </script>
 

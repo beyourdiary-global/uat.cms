@@ -201,6 +201,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 <head>
 <link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/pin.css">
+<link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body>
