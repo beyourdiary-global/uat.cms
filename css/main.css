@@ -24,6 +24,11 @@ h7 {
     .container, .container-fluid {
           width: 90%;   
     }
+
+}
+
+table {
+    width:100% !important;
 }
 
 input::-webkit-outer-spin-button,

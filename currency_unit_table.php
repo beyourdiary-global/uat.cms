@@ -5,6 +5,7 @@ include 'menuHeader.php';
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
+$num = 1;   // numbering
 
 $redirect_page = 'currency_unit.php';
 $result = getData('*','',CUR_UNIT,$connect);
@@ -46,6 +47,7 @@ $( document ).ready(() => {
                 <table class="table table-striped" id="currency_unit_table">
                     <thead>
                         <tr>
+                            <th scope="col" style="display:none">ID</th>
                             <th scope="col">ID</th>
                             <th scope="col">Unit</th>
                             <th scope="col">Remark</th>
@@ -55,7 +57,8 @@ $( document ).ready(() => {
                     <tbody>
                     <?php while($row = $result->fetch_assoc()) { ?>
                         <tr>
-                            <th scope="row"><?= $row['id'] ?></th>
+                            <th scope="row" style="display:none"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num; $num++ ?></th>
                             <td scope="row"><?= $row['unit'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
                             <td scope="row">
