@@ -78,11 +78,6 @@ if(post('actionBtn'))
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
-                        // edit
-                        $query = "UPDATE ".BRAND." SET name ='$brand_name', remark ='$brand_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$brand_id."'";
-                        mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
                         // check value
                         if($row['name'] != $brand_name)
                         {
@@ -100,8 +95,13 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
+                        $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
                         {
+                             // edit
+                            $query = "UPDATE ".BRAND." SET name ='$brand_name', remark ='$brand_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$brand_id'";
+                            mysqli_query($connect, $query);
+
                             // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
@@ -127,6 +127,7 @@ if(post('actionBtn'))
                             $log['connect'] = $connect;
                             audit_log($log);
                         }
+                        else $act = 'NC';
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }

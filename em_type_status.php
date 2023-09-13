@@ -78,11 +78,6 @@ if(post('actionBtn'))
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
-                        // edit
-                        $query = "UPDATE ".EM_TYPE_STATUS." SET name ='$em_type_status_name', remark ='$em_type_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$em_type_status_id."'";
-                        mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
                         // check value
                         if($row['name'] != $em_type_status_name)
                         {
@@ -100,9 +95,14 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
-                        // audit log
+                        $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
                         {
+                            // edit
+                            $query = "UPDATE ".EM_TYPE_STATUS." SET name ='$em_type_status_name', remark ='$em_type_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$em_type_status_id'";
+                            mysqli_query($connect, $query);
+                            
+                            // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
@@ -126,7 +126,8 @@ if(post('actionBtn'))
                             $log['changes'] = $chgval;
                             $log['connect'] = $connect;
                             audit_log($log);
-                    }
+                        }
+                        else $act = 'NC';
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
