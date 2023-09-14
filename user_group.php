@@ -58,8 +58,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addGrp': case 'updGrp':
-            $user_grp_name = post('user_grp_name');
-            $user_grp_remark = post('user_grp_remark');
+            $user_grp_name = trim(post('user_grp_name'));
+            $user_grp_remark = trim(post('user_grp_remark'));
 
             if($user_grp_name)
             {

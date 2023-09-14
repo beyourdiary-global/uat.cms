@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addProdStatus': case 'updProdStatus':
-            $prod_status_name = post('prod_status_name');
-            $prod_status_remark = post('prod_status_remark');
+            $prod_status_name = trim(post('prod_status_name'));
+            $prod_status_remark = trim(post('prod_status_remark'));
 
             if($prod_status_name)
             {

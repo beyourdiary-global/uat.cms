@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addDept': case 'updDept':
-            $dept_name = post('dept_name');
-            $dept_remark = post('dept_remark');
+            $dept_name = trim(post('dept_name'));
+            $dept_remark = trim(post('dept_remark'));
 
             if($dept_name)
             {
