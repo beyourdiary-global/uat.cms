@@ -131,11 +131,6 @@ if(post('actionBtn'))
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
-                        // edit
-                        $query = "UPDATE ".USR_GRP." SET name = '$user_grp_name', pins = '$permission_grp', remark = '$user_grp_remark' WHERE id = '$user_grp_id'";
-                        mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
                         // check value
                         if($row['name'] != $user_grp_name)
                         {
@@ -159,9 +154,14 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
-                        // audit log
+                        $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
                         {
+                            // edit
+                            $query = "UPDATE ".USR_GRP." SET name = '$user_grp_name', pins = '$permission_grp', remark = '$user_grp_remark' WHERE id = '$user_grp_id'";
+                            mysqli_query($connect, $query);
+                            
+                            // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
@@ -186,6 +186,7 @@ if(post('actionBtn'))
                             $log['connect'] = $connect;
                             audit_log($log);
                         }
+                        else $act = 'NC';
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }

@@ -104,11 +104,6 @@ if(post('actionBtn'))
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
-                        // edit
-                        $query = "UPDATE ".CURRENCIES." SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '".$currencies_id."'";
-                        mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
                         // check value
                         if($row['default_currency_unit'] != $dflt_cur_unit[0])
                         {
@@ -138,8 +133,13 @@ if(post('actionBtn'))
                         $oldval = implode(",",$oldvalarr);
                         $chgval = implode(",",$chgvalarr);
 
+                        $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
                         {
+                            // edit
+                            $query = "UPDATE ".CURRENCIES." SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$currencies_id'";
+                            mysqli_query($connect, $query);
+
                             // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
@@ -165,6 +165,7 @@ if(post('actionBtn'))
                             $log['connect'] = $connect;
                             audit_log($log);
                         }
+                        else $act = 'NC';
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }

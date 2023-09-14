@@ -406,17 +406,19 @@ function createSortingTable(tableid) {
 async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     switch(act)
     {
-        case 'I':   var title = "Insert " + pagename;
+        case 'I':   var title = "Successful Insert " + pagename;
                     var title2 = "Are you sure want to insert?";
                     var btn = "Insert";
                     break;
-        case 'E':   var title = "Edit " + pagename;
+        case 'E':   var title = "Successful Edit " + pagename;
                     var title2 = "Are you sure want to edit?";
                     var btn = "Edit";
                     break;
-        case 'D':   var title = "Delete " + pagename;
+        case 'D':   var title = "Successful Delete " + pagename;
                     var title2 = "Are you sure want to delete?";
                     var btn = "Delete";
+                    break;
+        case 'NC':	var title = "No changes were made.";
                     break;
         default:    var title = "Error";
     }
@@ -456,7 +458,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         <div class="modal-dialog modal-dialog-centered " style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
         <div class="modal-content">             
             <div class="modal-body fs-6 mt-3">
-            <p style="text-align:center; font-weight:bold; font-size:25px;">Successful ${title}</p>
+            <p style="text-align:center; font-weight:bold; font-size:25px;">${title}</p>
         </div>
         <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
             <button id="contBtn" type="button" class="btn" 
@@ -539,7 +541,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 		} else console.log("Operation Cancelled.");
 	}
 
-	if(act == 'I' || act == 'E')
+	if(act == 'I' || act == 'E' || act == 'NC')
 	{
 		const myModal2 = new bootstrap.Modal(modelResult, {
 			keyboard: false,
@@ -575,7 +577,6 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 			}
 		})
 	}
-    
 }
 
 /* Rate Checking */

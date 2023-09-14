@@ -5,6 +5,7 @@ include 'menuHeader.php';
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
+$num = 1;   // numbering
 
 $redirect_page = 'currencies.php';
 $result = getData('*','',CURRENCIES,$connect);
@@ -46,6 +47,7 @@ $( document ).ready(() => {
                 <table class="table table-striped" id="currencies_table">
                     <thead>
                         <tr>
+                            <th scope="col" style="display:none">ID</th>
                             <th scope="col">ID</th>
                             <th scope="col">Default Currency Unit</th>
                             <th scope="col">Exchange Currency Rate</th>
@@ -63,7 +65,8 @@ $( document ).ready(() => {
                         $row3 = $cur_unit_name->fetch_assoc();
                     ?>
                         <tr>
-                            <th scope="row"><?= $row['id'] ?></th>
+                            <th scope="row" style="display:none"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num; $num++ ?></th>
                             <td scope="row"><?= $row2['unit'] ?></td>
                             <td scope="row"><?= $row['exchange_currency_rate'] ?></td>
                             <td scope="row"><?= $row3['unit'] ?></td>
