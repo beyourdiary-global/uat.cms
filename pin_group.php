@@ -220,7 +220,7 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 <div class="container d-flex justify-content-center">
     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
         <form id="pinForm" method="post" action="">
-            <div class="form-group mb-5">
+            <div class="form-group my-5">
                 <h2>
                     <?php
                     switch($act)

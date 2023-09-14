@@ -1,11 +1,3 @@
-.container {
-    min-width: 768px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 #addPinBtn {
     background-color: #FF9B44;
     box-shadow: 0 0 !important;
