@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addHoliday': case 'updHoliday':
-            $holiday_name = postEmptyFilter('holiday_name');
-            $holiday_date = postEmptyFilter('holiday_date');
+            $holiday_name = postSpaceFilter('holiday_name');
+            $holiday_date = postSpaceFilter('holiday_date');
 
             if(!($holiday_name))
                 $err = "Holiday name cannot be empty.";

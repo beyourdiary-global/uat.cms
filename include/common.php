@@ -6,7 +6,7 @@ function post($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
 
-function postEmptyFilter($key){
+function postSpaceFilter($key){
 	return trim(isset($_POST[$key]) ? $_POST[$key] : '');
 }
 

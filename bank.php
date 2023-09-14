@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addBank': case 'updBank':
-            $bank_name = postEmptyFilter('bank_name');
-            $bank_remark = postEmptyFilter('bank_remark');
+            $bank_name = postSpaceFilter('bank_name');
+            $bank_remark = postSpaceFilter('bank_remark');
 
             if($bank_name)
             {

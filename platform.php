@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addPltf': case 'updPltf':
-            $pltf_name = postEmptyFilter('pltf_name');
-            $pltf_remark = postEmptyFilter('pltf_remark');
+            $pltf_name = postSpaceFilter('pltf_name');
+            $pltf_remark = postSpaceFilter('pltf_remark');
 
             if($pltf_name)
             {

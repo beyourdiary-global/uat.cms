@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addWarehouse': case 'updWarehouse':
-            $warehouse_name = postEmptyFilter('warehouse_name');
-            $warehouse_remark = postEmptyFilter('warehouse_remark');
+            $warehouse_name = postSpaceFilter('warehouse_name');
+            $warehouse_remark = postSpaceFilter('warehouse_remark');
 
             if($warehouse_name)
             {

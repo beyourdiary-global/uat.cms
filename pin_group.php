@@ -29,8 +29,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addPinGrp': case 'updPinGrp':
-            $pin_grp_name = postEmptyFilter('pin_grp_name');
-            $pin_grp_remark = postEmptyFilter('pin_grp_remark');
+            $pin_grp_name = postSpaceFilter('pin_grp_name');
+            $pin_grp_remark = postSpaceFilter('pin_grp_remark');
             $pin_grp_pin_arr = post('pin_grp_pin');
             $pin_grp_pin = implode(",", $pin_grp_pin_arr);
 

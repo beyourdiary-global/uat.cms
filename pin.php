@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addPin': case 'updPin':
-            $pin_name = postEmptyFilter('pin_name');
-            $pin_remark = postEmptyFilter('pin_remark');
+            $pin_name = postSpaceFilter('pin_name');
+            $pin_remark = postSpaceFilter('pin_remark');
 
             if($pin_name)
             {

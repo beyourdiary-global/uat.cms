@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addBrand': case 'updBrand':
-            $brand_name = postEmptyFilter('brand_name');
-            $brand_remark = postEmptyFilter('brand_remark');
+            $brand_name = postSpaceFilter('brand_name');
+            $brand_remark = postSpaceFilter('brand_remark');
 
             if($brand_name)
             {

@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addDept': case 'updDept':
-            $dept_name = postEmptyFilter('dept_name');
-            $dept_remark = postEmptyFilter('dept_remark');
+            $dept_name = postSpaceFilter('dept_name');
+            $dept_remark = postSpaceFilter('dept_remark');
 
             if($dept_name)
             {
