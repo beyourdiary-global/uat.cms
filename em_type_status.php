@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addEmTypeStatus': case 'updEmTypeStatus':
-            $em_type_status_name = trim(post('em_type_status_name'));
-            $em_type_status_remark = trim(post('em_type_status_remark'));
+            $em_type_status_name = postEmptyFilter('em_type_status_name');
+            $em_type_status_remark = postEmptyFilter('em_type_status_remark');
 
             if($em_type_status_name)
             {

@@ -49,7 +49,7 @@ if(post('actionBtn'))
             $exchg_cur_rate = post('exchg_cur_rate');
             $exchg_cur_unit = post('exchg_cur_unit');
             $exchg_cur_unit = explode(":", $exchg_cur_unit);
-            $currencies_remark = trim(post('currencies_remark'));
+            $currencies_remark = postEmptyFilter('currencies_remark');
 
             if($exchg_cur_rate)
             {

@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addCurUnit': case 'updCurUnit':
-            $cur_unit = trim(post('cur_unit'));
-            $cur_unit_remark = trim(post('cur_unit_remark'));
+            $cur_unit = postEmptyFilter('cur_unit');
+            $cur_unit_remark = postEmptyFilter('cur_unit_remark');
 
             if($cur_unit)
             {

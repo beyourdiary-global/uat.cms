@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addMrtlStatus': case 'updMrtlStatus':
-            $mrtl_name = trim(post('mrtl_name'));
-            $mrtl_remark = trim(post('mrtl_remark'));
+            $mrtl_name = postEmptyFilter('mrtl_name');
+            $mrtl_remark = postEmptyFilter('mrtl_remark');
 
             if($mrtl_name)
             {

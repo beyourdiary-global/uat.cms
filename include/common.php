@@ -6,6 +6,10 @@ function post($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
 
+function postEmptyFilter($key){
+	return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+}
+
 function input($key)
 {
     $results = '';
