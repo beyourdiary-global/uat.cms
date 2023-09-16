@@ -18,6 +18,7 @@ if($pin_id)
     }
 }
 
+
 if(!($pin_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
 
