@@ -5,11 +5,12 @@ include 'menuHeader.php';
 $cur_unit_id = input('id');
 $act = input('act');
 $redirect_page = 'currency_unit_table.php';
+$tblname = CUR_UNIT;
 
 // to display data to input
 if($cur_unit_id)
 {
-    $rst = getData('*',"id = '$cur_unit_id'",CUR_UNIT,$connect);
+    $rst = getData('*',"id = '$cur_unit_id'",$tblname,$connect);
 
     if($rst != false)
     {
@@ -28,8 +29,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addCurUnit': case 'updCurUnit':
-            $cur_unit = trim(post('cur_unit'));
-            $cur_unit_remark = trim(post('cur_unit_remark'));
+            $cur_unit = postSpaceFilter('cur_unit');
+            $cur_unit_remark = postSpaceFilter('cur_unit_remark');
 
             if($cur_unit)
             {
@@ -37,8 +38,9 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".CUR_UNIT."(unit,remark,create_by,create_date,create_time) VALUES ('$cur_unit','$cur_unit_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$cur_unit','$cur_unit_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
+                        generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -60,7 +62,7 @@ if(post('actionBtn'))
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
                         $log['act_msg'] = $_SESSION['user_name'] . " added <b>$cur_unit</b> into <b><i>Currency Unit Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = CUR_UNIT;
+                        $log['query_table'] = $tblname;
                         $log['page'] = 'Currency Unit';
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
@@ -74,7 +76,7 @@ if(post('actionBtn'))
                     try
                     {
                         // take old 
-                        $rst = getData('*',"id = '$cur_unit_id'",CUR_UNIT,$connect);
+                        $rst = getData('*',"id = '$cur_unit_id'",$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -99,8 +101,9 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".CUR_UNIT." SET unit ='$cur_unit', remark ='$cur_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$cur_unit_id'";
+                            $query = "UPDATE ".$tblname." SET unit ='$cur_unit', remark ='$cur_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$cur_unit_id'";
                             mysqli_query($connect, $query);
+                            generateDBData($tblname, $connect);
 
                             // audit log
                             $log = array();
@@ -120,7 +123,7 @@ if(post('actionBtn'))
                             $log['act_msg'] .= "  from <b><i>Currency Unit Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = CUR_UNIT;
+                            $log['query_table'] = $tblname;
                             $log['page'] = 'Currency Unit';
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
@@ -150,14 +153,15 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",CUR_UNIT,$connect);
+            $rst = getData('*',"id = '$id'",$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $cur_unit_id = $row['id'];
             $cur_unit = $row['unit'];
 
-            $query = "DELETE FROM ".CUR_UNIT." WHERE id = ".$id;
+            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
             mysqli_query($connect, $query);
+            generateDBData($tblname, $connect);
 
             // audit log
             $log = array();
@@ -167,7 +171,7 @@ if(post('act') == 'D')
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
             $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$cur_unit</b> from <b><i>Currency Unit Table</i></b>.";
             $log['query_rec'] = $query;
-            $log['query_table'] = CUR_UNIT;
+            $log['query_table'] = $tblname;
             $log['page'] = 'Currency Unit';
             $log['connect'] = $connect;
             audit_log($log);

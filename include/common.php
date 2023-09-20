@@ -6,6 +6,10 @@ function post($key){
 	return isset($_POST[$key]) ? $_POST[$key] : '';
 }
 
+function postSpaceFilter($key){
+	return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+}
+
 function input($key)
 {
     $results = '';
@@ -186,6 +190,22 @@ function getData($search_val, $val, $tbl, $conn){
 	if (empty($result) && $result->num_rows == 0)
 		return false;
 	else return $result;
+}
+
+function generateDBData($tblname, $conn) {
+	$rst = getData('*','',$tblname,$conn);
+	$data = array();
+	while($row = $rst->fetch_assoc())
+	{
+		$data[] = $row;
+	}
+	$encode_rst = json_encode($data);
+
+	$path = "./data/" . "$tblname.json";
+
+	$f = fopen($path, 'w');
+	fwrite($f, $encode_rst);
+	fclose($f);
 }
 
 function audit_log($data=array()){

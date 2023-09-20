@@ -28,8 +28,8 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addDesig': case 'updDesig':
-            $desig_name = trim(post('desig_name'));
-            $desig_remark = trim(post('desig_remark'));
+            $desig_name = postSpaceFilter('desig_name');
+            $desig_remark = postSpaceFilter('desig_remark');
 
             if($desig_name)
             {

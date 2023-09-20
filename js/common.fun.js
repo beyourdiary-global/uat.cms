@@ -400,7 +400,27 @@ function createSortingTable(tableid) {
 		paging: $('#'+tableid+' tbody tr').length>10,
 		searching: $('#'+tableid+' tbody tr').length>10,
 		info: false,
+		order: [[1, 'asc']],	// 0 = db id column; 1 = numbering column
 	})
+}
+
+function setWidth(id, id2) {
+    var one = document.getElementById(id);
+    var two = document.getElementById(id2);
+    style = window.getComputedStyle(one);
+    wdt = style.getPropertyValue('width');
+    two.style.width = wdt;
+}
+
+function floatInput(element) {
+	$(element).on('input', function() {
+		let actualValue = $(this).val().replace(".","");
+		console.log(actualValue)
+		$(this).val((parseInt(actualValue)/100).toFixed(2));
+	
+		if($(this).val() == '0' || $(this).val() == '0.00')
+			$(this).val('');
+	});
 }
 
 async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
@@ -604,4 +624,80 @@ function dropdownMenuDispFix() {
         return { ...defaultBsPopperConfig, strategy: 'fixed' };
     }
 }));
+}
+
+function searchInput(param) {
+	var elementID = param['elementID'];
+	var hiddenElementID = param['hiddenElementID']
+	var search = param['search'];
+	var type = param['searchType'];
+	var dbTable = param['dbTable'];
+
+	if(search != ""){
+		$.ajax({
+			url: 'getSearch.php',
+			type: 'post',
+			data: {
+				searchText: search,
+				searchType: type,
+				tblname: dbTable,
+			},
+			dataType: 'json',
+			success: (result) => {
+				// create div
+				if(!(($('#searchResult_'+elementID).length && $('#clear_'+elementID).length) > 0))
+					$('#'+elementID).after('<ul class="searchResult" id="searchResult_'+elementID+'"></ul>','<div id="clear_'+elementID+'" class="clear"></div>')
+
+				// set width same as input
+				setWidth(elementID, 'searchResult_'+elementID);
+
+				// loop result
+				var len = result.length;
+				$("#searchResult_"+elementID).empty();
+				for(var i=0; i<len; i++){
+					if(result[i]['desc'] != undefined)
+					{
+						var desc = result[i]['desc'];
+						var value = result[i]['val'];
+						$("#searchResult_"+elementID).append("<li value='"+value+"'>"+desc+"</li>");
+					} 
+					else
+					{
+						var id = result[i]['id'];
+						var name = result[i][type];
+						$("#searchResult_"+elementID).append("<li value='"+id+"'>"+name+"</li>");
+					}
+						
+				}
+
+				// binding click event to li
+				$("#searchResult_"+elementID+" li").bind("click",function(){
+					setText(this,'#'+elementID,'#'+hiddenElementID);
+					$("#searchResult_"+elementID).empty();
+					$("#searchResult_"+elementID).remove();
+					$("#clear_"+elementID).remove();
+				}); 
+			}
+		});
+	} else {
+		$("#searchResult_"+elementID).empty();
+		$("#searchResult_"+elementID).remove();
+		$("#clear_"+elementID).remove();
+	}
+}
+
+function setText(element,val,val2){
+	var text = $(element).text();
+	var value = $(element).attr("value");
+	
+	if(value != 'emptyValue')
+	{
+		$(val).val(text);
+		$(val2).val(value);
+	}
+	else
+	{
+		$(val).val('');
+		$(val2).val('');
+	}
 }

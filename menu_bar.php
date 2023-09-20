@@ -38,9 +38,11 @@ $menuList = array(
             array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
             array('Product Status', 'mdi mdi-package-variant-closed', 'prod_status_table.php', '15'),
             array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
-            array('Audit Log', 'mdi mdi-text-box-search-outline', 'audit_log.php', '18')
+            array('Audit Log', 'mdi mdi-text-box-search-outline', 'audit_log.php', '18'),
+            array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
+            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20')
         ),
-        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18')
+        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18','19','20')
     ),
     array(
         'Employees',

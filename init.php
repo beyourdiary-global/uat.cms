@@ -81,6 +81,8 @@ define('CURRENCIES', 'currencies');
 define('CUST', 'customer');
 define('COURIER', 'courier');
 define('SHIPREQ', 'shipping_request');
+define('WGT_UNIT', 'weight_unit');
+define('PROD', 'product');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 

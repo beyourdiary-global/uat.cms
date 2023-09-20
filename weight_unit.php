@@ -1,15 +1,16 @@
 <?php
-$pageTitle = "Pin";
+$pageTitle = "Weight Unit";
 include 'menuHeader.php';
 
-$pin_id = input('id');
+$wgt_unit_id = input('id');
 $act = input('act');
-$redirect_page = 'pin_table.php';
+$redirect_page = 'weight_unit_table.php';
+$tblname = WGT_UNIT;
 
 // to display data to input
-if($pin_id)
+if($wgt_unit_id)
 {
-    $rst = getData('*',"id = '$pin_id'",PIN,$connect);
+    $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
 
     if($rst != false)
     {
@@ -18,7 +19,7 @@ if($pin_id)
     }
 }
 
-if(!($pin_id) && !($act))
+if(!($wgt_unit_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
@@ -27,28 +28,29 @@ if(post('actionBtn'))
 
     switch($action)
     {
-        case 'addPin': case 'updPin':
-            $pin_name = postSpaceFilter('pin_name');
-            $pin_remark = postSpaceFilter('pin_remark');
+        case 'addWgtUnit': case 'updWgtUnit':
+            $wgt_unit = trim(post('wgt_unit'));
+            $wgt_unit_remark = trim(post('wgt_unit_remark'));
 
-            if($pin_name)
+            if($wgt_unit)
             {
-                if($action == 'addPin')
+                if($action == 'addWgtUnit')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".PIN." (name,remark,create_by,create_date,create_time) VALUES ('$pin_name','$pin_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$wgt_unit','$wgt_unit_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
+                        generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
                         // check value
-                        if($pin_name != '')
-                            array_push($newvalarr, $pin_name);
+                        if($wgt_unit != '')
+                            array_push($newvalarr, $wgt_unit);
 
-                        if($pin_remark != '')
-                            array_push($newvalarr, $pin_remark);
+                        if($wgt_unit_remark != '')
+                            array_push($newvalarr, $wgt_unit_remark);
 
                         $newval = implode(",",$newvalarr);
 
@@ -58,13 +60,13 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$pin_name</b> into <b><i>Pin Table</i></b>.";
+                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$wgt_unit</b> into <b><i>Weight Unit Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = PIN;
-                        $log['page'] = 'Pin';
+                        $log['query_table'] = $tblname;
+                        $log['page'] = 'Weight Unit';
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
-                        echo audit_log($log);
+                        audit_log($log);
                     } catch(Exception $e) {
                         echo 'Message: ' . $e->getMessage();
                     }
@@ -74,21 +76,21 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$pin_id'",PIN,$connect);
+                        $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // check value
-                        if($row['name'] != $pin_name)
+                        if($row['unit'] != $wgt_unit)
                         {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $pin_name);
+                            array_push($oldvalarr, $row['unit']);
+                            array_push($chgvalarr, $wgt_unit);
                         }
 
-                        if($row['remark'] != $pin_remark)
+                        if($row['remark'] != $wgt_unit_remark)
                         {
                             array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $pin_remark);
+                            array_push($chgvalarr, $wgt_unit_remark);
                         }
 
                         // convert into string
@@ -97,11 +99,12 @@ if(post('actionBtn'))
 
                         $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
-                        {    
+                        {
                             // edit
-                            $query = "UPDATE ".PIN." SET name ='".$pin_name."', remark ='".$pin_remark."', update_date = 'curdate()', update_time = 'curtime()', update_by ='".$_SESSION['userid']."' WHERE id = '$pin_id'";
+                            $query = "UPDATE ".$tblname." SET unit ='$wgt_unit', remark ='$wgt_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$wgt_unit_id";
                             mysqli_query($connect, $query);
-                            
+                            generateDBData($tblname, $connect);
+
                             // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
@@ -117,11 +120,11 @@ if(post('actionBtn'))
                                 else
                                     $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
                             }
-                            $log['act_msg'] .= " from <b><i>Pin Table</i></b>.";
+                            $log['act_msg'] .= " from <b><i>Weight Unit Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = PIN;
-                            $log['page'] = 'Pin';
+                            $log['query_table'] = $tblname;
+                            $log['page'] = 'Weight Unit';
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
                             $log['connect'] = $connect;
@@ -133,7 +136,7 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $pinnameErr = "Pin name cannot be empty.";
+            else $err = "Weight Unit cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -149,15 +152,16 @@ if(post('act') == 'D')
     {
         try
         {
-            // take name
-            $rst = getData('*',"id = '$id'",PIN,$connect);
+            // take unit
+            $rst = getData('*',"id = '$id'",$tblname,$connect);
             $row = $rst->fetch_assoc();
 
-            $pin_id = $row['id'];
-            $pin_name = $row['name'];
+            $wgt_unit_id = $row['id'];
+            $wgt_unit = $row['unit'];
 
-            $query = "DELETE FROM ".PIN." WHERE id = ".$id;
+            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
             mysqli_query($connect, $query);
+            generateDBData($tblname, $connect);
 
             // audit log
             $log = array();
@@ -165,10 +169,10 @@ if(post('act') == 'D')
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$pin_name</b> from <b><i>Pin Table</i></b>.";
+            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
             $log['query_rec'] = $query;
-            $log['query_table'] = PIN;
-            $log['page'] = 'Pin';
+            $log['query_table'] = $tblname;
+            $log['page'] = 'Weight Unit';
             $log['connect'] = $connect;
             audit_log($log);
 
@@ -179,9 +183,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $pin_name = isset($dataExisted) ? $row['name'] : '';
+    $wgt_unit = isset($dataExisted) ? $row['unit'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -190,8 +194,8 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$pin_name</b> from <b><i>Pin Table</i></b>.";
-    $log['page'] = 'Pin';
+    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
+    $log['page'] = 'Weight Unit';
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -201,39 +205,38 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 <html>
 <head>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/pin.css">
 <link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6">
-        <form id="pinForm" method="post" action="">
+    <div class="col-8 col-md-6">
+        <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
                     switch($act)
                     {
-                        case 'I': echo 'Add Pin'; break;
-                        case 'E': echo 'Edit Pin'; break;
-                        default: echo 'View Pin';
+                        case 'I': echo 'Add Weight Unit'; break;
+                        case 'E': echo 'Edit Weight Unit'; break;
+                        default: echo 'View Weight Unit';
                     }
                     ?>
                 </h2>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="pin_name_lbl" for="pin_name">Pin Name</label>
-                <input class="form-control" type="text" name="pin_name" id="pin_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="bank_name_lbl" for="wgt_unit">Weight Unit Name</label>
+                <input class="form-control" type="text" name="wgt_unit" id="wgt_unit" value="<?php if(isset($dataExisted)) echo $row['unit'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="pin_remark_lbl" for="pin_remark">Pin Remark</label>
-                <textarea class="form-control" name="pin_remark" id="pin_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="bank_remark_lbl" for="wgt_unit_remark">Weight Unit Remark</label>
+                <textarea class="form-control" name="wgt_unit_remark" id="wgt_unit_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center">
@@ -241,14 +244,14 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addPin">Add Pin</button>';
+                        echo '<button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addWgtUnit">Add Weight Unit</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updPin">Edit Pin</button>';
+                        echo '<button class="btn btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updWgtUnit">Edit Weight Unit</button>';
                         break;
                 }
             ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                <button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
             </div>
         </form>
     </div>
@@ -257,7 +260,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Pin","","'.$redirect_page.'","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","Weight Unit","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 </body>
