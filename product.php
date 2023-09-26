@@ -680,12 +680,18 @@ $(document).ready(function(){
                 hiddenElementID: $(this).attr('id') + '_hidden',    // hidden input for storing the value
                 dbTable: '<?= BRAND ?>'                             // json filename (generated when login)
             }
-            searchInput(param);
+            var arr = searchInput(param);
         });
         $("#prod_brand").change(function(){
             if($(this).val() == '')
                 $('#'+$(this).attr('id')+'_hidden').val('');
         });
+
+        $("#prod_brand_hidden").change(function(){
+            if($("#prod_brand_hidden").val() != ''){
+                console.log(arr);
+            };
+        })
     }
 
     if(!($("#prod_wgt_unit").attr('readonly')))
@@ -724,7 +730,7 @@ $(document).ready(function(){
         });
     }
 
-    if(!($("#prod_cur_unit").attr('readonly')))
+    if(!($("#parent_prod").attr('readonly')))
     {
         $("#parent_prod").keyup(function(){
             var param = {

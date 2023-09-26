@@ -40,9 +40,10 @@ $menuList = array(
             array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
             array('Audit Log', 'mdi mdi-text-box-search-outline', 'audit_log.php', '18'),
             array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
-            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20')
+            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20'),
+            array('Package', 'mdi mdi-package', 'package_table.php', '21')
         ),
-        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18','19','20')
+        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18','19','20','21')
     ),
     array(
         'Employees',
