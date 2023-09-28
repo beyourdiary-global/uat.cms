@@ -1,0 +1,25 @@
+.container2 {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.column {
+    flex-basis: 20%;
+    text-align: center;
+    padding: 0px;
+}
+
+.column img {
+    width: 100%;
+    height: auto;
+}
+
+.title {
+    font-size: 11px;
+    margin: 0;
+    padding: 0 5px 5px;
+    font-family: 'Times New Roman', Times, serif;
+}
