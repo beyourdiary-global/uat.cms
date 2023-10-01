@@ -632,7 +632,7 @@ function searchInput(param) {
 	var search = param['search'];
 	var type = param['searchType'];
 	var dbTable = param['dbTable'];
-
+	
 	if(search != ""){
 		$.ajax({
 			url: 'getSearch.php',
@@ -651,6 +651,8 @@ function searchInput(param) {
 				// set width same as input
 				setWidth(elementID, 'searchResult_'+elementID);
 
+				var dataArr = [];
+
 				// loop result
 				var len = result.length;
 				$("#searchResult_"+elementID).empty();
@@ -666,8 +668,8 @@ function searchInput(param) {
 						var id = result[i]['id'];
 						var name = result[i][type];
 						$("#searchResult_"+elementID).append("<li value='"+id+"'>"+name+"</li>");
+						dataArr[id] = result[i];
 					}
-						
 				}
 
 				// binding click event to li
@@ -686,6 +688,23 @@ function searchInput(param) {
 	}
 }
 
+function retrieveJSONData(search,type,tblname) {
+	return $.ajax({
+		url: 'getSearch.php',
+		type: 'post',
+		data: {
+			searchText: search,
+			searchType: type,
+			tblname: tblname,
+		},
+		dataType: 'json',
+		success: (result) => {
+			/* console.log(result[0]); */
+			/* return result; */
+		}
+	});
+}
+
 function setText(element,val,val2){
 	var text = $(element).text();
 	var value = $(element).attr("value");
@@ -693,11 +712,11 @@ function setText(element,val,val2){
 	if(value != 'emptyValue')
 	{
 		$(val).val(text);
-		$(val2).val(value);
+		$(val2).val(value).trigger('input');	// to trigger input event from package page
 	}
 	else
 	{
 		$(val).val('');
-		$(val2).val('');
+		$(val2).val('').trigger('input');		// to trigger input event from package page
 	}
 }

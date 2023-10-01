@@ -15,12 +15,15 @@ fclose($f);
 $cArr = json_decode($c,true);
 $rstArr = array();
 
-foreach($cArr as $x)
+if($searchText != '')
 {
-    $bool = stripos($x[$searchType], $searchText);
-    if($bool !== false)
+    foreach($cArr as $x)
     {
-        array_push($rstArr,$x);
+        $bool = stripos($x[$searchType], $searchText);
+        if($bool !== false)
+        {
+            array_push($rstArr,$x);
+        }
     }
 }
 

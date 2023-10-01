@@ -364,6 +364,8 @@ transform: translate(-50%, 0) !important;
     position: absolute;
     margin: 0;
     background: white;
+    border: 1px solid #000000;
+    border-radius: 4px;
 }
 
 .autocomplete .searchResult li{

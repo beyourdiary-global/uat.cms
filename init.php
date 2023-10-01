@@ -84,6 +84,7 @@ define('COURIER', 'courier');
 define('SHIPREQ', 'shipping_request');
 define('WGT_UNIT', 'weight_unit');
 define('PROD', 'product');
+define('PKG', 'package');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
