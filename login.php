@@ -71,6 +71,14 @@ if($email && $password)
                     $log['connect'] = $connect;
 
                     audit_log($log);
+
+                    // json file
+                    generateDBData(BRAND, $connect);
+                    generateDBData(WGT_UNIT, $connect);
+                    generateDBData(CUR_UNIT, $connect);
+                    generateDBData(PROD, $connect);
+                    generateDBData(PROD_STATUS, $connect);
+
                     return header('Location: dashboard.php');
           }
      }

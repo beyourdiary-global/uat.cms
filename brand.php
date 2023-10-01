@@ -5,11 +5,12 @@ include 'menuHeader.php';
 $brand_id = input('id');
 $act = input('act');
 $redirect_page = 'brand_table.php';
+$tblname = BRAND;
 
 // to display data to input
 if($brand_id)
 {
-    $rst = getData('*',"id = '$brand_id'",BRAND,$connect);
+    $rst = getData('*',"id = '$brand_id'",$tblname,$connect);
 
     if($rst != false)
     {
@@ -37,8 +38,9 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".BRAND."(name,remark,create_by,create_date,create_time) VALUES ('$brand_name','$brand_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".$tblname."(name,remark,create_by,create_date,create_time) VALUES ('$brand_name','$brand_remark','".$_SESSION['userid']."',curdate(),curtime())";
                         mysqli_query($connect, $query);
+                        generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
@@ -60,7 +62,7 @@ if(post('actionBtn'))
                         $log['uid'] = $log['cby'] = $_SESSION['userid'];
                         $log['act_msg'] = $_SESSION['user_name'] . " added <b>$brand_name</b> into <b><i>Brand Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = BRAND;
+                        $log['query_table'] = $tblname;
                         $log['page'] = 'Brand';
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
@@ -74,7 +76,7 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$brand_id'",BRAND,$connect);
+                        $rst = getData('*',"id = '$brand_id'",$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -99,8 +101,9 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                              // edit
-                            $query = "UPDATE ".BRAND." SET name ='$brand_name', remark ='$brand_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$brand_id'";
+                            $query = "UPDATE ".$tblname." SET name ='$brand_name', remark ='$brand_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$brand_id'";
                             mysqli_query($connect, $query);
+                            generateDBData($tblname, $connect);
 
                             // audit log
                             $log = array();
@@ -120,7 +123,7 @@ if(post('actionBtn'))
                             $log['act_msg'] .= "  under <b><i>Brand Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = BRAND;
+                            $log['query_table'] = $tblname;
                             $log['page'] = 'Brand';
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
@@ -150,14 +153,15 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",BRAND,$connect);
+            $rst = getData('*',"id = '$id'",$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $brand_id = $row['id'];
             $brand_name = $row['name'];
 
-            $query = "DELETE FROM ".BRAND." WHERE id = ".$id;
+            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
             mysqli_query($connect, $query);
+            generateDBData($tblname, $connect);
 
             // audit log
             $log = array();
@@ -167,7 +171,7 @@ if(post('act') == 'D')
             $log['uid'] = $log['cby'] = $_SESSION['userid'];
             $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$brand_name</b> under <b><i>Brand Table</i></b>.";
             $log['query_rec'] = $query;
-            $log['query_table'] = BRAND;
+            $log['query_table'] = $tblname;
             $log['page'] = 'Brand';
             $log['connect'] = $connect;
             audit_log($log);

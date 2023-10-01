@@ -351,6 +351,44 @@ transform: translate(-50%, 0) !important;
     position: static !important;
 }
 
+/* search */
+.clear{
+    clear:both;
+    margin-top: 20px;
+}
+
+.autocomplete .searchResult{
+    list-style: none;
+    padding: 0px;
+    width: 0px;
+    position: absolute;
+    margin: 0;
+    background: white;
+}
+
+.autocomplete .searchResult li{
+    background: #F2F3F4;
+    padding: 4px;
+    margin-bottom: 1px;
+    word-wrap: break-word;
+}
+
+.autocomplete .searchResult li:nth-child(even){
+    background: #E5E7E9;
+    color: black;
+}
+
+.autocomplete .searchResult li:hover{
+    cursor: pointer;
+    background: #CACFD2;
+}
+
+/* .autocomplete input[type=text]{
+    padding: 5px;
+    width: 100%;
+    letter-spacing: 1px;
+} */
+
 #backBtn {
     background-color: #888888;
     box-shadow: 0 0 !important;
@@ -362,6 +400,10 @@ transform: translate(-50%, 0) !important;
 .warning_input {
     border-color: #FF0000 !important;
     box-shadow: 0 0 0 0.2rem rgba(255, 0, 129, 0.25) !important;
+}
+
+.form_lbl {
+    font-weight: 500;
 }
 
 #pin_name_lbl, #pin_remark_lbl, #pin_grp_name_lbl, #pin_grp_remark_lbl, #pin_lbl,

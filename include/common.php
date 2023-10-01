@@ -192,6 +192,22 @@ function getData($search_val, $val, $tbl, $conn){
 	else return $result;
 }
 
+function generateDBData($tblname, $conn) {
+	$rst = getData('*','',$tblname,$conn);
+	$data = array();
+	while($row = $rst->fetch_assoc())
+	{
+		$data[] = $row;
+	}
+	$encode_rst = json_encode($data);
+
+	$path = "./data/" . "$tblname.json";
+
+	$f = fopen($path, 'w');
+	fwrite($f, $encode_rst);
+	fclose($f);
+}
+
 function audit_log($data=array()){
 	if(count($data) > 0)
 	{
