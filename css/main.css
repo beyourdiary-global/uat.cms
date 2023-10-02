@@ -43,6 +43,7 @@ input::-webkit-inner-spin-button {
     background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%) !important;
     color: #FFFFFF;
     z-index: 99;
+    height: 50px;
 }
 
 .logo_section {
@@ -53,9 +54,13 @@ input::-webkit-inner-spin-button {
 }
 
 #logo{
-    margin: -2.5px 30px -2.5px 30px;
+    /* margin: -2.5px 30px -2.5px 30px; */
     width: 1.5rem;
     /* border: 1px dotted red; */
+}
+
+.dropdown-divider{
+    border-color: #e7e7e7;
 }
 
 .dropdown-menu-right {
@@ -90,6 +95,7 @@ transform: translate(-50%, 0) !important;
 
 .fa-bars, .fa-ellipsis-vertical {
     color: #FFFFFF !important;
+    font-size: 20px;
 }
 
 .badge-color {
