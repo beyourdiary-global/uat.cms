@@ -51,7 +51,7 @@ if(post('actionBtn'))
                     echo '<div id="printArea" class="container2">';
                     for($x=1; $x<=$page_no; $x++)
                     {
-                        $qrCode_url = "stockin.php?barcode=".($barcode_next_number + $x)."&pkgid=".$pkg."&whseid=".$warehouse;
+                        $qrCode_url = "stockRecord.php?barcode=".($barcode_next_number + $x)."&pkgid=".$pkg."&whseid=".$warehouse;
                         $filename=$PNG_TEMP_DIR.'barcode'.md5($qrCode_url.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
                         QRcode::png($qrCode_url, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
                         echo '<div class="column"><img src="' .$PNG_WEB_DIR.basename($filename).'" />'.'<p class="title">'.$pkg_name.' '.($barcode_next_number + $x).'
