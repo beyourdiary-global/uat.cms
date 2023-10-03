@@ -4,7 +4,7 @@ input {
 }
 
 body {
-    background-color: #F4F6F6;
+    background-color: #FFFFFF;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -111,7 +111,7 @@ transform: translate(-50%, 0) !important;
     }
 
     body {
-        background-color: #F4F6F6 !important;
+        background-color: #FFFFFF !important;
     }
 }
 
