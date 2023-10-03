@@ -12,11 +12,11 @@ include "include/common_variable.php";
 
 <!-- Navbar -->
 <div class="sticky-top">
-<nav class="navbar navbar-expand-md topNav">
+<nav class="navbar navbar-expand-md topNav p-0">
     <!-- Container wrapper -->
-    <div class="container-fluid">
+    <div class="container-fluid p-0">
         <!-- Toggle button -->
-        <button class="navbar-toggler" type="button"
+        <button class="navbar-toggler ps-4" style="height:50px;" type="button"
             data-bs-toggle="collapse"
             data-bs-target="#sidebar-collapse"
             aria-expanded="false"
@@ -153,9 +153,9 @@ include "include/common_variable.php";
         </div>
 
         <!-- Toggle button -->
-        <div class="navbar-toggler">
+        <div class="navbar-toggler pe-4">
             <div class="dropdown">
-                <a
+                <button
                     class="nav-link d-flex align-items-center"
                     href="#"
                     id="navbarTogglerMenuAvatar"
@@ -164,7 +164,7 @@ include "include/common_variable.php";
                     aria-expanded="false"
                 >
                     <i class="fas fa-ellipsis-vertical fa-lg"></i>
-                </a>
+                </button>
                 <ul class="dropdown-menu dropdown-menu-right mt-4" aria-labelledby="navbarTogglerMenuAvatar">
                     <li>
                     <a class="dropdown-item" href="#">My profile</a>
