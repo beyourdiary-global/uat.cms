@@ -12,75 +12,85 @@ include "./include/common.php";
 
 <body>
 
-<div class="loginContainer container d-flex justify-content-center">
-    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-        <div class="mb-4 d-flex justify-content-center" id="logo_element">
-            <img src="./image/logo2.png">
+<div class="container d-flex justify-content-center mt-2">
+    <div class="col-12 col-md-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center my-4" id="logo_element">
+                    <img src="./image/logo2.png">
+                </div>
+            </div>
         </div>
 
         <form id="loginForm" name="loginForm" method="post" action="login.php">
-        <div class="px-5 py-5 rounded">
-            <div class="mb-3">
-                <div class="form-group login-title">
+            <div class="row">
+                <div class="form-group mt-5 mb-3 d-flex flex-column align-items-center">
                     <h3>Login</h3>
                     <h7>Access to our dashboard</h7>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <div class="form-group">
-                    <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
-                    <input class="form-control" type="email" name="email-addr" id="email-addr">
-                    <span id="email-addr_error"></span>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <div class="form-group">
-                    <div class="d-flex justify-content-between" id="row-password-label">
-                        <label class="form-label" id="password_lbl" for="password">Password</label>
-                        <a id="forgot-password_link" href="forgotPassword.php">Forgot password?</a>
-                    </div>
-                    <div id="row-password-input">
-                        <div class="d-flex justify-content-end">
-                            <i class="fa fa-eye-slash icon"></i>
+            <div class="d-flex flex-column">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div class="form-group mb-3">
+                            <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
+                            <input class="form-control" type="email" name="email-addr" id="email-addr">
+                            <span id="email-addr_error"></span>
                         </div>
-                        <input class="form-control" type="password" name="password" id="password">
-                        <span id="password_error"></span>
                     </div>
                 </div>
-            </div>
-        
-            <div class="mb-3">
-                <div class="form-group">
-                    <button class="btn btn-block btn-primary" name="login_btn" id="login_btn">Login</button>
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div class="form-group mb-3">
+                            <div class="d-flex justify-content-between" id="row-password-label">
+                                <label class="form-label" id="password_lbl" for="password">Password</label>
+                                <a id="forgot-password_link" href="forgotPassword.php">Forgot password?</a>
+                            </div>
+                            <div id="row-password-input">
+                                <div class="d-flex justify-content-end">
+                                    <i class="fa fa-eye-slash icon"></i>
+                                </div>
+                                <input class="form-control" type="password" name="password" id="password">
+                                <span id="password_error"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="err_msg">
-                    <span>
-                        <?php
-                            $var = numberInput('err');
-                            if($var)
-                            {
-                                switch($var)
-                                {
-                                    case '1':
-                                        echo "Email not existed.";
-                                        break;
-                                    case '2':
-                                        echo "Wrong password entered. Please try again.";
-                                        break;
-                                    case '3':
-                                        echo "Account is been blocked. Please reset your password.";
-                                        break;
-                                    default:
-                                        echo "";
-                                }
-                            }
-                        ?>
-                    </span>
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div class="form-group mb-3">
+                            <button class="btn btn-block btn-primary" name="login_btn" id="login_btn">Login</button>
+                        </div>
+                        <div id="err_msg">
+                            <span>
+                                <?php
+                                    $var = numberInput('err');
+                                    if($var)
+                                    {
+                                        switch($var)
+                                        {
+                                            case '1':
+                                                echo "Email not existed.";
+                                                break;
+                                            case '2':
+                                                echo "Wrong password entered. Please try again.";
+                                                break;
+                                            case '3':
+                                                echo "Account is been blocked. Please reset your password.";
+                                                break;
+                                            default:
+                                                echo "";
+                                        }
+                                    }
+                                ?>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div>            
         </form>
     </div>
 </div>
