@@ -31,14 +31,16 @@ $( document ).ready(() => {
 
         <div class="col-12 col-md-8">
 
-            <div class="d-flex justify-content-between">
+        <div class="row">
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                 <div class="left">
                         <h2>Audit Log</h2>
                         <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Audit Log</p>
                 </div>
             </div>
+        </div>
 
-            <div class="table-responsive">
+        <div class="row">
             <table class="table table-striped" id="audit_log_table">
                 <thead>
                     <tr>
@@ -90,14 +92,30 @@ if(mysqli_num_rows($result) >= 1)
 }
 ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="col" style="display: none">ID</th>
+                        <th scope="col">#</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </tfoot>
             </table>
-            </div>
         </div>
-
+        </div>
 </div>
 
 </body>
 <script>
 dropdownMenuDispFix();
+
+$(window).resize(() => {
+    datatableAlignment('audit_log_table');
+});
+
+$(window).load(() => {
+    datatableAlignment('audit_log_table');
+});
 </script>
 </html>

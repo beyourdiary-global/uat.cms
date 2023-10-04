@@ -30,7 +30,7 @@ $( document ).ready(() => {
 
         <div class="col-12 col-md-8">
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                 <div class="left">
                         <h2>Platform</h2>
                         <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Platform</p>
@@ -88,13 +88,30 @@ $( document ).ready(() => {
                     </tr>
                     <?php } ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="col" style="display:none">ID</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Remark</th>
+                        <th scope="col" id="action_col">Action</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
-
 </div>
 
 </body>
 <script>
 dropdownMenuDispFix();
+
+$(window).resize(() => {
+    datatableAlignment('platform_table');
+});
+
+$(window).load(() => {
+    datatableAlignment('platform_table');
+});
+
 </script>
 </html>
