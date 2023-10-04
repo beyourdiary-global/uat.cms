@@ -399,8 +399,10 @@ function createSortingTable(tableid) {
 	let table = new DataTable('#'+tableid, {
 		paging: $('#'+tableid+' tbody tr').length>10,
 		searching: $('#'+tableid+' tbody tr').length>10,
-		info: false,
+		/* info: false, */
 		order: [[1, 'asc']],	// 0 = db id column; 1 = numbering column
+		/* responsive: true, */
+		/* autoWidth: false */
 	})
 }
 
@@ -410,6 +412,51 @@ function setWidth(id, id2) {
     style = window.getComputedStyle(one);
     wdt = style.getPropertyValue('width');
     two.style.width = wdt;
+}
+
+function datatableAlignment(elementID)
+{
+	var lengthElement = $('#'+elementID+'_length');
+	var filterElement = $('#'+elementID+'_filter');
+	var tableElement = $('#'+elementID);
+	var tableParentElement = tableElement.parent();
+	var infoElement = $('#'+elementID+'_paginate');
+	var paginateElement = $('#'+elementID+'_paginate');
+
+	// show entries and length row
+	if(window.matchMedia('(max-width: 769px)').matches) {
+		lengthElement.toggleClass('d-flex justify-content-left mb-3');
+		filterElement.toggleClass('d-flex justify-content-left mb-3');
+	} else {
+		lengthElement.removeClass('d-flex justify-content-left');
+		filterElement.removeClass('d-flex justify-content-left');
+	}
+
+	// paginate
+	if(window.matchMedia('(max-width: 361px)').matches) {
+		paginateElement.children().toggleClass('d-flex flex-column');
+	} else {
+		paginateElement.children().removeClass('d-flex flex-column');
+	}
+
+	// table
+	if(!(tableParentElement.parent().hasClass('table-responsive')) && (elementID != 'audit_log_table'))
+		tableParentElement.parent().toggleClass('table-responsive');
+	else
+		tableParentElement.toggleClass('table-responsive');
+
+	if(!(tableParentElement.hasClass('p-0')))
+		tableParentElement.toggleClass('p-0');
+
+	// info
+	if(!(infoElement.hasClass('mb-3')))
+		infoElement.toggleClass('mb-3 pb-3');
+
+	// paginate
+	if(!(paginateElement.hasClass('mb-3')))
+		paginateElement.toggleClass('mb-3 pb-3');
+
+	
 }
 
 function floatInput(element) {

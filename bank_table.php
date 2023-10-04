@@ -21,7 +21,7 @@ $result = getData('*','',BANK,$connect);
 <script>
 $( document ).ready(() => {
     createSortingTable('bank_table');
-}); 
+});
 </script>
 
 <body>
@@ -30,7 +30,7 @@ $( document ).ready(() => {
 
         <div class="col-12 col-md-8">
 
-            <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                 <div class="left">
                         <h2>Bank</h2>
                         <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Bank</p>
@@ -43,7 +43,7 @@ $( document ).ready(() => {
                 </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="tableWidthFix">
                 <table class="table table-striped" id="bank_table">
                     <thead>
                         <tr>
@@ -51,7 +51,7 @@ $( document ).ready(() => {
                             <th scope="col">ID</th>
                             <th scope="col">Name</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,6 +89,15 @@ $( document ).ready(() => {
                         </tr>
                         <?php } ?>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th scope="col" style="display:none">ID</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Remark</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
@@ -98,5 +107,13 @@ $( document ).ready(() => {
 </body>
 <script>
 dropdownMenuDispFix();
+
+$(window).resize(() => {
+    datatableAlignment('bank_table');
+});
+
+$(window).load(() => {
+    datatableAlignment('bank_table');
+});
 </script>
 </html>
