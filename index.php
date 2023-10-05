@@ -64,7 +64,7 @@ include "./include/common.php";
                         <div class="form-group mb-3">
                             <button class="btn btn-block btn-primary" name="login_btn" id="login_btn">Login</button>
                         </div>
-                        <div id="err_msg">
+                        <div id="err_msg" class="d-flex justify-content-center mb-3">
                             <span>
                                 <?php
                                     $var = numberInput('err');
