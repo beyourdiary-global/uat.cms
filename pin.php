@@ -208,7 +208,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6">
+    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
         <form id="pinForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
@@ -221,6 +221,14 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
                     }
                     ?>
                 </h2>
+                <p><a href="<?= $redirect_page ?>">Pin</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                    switch($act)
+                    {
+                        case 'I': echo 'Add Pin'; break;
+                        case 'E': echo 'Edit Pin'; break;
+                        default: echo 'View Pin';
+                    }
+                    ?></p>
             </div>
 
             <div class="form-group mb-3">

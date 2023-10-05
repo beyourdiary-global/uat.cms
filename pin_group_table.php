@@ -34,7 +34,7 @@ $( document ).ready(() => {
             <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                 <div class="left">
                         <h2>Pin Group</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Pin Group</p>
+                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Pin Group</p>
                 </div>
 
                 <div class="right d-flex">

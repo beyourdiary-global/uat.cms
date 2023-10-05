@@ -329,7 +329,7 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <body>
 
 <div class="container d-flex justify-content-center mt-2">
-        <div class="col-8 col-md-6">
+        <div class="col-8 col-md-6" style="width:95%; margin:auto;">
             <form id="prodForm" method="post" action="">
                 <div class="row">
                     <div class="col-12">
@@ -344,6 +344,14 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                                 }
                                 ?>
                             </h2>
+                            <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                switch($act)
+                                {
+                                    case 'I': echo 'Add Product'; break;
+                                    case 'E': echo 'Edit Product'; break;
+                                    default: echo 'View Product';
+                                }
+                                ?></p>
                         </div>
                     </div>
                 </div>

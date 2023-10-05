@@ -268,7 +268,6 @@ thead {
 }
 
 tbody {
-    
     height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -278,132 +277,150 @@ tbody {
 <body>
 
 <div id="dispTable" class="container d-flex justify-content-center">
-    <div class="col-9 col-md-9">
+    <div class="col-12" style="width:95%; margin:auto;">
         <form id="pinForm" method="post" action="">
-            <div class="form-group mt-5 mb-5">
-                <h2>
-                    <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add User Group'; break;
-                        case 'E': echo 'Edit User Group'; break;
-                        default: echo 'View User Group';
-                    }
-                    ?>
-                </h2>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="user_grp_name_lbl" for="user_grp_name">User Group Name</label>
-                <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted)) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+            <div class="row d-flex justify-content-center">
+                <div class="form-group mt-5 mb-5">
+                    <h2>
+                        <?php
+                        switch($act)
+                        {
+                            case 'I': echo 'Add User Group'; break;
+                            case 'E': echo 'Edit User Group'; break;
+                            default: echo 'View User Group';
+                        }
+                        ?>
+                    </h2>
+                    <p><a href="<?= $redirect_page ?>">User Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                switch($act)
+                                {
+                                    case 'I': echo 'Add User Group'; break;
+                            case 'E': echo 'Edit User Group'; break;
+                            default: echo 'View User Group';
+                                }
+                                ?></p>
                 </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
-                <div class="table-responsive" style="max-height: 500px;">
-                <table class="table table-striped" id="permission_table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th scope="col">#</th>
-                            <?php 
-                            if(mysqli_num_rows($pin_result) != 0) {
-                                while($pin_row = $pin_result->fetch_assoc())
-                                {
-                            ?>
-                            <th class="text-center" scope="col">
-                                <?php 
-                                    echo $pin_row['name'];
-                                    array_push($pin_arr, $pin_row['id']);
-                                ?>
-                            </th>
-                            <?php 
-                                }
-                                $pin_arr_num = count($pin_arr);
-                            } 
-                            ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        if(mysqli_num_rows($pin_grp_result) != 0) {
-                            while($pin_grp_row = $pin_grp_result->fetch_assoc())
-                            {
-                                // get pin
-                                $pin_grp_pins = explode(",", $pin_grp_row['pins']);
-                                $pin_grp_pins_count = count($pin_grp_pins);
-                        ?>
-                        <tr id="<?php echo $pin_grp_row['name'].'_row['.$pin_grp_row['id'].']' ?>" name="<?php echo $pin_grp_row['name'].'_row' ?>">
-                            <th scope="row"><?php echo $pin_grp_row['name'] ?></th>
-                            <?php
-                                for($i=0; $i<$pin_arr_num; $i++)
-                                {
-                                    $found = 0;
-                                    $checked = '';
+            <div class="row d-flex justify-content-center">
+                <div class="form-group mb-3">
+                    <label class="form-label" id="user_grp_name_lbl" for="user_grp_name">User Group Name</label>
+                    <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted)) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+            </div>
 
-                                    for($j=0; $j<$pin_grp_pins_count; $j++)
-                                    {
-                                        // check if pin exist in pin group
-                                        if($pin_arr[$i] == $pin_grp_pins[$j])
+            <div class="row d-flex justify-content-center">
+                <div class="form-group mb-3">
+                    <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
+                    <div class="table-responsive" style="max-height: 500px;">
+                        <table class="table table-striped" id="permission_table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <?php 
+                                    if(mysqli_num_rows($pin_result) != 0) {
+                                        while($pin_row = $pin_result->fetch_assoc())
                                         {
-                                            // check if pin checked (act: edit/view)
-                                            if((isset($act)) && ($act != 'I'))
+                                    ?>
+                                    <th class="text-center" scope="col">
+                                        <?php 
+                                            echo $pin_row['name'];
+                                            array_push($pin_arr, $pin_row['id']);
+                                        ?>
+                                    </th>
+                                    <?php 
+                                        }
+                                        $pin_arr_num = count($pin_arr);
+                                    } 
+                                    ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                if(mysqli_num_rows($pin_grp_result) != 0) {
+                                    while($pin_grp_row = $pin_grp_result->fetch_assoc())
+                                    {
+                                        // get pin
+                                        $pin_grp_pins = explode(",", $pin_grp_row['pins']);
+                                        $pin_grp_pins_count = count($pin_grp_pins);
+                                ?>
+                                <tr id="<?php echo $pin_grp_row['name'].'_row['.$pin_grp_row['id'].']' ?>" name="<?php echo $pin_grp_row['name'].'_row' ?>">
+                                    <th scope="row"><?php echo $pin_grp_row['name'] ?></th>
+                                    <?php
+                                        for($i=0; $i<$pin_arr_num; $i++)
+                                        {
+                                            $found = 0;
+                                            $checked = '';
+
+                                            for($j=0; $j<$pin_grp_pins_count; $j++)
                                             {
-                                                for($k=0; $k<$permission_grp_count; $k++)
+                                                // check if pin exist in pin group
+                                                if($pin_arr[$i] == $pin_grp_pins[$j])
                                                 {
-                                                    if($permission_grp_keys[$k] == $pin_grp_row['id'])
+                                                    // check if pin checked (act: edit/view)
+                                                    if((isset($act)) && ($act != 'I'))
                                                     {
-                                                        if(is_array($permission_grp[$permission_grp_keys[$k]]) || is_object($permission_grp[$permission_grp_keys[$k]]))
+                                                        for($k=0; $k<$permission_grp_count; $k++)
                                                         {
-                                                            foreach($permission_grp[$permission_grp_keys[$k]] as $val)
+                                                            if($permission_grp_keys[$k] == $pin_grp_row['id'])
                                                             {
-                                                                if($val == $pin_grp_pins[$j])
-                                                                    $checked = " checked";
+                                                                if(is_array($permission_grp[$permission_grp_keys[$k]]) || is_object($permission_grp[$permission_grp_keys[$k]]))
+                                                                {
+                                                                    foreach($permission_grp[$permission_grp_keys[$k]] as $val)
+                                                                    {
+                                                                        if($val == $pin_grp_pins[$j])
+                                                                            $checked = " checked";
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
-                                                }
+
+                                                    if($act == '')
+                                                        $readonly = ' disabled';
+                                                    else $readonly = '';
+
+                                                    echo '<td class="text-center" scope="row"><input class="form-check-input" type="checkbox" name="user_grp_chkbox_val['.$pin_grp_row['id'].'][]" value="'.$pin_arr[$i].'"'.$checked.$readonly.'></td>';
+                                                    $found = 1;
+                                                } 
                                             }
-
-                                            if($act == '')
-                                                $readonly = ' disabled';
-                                            else $readonly = '';
-
-                                            echo '<td class="text-center" scope="row"><input class="form-check-input" type="checkbox" name="user_grp_chkbox_val['.$pin_grp_row['id'].'][]" value="'.$pin_arr[$i].'"'.$checked.$readonly.'></td>';
-                                            $found = 1;
-                                        } 
-                                    }
-                                    if($found != 1)
-                                        echo '<td scope="row"></td>';
-                                }
-                            ?>
-                        </tr>
-                        <?php } } ?>
-                    </tbody>
-                </table>
+                                            if($found != 1)
+                                                echo '<td scope="row"></td>';
+                                        }
+                                    ?>
+                                </tr>
+                                <?php } } ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label" id="user_grp_remark_lbl" for="user_grp_remark">User Group Remark</label>
-                <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+            <div class="row d-flex justify-content-center">
+                <div class="form-group mb-3">
+                    <label class="form-label" id="user_grp_remark_lbl" for="user_grp_remark">User Group Remark</label>
+                    <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                </div>
             </div>
 
-            <div class="form-group mt-5 mb-5 d-flex justify-content-center">
-            <?php
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addGrp">Add User Group</button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updGrp">Edit User Group</button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+            <div class="row">
+                <div class="form-group mt-5 mb-5 d-flex justify-content-center">
+                <?php
+                    switch($act)
+                    {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addGrp">Add User Group</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updGrp">Edit User Group</button>';
+                            break;
+                    }
+                ?>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
             </div>
         </form>
     </div>

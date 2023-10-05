@@ -473,7 +473,7 @@ transform: translate(-50%, 0) !important;
 #holiday_date_lbl, #brand_name_lbl, #brand_remark_lbl, #pltf_name_lbl, 
 #pltf_remark_lbl, #prod_status_name_lbl, #prod_status_remark_lbl, #warehouse_name_lbl,
 #warehouse_remark_lbl, #mrtl_name_lbl, #mrtl_remark_lbl, #bank_name_lbl, #bank_remark_lbl,
-#em_type_status_name_lbl, #em_type_status_remark_lbl {
+#em_type_status_name_lbl, #em_type_status_remark_lbl {  
     font-weight: 500;
 }
 
