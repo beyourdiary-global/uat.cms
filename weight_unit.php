@@ -211,7 +211,7 @@ if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-8 col-md-6">
+    <div class="col-8 col-md-6" style="width:95%; margin:auto;">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
@@ -224,6 +224,14 @@ if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
                     }
                     ?>
                 </h2>
+                <p><a href="<?= $redirect_page ?>">Weight Unit</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                    switch($act)
+                    {
+                        case 'I': echo 'Add Weight Unit'; break;
+                        case 'E': echo 'Edit Weight Unit'; break;
+                        default: echo 'View Weight Unit';
+                    }
+                    ?></p>
             </div>
 
             <div class="form-group mb-3">

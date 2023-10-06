@@ -33,7 +33,7 @@ $( document ).ready(() => {
             <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
                 <div class="left">
                         <h2>Holidays</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-slash fa-rotate-90 fa-2xs"></i> Holidays</p>
+                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Holidays</p>
                 </div>
 
                 <div class="right d-flex">

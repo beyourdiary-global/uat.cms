@@ -207,7 +207,7 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6">
+    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
@@ -220,6 +220,14 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
                     }
                     ?>
                 </h2>
+                <p><a href="<?= $redirect_page ?>">Designation</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                    switch($act)
+                    {
+                        case 'I': echo 'Add Designation'; break;
+                        case 'E': echo 'Edit Designation'; break;
+                        default: echo 'View Designation';
+                    }
+                    ?></p>
             </div>
 
             <div class="form-group mb-3">

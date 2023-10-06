@@ -207,7 +207,7 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <body>
 
 <div class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6">
+    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
@@ -220,6 +220,14 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                     }
                     ?>
                 </h2>
+                <p><a href="<?= $redirect_page ?>">Marital Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                    switch($act)
+                    {
+                        case 'I': echo 'Add Marital Status'; break;
+                        case 'E': echo 'Edit Marital Status'; break;
+                        default: echo 'View Marital Status';
+                    }
+                    ?></p>
             </div>
 
             <div class="form-group mb-3">
