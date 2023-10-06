@@ -201,14 +201,26 @@ if(($dept_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <html>
 <head>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body>
 
-<div class="container d-flex justify-content-center">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Department</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Department'; break;
+            case 'E': echo 'Edit Department'; break;
+            default: echo 'View Department';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="deptFormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6" style="width:95%; margin:auto;">
-        <form id="desigForm" method="post" action="">
+        <form id="deptForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -220,14 +232,6 @@ if(($dept_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                     }
                     ?>
                 </h2>
-                <p><a href="<?= $redirect_page ?>">Department</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Department'; break;
-                        case 'E': echo 'Edit Department'; break;
-                        default: echo 'View Department';
-                    }
-                    ?></p>
             </div>
 
             <div class="form-group mb-3">
@@ -267,5 +271,8 @@ if(isset($_SESSION['tempValConfirmBox']))
     echo '<script>confirmationDialog("","","Department","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
+<script>
+centerAlignment("deptFormContainer");
+</script>
 </body>
 </html>

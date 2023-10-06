@@ -201,12 +201,24 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 <html>
 <head>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body>
 
-<div class="container d-flex justify-content-center">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Designation</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Designation'; break;
+            case 'E': echo 'Edit Designation'; break;
+            default: echo 'View Designation';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="desigFormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6" style="width:95%; margin:auto;">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
@@ -220,14 +232,6 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
                     }
                     ?>
                 </h2>
-                <p><a href="<?= $redirect_page ?>">Designation</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Designation'; break;
-                        case 'E': echo 'Edit Designation'; break;
-                        default: echo 'View Designation';
-                    }
-                    ?></p>
             </div>
 
             <div class="form-group mb-3">
@@ -267,5 +271,8 @@ if(isset($_SESSION['tempValConfirmBox']))
     echo '<script>confirmationDialog("","","Designation","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
+<script>
+centerAlignment("desigFormContainer");
+</script>
 </body>
 </html>

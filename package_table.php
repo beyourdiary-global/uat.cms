@@ -30,15 +30,17 @@ $( document ).ready(() => {
 
         <div class="col-12 col-md-8">
 
-            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
-                <div class="left">
-                        <h2>Package</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Package</p>
+            <div class="d-flex flex-column mb-3">
+                <div class="row">
+                    <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Package</p>
                 </div>
 
-                <div class="right d-flex">
-                    <div class="mt-auto mb-auto">
-                        <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Package </a>
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between flex-wrap">
+                        <h2>Package</h2>
+                        <div class="mt-auto mb-auto">
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Package </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,13 +122,6 @@ $( document ).ready(() => {
 </body>
 <script>
 dropdownMenuDispFix();
-
-$(window).resize(() => {
-    datatableAlignment('package_table');
-});
-
-$(window).load(() => {
-    datatableAlignment('package_table');
-});
+datatableAlignment('package_table');
 </script>
 </html>

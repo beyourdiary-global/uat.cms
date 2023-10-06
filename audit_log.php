@@ -109,13 +109,6 @@ if(mysqli_num_rows($result) >= 1)
 </body>
 <script>
 dropdownMenuDispFix();
-
-$(window).resize(() => {
-    datatableAlignment('audit_log_table');
-});
-
-$(window).load(() => {
-    datatableAlignment('audit_log_table');
-});
+datatableAlignment("audit_log_table");
 </script>
 </html>

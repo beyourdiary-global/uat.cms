@@ -208,8 +208,14 @@ $( document ).ready(() => {
     <div class="chkRate col-12 col-sm-12 col-md-8 col-lg-8">
         <div class="px-4 py-4">
             <div class="mb-3">
-                <div class="form-group">
-                    <span class="title-form">Check Rate</span>
+                <div class="row">
+                    <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Check Rate</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between flex-wrap">
+                        <h2>Check Rate</h2>
+                    </div>
                 </div>
             </div>
 

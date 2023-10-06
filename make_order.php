@@ -322,6 +322,19 @@ if(post('actionBtn'))
 <body>
 
 <div class="my-3 container-fluid">
+
+    <div class="d-flex flex-column mb-3 ms-3">
+        <div class="row">
+            <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Make Order</p>
+        </div>
+
+        <div class="row">
+            <div class="col-12 d-flex justify-content-between flex-wrap">
+                <h2>Make Order</h2>
+            </div>
+        </div>
+    </div>
+
     <form class="row needs-validation" id="makrOrderForm" method="post" action="make_order.php" novalidate>
         <div class="col-12 col-md-8">
             <!-- Sender Detail -->
