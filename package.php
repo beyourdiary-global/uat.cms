@@ -281,7 +281,20 @@ if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 
 <body>
 
-<div class="container-fluid mt-2">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Package</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Package'; break;
+            case 'E': echo 'Edit Package'; break;
+            default: echo 'View Package';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="packageFormContainer" class="container-fluid mt-2">
     <div class="col-12 col-md-12" style="width:95%; margin:auto;">
         <form id="packageForm" method="post" action="">
             <div class="row">
@@ -296,15 +309,6 @@ if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
                         }
                         ?>
                     </h2>
-                    <p><a href="<?= $redirect_page ?>">Package</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                        switch($act)
-                        {
-                            case 'I': echo 'Add Package'; break;
-                            case 'E': echo 'Edit Package'; break;
-                            default: echo 'View Package';
-                        }
-                        ?></p>
-                </div>
             </div>
 
             <div class="row">
@@ -560,6 +564,7 @@ if(isset($_SESSION['tempValConfirmBox']))
 </body>
 <script>
 dropdownMenuDispFix();
+centerAlignment("packageFormContainer");
 
 async function setBarcodeSlotTotal(rowCount) {
     var num = 1;

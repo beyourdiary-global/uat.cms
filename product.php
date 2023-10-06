@@ -328,12 +328,25 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 
 <body>
 
-<div class="container d-flex justify-content-center mt-2">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Product'; break;
+            case 'E': echo 'Edit Product'; break;
+            default: echo 'View Product';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="prodFormContainer" class="container d-flex justify-content-center mt-2">
         <div class="col-8 col-md-6" style="width:95%; margin:auto;">
             <form id="prodForm" method="post" action="">
                 <div class="row">
                     <div class="col-12">
-                        <div class="form-group my-5">
+                        <div class="form-group mb-5">
                             <h2>
                                 <?php
                                 switch($act)
@@ -344,14 +357,6 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                                 }
                                 ?>
                             </h2>
-                            <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                switch($act)
-                                {
-                                    case 'I': echo 'Add Product'; break;
-                                    case 'E': echo 'Edit Product'; break;
-                                    default: echo 'View Product';
-                                }
-                                ?></p>
                         </div>
                     </div>
                 </div>
@@ -656,6 +661,7 @@ if(isset($_SESSION['tempValConfirmBox']))
 </body>
 <script>
 $(document).ready(function(){
+    centerAlignment("prodFormContainer");
     var prodBarcodeStatus = $("#prod_barcode_status");
     var prodBarcode = $("#prod_barcode_slot, #prod_barcode_slot_lbl");
     var prodBarcodeSlot = $("#prod_barcode_slot");

@@ -136,7 +136,7 @@ if(post('actionBtn'))
             else $err = "Platform name cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = ''.$redirect_page.'';</script>");
+            echo("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
@@ -201,14 +201,26 @@ if(($pltf_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 <html>
 <head>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/form.css">
 </head>
 
 <body>
 
-<div class="container d-flex justify-content-center">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Platform</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Platform'; break;
+            case 'E': echo 'Edit Platform'; break;
+            default: echo 'View Platform';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="pltfFormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6" style="width:95%; margin:auto;">
-        <form id="desigForm" method="post" action="">
+        <form id="pltfForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -220,14 +232,6 @@ if(($pltf_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
                     }
                     ?>
                 </h2>
-                <p><a href="<?= $redirect_page ?>">Platform</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Platform'; break;
-                        case 'E': echo 'Edit Platform'; break;
-                        default: echo 'View Platform';
-                    }
-                    ?></p>
             </div>
 
             <div class="form-group mb-3">
@@ -267,5 +271,8 @@ if(isset($_SESSION['tempValConfirmBox']))
     echo '<script>confirmationDialog("","","Platform","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
+<script>
+centerAlignment("pltfFormContainer");
+</script>
 </body>
 </html>

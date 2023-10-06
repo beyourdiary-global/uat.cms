@@ -218,10 +218,23 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 
 <body>
 
-<div class="container d-flex justify-content-center">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="width:95%; margin:auto;">
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">Pin Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add Pin Group'; break;
+            case 'E': echo 'Edit Pin Group'; break;
+            default: echo 'View Pin Group';
+        }
+        ?></p>
+    </div>
+</div>
+
+<div id="pinFormContainer" class="container d-flex justify-content-center">
+    <div class="col-8 col-md-6" style="width:95%; margin:auto;">
         <form id="pinForm" method="post" action="">
-            <div class="form-group my-5">
+            <div class="form-group my-3">
                 <h2>
                     <?php
                     switch($act)
@@ -232,14 +245,6 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
                     }
                     ?>
                 </h2>
-                <p><a href="<?= $redirect_page ?>">Pin Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Pin Group'; break;
-                        case 'E': echo 'Edit Pin Group'; break;
-                        default: echo 'View Pin Group';
-                    }
-                    ?></p>
             </div>
 
             <div class="form-group mb-3">

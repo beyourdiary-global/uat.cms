@@ -275,12 +275,24 @@ tbody {
 </style>
 
 <body>
+<div class="d-flex flex-column my-3 ms-3">
+    <div class="row">
+        <p><a href="<?= $redirect_page ?>">User Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        switch($act)
+        {
+            case 'I': echo 'Add User Group'; break;
+            case 'E': echo 'Edit User Group'; break;
+            default: echo 'View User Group';
+        }
+        ?></p>
+    </div>
+</div>
 
-<div id="dispTable" class="container d-flex justify-content-center">
+<div id="usergrpFormContainer" class="container d-flex justify-content-center">
     <div class="col-12" style="width:95%; margin:auto;">
-        <form id="pinForm" method="post" action="">
+        <form id="usergrpForm" method="post" action="">
             <div class="row d-flex justify-content-center">
-                <div class="form-group mt-5 mb-5">
+                <div class="form-group mb-5">
                     <h2>
                         <?php
                         switch($act)
@@ -291,15 +303,6 @@ tbody {
                         }
                         ?>
                     </h2>
-                    <p><a href="<?= $redirect_page ?>">User Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                switch($act)
-                                {
-                                    case 'I': echo 'Add User Group'; break;
-                            case 'E': echo 'Edit User Group'; break;
-                            default: echo 'View User Group';
-                                }
-                                ?></p>
-                </div>
             </div>
 
             <div class="row d-flex justify-content-center">

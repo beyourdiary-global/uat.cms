@@ -31,15 +31,17 @@ $( document ).ready(() => {
 
         <div class="col-12 col-md-8">
 
-            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
-                <div class="left">
-                        <h2>Pin Group</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Pin Group</p>
+            <div class="d-flex flex-column mb-3">
+                <div class="row">
+                    <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Pin Group</p>
                 </div>
 
-                <div class="right d-flex">
-                    <div class="mt-auto mb-auto">
-                        <a class="btn btn-sm btn-rounded btn-primary" name="addPinBtn" id="addPinBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Pin Group </a>
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between flex-wrap">
+                        <h2>Pin Group</h2>
+                        <div class="mt-auto mb-auto">
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Pin Group </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -121,14 +123,6 @@ $( document ).ready(() => {
 </body>
 <script>
 dropdownMenuDispFix();
-
-$(window).resize(() => {
-    datatableAlignment('pin_group_table');
-});
-
-$(window).load(() => {
-    datatableAlignment('pin_group_table');
-});
-
+datatableAlignment('pin_group_table');
 </script>
 </html>
