@@ -116,46 +116,56 @@ if($resetpass_btn == 1)
 <head>
 <?php include "header.php"; ?>
 <link rel="stylesheet" href="./css/main.css">
+<link rel="stylesheet" href="./css/login.css">
 </head>
 
 <body>
-
-<div class="forgotpassContainer container d-flex justify-content-center">
-    <div class="col-lg-5 col-md-5 col-ms-5 col-xs-5">
-        <div class="mb-4 d-flex justify-content-center" id="logo_element">
-            <img src="./image/logo2.png">
+<div class="container d-flex justify-content-center mt-2">
+    <div class="col-12 col-md-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center my-4" id="logo_element">
+                    <img src="./image/logo2.png">
+                </div>
+            </div>
         </div>
 
         <form id="forgotpassForm" name="forgotpassForm" method="post" action="">
-        <div class="px-5 py-5 rounded">
-            <div class="mb-3">
-                <div class="form-group forgotpass-title">
+            <div class="row">
+                <div class="form-group mt-5 mb-3 d-flex flex-column align-items-center">
                     <h3>Forgot Password?</h3>
-                    <h7>Enter your email to get a password reset link</h7>
+                    <h7 style="text-align:center">Enter your email to get a password reset link</h7>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <div class="form-group">
-                    <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
-                    <input class="form-control" type="email" name="email-addr" id="email-addr">
-                    <span id="email-addr_error"></span>
+            <div class="d-flex flex-column">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div class="form-group mb-3">
+                            <label class="form-label" id="email-addr_lbl" for="email-addr">Email Address</label>
+                            <input class="form-control" type="email" name="email-addr" id="email-addr">
+                            <span id="email-addr_error"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="d-flex justify-content-center">
-                <div id="loader_div" class="mb-3 loader" style="display:none"></div>
-                <div id="loader_result_div" class="mb-3" style="display:none">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div id="loader_div" class="mb-3 loader" style="display:none"></div>
+                        <div id="loader_result_div" class="mb-3" style="display:none">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        
-            <div class="mb-3">
-                <div class="form-group">
-                    <button class="btn btn-block btn-primary mb-3" name="resetpass_btn" id="resetpass_btn">Reset password</button>
-                    <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='index.php'" value="back">
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-10">
+                        <div class="form-group mb-3">
+                            <button class="btn btn-block btn-primary mb-3" name="resetpass_btn" id="resetpass_btn">Reset password</button>
+                            <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='index.php'" value="back">
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div>            
         </form>
     </div>
 </div>
