@@ -7,7 +7,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = 'product.php';
+$redirect_page = $SITEURL . '/product.php';
 $result = getData('*','',PROD,$connect);
 ?>
 
@@ -32,7 +32,7 @@ $( document ).ready(() => {
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Product</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Product</p>
                 </div>
 
                 <div class="row">
@@ -48,7 +48,7 @@ $( document ).ready(() => {
             <table class="table table-striped" id="product_table">
                 <thead>
                     <tr>
-                        <th scope="col" style="display:none">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Cost</th>
@@ -60,7 +60,7 @@ $( document ).ready(() => {
                 <tbody>
                 <?php while($row = $result->fetch_assoc()) { ?>
                     <tr>
-                        <th scope="row" style="display:none"><?= $row['id'] ?></th>
+                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                         <th scope="row"><?= $num; $num++ ?></th>
                         <td scope="row"><?= $row['name'] ?></td>
                         <td scope="row">
@@ -110,7 +110,7 @@ $( document ).ready(() => {
                                 <a class="dropdown-item" href="<?= $redirect_page."?id=".$row['id'].'&act='.$act_2?>">Edit</a>
                                 </li>
                                 <li>
-                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id']?>',['<?= $row['name'] ?>'],'Product','<?= $redirect_page ?>','product_table.php','D')">Delete</a>
+                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id']?>',['<?= $row['name'] ?>'],'Product','<?= $redirect_page ?>','<?= $SITEURL ?>/product_table.php','D')">Delete</a>
                                 </li>
                             </ul>
                             </div>
@@ -120,7 +120,7 @@ $( document ).ready(() => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th scope="col" style="display:none">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Cost</th>

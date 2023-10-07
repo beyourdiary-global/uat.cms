@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $cur_unit_id = input('id');
 $act = input('act');
-$redirect_page = 'currency_unit_table.php';
+$redirect_page = $SITEURL . '/currency_unit_table.php';
 $tblname = CUR_UNIT;
 
 // to display data to input
@@ -223,7 +223,7 @@ if(($cur_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 </div>
 
 <div id="curunitFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="curunitForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

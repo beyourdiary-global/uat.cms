@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $wgt_unit_id = input('id');
 $act = input('act');
-$redirect_page = 'weight_unit_table.php';
+$redirect_page = $SITEURL . '/weight_unit_table.php';
 $tblname = WGT_UNIT;
 
 // to display data to input
@@ -223,7 +223,7 @@ if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
 </div>
 
 <div id="wgtunitFormContainer" class="container d-flex justify-content-center">
-    <div class="col-8 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-8 col-md-6 formWidthAdjust">
         <form id="wgtunitForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

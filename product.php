@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $prod_id = input('id');
 $act = input('act');
-$redirect_page = 'product_table.php';
+$redirect_page = $SITEURL . '/product_table.php';
 $tblname = PROD;
 
 // to display data to input
@@ -342,7 +342,7 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 </div>
 
 <div id="prodFormContainer" class="container d-flex justify-content-center mt-2">
-        <div class="col-8 col-md-6" style="width:95%; margin:auto;">
+        <div class="col-8 col-md-6 formWidthAdjust">
             <form id="prodForm" method="post" action="">
                 <div class="row">
                     <div class="col-12">

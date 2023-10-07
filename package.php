@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $pkg_id = input('id');
 $act = input('act');
-$redirect_page = 'package_table.php';
+$redirect_page = $SITEURL . '/package_table.php';
 $tblname = PKG;
 
 // to display data to input
@@ -295,7 +295,7 @@ if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 </div>
 
 <div id="packageFormContainer" class="container-fluid mt-2">
-    <div class="col-12 col-md-12" style="width:95%; margin:auto;">
+    <div class="col-12 col-md-12 formWidthAdjust">
         <form id="packageForm" method="post" action="">
             <div class="row">
                 <div class="form-group my-3">

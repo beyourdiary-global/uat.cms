@@ -6,7 +6,6 @@ $pageTitle = "Make Order";
 include 'menuHeader.php';
 ?>
 <link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/form.css">
 </head>
 
 <?php
@@ -325,7 +324,7 @@ if(post('actionBtn'))
 
     <div class="d-flex flex-column mb-3 ms-3">
         <div class="row">
-            <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Make Order</p>
+            <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Make Order</p>
         </div>
 
         <div class="row">
@@ -823,7 +822,7 @@ if(post('actionBtn'))
                     <div class="row">
                         <div class="col-6">
                             <div class="d-flex justify-content-center">
-                                <a class="btn btn-default btn-primary" type="button" href="<?= "rate_checking.php?country=" .$from; ?>" id="backBtn">Back</a>
+                                <a class="btn btn-default btn-primary" type="button" href="<?= "$SITEURL/rate_checking.php?country=" .$from; ?>" id="backBtn">Back</a>
                             </div>
                         </div>
                         <div class="col-6">
@@ -842,7 +841,7 @@ if(post('actionBtn'))
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Shipping Request","","rate_checking.php?country='.$from.'","I");</script>';
+    echo '<script>confirmationDialog("","","Shipping Request","",'.$SITEURL.'"/rate_checking.php?country='.$from.'","I");</script>';
 }
 ?>
 </body>

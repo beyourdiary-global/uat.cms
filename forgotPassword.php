@@ -161,7 +161,7 @@ if($resetpass_btn == 1)
                     <div class="col-10">
                         <div class="form-group mb-3">
                             <button class="btn btn-block btn-primary mb-3" name="resetpass_btn" id="resetpass_btn">Reset password</button>
-                            <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='index.php'" value="back">
+                            <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='<?= $SITEURL ?>/index.php'" value="back">
                         </div>
                     </div>
                 </div>

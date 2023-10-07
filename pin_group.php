@@ -5,7 +5,7 @@ include 'menuHeader.php';
 $pin_grp_id = input('id');
 $act = input('act');
 
-$redirect_page = 'pin_group_table.php';
+$redirect_page = $SITEURL . '/pin_group_table.php';
 $pin_result = getData('*','',PIN,$connect);
 
 if($pin_grp_id)
@@ -232,7 +232,7 @@ if(($pin_grp_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 </div>
 
 <div id="pinFormContainer" class="container d-flex justify-content-center">
-    <div class="col-8 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-8 col-md-6 formWidthAdjust">
         <form id="pinForm" method="post" action="">
             <div class="form-group my-3">
                 <h2>

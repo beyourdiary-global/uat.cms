@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $currencies_id = input('id');
 $act = input('act');
-$redirect_page = 'currencies_table.php';
+$redirect_page = $SITEURL . '/currencies_table.php';
 
 // to display data to input
 if($currencies_id)
@@ -259,7 +259,7 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
 </div>
 
 <div id="currenciesFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="currenciesForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

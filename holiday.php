@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $holiday_id = input('id');
 $act = input('act');
-$redirect_page = 'holiday_table.php';
+$redirect_page = $SITEURL . '/holiday_table.php';
 
 // to display data to input
 if($holiday_id)
@@ -224,7 +224,7 @@ if(($holiday_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SES
 </div>
 
 <div id="holidayFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="holidayForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

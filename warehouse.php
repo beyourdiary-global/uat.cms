@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $warehouse_id = input('id');
 $act = input('act');
-$redirect_page = 'warehouse_table.php';
+$redirect_page = $SITEURL . '/warehouse_table.php';
 
 // to display data to input
 if($warehouse_id)
@@ -219,7 +219,7 @@ if(($warehouse_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_S
 </div>
 
 <div id="whseFormContainer" class="container d-flex justify-content-center">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="width:95%; margin:auto;">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 formWidthAdjust">
         <form id="whseForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

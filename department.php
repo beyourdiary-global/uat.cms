@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $dept_id = input('id');
 $act = input('act');
-$redirect_page = 'department_table.php';
+$redirect_page = $SITEURL . '/department_table.php';
 
 // to display data to input
 if($dept_id)
@@ -219,7 +219,7 @@ if(($dept_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 </div>
 
 <div id="deptFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="deptForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

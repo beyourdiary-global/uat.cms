@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $pin_id = input('id');
 $act = input('act');
-$redirect_page = 'pin_table.php';
+$redirect_page = $SITEURL . '/pin_table.php';
 
 // to display data to input
 if($pin_id)
@@ -220,7 +220,7 @@ if(($pin_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 </div>
 
 <div id="pinFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="pinForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $em_type_status_id = input('id');
 $act = input('act');
-$redirect_page = 'em_type_status_table.php';
+$redirect_page = $SITEURL . '/em_type_status_table.php';
 
 // to display data to input
 if($em_type_status_id)
@@ -219,7 +219,7 @@ if(($em_type_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) &&
 </div>
 
 <div id="emtypestatusFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="emtypestatusForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

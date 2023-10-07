@@ -209,7 +209,7 @@ $( document ).ready(() => {
         <div class="px-4 py-4">
             <div class="mb-3">
                 <div class="row">
-                    <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Check Rate</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Check Rate</p>
                 </div>
 
                 <div class="row">
