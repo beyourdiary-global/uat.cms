@@ -318,11 +318,11 @@ tbody {
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-3">
                     <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
-                    <div class="table-responsive" style="max-height: 500px;">
+                    <div class="table-responsive">
                         <table class="table table-striped" id="permission_table">
                             <thead class="table-dark">
                                 <tr>
-                                    <th scope="col">#</th>
+                                    <th scope="col"></th>
                                     <?php 
                                     if(mysqli_num_rows($pin_result) != 0) {
                                         while($pin_row = $pin_result->fetch_assoc())
