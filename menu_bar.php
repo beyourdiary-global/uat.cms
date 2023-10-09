@@ -21,32 +21,6 @@ $menuList = array(
         'pin' => array('0')             // action
     ),
     array(
-        'Settings',
-        'mdi mdi-cog',
-        'javascript:void(0)',
-        'y',
-        'expand' => array(
-            array('Pin', 'mdi mdi-pin', 'pin_table.php', '1'),
-            array('Pin Group', 'mdi mdi-ungroup', 'pin_group_table.php', '2'),
-            array('User Group', 'mdi mdi-account-wrench-outline', 'user_group_table.php', '3'),
-            array('Bank', 'mdi mdi-bank', 'bank_table.php', '8'),
-            array('Brand', 'mdi mdi-label-outline', 'brand_table.php', '9'),
-            array('Currency Unit', 'mdi mdi-currency-usd', 'currency_unit_table.php', '10'),
-            array('Currencies', 'mdi mdi-swap-horizontal', 'currencies_table.php', '11'),
-            array('Employment Type Status', 'mdi mdi-account-question-outline', 'em_type_status_table.php', '12'),
-            array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
-            array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
-            array('Product Status', 'mdi mdi-package-variant-closed', 'prod_status_table.php', '15'),
-            array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
-            array('Audit Log', 'mdi mdi-text-box-search-outline', 'audit_log.php', '18'),
-            array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
-            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20'),
-            array('Package', 'mdi mdi-package', 'package_table.php', '21'),
-            array('Barcode Generator', 'mdi mdi-barcode', 'barcode_generator.php', '22')
-        ),
-        'pin' => array('1','2','3','8','9','10','11','12','13','14','15','16','18','19','20','21','22')
-    ),
-    array(
         'Employees',
         'mdi mdi-account-outline',
         'javascript:void(0)',
@@ -54,11 +28,98 @@ $menuList = array(
         'expand' => array(
             array('Designations', 'mdi mdi-badge-account-outline', 'designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', 'department_table.php', '5'),
-            array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
-            array('Rate Checking', 'mdi mdi-package-variant', 'rate_checking.php', '17')
         ),
-        'pin' => array('4','5','6','17')
-    )
+        'pin' => array('4','5')
+    ),
+    array(
+        'Product',
+        'mdi mdi-package-variant',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20'),
+            array('Package', 'mdi mdi-package', 'package_table.php', '21'),
+        ),
+        'pin' => array('20','21')
+    ),
+    array(
+        'Other',
+        'mdi mdi-dots-horizontal',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Barcode Generator', 'mdi mdi-barcode', 'barcode_generator.php', '22'),
+            array('Rate Checking', 'mdi mdi-package-variant', 'rate_checking.php', '17'),
+        ),
+        'pin' => array('22','17')
+    ),
+    array(
+        'Settings',
+        'mdi mdi-cog',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array(
+                'User Management',
+                'mdi mdi-folder-account',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Pin', 'mdi mdi-pin', 'pin_table.php', '1'),
+                    array('Pin Group', 'mdi mdi-ungroup', 'pin_group_table.php', '2'),
+                    array('User Group', 'mdi mdi-account-wrench-outline', 'user_group_table.php', '3'),
+                ),
+                'pin' => array('1','2','3'),
+            ),
+            array(
+                'User Administration Setting',
+                'mdi mdi-account-key',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Bank', 'mdi mdi-bank', 'bank_table.php', '8'),
+                    array('Currencies', 'mdi mdi-swap-horizontal', 'currencies_table.php', '11'),
+                    array('Currency Unit', 'mdi mdi-currency-usd', 'currency_unit_table.php', '10'),
+                    array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
+                    array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
+                    array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
+                ),
+                'pin' => array('8','11','10','14','16','19'),
+            ),
+            array(
+                'Product Administration Setting',
+                'mdi mdi-archive-settings-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Product Status', 'mdi mdi-package-variant-closed', 'prod_status_table.php', '15'),
+                    array('Brand', 'mdi mdi-label-outline', 'brand_table.php', '9'),
+                ),
+                'pin' => array('15','9'),
+            ),
+            array(
+                'Employee Administration Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Employment Type Status', 'mdi mdi-account-question-outline', 'em_type_status_table.php', '12'),
+                    array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
+                    array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
+                ),
+                'pin' => array('12','13','6'),
+            ),   
+        ),
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6')
+    ),
+    array(
+        'Audit Log',
+        'mdi mdi-text-box-search-outline',
+        'audit_log.php',
+        'n',
+        'expand' => array(),
+        'pin' => array('18')
+    ),
 );
 
 ?>
@@ -99,13 +160,36 @@ $menuList = array(
                         $a = $innerList[3] == 'y' ? "class=\"nav-link dropdown-toggle\" data-bs-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"" : "class=\"nav-link\"";
 
                         echo "<li $li>";
-                        echo "<a $a href=\"$innerList[2]\"><i class=\"$innerList[1]\"></i><span> $innerList[0]</span><a>";
+                        echo "<a $a href=\"$innerList[2]\"><i class=\"$innerList[1]\"></i><span> $innerList[0]</span></a>";
                         echo "<ul class=\"dropdown-menu menuBar\">";
                         foreach($innerList['expand'] as $url)
                         {
-                            if(in_array($url[3], GlobalPin))
+                            if(isset($url['expand']))
                             {
-                                echo "<li><a class=\"dropdown-item\" href=\"$url[2]\">$url[0]</a></li>";
+                                if(!empty(array_intersect($url['pin'], GlobalPin)))
+                                {
+                                    echo "<li>";
+                                    echo "<a class=\"dropdown-item dropdown-toggle\" href=\"$url[2]\"><span> $url[0]</span></a>";
+                                    echo "<ul class=\"dropdown-menu dropdown-submenu menuBar\">";
+
+                                    foreach($url['expand'] as $url2)
+                                    {
+                                        if(in_array($url2[3], GlobalPin))
+                                        {
+                                            echo "<li><a class=\"dropdown-item\" href=\"$url2[2]\">$url2[0]</a></li>";
+                                        }
+                                    }
+
+                                    echo "</ul>";
+                                    echo "</li>";
+                                }
+                            }
+                            else 
+                            {
+                                if(in_array($url[3], GlobalPin))
+                                {
+                                    echo "<li><a class=\"dropdown-item\" href=\"$url[2]\">$url[0]</a></li>";
+                                }
                             }
                         }
                         echo "</ul>";
@@ -136,15 +220,50 @@ $menuList = array(
                         $a = $innerList[3] == 'y' ? "class=\"nav-link dropdown-toggle\" data-bs-toggle=\"collapse\" data-bs-target=\"#$innerList[0]-collapse\" aria-expanded=\"false\"" : "class=\"nav-link\" href=\"$innerList[2]\"";
 
                         echo "<li $li>";
-                        echo "<a $a href=\"#\"><i class=\"$innerList[1]\"></i><span> $innerList[0]</span><a>";
+                        echo "<a $a href=\"#\"><i class=\"$innerList[1]\"></i><span> $innerList[0]</span></a>";
                         echo "<div class=\"collapse\" id=\"$innerList[0]-collapse\">";
                         echo "<ul class=\"list-unstyled collapse-menu\">";
                         foreach($innerList['expand'] as $url)
                         {
-                            if(in_array($url[3], GlobalPin))
+                            if(isset($url['expand']))
+                            {
+                                if(!empty(array_intersect($url['pin'], GlobalPin)))
+                                {
+                                    $idCollapse = str_replace(" ","-",$url[0]);
+
+                                    $li = $url[3] == 'y' ? "class=\"nav-item dropdown\"" : "class=\"nav-item\"";
+                                    $a = $url[3] == 'y' ? "class=\"nav-link dropdown-toggle\" data-bs-toggle=\"collapse\" data-bs-target=\"#$idCollapse-collapse\" aria-expanded=\"false\"" : "class=\"nav-link\" href=\"$url[2]\"";
+
+                                    echo "<li $li>";
+                                    echo "<a $a href=\"#\"><i class=\"$url[1]\"></i><span> $url[0]</span></a>";
+                                    echo "<div class=\"collapse\" id=\"$idCollapse-collapse\">";
+                                    echo "<ul class=\"list-unstyled collapse-menu\">";
+
+                                    foreach($url['expand'] as $url2)
+                                    {
+                                        if(in_array($url2[3], GlobalPin))
+                                        {
+                                            echo "<li><a class=\"nav-link\" href=\"$url2[2]\"><i class=\"$url2[1]\"></i><span> $url2[0]<span></a></li>";
+                                        }
+                                    }
+
+                                    echo "</ul>";
+                                    echo "</div>";
+                                    echo "</li>";
+                                }
+                            }
+                            else
+                            {
+                                if(in_array($url[3], GlobalPin))
+                                {
+                                    echo "<li><a class=\"nav-link\" href=\"$url[2]\"><i class=\"$url[1]\"></i><span> $url[0]<span></a></li>";
+                                }
+                            }
+
+                            /* if(in_array($url[3], GlobalPin))
                             {
                                 echo "<li><a class=\"nav-link\" href=\"$url[2]\"><i class=\"$url[1]\"></i><span> $url[0]<span></a></li>";
-                            }
+                            } */
                         }
                         echo "</ul>";
                         echo "</div>";

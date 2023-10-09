@@ -32,7 +32,7 @@ $( document ).ready(() => {
         <div class="col-12 col-md-8">
 
         <div class="row">
-            <div class="d-flex flex-column flex-md-row justify-content-between mb-3">
+            <div class="d-flex flex-column flex-md-row mb-3">
                 <div class="left">
                         <h2>Audit Log</h2>
                         <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Audit Log</p>
