@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $user_grp_id = input('id');
 $act = input('act');
-$redirect_page = 'user_group_table.php';
+$redirect_page = $SITEURL . '/user_group_table.php';
 
 // pin
 $pin_result = getData('*','',PIN,$connect);
@@ -289,7 +289,7 @@ tbody {
 </div>
 
 <div id="usergrpFormContainer" class="container d-flex justify-content-center">
-    <div class="col-12" style="width:95%; margin:auto;">
+    <div class="col-12 formWidthAdjust">
         <form id="usergrpForm" method="post" action="">
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-5">

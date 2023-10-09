@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $prod_status_id = input('id');
 $act = input('act');
-$redirect_page = 'prod_status_table.php';
+$redirect_page = $SITEURL . '/prod_status_table.php';
 
 // to display data to input
 if($prod_status_id)
@@ -219,7 +219,7 @@ if(($prod_status_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($
 </div>
 
 <div id="prodstatusFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="prodstatusForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

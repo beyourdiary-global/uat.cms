@@ -364,6 +364,15 @@ transform: translate(-50%, 0) !important;
 /*---------------------------------------------------------
 # Common
 ---------------------------------------------------------*/
+.formWidthAdjust {
+    width: 95%;
+    margin: auto;
+}
+
+.hideColumn {
+    display: none;
+}
+
 .centered {
     position: absolute;
     top: 50%;

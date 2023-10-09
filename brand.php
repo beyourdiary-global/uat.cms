@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $brand_id = input('id');
 $act = input('act');
-$redirect_page = 'brand_table.php';
+$redirect_page = $SITEURL . '/brand_table.php';
 $tblname = BRAND;
 
 // to display data to input
@@ -223,7 +223,7 @@ if(($brand_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 </div>
 
 <div id="brandFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="brandForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

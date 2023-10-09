@@ -143,7 +143,7 @@ include "include/common_variable.php";
                         <a class="dropdown-item" href="#">Settings</a>
                         </li>
                         <li>
-                        <a class="dropdown-item" href="logout.php">Logout</a>
+                        <a class="dropdown-item" href="<?= $SITEURL ?>/logout.php">Logout</a>
                         </li>
                     </ul>
                     </div>
@@ -175,7 +175,7 @@ include "include/common_variable.php";
                     <div class="dropdown-divider my-0"></div>
                     </li>
                     <li>
-                    <a class="dropdown-item" href="#">Logout</a>
+                    <a class="dropdown-item" href="<?= $SITEURL ?>/logout.php">Logout</a>
                     </li>
                 </ul>
             </div>

@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $desig_id = input('id');
 $act = input('act');
-$redirect_page = 'designations_table.php';
+$redirect_page = $SITEURL . '/designations_table.php';
 
 // to display data to input
 if($desig_id)
@@ -219,7 +219,7 @@ if(($desig_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSI
 </div>
 
 <div id="desigFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="desigForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

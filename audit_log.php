@@ -44,7 +44,7 @@ $( document ).ready(() => {
             <table class="table table-striped" id="audit_log_table">
                 <thead>
                     <tr>
-                        <th scope="col" style="display: none">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">#</th>
                         <th scope="col">DateTime</th>
                         <th scope="col">Username</th>
@@ -72,7 +72,7 @@ if(mysqli_num_rows($result) >= 1)
         $id = $row['user_id'];
 ?>
                     <tr>
-                        <th scope="row" style="display: none"><?php echo $row['id']; ?></th>
+                        <th class="hideColumn" scope="row"><?php echo $row['id']; ?></th>
                         <th scope="row"><?php echo $num; ?></th>
                         <td scope="row"><?php echo $row['create_date'] . ', ' . $row['create_time'] ?></td>
                         <td scope="row"><?php echo $username_arr["$id"]?></td>
@@ -94,7 +94,7 @@ if(mysqli_num_rows($result) >= 1)
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th scope="col" style="display: none">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">#</th>
                         <th scope="col">DateTime</th>
                         <th scope="col">Username</th>

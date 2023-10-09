@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $pltf_id = input('id');
 $act = input('act');
-$redirect_page = 'platform_table.php';
+$redirect_page = $SITEURL . '/platform_table.php';
 
 // to display data to input
 if($pltf_id)
@@ -219,7 +219,7 @@ if(($pltf_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 </div>
 
 <div id="pltfFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="pltfForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>

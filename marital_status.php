@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $mrtl_id = input('id');
 $act = input('act');
-$redirect_page = 'marital_status_table.php';
+$redirect_page = $SITEURL . '/marital_status_table.php';
 
 // to display data to input
 if($mrtl_id)
@@ -219,7 +219,7 @@ if(($mrtl_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 </div>
 
 <div id="mrtlFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6" style="width:95%; margin:auto;">
+    <div class="col-6 col-md-6 formWidthAdjust">
         <form id="mrtlFormForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
