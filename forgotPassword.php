@@ -37,7 +37,7 @@ if($resetpass_btn == 1)
                 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
                 <head>
-                    <title></title>
+                    <title>'.$subject.'</title>
                 </head>
                 <body style="margin: 0;background-color: #FFF0E3;font-family: sans-serif;">
                     
@@ -74,10 +74,9 @@ if($resetpass_btn == 1)
                     <table class="footer" style="border-spacing: 0;width: 100%;margin-top: -85px;">
                         <tr class="social-media" align="center" style="text-align: center;">
                             <td style="padding: 0;">
-                                <a href="#"><img class="icon" src="'.img.facebook.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="'.img.twitter.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="'.img.linkedin.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
-                                <a href="#"><img class="icon" src="'.img.instagram.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="'.FB_LINK.'"><img class="icon" src="'.img.facebook.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="'.INSTA_LINK.'"><img class="icon" src="'.img.instagram.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
+                                <a href="'.COMPANY_LINK.'"><img class="icon" src="'.img.website.'" style="border: 0;width: 15px;height: 15px;margin: 0 5px;"></a>
                             </td>
                         </tr>
                     </table> <!-- End Footer -->
@@ -94,7 +93,7 @@ if($resetpass_btn == 1)
 
             // Additional headers
             $headers[] = 'To: <'.$to.'>';
-            $headers[] = 'From: noreply <noreply@example.com>';
+            $headers[] = 'From: noreply <noreply@beyourdiary.com>';
             $headers[] = 'Cc:'.email_cc.'';
             $headers[] = 'Bcc:';
 
@@ -125,7 +124,7 @@ if($resetpass_btn == 1)
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-center my-4" id="logo_element">
-                    <img src="./image/logo2.png">
+                    <img src="<?= img.byd_logo ?>">
                 </div>
             </div>
         </div>
@@ -151,8 +150,8 @@ if($resetpass_btn == 1)
 
                 <div class="row d-flex justify-content-center">
                     <div class="col-10">
-                        <div id="loader_div" class="mb-3 loader" style="display:none"></div>
-                        <div id="loader_result_div" class="mb-3" style="display:none">
+                        <div id="loader_div" class="mb-3 loader hideColumn"></div>
+                        <div id="loader_result_div" class="mb-3 hideColumn">
                         </div>
                     </div>
                 </div>
