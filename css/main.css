@@ -88,6 +88,10 @@ input::-webkit-inner-spin-button {
   margin: 0 !important;
 }
 
+input {
+    line-height:30px !important;
+}
+
 /*------------------------------------------------------
 # Menu Header               
 ------------------------------------------------------*/
