@@ -74,7 +74,7 @@ if(post('actionBtn'))
                 {   
                     try
                     {
-                        $query = "INSERT INTO ".$tblname."(name,price,currency_unit,product,barcode_slot_total,remark,create_date,create_time,create_by) VALUES ('$pkg_name','$pkg_price','$cur_unit','$prod_list','$barcode_slot_total','$pkg_remark',curdate(),curtime(),'".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".$tblname."(name,price,currency_unit,product,barcode_slot_total,remark,create_date,create_time,create_by) VALUES ('$pkg_name','$pkg_price','$cur_unit','$prod_list','$barcode_slot_total','$pkg_remark',curdate(),curtime(),'".USER_ID."')";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -107,8 +107,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$pkg_name</b> into <b><i>Package Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$pkg_name</b> into <b><i>Package Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
                         $log['page'] = 'Package';
@@ -173,7 +173,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".$tblname." SET name ='$pkg_name', price ='$pkg_price', currency_unit ='$cur_unit', product ='$prod_list', barcode_slot_total ='$barcode_slot_total', remark ='$pkg_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$pkg_id'";
+                            $query = "UPDATE ".$tblname." SET name ='$pkg_name', price ='$pkg_price', currency_unit ='$cur_unit', product ='$prod_list', barcode_slot_total ='$barcode_slot_total', remark ='$pkg_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$pkg_id'";
                             mysqli_query($connect, $query);
                             generateDBData($tblname, $connect);
 
@@ -182,9 +182,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -239,8 +239,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$pkg_name</b> from <b><i>Package Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$pkg_name</b> from <b><i>Package Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = $tblname;
             $log['page'] = 'Package';
@@ -254,7 +254,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $pkg_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
@@ -264,8 +264,8 @@ if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$pkg_name</b> from <b><i>Package Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$pkg_name</b> from <b><i>Package Table</i></b>.";
     $log['page'] = 'Package';
     $log['connect'] = $connect;
     audit_log($log);
@@ -535,19 +535,19 @@ if(($pkg_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION
 
             <div class="row">
                 <div class="col-12">
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                     <?php
                             switch($act)
                             {
                                 case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addPkg">Add Package</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addPkg">Add Package</button>';
                                     break;
                                 case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="updPkg">Edit Package</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updPkg">Edit Package</button>';
                                     break;
                             }
                         ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </div>
             </div>

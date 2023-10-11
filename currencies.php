@@ -57,7 +57,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
@@ -83,8 +83,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$dflt_cur_unit[1] -> $exchg_cur_unit[1]</b> into <b><i>Currencies Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$dflt_cur_unit[1] -> $exchg_cur_unit[1]</b> into <b><i>Currencies Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = CURRENCIES;
                         $log['page'] = 'Currencies';
@@ -137,7 +137,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".CURRENCIES." SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$currencies_id'";
+                            $query = "UPDATE ".CURRENCIES." SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$currencies_id'";
                             mysqli_query($connect, $query);
 
                             // audit log
@@ -145,9 +145,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -203,8 +203,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = CURRENCIES;
             $log['page'] = 'Currencies';
@@ -218,7 +218,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $dflt_cur_unit = isset($dataExisted) ? $row['default_currency_unit'] : '';
     $exchg_cur_unit = isset($dataExisted) ? $row['exchange_currency_unit'] : '';
@@ -229,8 +229,8 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
     $log['page'] = 'Currencies';
     $log['connect'] = $connect;
     audit_log($log);
@@ -331,19 +331,19 @@ if(($currencies_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_
                 <textarea class="form-control" name="currencies_remark" id="currencies_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
-            <div class="form-group mt-5 d-flex justify-content-center">
+            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
             <?php
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addCurrencies">Add Currencies</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addCurrencies">Add Currencies</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updCurrencies">Edit Currencies</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updCurrencies">Edit Currencies</button>';
                         break;
                 }
             ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
             </div>
         </form>
     </div>

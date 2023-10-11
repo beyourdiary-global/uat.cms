@@ -37,7 +37,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".WHSE."(name,remark,create_by,create_date,create_time) VALUES ('$warehouse_name','$warehouse_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".WHSE."(name,remark,create_by,create_date,create_time) VALUES ('$warehouse_name','$warehouse_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
@@ -57,8 +57,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$warehouse_name</b> into <b><i>Warehouse Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$warehouse_name</b> into <b><i>Warehouse Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = WHSE;
                         $log['page'] = 'Warehouse';
@@ -99,7 +99,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {    
                             // edit
-                            $query = "UPDATE ".WHSE." SET name ='$warehouse_name', remark ='$warehouse_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$warehouse_id'";
+                            $query = "UPDATE ".WHSE." SET name ='$warehouse_name', remark ='$warehouse_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$warehouse_id'";
                             mysqli_query($connect, $query);
                             
                             // audit log
@@ -107,9 +107,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -164,8 +164,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$warehouse_name</b> from <b><i>Warehouse Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$warehouse_name</b> from <b><i>Warehouse Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = WHSE;
             $log['page'] = 'Warehouse';
@@ -179,7 +179,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($warehouse_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($warehouse_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $warehouse_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
@@ -189,8 +189,8 @@ if(($warehouse_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_S
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$warehouse_name</b> from <b><i>Warehouse Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$warehouse_name</b> from <b><i>Warehouse Table</i></b>.";
     $log['page'] = 'Warehouse';
     $log['connect'] = $connect;
     audit_log($log);
@@ -247,19 +247,19 @@ if(($warehouse_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_S
                 <textarea class="form-control" name="warehouse_remark" id="warehouse_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
-            <div class="form-group mt-5 d-flex justify-content-center">
+            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
             <?php
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addWarehouse">Add Warehouse</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addWarehouse">Add Warehouse</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updWarehouse">Edit Warehouse</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updWarehouse">Edit Warehouse</button>';
                         break;
                 }
             ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
             </div>
         </form>
     </div>
