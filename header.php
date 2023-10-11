@@ -15,7 +15,6 @@
 <!-- Icon -->
 <link href="./header/fontawesome-free-6.0.0-web/css/all.min.css" rel="stylesheet">
 <link href="./header/MaterialDesign-Webfont-master/css/materialdesignicons.css" rel="stylesheet">
-<link href="./header/flag-icons-6.11.0/css/flag-icons.min.css" rel="stylesheet">
 
 <!-- jQuery -->
 <script src="./header/js/jquery_1.11.1_jquery.min.js"></script>
