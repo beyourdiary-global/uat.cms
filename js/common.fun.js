@@ -499,6 +499,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
                     break;
         case 'NC':	var title = "No changes were made.";
                     break;
+		case 'PC':  var title = "Successful Change " + pagename;
+					break;
         default:    var title = "Error";
     }
 
@@ -620,7 +622,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 		} else console.log("Operation Cancelled.");
 	}
 
-	if(act == 'I' || act == 'E' || act == 'NC')
+	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC')
 	{
 		const myModal2 = new bootstrap.Modal(modelResult, {
 			keyboard: false,

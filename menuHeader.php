@@ -2,10 +2,10 @@
 <html>
 <head>
 <?php 
-include "header.php";
-include "include/connection.php";
-include "include/common.php";
-include "include/common_variable.php";
+include_once "header.php";
+include_once "include/connection.php";
+include_once "include/common.php";
+include_once "include/common_variable.php";
 ?>
 <link rel="stylesheet" href="./css/main.css">
 </head>
