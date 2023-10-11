@@ -36,13 +36,6 @@ if(post('actionBtn'))
     $barcode_slot_total = postSpaceFilter('barcode_slot_total_hidden');
     $pkg_remark = postSpaceFilter('package_remark');
 
-    /* echo 'Name: '. $pkg_name . '<br>';
-    echo 'Price: '. $pkg_price . '<br>';
-    echo 'Currency Unit: '. $cur_unit . '<br>';
-    echo 'Product List: ' . $prod_list . '<br>';
-    echo 'Total Barcode Slot: '. $barcode_slot_total . '<br>';
-    echo 'Remark: '. $pkg_remark . '<br>'; */
-
     $action = post('actionBtn');
 
     switch($action)
@@ -635,8 +628,6 @@ function Remove(button) {
     var row = $(button).closest("TR");
     var name = $("TD", row).eq(0).html();
     var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
-    /* var barcodeSlot = parseInt($("TD", row).eq(5).children().attr('value'));
-    var totalSlot = parseInt($("#barcode_slot_total").text()); */
     
     if (confirm("Do you want to delete: " + name)) {
 
@@ -685,7 +676,6 @@ function prodInfoAutoFill(element) {
     id = id[(id.length)-1];
     var prodArr = [];
     var wgtArr = [];
-    /* var rowCount = $('#productList tbody tr').length; */
     var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
     
     var retrieveProdInfo = async () => {
