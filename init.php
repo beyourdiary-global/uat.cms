@@ -36,6 +36,10 @@ $act_3    = 'D'; //Delete
 
 // //session define
 // $displayName = $_SESSION['login_name'];
+define('USER_ID', isset($_SESSION['userid']) ? $_SESSION['userid'] : '');
+define('USER_NAME', isset($_SESSION['user_name']) ? $_SESSION['user_name'] : '');
+define('USER_EMAIL', isset($_SESSION['user_email']) ? $_SESSION['user_email'] : '');
+define('USER_GROUP', isset($_SESSION['user_group']) ? $_SESSION['user_group'] : '');
 
 // //call client url //demo link 
 // if($livemode==true)

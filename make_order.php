@@ -160,12 +160,12 @@ if(post('actionBtn'))
                         $rstcourierchk = $connect->query("SELECT * FROM ".COURIER." WHERE id='$courier_id'");
                         if($rstcourierchk->num_rows == 0)
                         {
-                            $insertCourierQry = "INSERT INTO ".COURIER." (id,name,create_date,create_time,create_by) VALUES ('$courier_id','$courier_name',curdate(),curtime(),'".$_SESSION['userid']."')";
+                            $insertCourierQry = "INSERT INTO ".COURIER." (id,name,create_date,create_time,create_by) VALUES ('$courier_id','$courier_name',curdate(),curtime(),'".USER_ID."')";
                             $connect->query($insertCourierQry);
                         }
 
                         // insert customer
-                        $insertCust = "INSERT INTO ".CUST." (name,company_name,address_1,address_2,postcode,contact,alt_contact,email,state,country,create_date,create_time,create_by) VALUES ('".$dataMO['send_name']."','".$dataMO['send_company']."','".$dataMO['send_addr1']."','".$dataMO['send_addr2']."','".$dataMO['send_code']."','".$dataMO['send_contact']."','".$dataMO['send_mobile']."','".$dataMO['send_email']."','".$dataMO['send_state']."','".$dataMO['send_country']."',curdate(),curtime(),".$_SESSION['userid'].")";
+                        $insertCust = "INSERT INTO ".CUST." (name,company_name,address_1,address_2,postcode,contact,alt_contact,email,state,country,create_date,create_time,create_by) VALUES ('".$dataMO['send_name']."','".$dataMO['send_company']."','".$dataMO['send_addr1']."','".$dataMO['send_addr2']."','".$dataMO['send_code']."','".$dataMO['send_contact']."','".$dataMO['send_mobile']."','".$dataMO['send_email']."','".$dataMO['send_state']."','".$dataMO['send_country']."',curdate(),curtime(),".USER_ID.")";
                         $connect->query($insertCust);
                         $cust_id = mysqli_insert_id($connect);
 
@@ -207,8 +207,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$cust_id] " .$dataMO['send_name'] . " into Customer Table.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " .$dataMO['send_name'] . " into Customer Table.";
                         $log['query_rec'] = $insertCust;
                         $log['query_table'] = CUST;
                         $log['page'] = 'Make Order';
@@ -217,7 +217,7 @@ if(post('actionBtn'))
                         audit_log($log);
 
                         // insert shipping request
-                        $insertShipReq = "INSERT INTO ".SHIPREQ." (order_no,customer_id,courier_id,awb,shipping_cost,currency_unit,shipping_type_id,parcel_content,parcel_value,weight,pickup_date,pickup_time,create_date,create_time,create_by) VALUES ('".$dataMOP['order_number']."','$cust_id','$courier_id','$awb','".$dataMOP['price']."','$currency_unit_id','$service_detail','".$dataMO['content']."','".$dataMO['value']."','$weight','".$dataMOP['collect_date']."','$pickup_time',curdate(),curtime(),'".$_SESSION['userid']."')";
+                        $insertShipReq = "INSERT INTO ".SHIPREQ." (order_no,customer_id,courier_id,awb,shipping_cost,currency_unit,shipping_type_id,parcel_content,parcel_value,weight,pickup_date,pickup_time,create_date,create_time,create_by) VALUES ('".$dataMOP['order_number']."','$cust_id','$courier_id','$awb','".$dataMOP['price']."','$currency_unit_id','$service_detail','".$dataMO['content']."','".$dataMO['value']."','$weight','".$dataMOP['collect_date']."','$pickup_time',curdate(),curtime(),'".USER_ID."')";
                         $connect->query($insertShipReq);
                         $shipreq_id = mysqli_insert_id($connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -266,8 +266,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added [id=$shipreq_id] " .$dataMOP['order_number'] . " into Shipping Request Table.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " .$dataMOP['order_number'] . " into Shipping Request Table.";
                         $log['query_rec'] = $insertShipReq;
                         $log['query_table'] = SHIPREQ;
                         $log['page'] = 'Make Order';
@@ -391,7 +391,7 @@ if(post('actionBtn'))
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                             </div>
-                                            <input class="form-control" type="text" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= isset($_SESSION['user_email']) ? $_SESSION['user_email'] : '';  ?>" required>
+                                            <input class="form-control" type="text" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
                                             <div class="invalid-tooltip">
                                                 Please enter the sender email.
                                             </div>

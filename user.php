@@ -61,7 +61,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".$tblname."(name,username,password_alt,email,access_id,status,create_date,create_time,create_by,fail_count) VALUES ('$user_name','$user_username','$user_password','$user_email','$user_group','A',curdate(),curtime(),'".$_SESSION['userid']."','0')";
+                        $query = "INSERT INTO ".$tblname."(name,username,password_alt,email,access_id,status,create_date,create_time,create_by,fail_count) VALUES ('$user_name','$user_username','$user_password','$user_email','$user_group','A',curdate(),curtime(),'".USER_ID."','0')";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -91,8 +91,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$user_username</b> into <b><i>User Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$user_username</b> into <b><i>User Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
                         $log['page'] = 'User';
@@ -145,7 +145,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".$tblname." SET name ='$user_name', username ='$user_username', email ='$user_email', access_id ='$user_group', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$user_id'";
+                            $query = "UPDATE ".$tblname." SET name ='$user_name', username ='$user_username', email ='$user_email', access_id ='$user_group', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$user_id'";
                             mysqli_query($connect, $query);
                             generateDBData($tblname, $connect);
 
@@ -154,9 +154,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -211,8 +211,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$user_username</b> from <b><i>User Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$user_username</b> from <b><i>User Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = $tblname;
             $log['page'] = 'User';
@@ -226,7 +226,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($user_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $user_username = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
@@ -236,8 +236,8 @@ if(($user_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$user_username</b> from <b><i>User Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$user_username</b> from <b><i>User Table</i></b>.";
     $log['page'] = 'User';
     $log['connect'] = $connect;
     audit_log($log);
@@ -413,19 +413,19 @@ if(($user_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 
                 <div class="row mt-5">
                     <div class="col-12">
-                        <div class="form-group mb-3 d-flex justify-content-center">
+                        <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                         <?php
                             switch($act)
                             {
                                 case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addUser">Add User</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addUser">Add User</button>';
                                     break;
                                 case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="updUser">Edit User</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updUser">Edit User</button>';
                                     break;
                             }
                         ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                         </div>
                     </div>
                 </div>

@@ -38,7 +38,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$wgt_unit','$wgt_unit_remark','".$_SESSION['userid']."',curdate(),curtime())";
+                        $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$wgt_unit','$wgt_unit_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -59,8 +59,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$wgt_unit</b> into <b><i>Weight Unit Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$wgt_unit</b> into <b><i>Weight Unit Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
                         $log['page'] = 'Weight Unit';
@@ -101,7 +101,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".$tblname." SET unit ='$wgt_unit', remark ='$wgt_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$wgt_unit_id";
+                            $query = "UPDATE ".$tblname." SET unit ='$wgt_unit', remark ='$wgt_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$wgt_unit_id";
                             mysqli_query($connect, $query);
                             generateDBData($tblname, $connect);
 
@@ -110,9 +110,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -168,8 +168,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = $tblname;
             $log['page'] = 'Weight Unit';
@@ -183,7 +183,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($wgt_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $wgt_unit = isset($dataExisted) ? $row['unit'] : '';
     $_SESSION['viewChk'] = 1;
@@ -193,8 +193,8 @@ if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
     $log['page'] = 'Weight Unit';
     $log['connect'] = $connect;
     audit_log($log);
@@ -251,19 +251,19 @@ if(($wgt_unit_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SE
                 <textarea class="form-control" name="wgt_unit_remark" id="wgt_unit_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
-            <div class="form-group mt-5 d-flex justify-content-center">
+            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
             <?php
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addWgtUnit">Add Weight Unit</button>';
+                        echo '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addWgtUnit">Add Weight Unit</button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-rounded btn-primary" name="actionBtn" id="actionBtn" value="updWgtUnit">Edit Weight Unit</button>';
+                        echo '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updWgtUnit">Edit Weight Unit</button>';
                         break;
                 }
             ?>
-                <button class="btn btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
             </div>
         </form>
     </div>

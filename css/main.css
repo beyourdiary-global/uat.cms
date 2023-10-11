@@ -432,10 +432,14 @@ transform: translate(-50%, 0) !important;
     font-weight: bold;
     font-size: 18px;
     text-transform: none !important;
-    white-space: nowrap;
+    /* white-space: nowrap; */  /* prevent word wrap on button */
 }
 
 /* to fixed dropdown inside responsive table issue */
+.table-responsive {
+    -webkit-overflow-scrolling: auto !important; /* fix for safari */
+}
+
 .table-responsive .dropdown,
 .table-responsive .btn-group,
 .table-responsive .btn-group-vertical {
