@@ -221,15 +221,15 @@ $( document ).ready(() => {
 
             <div class="form-group" id="country_selector" <?= $dispCountrySel ?>>
                 <form id="c_selectorForm">
-                <div class="row">
-                    <div class="col-6 col-sm-9">
+                <div class="row d-flex flex-md-row flex-column">
+                    <div class="col-12 col-md-9">
                         <label class="form-label form_lbl" id="country_lbl" for="country">From Which Country</label>
                         <select class="form-select mb-3" id="country" name="country" placeholder="State">
                             <option value="MY">Malaysia</option>
                             <option value="SG">Singapore</option>
                         </select>
                     </div>
-                    <div class="col-6 col-sm-3 d-flex justify-content-center">
+                    <div class="col-12 col-md-3 d-flex justify-content-center">
                         <button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="submit">Confirm></button>
                     </div>
                 </div>
@@ -265,8 +265,8 @@ $( document ).ready(() => {
                                     </div>
 
                                     <div class="row mb-3">
-                                        <div class="col">
-                                            <select class="form-select" id="area_from" name="area_from">
+                                        <div class="col-12 col-md-6">
+                                            <select class="form-select mb-3 mb-md-0" id="area_from" name="area_from">
                                                 <option value="" disabled selected style="display:none;">Select your option</option>
                                                 <?php
                                                     if(isset($area))
@@ -290,7 +290,7 @@ $( document ).ready(() => {
                                             </div>
                                         </div>
                                         
-                                        <div class="col">
+                                        <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_from') ? post('postcode_from') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err) ? $err : ''; ?></span>
@@ -310,8 +310,8 @@ $( document ).ready(() => {
                                     </div>
 
                                     <div class="row">
-                                        <div class="col">
-                                            <select class="form-select" id="area_to" name="area_to">
+                                        <div class="col-12 col-md-6">
+                                            <select class="form-select mb-3 mb-md-0" id="area_to" name="area_to">
                                                 <option value="" disabled selected style="display:none;">Select your option</option>
                                                 <?php
                                                     if(isset($area))
@@ -335,7 +335,7 @@ $( document ).ready(() => {
                                             </div>
                                         </div>
                                         
-                                        <div class="col">
+                                        <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_to') ? post('postcode_to') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err2) ? $err2 : ''; ?></span>
@@ -348,13 +348,13 @@ $( document ).ready(() => {
 
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12 col-md-6 mb-3 mb-md-0">
                                             <input class="form-control" type="number" min="0" step=".01" id="weight" name="weight" placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err5) ? $err5 : ''; ?></span>
                                             </div>
                                         </div>
-                                        <div class="col-6 d-flex">
+                                        <div class="col-12 col-md-6 d-flex">
                                             <button class="btn btn-sm btn-primary mb-auto" name="actionBtn" id="actionBtn" value="chkRate_d" style="width:100%">Submit</button>
                                         </div>
                                     </div>
@@ -374,8 +374,8 @@ $( document ).ready(() => {
                                     </div>
 
                                     <div class="row mb-3">
-                                        <div class="col">
-                                            <select class="form-select" id="area_from" name="area_from">
+                                        <div class="col-12 col-md-6">
+                                            <select class="form-select mb-3 mb-md-0" id="area_from" name="area_from">
                                                 <option value="" disabled selected style="display:none;">Select your option</option>
                                                 <?php
                                                     if(isset($area))
@@ -399,7 +399,7 @@ $( document ).ready(() => {
                                             </div>
                                         </div>
                                         
-                                        <div class="col">
+                                        <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_from') ? post('postcode_from') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err6) ? $err6 : ''; ?></span>
@@ -435,7 +435,7 @@ $( document ).ready(() => {
                                     </div>
 
                                     <div class="row mb-3">                                   
-                                        <div class="col">
+                                        <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_to') ? post('postcode_to') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err7) ? $err7 : ''; ?></span>
@@ -448,13 +448,13 @@ $( document ).ready(() => {
 
                                 <div class="form-group">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12 col-md-6 mb-3 mb-md-0">
                                             <input class="form-control" type="number" min="0" step=".01" id="weight" name="weight" placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err9) ? $err9 : ''; ?></span>
                                             </div>
                                         </div>
-                                        <div class="col-6 d-flex">
+                                        <div class="col-12 col-md-6 d-flex">
                                             <button class="btn btn-sm btn-primary mb-auto" name="actionBtn" id="actionBtn" value="chkRate_i" style="width:100%">Submit</button>
                                         </div>
                                     </div>

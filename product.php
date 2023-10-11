@@ -86,7 +86,7 @@ if(post('actionBtn'))
                 {
                     try
                     {
-                        $query = "INSERT INTO ".$tblname."(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,expire_date,parent_product,create_date,create_time,create_by) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_expire_date','$parent_prod',curdate(),curtime(),'".$_SESSION['userid']."')";
+                        $query = "INSERT INTO ".$tblname."(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,expire_date,parent_product,create_date,create_time,create_by) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_expire_date','$parent_prod',curdate(),curtime(),'".USER_ID."')";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -131,8 +131,8 @@ if(post('actionBtn'))
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = $_SESSION['userid'];
-                        $log['act_msg'] = $_SESSION['user_name'] . " added <b>$prod_name</b> into <b><i>Product Table</i></b>.";
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$prod_name</b> into <b><i>Product Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
                         $log['page'] = 'Product';
@@ -221,7 +221,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {
                             // edit
-                            $query = "UPDATE ".$tblname." SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='".$_SESSION['userid']."' WHERE id = '$prod_id'";
+                            $query = "UPDATE ".$tblname." SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$prod_id'";
                             mysqli_query($connect, $query);
                             generateDBData($tblname, $connect);
 
@@ -230,9 +230,9 @@ if(post('actionBtn'))
                             $log['log_act'] = 'edit';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = $_SESSION['userid'];
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                            $log['act_msg'] = $_SESSION['user_name'] . " edited the data";
+                            $log['act_msg'] = USER_NAME . " edited the data";
                             for($i=0; $i<sizeof($oldvalarr); $i++)
                             {
                                 if($i==0)
@@ -287,8 +287,8 @@ if(post('act') == 'D')
             $log['log_act'] = 'delete';
             $log['cdate'] = $cdate;
             $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = $_SESSION['userid'];
-            $log['act_msg'] = $_SESSION['user_name'] . " deleted the data <b>$prod_name</b> from <b><i>Product Table</i></b>.";
+            $log['uid'] = $log['cby'] = USER_ID;
+            $log['act_msg'] = USER_NAME . " deleted the data <b>$prod_name</b> from <b><i>Product Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = $tblname;
             $log['page'] = 'Product';
@@ -302,7 +302,7 @@ if(post('act') == 'D')
     }
 }
 
-if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
     $prod_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
@@ -312,8 +312,8 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
     $log['log_act'] = 'view';
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = $_SESSION['userid'];
-    $log['act_msg'] = $_SESSION['user_name'] . " viewed the data <b>$prod_name</b> from <b><i>Product Table</i></b>.";
+    $log['uid'] = $log['cby'] = USER_ID;
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$prod_name</b> from <b><i>Product Table</i></b>.";
     $log['page'] = 'Product';
     $log['connect'] = $connect;
     audit_log($log);
@@ -632,19 +632,19 @@ if(($prod_id != '') && ($act == '') && (isset($_SESSION['userid'])) && ($_SESSIO
 
                 <div class="row mt-5">
                     <div class="col-12">
-                        <div class="form-group mb-3 d-flex justify-content-center">
+                        <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                         <?php
                             switch($act)
                             {
                                 case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="addProd">Add Product</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addProd">Add Product</button>';
                                     break;
                                 case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="updProd">Edit Product</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updProd">Edit Product</button>';
                                     break;
                             }
                         ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                         </div>
                     </div>
                 </div>
