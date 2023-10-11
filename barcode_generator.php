@@ -8,6 +8,10 @@ $tblname = PKG;
 
 //set it to writable location, a place for temp generated PNG files
 $PNG_TEMP_DIR = dirname(__FILE__).DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
+if(!file_exists($PNG_TEMP_DIR))
+{
+    mkdir($PNG_TEMP_DIR, 0777, true);
+}
 
 //html PNG location prefix
 $PNG_WEB_DIR = 'temp/';
