@@ -206,16 +206,14 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Marital Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Marital Status'; break;
-            case 'E': echo 'Edit Marital Status'; break;
-            default: echo 'View Marital Status';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Marital Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Marital Status'; break;
+        case 'E': echo 'Edit Marital Status'; break;
+        default: echo 'View Marital Status';
+    }
+    ?></p>
 </div>
 
 <div id="mrtlFormContainer" class="container d-flex justify-content-center">

@@ -253,16 +253,14 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">User</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add User'; break;
-            case 'E': echo 'Edit User'; break;
-            default: echo 'View User';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">User</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add User'; break;
+        case 'E': echo 'Edit User'; break;
+        default: echo 'View User';
+    }
+    ?></p>
 </div>
 
 <div id="userFormContainer" class="container d-flex justify-content-center mt-2">
@@ -293,11 +291,8 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_name))
                                     echo $user_name;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['name'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['name'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
@@ -312,11 +307,8 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_username))
                                     echo $user_username;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['username'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['username'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
@@ -333,11 +325,8 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_email))
                                     echo $user_email;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['email'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['email'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
@@ -364,11 +353,10 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                             if($user_group == $id)
                                                 $selected = ' selected';
                                         }
-                                        else
+                                        else if(isset($dataExisted))
                                         {
-                                            if(isset($dataExisted))
-                                                if($row['access_id'] == $id)
-                                                    $selected = ' selected';
+                                            if($row['access_id'] == $id)
+                                                $selected = ' selected';
                                         }
 
                                         echo "<option value=\"$id\" $selected>$grpname</option>";
@@ -382,34 +370,6 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                         </div>
                     </div>
                 </div>
-
-                <!-- <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="user_password_lbl" for="user_password">Password</label>
-                            <input class="form-control" type="text" name="user_password" id="user_password" value=
-                            "<?php
-
-                            ?>" <?php  ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php  ?></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="user_conf_password_lbl" for="user_conf_password">Confirm Password</label>
-                            <input class="form-control" type="text" name="user_conf_password" id="user_conf_password" value=
-                            "<?php
-
-                            ?>" <?php  ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php  ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
                 <div class="row mt-5">
                     <div class="col-12">

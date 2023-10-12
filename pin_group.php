@@ -219,16 +219,14 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Pin Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Pin Group'; break;
-            case 'E': echo 'Edit Pin Group'; break;
-            default: echo 'View Pin Group';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Pin Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Pin Group'; break;
+        case 'E': echo 'Edit Pin Group'; break;
+        default: echo 'View Pin Group';
+    }
+    ?></p>
 </div>
 
 <div id="pinFormContainer" class="container d-flex justify-content-center">

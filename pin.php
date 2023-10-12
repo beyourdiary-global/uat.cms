@@ -208,16 +208,14 @@ if(($pin_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Pin</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Pin'; break;
-            case 'E': echo 'Edit Pin'; break;
-            default: echo 'View Pin';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Pin</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Pin'; break;
+        case 'E': echo 'Edit Pin'; break;
+        default: echo 'View Pin';
+    }
+    ?></p>
 </div>
 
 <div id="pinFormContainer" class="container d-flex justify-content-center">

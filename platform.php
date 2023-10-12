@@ -206,16 +206,14 @@ if(($pltf_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Platform</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Platform'; break;
-            case 'E': echo 'Edit Platform'; break;
-            default: echo 'View Platform';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Platform</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Platform'; break;
+        case 'E': echo 'Edit Platform'; break;
+        default: echo 'View Platform';
+    }
+    ?></p>
 </div>
 
 <div id="pltfFormContainer" class="container d-flex justify-content-center">

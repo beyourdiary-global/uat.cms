@@ -276,16 +276,14 @@ tbody {
 
 <body>
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">User Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add User Group'; break;
-            case 'E': echo 'Edit User Group'; break;
-            default: echo 'View User Group';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">User Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add User Group'; break;
+        case 'E': echo 'Edit User Group'; break;
+        default: echo 'View User Group';
+    }
+    ?></p>
 </div>
 
 <div id="usergrpFormContainer" class="container d-flex justify-content-center">

@@ -329,16 +329,14 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Product'; break;
-            case 'E': echo 'Edit Product'; break;
-            default: echo 'View Product';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Product'; break;
+        case 'E': echo 'Edit Product'; break;
+        default: echo 'View Product';
+    }
+    ?></p>
 </div>
 
 <div id="prodFormContainer" class="container d-flex justify-content-center mt-2">
@@ -369,11 +367,9 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_name))
                                     echo $prod_name;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['name'];
-                                }
+                                else if(isset($dataExisted)) 
+                                   echo $row['name'];
+
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
@@ -389,11 +385,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_brand) && $prod_brand != '')
                                     $echoVal = $prod_brand;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        $echoVal = $row['brand'];
-                                }
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['brand'];
 
                                 if(isset($echoVal))
                                 {
@@ -406,11 +399,9 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_brand) && $prod_brand != '')
                                     echo $prod_brand;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        echo $row['brand'];
-                                }
+                                else if(isset($dataExisted))
+                                    echo $row['brand'];
+
                             ?>">
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
@@ -428,11 +419,9 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_wgt) && $prod_wgt != '')
                                     echo $prod_wgt;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['weight'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['weight'];
+
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
@@ -448,11 +437,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     $echoVal = $prod_wgt_unit;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        $echoVal = $row['weight_unit'];
-                                }
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['weight_unit'];
 
                                 if(isset($echoVal))
                                 {
@@ -465,11 +451,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php 
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     echo $prod_wgt_unit;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['weight_unit'];
-                                } 
+                                else if(isset($dataExisted)) 
+                                    echo $row['weight_unit'];
                             ?>">
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
@@ -486,11 +469,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php 
                                 if(isset($prod_cost) && $prod_cost != '')
                                     echo $prod_cost;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['cost'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['cost'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err5)) echo $err5; ?></span>
@@ -506,11 +486,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     $echoVal = $prod_cur_unit;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        $echoVal = $row['currency_unit'];
-                                }
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['currency_unit'];
 
                                 if(isset($echoVal))
                                 {
@@ -523,11 +500,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     echo $prod_cur_unit;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['currency_unit'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['currency_unit'];
                             ?>">
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err6)) echo $err6; ?></span>
@@ -546,11 +520,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($prod_barcode_status))
                                     echo $prod_barcode_status != 'Yes' ?: ' checked';
-                                else
-                                {
-                                    if(isset($dataExisted)) 
+                                else if(isset($dataExisted)) 
                                     echo $row['barcode_status'] != 'Yes' ? '' : ' checked';
-                                }
                             ?>>
                         </div>
                     </div>
@@ -562,11 +533,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_barcode_slot) && $prod_barcode_slot != '')
                                     echo $prod_barcode_slot;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['barcode_slot'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['barcode_slot'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err7)) echo $err7; ?></span>
@@ -583,11 +551,9 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php 
                                 if(isset($prod_expire_date) && $prod_expire_date != '')
                                     echo $prod_expire_date;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['expire_date'];
-                                }
+                                else if(isset($dataExisted)) 
+                                    echo $row['expire_date'];
+
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err8)) echo $err8; ?></span>
@@ -603,11 +569,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($parent_prod) && $parent_prod != '')
                                     $echoVal = $parent_prod;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        $echoVal = $row['parent_product'];
-                                }
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['parent_product'];
 
                                 if(isset($echoVal) && $echoVal != '')
                                 {
@@ -620,11 +583,8 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                             if(isset($parent_prod) && $parent_prod != '')
                                 echo $parent_prod;
-                            else
-                            {
-                                if(isset($dataExisted) && $row['parent_product'] != '')
-                                    echo $row['parent_product'];
-                            }
+                            else if(isset($dataExisted) && $row['parent_product'] != '')
+                                echo $row['parent_product'];
                             ?>">
                         </div>
                     </div>
@@ -661,7 +621,6 @@ if(isset($_SESSION['tempValConfirmBox']))
 </body>
 <script>
 $(document).ready(function(){
-    centerAlignment("prodFormContainer");
     var prodBarcodeStatus = $("#prod_barcode_status");
     var prodBarcode = $("#prod_barcode_slot, #prod_barcode_slot_lbl");
     var prodBarcodeSlot = $("#prod_barcode_slot");
