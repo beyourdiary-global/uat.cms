@@ -206,16 +206,14 @@ if(($dept_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Department</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Department'; break;
-            case 'E': echo 'Edit Department'; break;
-            default: echo 'View Department';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Department</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Department'; break;
+        case 'E': echo 'Edit Department'; break;
+        default: echo 'View Department';
+    }
+    ?></p>
 </div>
 
 <div id="deptFormContainer" class="container d-flex justify-content-center">

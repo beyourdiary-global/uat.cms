@@ -210,16 +210,14 @@ if(($wgt_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewCh
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Weight Unit</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Weight Unit'; break;
-            case 'E': echo 'Edit Weight Unit'; break;
-            default: echo 'View Weight Unit';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Weight Unit</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Weight Unit'; break;
+        case 'E': echo 'Edit Weight Unit'; break;
+        default: echo 'View Weight Unit';
+    }
+    ?></p>
 </div>
 
 <div id="wgtunitFormContainer" class="container d-flex justify-content-center">

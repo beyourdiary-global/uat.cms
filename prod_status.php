@@ -206,16 +206,14 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Product Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Product Status'; break;
-            case 'E': echo 'Edit Product Status'; break;
-            default: echo 'View Product Status';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Product Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Product Status'; break;
+        case 'E': echo 'Edit Product Status'; break;
+        default: echo 'View Product Status';
+    }
+    ?></p>
 </div>
 
 <div id="prodstatusFormContainer" class="container d-flex justify-content-center">

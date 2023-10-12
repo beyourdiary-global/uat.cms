@@ -211,16 +211,14 @@ if(($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Holiday</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Holiday'; break;
-            case 'E': echo 'Edit Holiday'; break;
-            default: echo 'View Holiday';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Holiday</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Holiday'; break;
+        case 'E': echo 'Edit Holiday'; break;
+        default: echo 'View Holiday';
+    }
+    ?></p>
 </div>
 
 <div id="holidayFormContainer" class="container d-flex justify-content-center">

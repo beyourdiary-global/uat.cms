@@ -206,16 +206,14 @@ if(($desig_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Designation</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Designation'; break;
-            case 'E': echo 'Edit Designation'; break;
-            default: echo 'View Designation';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Designation</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Designation'; break;
+        case 'E': echo 'Edit Designation'; break;
+        default: echo 'View Designation';
+    }
+    ?></p>
 </div>
 
 <div id="desigFormContainer" class="container d-flex justify-content-center">

@@ -206,16 +206,14 @@ if(($em_type_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Employment Type Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Employment Type Status'; break;
-            case 'E': echo 'Edit Employment Type Status'; break;
-            default: echo 'View Employment Type Status';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Employment Type Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Employment Type Status'; break;
+        case 'E': echo 'Edit Employment Type Status'; break;
+        default: echo 'View Employment Type Status';
+    }
+    ?></p>
 </div>
 
 <div id="emtypestatusFormContainer" class="container d-flex justify-content-center">

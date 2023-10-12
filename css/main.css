@@ -461,6 +461,7 @@ transform: translate(-50%, 0) !important;
     background: white;
     border: 1px solid #000000;
     border-radius: 4px;
+    z-index: 99;
 }
 
 .autocomplete .searchResult li{

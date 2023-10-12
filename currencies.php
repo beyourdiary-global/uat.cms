@@ -246,16 +246,14 @@ if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Currencies</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Currencies'; break;
-            case 'E': echo 'Edit Currencies'; break;
-            default: echo 'View Currencies';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Currencies</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Currencies'; break;
+        case 'E': echo 'Edit Currencies'; break;
+        default: echo 'View Currencies';
+    }
+    ?></p>
 </div>
 
 <div id="currenciesFormContainer" class="container d-flex justify-content-center">

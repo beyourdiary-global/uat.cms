@@ -210,16 +210,14 @@ if(($brand_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Brand</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Brand'; break;
-            case 'E': echo 'Edit Brand'; break;
-            default: echo 'View Brand';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Brand</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Brand'; break;
+        case 'E': echo 'Edit Brand'; break;
+        default: echo 'View Brand';
+    }
+    ?></p>
 </div>
 
 <div id="brandFormContainer" class="container d-flex justify-content-center">

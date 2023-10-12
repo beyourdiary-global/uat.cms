@@ -275,16 +275,14 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Package</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Package'; break;
-            case 'E': echo 'Edit Package'; break;
-            default: echo 'View Package';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Package</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Package'; break;
+        case 'E': echo 'Edit Package'; break;
+        default: echo 'View Package';
+    }
+    ?></p>
 </div>
 
 <div id="packageFormContainer" class="container-fluid mt-2">
@@ -312,11 +310,9 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_name))
                                 echo $pkg_name;
-                            else
-                            {
-                                if(isset($dataExisted)) 
-                                    echo $row['name'];
-                            }
+                            else if(isset($dataExisted)) 
+                                echo $row['name'];
+
                         ?>" <?php if($act == '') echo 'readonly' ?>>
                         <div id="err_msg">
                             <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
@@ -331,11 +327,9 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_price))
                                 echo $pkg_price;
-                            else
-                            {
-                                if(isset($dataExisted)) 
-                                    echo $row['price'];
-                            }
+                            else if(isset($dataExisted)) 
+                                echo $row['price'];
+
                         ?>" <?php if($act == '') echo 'readonly' ?>>
                         <div id="err_msg">
                             <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
@@ -351,11 +345,8 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                             unset($echoVal);
                             if(isset($cur_unit) && $cur_unit != '')
                                 $echoVal = $cur_unit;
-                            else
-                            {
-                                if(isset($dataExisted))
-                                    $echoVal = $row['currency_unit'];
-                            }
+                            else if(isset($dataExisted))
+                                $echoVal = $row['currency_unit'];
 
                             if(isset($echoVal))
                             {
@@ -368,11 +359,9 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($cur_unit) && $cur_unit != '')
                                 echo $cur_unit;
-                            else
-                            {
-                                if(isset($dataExisted)) 
-                                    echo $row['currency_unit'];
-                            }
+                            else if(isset($dataExisted)) 
+                                echo $row['currency_unit'];
+
                         ?>">
                         <div id="err_msg">
                             <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
@@ -406,11 +395,8 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 unset($echoVal);
                                 if(isset($prod_list) && $prod_list != '')
                                     $echoVal = $prod_list;
-                                else
-                                {
-                                    if(isset($dataExisted))
-                                        $echoVal = $row['product'];
-                                }
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['product'];
 
                                 // echo
                                 if(isset($echoVal))
@@ -496,11 +482,9 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 ?><input name="barcode_slot_total_hidden" id="barcode_slot_total_hidden" type="hidden" value="<?php
                                 if(isset($barcode_slot_total) && $barcode_slot_total != '')
                                     echo $barcode_slot_total;
-                                else
-                                {
-                                    if(isset($dataExisted)) 
-                                        echo $row['barcode_slot_total'];
-                                } 
+                                else if(isset($dataExisted)) 
+                                    echo $row['barcode_slot_total'];
+
                                 ?>"></td>
                                 <td scope="col"></td>
                             </tr>
@@ -516,11 +500,9 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         <textarea class="form-control" id="package_remark" name="package_remark" style="width:100%" rows="5"><?php
                         if(isset($pkg_remark) && $pkg_remark != '')
                             echo $pkg_remark;
-                        else
-                        {
-                            if(isset($dataExisted)) 
-                                echo $row['remark'];
-                        } 
+                        else if(isset($dataExisted)) 
+                            echo $row['remark'];
+
                         ?></textarea>
                     </div>
                 </div>

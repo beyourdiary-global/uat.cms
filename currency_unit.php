@@ -210,16 +210,14 @@ if(($cur_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewCh
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <div class="row">
-        <p><a href="<?= $redirect_page ?>">Currency Unit</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Currency Unit'; break;
-            case 'E': echo 'Edit Currency Unit'; break;
-            default: echo 'View Currency Unit';
-        }
-        ?></p>
-    </div>
+    <p><a href="<?= $redirect_page ?>">Currency Unit</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    switch($act)
+    {
+        case 'I': echo 'Add Currency Unit'; break;
+        case 'E': echo 'Edit Currency Unit'; break;
+        default: echo 'View Currency Unit';
+    }
+    ?></p>
 </div>
 
 <div id="curunitFormContainer" class="container d-flex justify-content-center">
