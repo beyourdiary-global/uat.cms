@@ -404,6 +404,11 @@ transform: translate(-50%, 0) !important;
     transform: translate(-50%, -50%);
 }
 
+.roundedSelectionBtn {
+    border-radius: 10px;
+    border: 1px solid #a5a5a5;
+}
+
 #addBtn {
     background-color: #FF9B44;
     box-shadow: 0 0 !important;

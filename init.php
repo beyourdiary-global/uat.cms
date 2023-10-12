@@ -92,6 +92,7 @@ define('PROD', 'product');
 define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
+define('L_TYPE', 'leave_type');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
