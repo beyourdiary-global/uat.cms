@@ -257,13 +257,31 @@ if(isset($_SESSION['tempValConfirmBox']))
 ?>
 </body>
 <script>
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize form with "centered" class
+*/
 centerAlignment('leavetypeFormContainer')
 
 $('#light_logo').on('change', function() {
+    /**
+     oufei 20231014
+     common.fun.js
+     function(this *the element itself*, id of the preview element)
+     to view the image after choosing the file
+    */
     previewImage(this,'light_logo_preview')
 })
 
 $('#favicon').on('change', function() {
+    /**
+     oufei 20231014
+     common.fun.js
+     function(this *the element itself*, id of the preview element)
+     to view the image after choosing the file
+    */
     previewImage(this,'favicon_preview')
 })
 </script>

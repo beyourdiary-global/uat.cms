@@ -21,6 +21,12 @@ h2, a {
 
 <script>
 $( document ).ready(() => {
+    /**
+     oufei 20231014
+     common.fun.js
+     function(id)
+     create DataTable (sortable table)
+    */
     createSortingTable('audit_log_table');
 }); 
 </script>
@@ -108,7 +114,20 @@ if(mysqli_num_rows($result) >= 1)
 
 </body>
 <script>
+/**
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
 dropdownMenuDispFix();
+
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize table with bootstrap 5 classes
+*/
 datatableAlignment("audit_log_table");
 </script>
 </html>

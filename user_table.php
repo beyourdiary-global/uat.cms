@@ -20,6 +20,12 @@ $result = getData('*','',USR_USER,$connect);
 
 <script>
 $( document ).ready(() => {
+    /**
+     oufei 20231014
+     common.fun.js
+     function(id)
+     create DataTable (sortable table)
+    */
     createSortingTable('user_table');
 }); 
 </script>
@@ -113,7 +119,20 @@ $( document ).ready(() => {
 
 </body>
 <script>
+/**
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
 dropdownMenuDispFix();
+
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize table with bootstrap 5 classes
+*/
 datatableAlignment('user_table');
 </script>
 </html>

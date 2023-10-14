@@ -267,6 +267,12 @@ if(($wgt_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewCh
     </div>
 </div>
 <?php
+/*
+  oufei 20231014
+  common.fun.js
+  function(title, subtitle, page name, ajax url path, redirect path, action)
+  to show action dialog after finish certain action (eg. edit)
+*/
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
@@ -274,6 +280,12 @@ if(isset($_SESSION['tempValConfirmBox']))
 }
 ?>
 <script>
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize form with "centered" class
+*/
 centerAlignment("wgtunitFormContainer");
 </script>
 </body>
