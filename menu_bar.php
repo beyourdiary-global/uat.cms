@@ -84,8 +84,9 @@ $menuList = array(
                     array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
                     array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
                     array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
+                    array('Change Password', 'mdi mdi-key-change', 'changePassword.php', '25'),
                 ),
-                'pin' => array('8','11','10','14','16','19'),
+                'pin' => array('8','11','10','14','16','19','25'),
             ),
             array(
                 'Product Administration Setting',
