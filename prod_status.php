@@ -1,4 +1,4 @@
-z<?php
+<?php
 $pageTitle = "Product Status";
 include 'menuHeader.php';
 
