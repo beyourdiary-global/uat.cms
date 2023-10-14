@@ -323,7 +323,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                 <div class="col-12 col-md-3">
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" id="price_lbl" for="price">Selling Price</label>
-                        <input class="form-control" type="text" name="price" id="price" value=
+                        <input class="form-control" type="number" name="price" id="price" value=
                         "<?php
                             if(isset($pkg_price))
                                 echo $pkg_price;
@@ -370,7 +370,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                 </div>
             </div>
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-responsive mb-3">
                     <table class="table table-striped" id="productList">
                         <thead>
                             <tr>
@@ -428,21 +428,21 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
                                 </div></td>
-                                <td><input type="text" name="wgt[]" id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly></td>
-                                <td><input type="text" name="wgt_unit[]" id="wgt_unit_<?= $num ?>" value="<?= $pwun ?>" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>" value="<?= $pwu ?>" readonly></td>
-                                <td><input type="text" name="barcode_status[]" id="barcode_status_<?= $num ?>" value="<?= $ps ?>" readonly></td>
-                                <td><input type="text" name="barcode_slot[]" id="barcode_slot_<?= $num ?>" value="<?= $pslot ?>" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_<?= $num ?>" value="<?= $pwun ?>" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>" value="<?= $pwu ?>" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_<?= $num ?>" value="<?= $ps ?>" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_<?= $num ?>" value="<?= $pslot ?>" readonly></td>
                             <?php
                                 if($act != '')
                                 {
                                     if($num == 1)
                                     {
                             ?>
-                                <td><button id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
+                                <td><button class="mt-1"id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
                             <?php
                                     } else {
                             ?>
-                                <td><button id="action_menu_btn" type="button" onclick="Remove(this)"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000" value="Remove"></i></button></td>
+                                <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Remove(this)"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000" value="Remove"></i></button></td>
                             <?php
                                         }
                                     }
@@ -459,11 +459,11 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
                                 </div></td>
-                                <td><input type="text" name="wgt[]" id="wgt_1" value="" readonly></td>
-                                <td><input type="text" name="wgt_unit[]" id="wgt_unit_1" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_1" value="" readonly></td>
-                                <td><input type="text" name="barcode_status[]" id="barcode_status_1" value="" readonly></td>
-                                <td><input type="text" name="barcode_slot[]" id="barcode_slot_1" value="" readonly></td>
-                                <td><button id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
+                                <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_1" value="" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_1" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_1" value="" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_1" value="" readonly></td>
+                                <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_1" value="" readonly></td>
+                                <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
                             </tr>
                             <?php } ?>
                         </tbody>
@@ -546,14 +546,6 @@ if(isset($_SESSION['tempValConfirmBox']))
 */
 dropdownMenuDispFix();
 
-/**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
-centerAlignment("packageFormContainer");
-
 async function setBarcodeSlotTotal(rowCount) {
     var num = 1;
     // init
@@ -601,17 +593,17 @@ function AddRow() {
     cell.html('<input type="text" name="prod_name[]" id="prod_name_'+numbering+'" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_'+numbering+'" value="" oninput="prodInfoAutoFill(this)">');
     cell.addClass('autocomplete');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="wgt[]" id="wgt_'+numbering+'" value="" readonly>');
+    cell.html('<input class="readonlyInput" type="text" name="wgt[]" id="wgt_'+numbering+'" value="" readonly>');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="wgt_unit[]" id="wgt_unit_'+numbering+'" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_'+numbering+'" value="" readonly>');
+    cell.html('<input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_'+numbering+'" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_'+numbering+'" value="" readonly>');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="barcode_status[]" id="barcode_status_'+numbering+'" value="" readonly>');
+    cell.html('<input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_'+numbering+'" value="" readonly>');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="barcode_slot[]" id="barcode_slot_'+numbering+'" value="" readonly>');
+    cell.html('<input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_'+numbering+'" value="" readonly>');
 
     //Add Button cell.
     cell = $(row.insertCell(-1));
-    var btnRemove = $('<button id="action_menu_btn"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000"></i></button>');
+    var btnRemove = $('<button class="mt-1" id="action_menu_btn"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000"></i></button>');
     btnRemove.attr("type", "button");
     btnRemove.attr("onclick", "Remove(this);");
     btnRemove.val("Remove");
@@ -704,8 +696,6 @@ function prodInfoAutoFill(element) {
 }
 
 $(document).ready(function () {
-    floatInput($('#price'));
-
     if(!($("#cur_unit").attr('readonly')))
     {
         $("#cur_unit").keyup(function(){
