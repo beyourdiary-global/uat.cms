@@ -87,8 +87,17 @@ if(post('actionBtn'))
 
                         if($row['remark'] != $em_type_status_remark)
                         {
-                            array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $em_type_status_remark);
+                            if($row['remark'] == '')
+                                $old_remark = 'Empty_Value';
+                            else $old_remark = $row['remark'];
+
+                            array_push($oldvalarr, $old_remark);
+                            
+                            if($em_type_status_remark == '')
+                                $new_remark = 'Empty_Value';
+                            else $new_remark = $em_type_status_remark;
+                            
+                            array_push($chgvalarr, $new_remark);
                         }
 
                         // convert into string

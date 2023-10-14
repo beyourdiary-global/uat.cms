@@ -89,7 +89,16 @@ if(post('actionBtn'))
 
                         if($row['remark'] != $wgt_unit_remark)
                         {
-                            array_push($oldvalarr, $row['remark']);
+                            if($row['remark'] == '')
+                                $old_remark = 'Empty_Value';
+                            else $old_remark = $row['remark'];
+
+                            array_push($oldvalarr, $old_remark);
+
+                            if($wgt_unit_remark == '')
+                                $new_remark = 'Empty_Value';
+                            else $new_remark = $wgt_unit_remark;
+                            
                             array_push($chgvalarr, $wgt_unit_remark);
                         }
 
