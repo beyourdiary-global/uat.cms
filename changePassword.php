@@ -121,7 +121,7 @@ else { echo 'Error.'; }
 <?php if($pageMode == 'userChgPassword') { ?>
 <div class="d-flex flex-column my-3 ms-3">
     <div class="row">
-        <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+        <p><a href="<?= $redirect_page ?>">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
         switch($pageMode)
         {
             case 'userChgPassword': echo 'Change Password'; break;
