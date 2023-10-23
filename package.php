@@ -538,7 +538,20 @@ if(isset($_SESSION['tempValConfirmBox']))
 ?>
 </body>
 <script>
+/**
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
 dropdownMenuDispFix();
+
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize form with "centered" class
+*/
 centerAlignment("packageFormContainer");
 
 async function setBarcodeSlotTotal(rowCount) {

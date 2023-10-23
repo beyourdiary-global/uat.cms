@@ -302,6 +302,12 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
     </div>
 </div>
 <?php
+/*
+  oufei 20231014
+  common.fun.js
+  function(title, subtitle, page name, ajax url path, redirect path, action)
+  to show action dialog after finish certain action (eg. edit)
+*/
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);

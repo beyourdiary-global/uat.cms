@@ -411,25 +411,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
-                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value=
-                            "<?php
-                                unset($echoVal);
-                                if(isset($prod_wgt) && $prod_wgt != '')
-                                    echo $prod_wgt;
-                                else if(isset($dataExisted)) 
-                                    echo $row['weight'];
-
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6">
+                <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
                             <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" value=
@@ -459,26 +441,27 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
-                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value=
-                            "<?php 
-                                if(isset($prod_cost) && $prod_cost != '')
-                                    echo $prod_cost;
+                            <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
+                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value=
+                            "<?php
+                                unset($echoVal);
+                                if(isset($prod_wgt) && $prod_wgt != '')
+                                    echo $prod_wgt;
                                 else if(isset($dataExisted)) 
-                                    echo $row['cost'];
+                                    echo $row['weight'];
+
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err5)) echo $err5; ?></span>
+                                <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="col-12 col-md-6">
+                <div class="row">
+                <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
                             <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" value=
@@ -505,6 +488,21 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             ?>">
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err6)) echo $err6; ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
+                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value=
+                            "<?php 
+                                if(isset($prod_cost) && $prod_cost != '')
+                                    echo $prod_cost;
+                                else if(isset($dataExisted)) 
+                                    echo $row['cost'];
+                            ?>" <?php if($act == '') echo 'readonly' ?>>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php if (isset($err5)) echo $err5; ?></span>
                             </div>
                         </div>
                     </div>
@@ -624,10 +622,7 @@ $(document).ready(function(){
     var prodBarcodeStatus = $("#prod_barcode_status");
     var prodBarcode = $("#prod_barcode_slot, #prod_barcode_slot_lbl");
     var prodBarcodeSlot = $("#prod_barcode_slot");
-    var prodCost = $("#prod_cost");
     
-    floatInput(prodCost);       // for cost input
-
     if(prodBarcodeStatus.prop('checked'))
         prodBarcode.show();
     else

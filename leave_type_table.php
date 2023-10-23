@@ -191,7 +191,20 @@ $( document ).ready(() => {
 
 </body>
 <script>
+/*
+  oufei 20231014
+  common.fun.js
+  function(title, subtitle, page name, ajax url path, redirect path, action)
+  to show action dialog after finish certain action (eg. edit)
+*/
 dropdownMenuDispFix();
+
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize form with "centered" class
+*/
 datatableAlignment('leave_type_table');
 
 var activeElem = $('#activeOption');
