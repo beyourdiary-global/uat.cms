@@ -486,11 +486,11 @@ transform: translate(-50%, 0) !important;
     background: #CACFD2;
 }
 
-/* .autocomplete input[type=text]{
-    padding: 5px;
-    width: 100%;
-    letter-spacing: 1px;
-} */
+.readonlyInput {
+    background-color: #e0e0e0 !important;
+    opacity: 0.8;
+}
+
 
 #backBtn {
     background-color: #888888;

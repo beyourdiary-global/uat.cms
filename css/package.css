@@ -1,4 +1,5 @@
 td input {
     width:100% !important;
     font-weight: normal !important;
+    min-width: 150px;
 }
