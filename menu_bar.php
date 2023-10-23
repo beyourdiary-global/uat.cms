@@ -50,8 +50,9 @@ $menuList = array(
         'expand' => array(
             array('Barcode Generator', 'mdi mdi-barcode', 'barcode_generator.php', '22'),
             array('Rate Checking', 'mdi mdi-package-variant', 'rate_checking.php', '17'),
+            array('Theme Setting', 'mdi mdi-brush-variant', 'theme_setting.php', '23'),
         ),
-        'pin' => array('22','17')
+        'pin' => array('22','17','23')
     ),
     array(
         'Settings',

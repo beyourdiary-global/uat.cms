@@ -482,6 +482,18 @@ function floatInput(element) {
 	});
 }
 
+function previewImage(input, output) {
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+		
+		reader.onload = function (e) {
+			$('#'+output).attr('src', e.target.result);
+		}
+		
+		reader.readAsDataURL(input.files[0]);
+	}
+}
+
 async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     switch(act)
     {
