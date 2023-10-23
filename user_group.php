@@ -140,8 +140,17 @@ if(post('actionBtn'))
 
                         if($row['remark'] != $user_grp_remark)
                         {
-                            array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $user_grp_remark);
+                            if($row['remark'] == '')
+                                $old_remark = 'Empty_Value';
+                            else $old_remark = $row['remark'];
+
+                            array_push($oldvalarr, $old_remark);
+
+                            if($user_grp_remark == '')
+                                $new_remark = 'Empty_Value';
+                            else $new_remark = $user_grp_remark;
+                            
+                            array_push($chgvalarr, $new_remark);
                         }
 
                         if($row['pins'] != $permission_grp)

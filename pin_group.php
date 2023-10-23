@@ -93,8 +93,17 @@ if(post('actionBtn'))
 
                         if($row['remark'] != $pin_grp_remark)
                         {
-                            array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $pin_grp_remark);
+                            if($row['remark'] == '')
+                                $old_remark = 'Empty_Value';
+                            else $old_remark = $row['remark'];
+
+                            array_push($oldvalarr, $old_remark);
+
+                            if($pin_grp_remark == '')
+                                $new_remark = 'Empty_Value';
+                            else $new_remark = $pin_grp_remark;
+                            
+                            array_push($chgvalarr, $new_remark);
                         }
 
                         if($row['pins'] != $pin_grp_pin)

@@ -125,8 +125,17 @@ if(post('actionBtn'))
 
                         if($row['remark'] != $currencies_remark)
                         {
-                            array_push($oldvalarr, $row['remark']);
-                            array_push($chgvalarr, $currencies_remark);
+                            if($row['remark'] == '')
+                                $old_remark = 'Empty_Value';
+                            else $old_remark = $row['remark'];
+
+                            array_push($oldvalarr, $old_remark);
+                            
+                            if($currencies_remark == '')
+                                $new_remark = 'Empty_Value';
+                            else $new_remark = $currencies_remark;
+                            
+                            array_push($chgvalarr, $new_remark);
                         }
 
                         // convert into string
