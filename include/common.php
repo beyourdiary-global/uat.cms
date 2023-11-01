@@ -194,11 +194,14 @@ function getData($search_val, $val, $tbl, $conn){
 
 	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
     
-    if ($statusAvailable) {
-        $query = $val == '' ? "SELECT $search_val FROM $tbl WHERE status = 'A' ORDER BY ID DESC" : "SELECT $search_val FROM $tbl WHERE $val AND status = 'A' ORDER BY ID DESC";
-    } else {
-        $query = $val == '' ? "SELECT $search_val FROM $tbl ORDER BY ID DESC" : "SELECT $search_val FROM $tbl WHERE $val ORDER BY ID DESC";
-    }
+	//Checking a status is available in data field or not then check a val is exist or not
+	if($statusAvailable){
+		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+	}else{
+		$chk_val = $val == '' ? "" : "WHERE $val";
+	}
+	//combine together to process a query
+	$query = "SELECT $search_val FROM $tbl ".$chk_val."order by id desc";
 	
 	$result = $conn->query($query);
 

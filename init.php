@@ -10,7 +10,7 @@ define('dbpwd', '');
 define('dbhost', '127.0.0.1');
 define('dbname', 'byd_cms');
 /* define('SITEURL', 'https://localhost'); */
-define('SITEURL', '//localhost/uat.cms');
+define('SITEURL', '//localhost/uat/uat.cms');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
 define('email_cc', "admin@beyourdiary.co");
