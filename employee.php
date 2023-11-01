@@ -20,7 +20,7 @@ $redirect_page = '';
     <form id="employeeForm" method="post">
         <!-- Title -->
         <div class="row">
-            <div class="form-group mb-5">
+            <div class="form-group mb-5 ">
                 <h3>
                     <?php
                     switch($act)
