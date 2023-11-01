@@ -183,8 +183,23 @@ function convertFirstEachWordCap($param){
 	return trim(ucwords($param));
 }
 
+function isStatusFieldAvailable($tbl, $conn) {
+    $query = "SHOW COLUMNS FROM $tbl LIKE 'status'";
+    $result = $conn->query($query);
+    
+    return $result && $result->num_rows > 0;
+}
+
 function getData($search_val, $val, $tbl, $conn){
-	$query = $val == '' ? "SELECT $search_val FROM $tbl" : "SELECT $search_val FROM $tbl WHERE $val";
+
+	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
+    
+    if ($statusAvailable) {
+        $query = $val == '' ? "SELECT $search_val FROM $tbl WHERE status = 'A' ORDER BY ID DESC" : "SELECT $search_val FROM $tbl WHERE $val AND status = 'A' ORDER BY ID DESC";
+    } else {
+        $query = $val == '' ? "SELECT $search_val FROM $tbl ORDER BY ID DESC" : "SELECT $search_val FROM $tbl WHERE $val ORDER BY ID DESC";
+    }
+	
 	$result = $conn->query($query);
 
 	if (empty($result) && $result->num_rows == 0)
