@@ -26,7 +26,8 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Designations', 'mdi mdi-badge-account-outline', 'designations_table.php', '4'),
+            array('Designations', '
+            ', 'designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', 'department_table.php', '5'),
         ),
         'pin' => array('4','5')
