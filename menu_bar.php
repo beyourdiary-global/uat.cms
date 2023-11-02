@@ -109,11 +109,12 @@ $menuList = array(
                     array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
                     array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
                     array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
+                    array('Identity Type', 'mdi mdi-book-search-outline', 'identity_type_table.php', '26'),
                 ),
-                'pin' => array('12','13','6','24'),
+                'pin' => array('12','13','6','24','26'),
             ),   
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26')
     ),
     array(
         'Audit Log',

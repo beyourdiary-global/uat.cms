@@ -10,7 +10,7 @@ define('dbpwd', '');
 define('dbhost', '127.0.0.1');
 define('dbname', 'byd_cms');
 /* define('SITEURL', 'https://localhost'); */
-define('SITEURL', '//localhost/uat.cms');
+define('SITEURL', '//localhost/uat/uat.cms');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
 define('email_cc', "admin@beyourdiary.co");
@@ -93,6 +93,7 @@ define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
 define('L_TYPE', 'leave_type');
+define('ID_TYPE','identity_type');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
