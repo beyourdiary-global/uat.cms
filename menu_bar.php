@@ -111,12 +111,14 @@ $menuList = array(
                     array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
                     array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
                     array('Identify Type', 'mdi mdi-run-fast', 'identify_type_table.php', '26'),
+                    array('Leave Status', 'mdi mdi-run-fast', 'leave_status_table.php','27'),
                     array('Race', 'mdi mdi-account-star-outline', 'race_table.php', '28'),
                 ),
-                'pin' => array('12','13','6','24','26','28'),
+                'pin' => array('12','13','6','24','26','27','28'),
             ),   
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '28')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28')
+
     ),
     array(
         'Audit Log',
