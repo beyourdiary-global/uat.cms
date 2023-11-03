@@ -26,7 +26,7 @@ $result = getData('*', '', ID_TYPE, $connect);
          function(id)
          create DataTable (sortable table)
         */
-        createSortingTable('department_table');
+        createSortingTable('identity_type_table');
     });
 </script>
 
@@ -118,7 +118,7 @@ $result = getData('*', '', ID_TYPE, $connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('department_table');
+    datatableAlignment('identity_type_table');
 </script>
 
 </html>

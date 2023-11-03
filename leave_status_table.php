@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Leave Status Table";
+$pageTitle = "Leave Status";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';
@@ -38,14 +38,14 @@ $( document ).ready(() => {
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Leave Status</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2>Leave Status</h2>
+                        <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
-                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add Leave Status </a>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page."?act=".$act_1?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ $( document ).ready(() => {
                                 <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'].'&act='.$act_2?>">Edit</a>
                                 </li>
                                 <li>
-                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id']?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'Leave Status','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_status_table.php','D')">Delete</a>
+                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id']?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_status_table.php','D')">Delete</a>
                                 </li>
                             </ul>
                             </div>

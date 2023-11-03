@@ -205,7 +205,7 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 
 <body>
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">$pageTitle</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
             <?php
             switch ($act) {
                 case 'I':
