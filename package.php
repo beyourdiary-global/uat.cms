@@ -232,8 +232,9 @@ if(post('act') == 'D')
             $pkg_id = $row['id'];
             $pkg_name = $row['name'];
 
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$pkg_name,$connect,$cdate,$ctime,$pageTitle);
+            
             generateDBData($tblname, $connect);
 
             // audit log

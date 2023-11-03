@@ -168,22 +168,8 @@ if(post('act') == 'D')
             $brand_id = $row['id'];
             $brand_name = $row['name'];
 
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-            generateDBData($tblname, $connect);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$brand_name</b> under <b><i>Brand Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = $tblname;
-            $log['page'] = 'Brand';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$brand_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
