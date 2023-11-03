@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Identity Type Table";
+$pageTitle = "Identity Type";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';
@@ -35,14 +35,14 @@ $result = getData('*', '', ID_TYPE, $connect);
         <div class="col-12 col-md-8">
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Identity Type</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2>Identity Type</h2>
+                        <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
-                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Identity Type </a>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                                             <a class="dropdown-item" href="identity_type.php?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'Identity Type','<?= $redirect_page ?>','<?= $SITEURL ?>/identity_type_table.php','D')">Delete</a>
+                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/identity_type_table.php','D')">Delete</a>
                                         </li>
                                     </ul>
                                 </div>

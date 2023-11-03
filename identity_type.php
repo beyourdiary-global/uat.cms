@@ -55,10 +55,10 @@ if (post('actionBtn')) {
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$identity_type_name</b> into <b><i>Identity Type Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$identity_type_name</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = ID_TYPE;
-                        $log['page'] = 'Identity Type';
+                        $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
@@ -118,10 +118,10 @@ if (post('actionBtn')) {
                                     $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
                             }
 
-                            $log['act_msg'] .= " from <b><i>Identity Type Table</i></b>.";
+                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
                             $log['query_rec'] = $query;
                             $log['query_table'] = ID_TYPE;
-                            $log['page'] = 'Identity Type';
+                            $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
                             $log['connect'] = $connect;
@@ -132,7 +132,7 @@ if (post('actionBtn')) {
                         echo 'Message: ' . $e->getMessage();
                     }
                 }
-            } else $err = "Identity type name cannot be empty.";
+            } else $err = "$pageTitle name cannot be empty.";
             break;
 
         case 'back':
@@ -167,7 +167,7 @@ if (post('act') == 'D') {
             $log['act_msg'] = USER_NAME . " deleted the data <b>$identity_type_name</b> from <b><i>Identity Table</i></b>.";
             $log['query_rec'] = $query;
             $log['query_table'] = ID_TYPE;
-            $log['page'] = 'Identity Type';
+            $log['page'] = $pageTitle;
             $log['connect'] = $connect;
             audit_log($log);
 
@@ -189,8 +189,8 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$identity_type_name</b> from <b><i>Identity Type Table</i></b>.";
-    $log['page'] = 'Identity Type';
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$identity_type_name</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -205,17 +205,17 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 
 <body>
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">Identity Type</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <p><a href="<?= $redirect_page ?>">$pageTitle</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
             <?php
             switch ($act) {
                 case 'I':
-                    echo 'Add Identity Type';
+                    echo 'Add '.$pageTitle;
                     break;
                 case 'E':
-                    echo 'Edit Identity Type';
+                    echo 'Edit '.$pageTitle;
                     break;
                 default:
-                    echo 'View Identity Type';
+                    echo 'View '.$pageTitle;
             }
             ?>
         </p>
@@ -229,20 +229,20 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
                         <?php
                         switch ($act) {
                             case 'I':
-                                echo 'Add Identity Type';
+                                echo 'Add '.$pageTitle;
                                 break;
                             case 'E':
-                                echo 'Edit Identity Type';
+                                echo 'Edit '.$pageTitle;
                                 break;
                             default:
-                                echo 'View Identity Type';
+                                echo 'View '.$pageTitle;
                         }
                         ?>
                     </h2>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" id="identity_type_name_lbl" for="identity_type_name">Identity Type Name</label>
+                    <label class="form-label" id="identity_type_name_lbl" for="identity_type_name"><?php echo $pageTitle ?> Name</label>
                     <input type="text" class="form-control" name="identity_type_name" id="identity_type_name" value="<?php if (isset($dataExisted)) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?>>
 
                     <div id="err_msg">
@@ -251,7 +251,7 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" id="identity_type_remark_lbl" for="identity_type_remark">Identity Type Remark</label>
+                    <label class="form-label" id="identity_type_remark_lbl" for="identity_type_remark"><?php echo $pageTitle ?> Remark</label>
                     <textarea class="form-control" name="identity_type_remark" id="identity_type_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>> <?php if (isset($dataExisted)) echo $row['remark'] ?> </textarea>
                 </div>
 
@@ -259,10 +259,10 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
                     <?php
                     switch ($act) {
                         case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addIdentity_type">Add Identity Type</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addIdentity_type">Add '.$pageTitle.'</button>';
                             break;
                         case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updIdentity_type">Edit Identity Type</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updIdentity_type">Edit '.$pageTitle.'</button>';
                             break;
                     }
                     ?>
@@ -275,7 +275,7 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
     <?php
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
-        echo '<script>confirmationDialog("","","Identity Type","","' . $redirect_page . '","' . $act . '");</script>';
+        echo '<script>confirmationDialog("","","'.$pageTitle.'","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
     <script>
