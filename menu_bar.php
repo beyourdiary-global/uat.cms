@@ -120,7 +120,7 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php', '29'),
+                    array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php','29'),
                 ),
                 'pin' => array('29'),
             ), 
