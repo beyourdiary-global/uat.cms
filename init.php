@@ -93,6 +93,7 @@ define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
 define('L_TYPE', 'leave_type');
+define('CUR_SEGMENTATION','customer_segmentation');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 

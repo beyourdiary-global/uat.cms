@@ -114,6 +114,16 @@ $menuList = array(
                 ),
                 'pin' => array('12','13','6','24','26'),
             ),   
+            array(
+                'Customer Administration Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php', '26'),
+                ),
+                'pin' => array('29'),
+            ), 
         ),
         'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26')
     ),
