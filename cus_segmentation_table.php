@@ -53,7 +53,7 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
             </div>
 
 
-            <table class="table table-striped" id="leave_status_table">
+            <table class="table table-striped" id="cur_segmentation_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
