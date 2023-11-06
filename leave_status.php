@@ -230,7 +230,7 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
 
             <div class="form-group mb-3">
                 <label class="form-label" id="dept_name_lbl" for="Leave_status_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="Leave_status_name" id="Leave_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="Leave_status_name" id="Leave_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
