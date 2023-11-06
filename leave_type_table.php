@@ -99,7 +99,7 @@ $( document ).ready(() => {
                     </tr>
                 </thead>
                 <tbody>
-                <?php while($row = $result->fetch_assoc()) { ?>
+                <?php while($row = $result->fetch_assoc()) {  ?>
                     <tr>
                         <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                         <th scope="row"><?= $num; $num++ ?></th>
