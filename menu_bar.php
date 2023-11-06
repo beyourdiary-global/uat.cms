@@ -110,7 +110,7 @@ $menuList = array(
                     array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
                     array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
                     array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
-                    array('Identify Type', 'mdi mdi-run-fast', 'identify_type_table.php', '26'),
+                    array('Identify Type', 'mdi mdi-run-fast', 'identity_type_table.php', '26'),
                     array('Leave Status', 'mdi mdi-run-fast', 'leave_status_table.php','27'),
                     array('Race', 'mdi mdi-account-star-outline', 'race_table.php', '28'),
                     array('Employer EPF Rate', 'mdi mdi-account-star-outline', 'employer_epf_rate_table.php', '32'),

@@ -168,22 +168,8 @@ if(post('act') == 'D')
             $cur_unit_id = $row['id'];
             $cur_unit = $row['unit'];
 
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-            generateDBData($tblname, $connect);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$cur_unit</b> from <b><i>Currency Unit Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = $tblname;
-            $log['page'] = 'Currency Unit';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$cur_unit,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

@@ -165,21 +165,8 @@ if(post('act') == 'D')
             $mrtl_id = $row['id'];
             $mrtl_name = $row['name'];
 
-            $query = "DELETE FROM ".MRTL_STATUS." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$mrtl_name</b> from <b><i>Marital Status Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = MRTL_STATUS;
-            $log['page'] = 'Marital Status';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(MRTL_STATUS,$id,$mrtl_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
