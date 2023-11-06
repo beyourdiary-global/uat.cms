@@ -165,21 +165,8 @@ if(post('act') == 'D')
             $employee_epf_rate_id = $row['id'];
             $employee_epf_rate = $row['epf_rate'];
 
-            $query = "DELETE FROM ".EMPLOYEE_EPF." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$employee_epf_rate</b> from <b><i>$pageTitle Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = EMPLOYEE_EPF;
-            $log['page'] = $pageTitle ;
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(EMPLOYEE_EPF,$id,$employee_epf_rate,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
