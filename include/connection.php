@@ -20,4 +20,5 @@ include ROOT.'/include/footer.php'; */
 // include ROOT.'/includes/get_country.php';
 // include ROOT.'/auditlog/auditor.php';
 
+include 'recordDelete.php';
 ?>

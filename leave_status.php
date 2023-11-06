@@ -1,24 +1,24 @@
 <?php
-$pageTitle = "Marital Status";
+$pageTitle = "Leave Status";
 include 'menuHeader.php';
 
-$mrtl_id = input('id');
+$leave_status_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/marital_status_table.php';
+$redirect_page = $SITEURL . '/leave_status_table.php';
 
 // to display data to input
-if($mrtl_id)
+if($leave_status_id)
 {
-    $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
+    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
 
     if($rst != false)
     {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
-    }
+    } 
 }
 
-if(!($mrtl_id) && !($act))
+if(!($leave_status_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
@@ -27,28 +27,28 @@ if(post('actionBtn'))
 
     switch($action)
     {
-        case 'addMrtlStatus': case 'updMrtlStatus':
-            $mrtl_name = postSpaceFilter('mrtl_name');
-            $mrtl_remark = postSpaceFilter('mrtl_remark');
+        case 'addLeave_status': case 'updLeave_status':
+            $Leave_status_name = postSpaceFilter('Leave_status_name');
+            $Leave_status_remark = postSpaceFilter('Leave_status_remark');
 
-            if($mrtl_name)
+            if($Leave_status_name)
             {
-                if($action == 'addMrtlStatus')
+                if($action == 'addLeave_status')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".MRTL_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$mrtl_name','$mrtl_remark','".USER_ID."',curdate(),curtime())";
+                        $query = "INSERT INTO ".L_STS."(name,remark,create_by,create_date,create_time) VALUES ('$Leave_status_name','$Leave_status_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
                         // check value
-                        if($mrtl_name != '')
-                            array_push($newvalarr, $mrtl_name);
+                        if($Leave_status_name != '')
+                            array_push($newvalarr, $Leave_status_name);
 
-                        if($mrtl_remark != '')
-                            array_push($newvalarr, $mrtl_remark);
+                        if($Leave_status_remark != '')
+                            array_push($newvalarr, $Leave_status_remark);
 
                         $newval = implode(",",$newvalarr);
 
@@ -58,10 +58,10 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$mrtl_name</b> into <b><i>Marital Status Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$Leave_status_name</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = MRTL_STATUS;
-                        $log['page'] = 'Marital Status';
+                        $log['query_table'] = L_STS;
+                        $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
@@ -74,18 +74,18 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
+                        $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // check value
-                        if($row['name'] != $mrtl_name)
+                        if($row['name'] != $Leave_status_name)
                         {
                             array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $mrtl_name);
+                            array_push($chgvalarr, $Leave_status_name);
                         }
 
-                        if($row['remark'] != $mrtl_remark)
+                        if($row['remark'] != $Leave_status_remark)
                         {
                             if($row['remark'] == '')
                                 $old_remark = 'Empty_Value';
@@ -93,9 +93,9 @@ if(post('actionBtn'))
 
                             array_push($oldvalarr, $old_remark);
 
-                            if($mrtl_remark == '')
+                            if($Leave_status_remark == '')
                                 $new_remark = 'Empty_Value';
-                            else $new_remark = $mrtl_remark;
+                            else $new_remark = $Leave_status_remark;
                             
                             array_push($chgvalarr, $new_remark);
                         }
@@ -106,11 +106,11 @@ if(post('actionBtn'))
 
                         $_SESSION['tempValConfirmBox'] = true;
                         if($oldval != '' && $chgval != '')
-                        {
+                        {   
                             // edit
-                            $query = "UPDATE ".MRTL_STATUS." SET name ='$mrtl_name', remark ='$mrtl_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$mrtl_id'";
+                            $query = "UPDATE ".L_STS." SET name ='$Leave_status_name', remark ='$Leave_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$leave_status_id'";
                             mysqli_query($connect, $query);
-                            
+
                             // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
@@ -126,11 +126,11 @@ if(post('actionBtn'))
                                 else
                                     $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
                             }
-                            $log['act_msg'] .= " from <b><i>Marital Status Table</i></b>.";
+                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = MRTL_STATUS;
-                            $log['page'] = 'Marital Status';
+                            $log['query_table'] = L_STS;
+                            $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
                             $log['connect'] = $connect;
@@ -142,7 +142,7 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "Marital Status name cannot be empty.";
+            else $err = "$pageTitle name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -159,14 +159,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",MRTL_STATUS,$connect);
+            $rst = getData('*',"id = '$id'",L_STS,$connect);
             $row = $rst->fetch_assoc();
 
-            $mrtl_id = $row['id'];
-            $mrtl_name = $row['name'];
+            $leave_status_id = $row['id'];
+            $Leave_status_name = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(MRTL_STATUS,$id,$mrtl_name,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(L_STS,$id,$Leave_status_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
@@ -175,9 +175,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $mrtl_name = isset($dataExisted) ? $row['name'] : '';
+    $Leave_status_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -186,8 +186,8 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$mrtl_name</b> from <b><i>Marital Status Table</i></b>.";
-    $log['page'] = 'Marital Status';
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$Leave_status_name</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -202,43 +202,43 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Marital Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
     switch($act)
     {
-        case 'I': echo 'Add Marital Status'; break;
-        case 'E': echo 'Edit Marital Status'; break;
-        default: echo 'View Marital Status';
+        case 'I': echo 'Add '.$pageTitle ; break;
+        case 'E': echo 'Edit '.$pageTitle ; break;
+        default: echo 'View '.$pageTitle ;
     }
     ?></p>
 </div>
 
-<div id="mrtlFormContainer" class="container d-flex justify-content-center">
+<div id="leaveStatusFormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="mrtlFormForm" method="post" action="">
+        <form id="leaveStatusForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
                     switch($act)
                     {
-                        case 'I': echo 'Add Marital Status'; break;
-                        case 'E': echo 'Edit Marital Status'; break;
-                        default: echo 'View Marital Status';
+                        case 'I': echo 'Add '.$pageTitle ; break;
+                        case 'E': echo 'Edit '.$pageTitle ; break;
+                        default: echo 'View '.$pageTitle ;
                     }
                     ?>
                 </h2>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="mrtl_name_lbl" for="mrtl_name">Marital Status Name</label>
-                <input class="form-control" type="text" name="mrtl_name" id="mrtl_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="dept_name_lbl" for="Leave_status_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="Leave_status_name" id="Leave_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="mrtl_remark_lbl" for="mrtl_remark">Marital Status Remark</label>
-                <textarea class="form-control" name="mrtl_remark" id="mrtl_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="dept_remark_lbl" for="Leave_status_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="Leave_status_remark" id="Leave_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -246,10 +246,10 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addMrtlStatus">Add Marital Status</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addLeave_status">Add '.$pageTitle.' </button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updMrtlStatus">Edit Marital Status</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updLeave_status">Edit '.$pageTitle.' </button>';
                         break;
                 }
             ?>
@@ -268,7 +268,7 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Marital Status","","'.$redirect_page.'","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","'.$pageTitle.'","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 <script>
@@ -278,7 +278,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("mrtlFormContainer");
+centerAlignment("leaveStatusFormContainer");
 </script>
 </body>
 </html>

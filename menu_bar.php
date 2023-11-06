@@ -111,11 +111,24 @@ $menuList = array(
                     array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
                     array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
                     array('Identity Type', 'mdi mdi-book-search-outline', 'identity_type_table.php','26'),
+                    array('Leave Status', 'mdi mdi-run-fast', 'leave_status_table.php','27'),
+                    array('Race', 'mdi mdi-account-star-outline', 'race_table.php', '28'),
                 ),
-                'pin' => array('12','13','6','24','26'),
+                'pin' => array('12','13','6','24','26','27','28'),
             ),   
+            array(
+                'Customer Administration Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php','29'),
+                ),
+                'pin' => array('29'),
+            ), 
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29')
+
     ),
     array(
         'Audit Log',

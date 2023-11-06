@@ -168,23 +168,10 @@ if(post('act') == 'D')
             $leave_type_id = $row['id'];
             $leave_type = $row['name'];
 
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$leave_type,$connect,$cdate,$ctime,$pageTitle);
             generateDBData($tblname, $connect);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$leave_type</b> from <b><i>Leave Type Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = $tblname;
-            $log['page'] = 'Leave Type';
-            $log['connect'] = $connect;
-            audit_log($log);
-
+            
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
             echo 'Message: ' . $e->getMessage();

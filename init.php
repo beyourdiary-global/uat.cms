@@ -93,6 +93,9 @@ define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
 define('L_TYPE', 'leave_type');
+define('CUR_SEGMENTATION','customer_segmentation');
+define('RACE','race');
+define('L_STS','leave_status');
 define('ID_TYPE','identity_type');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);

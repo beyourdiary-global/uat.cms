@@ -204,21 +204,10 @@ if(post('act') == 'D')
             $dflt_cur_unit = $row['default_currency_unit'];
             $exchg_cur_unit = $row['exchange_currency_unit'];
 
-            $query = "DELETE FROM ".CURRENCIES." WHERE id = ".$id;
-            mysqli_query($connect, $query);
+            $dataDetails = "$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]";
 
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]</b> from <b><i>Currencies Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = CURRENCIES;
-            $log['page'] = 'Currencies';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(CURRENCIES,$id,$dataDetails,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

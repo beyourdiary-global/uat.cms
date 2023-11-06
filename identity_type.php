@@ -154,22 +154,8 @@ if (post('act') == 'D') {
             $identity_type_id = $row['id'];
             $identity_type_name = $row['name'];
 
-            $query = "DELETE FROM " . ID_TYPE . " WHERE id = " . $id;
-
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$identity_type_name</b> from <b><i>Identity Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = ID_TYPE;
-            $log['page'] = $pageTitle;
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(ID_TYPE,$id,$identity_type_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
@@ -205,7 +191,7 @@ if (($identity_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 
 <body>
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">$pageTitle</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
             <?php
             switch ($act) {
                 case 'I':
