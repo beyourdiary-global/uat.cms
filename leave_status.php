@@ -165,21 +165,8 @@ if(post('act') == 'D')
             $leave_status_id = $row['id'];
             $Leave_status_name = $row['name'];
 
-            $query = "DELETE FROM ".L_STS." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$Leave_status_name</b> from <b><i>$pageTitle Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = L_STS;
-            $log['page'] = $pageTitle ;
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(L_STS,$id,$Leave_status_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

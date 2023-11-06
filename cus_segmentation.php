@@ -157,21 +157,8 @@ if (post('act') == 'D') {
             $cur_segmentation_id = $row['id'];
             $cur_segmentation_name = $row['name'];
 
-            $query = "DELETE FROM " . CUR_SEGMENTATION . " WHERE id = " . $id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$cur_segmentation_name</b> from <b><i>$pageTitle Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = CUR_SEGMENTATION;
-            $log['page'] = $pageTitle;
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(CUR_SEGMENTATION,$id,$cur_segmentation_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
