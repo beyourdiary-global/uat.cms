@@ -1,15 +1,15 @@
 <?php
-$pageTitle = "Leave Status";
+$pageTitle = "Socso Category";
 include 'menuHeader.php';
 
-$leave_status_id = input('id');
+$socso_cath_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/leave_status_table.php';
+$redirect_page = $SITEURL . '/socso_category_table.php';
 
 // to display data to input
-if($leave_status_id)
+if($socso_cath_id)
 {
-    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+    $rst = getData('*',"id = '$socso_cath_id'",SOCSO_CATH,$connect);
 
     if($rst != false)
     {
@@ -18,37 +18,37 @@ if($leave_status_id)
     } 
 }
 
-if(!($leave_status_id) && !($act))
+if(!($socso_cath_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
-
+ 
 if(post('actionBtn'))
 {
     $action = post('actionBtn');
 
     switch($action)
     {
-        case 'addLeave_status': case 'updLeave_status':
-            $Leave_status_name = postSpaceFilter('Leave_status_name');
-            $Leave_status_remark = postSpaceFilter('Leave_status_remark');
+        case 'addsocso_cath': case 'updsocso_cath':
+            $socso_cath_name = postSpaceFilter('socso_cath_name');
+            $socso_cath_remark = postSpaceFilter('socso_cath_remark');
 
-            if($Leave_status_name)
+            if($socso_cath_name)
             {
-                if($action == 'addLeave_status')
+                if($action == 'addsocso_cath')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".L_STS."(name,remark,create_by,create_date,create_time) VALUES ('$Leave_status_name','$Leave_status_remark','".USER_ID."',curdate(),curtime())";
+                        $query = "INSERT INTO ".SOCSO_CATH."(name,remark,create_by,create_date,create_time) VALUES ('$socso_cath_name','$socso_cath_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
                         // check value
-                        if($Leave_status_name != '')
-                            array_push($newvalarr, $Leave_status_name);
+                        if($socso_cath_name != '')
+                            array_push($newvalarr, $socso_cath_name);
 
-                        if($Leave_status_remark != '')
-                            array_push($newvalarr, $Leave_status_remark);
+                        if($socso_cath_remark != '')
+                            array_push($newvalarr, $socso_cath_remark);
 
                         $newval = implode(",",$newvalarr);
 
@@ -58,9 +58,9 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$Leave_status_name</b> into <b><i>$pageTitle Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$socso_cath_name</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = L_STS;
+                        $log['query_table'] = SOCSO_CATH;
                         $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
@@ -74,18 +74,18 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+                        $rst = getData('*',"id = '$socso_cath_id'",SOCSO_CATH,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // check value
-                        if($row['name'] != $Leave_status_name)
+                        if($row['name'] != $socso_cath_name)
                         {
                             array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $Leave_status_name);
+                            array_push($chgvalarr, $socso_cath_name);
                         }
 
-                        if($row['remark'] != $Leave_status_remark)
+                        if($row['remark'] != $socso_cath_remark)
                         {
                             if($row['remark'] == '')
                                 $old_remark = 'Empty_Value';
@@ -93,9 +93,9 @@ if(post('actionBtn'))
 
                             array_push($oldvalarr, $old_remark);
 
-                            if($Leave_status_remark == '')
+                            if($socso_cath_remark == '')
                                 $new_remark = 'Empty_Value';
-                            else $new_remark = $Leave_status_remark;
+                            else $new_remark = $socso_cath_remark;
                             
                             array_push($chgvalarr, $new_remark);
                         }
@@ -108,7 +108,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {   
                             // edit
-                            $query = "UPDATE ".L_STS." SET name ='$Leave_status_name', remark ='$Leave_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$leave_status_id'";
+                            $query = "UPDATE ".SOCSO_CATH." SET name ='$socso_cath_name', remark ='$socso_cath_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$socso_cath_id'";
                             mysqli_query($connect, $query);
 
                             // audit log
@@ -129,7 +129,7 @@ if(post('actionBtn'))
                             $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = L_STS;
+                            $log['query_table'] = SOCSO_CATH;
                             $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
@@ -159,14 +159,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",L_STS,$connect);
+            $rst = getData('*',"id = '$id'",SOCSO_CATH,$connect);
             $row = $rst->fetch_assoc();
 
-            $leave_status_id = $row['id'];
-            $Leave_status_name = $row['name'];
+            $socso_cath_id = $row['id'];
+            $socso_cath_name = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(L_STS,$id,$Leave_status_name,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(SOCSO_CATH,$id,$socso_cath_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
@@ -175,9 +175,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($socso_cath_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $Leave_status_name = isset($dataExisted) ? $row['name'] : '';
+    $socso_cath_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -186,7 +186,7 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$Leave_status_name</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$socso_cath_name</b> from <b><i>$pageTitle Table</i></b>.";
     $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
@@ -212,9 +212,9 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
     ?></p>
 </div>
 
-<div id="leaveStatusFormContainer" class="container d-flex justify-content-center">
+<div id="socso_cath_FormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="leaveStatusForm" method="post" action="">
+        <form id="socso_cath_Form" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -229,16 +229,16 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="Leave_status_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="Leave_status_name" id="Leave_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
+                <label class="form-label" id="dept_name_lbl" for="socso_cath_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="socso_cath_name" id="socso_cath_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_remark_lbl" for="Leave_status_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="Leave_status_remark" id="Leave_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="dept_remark_lbl" for="socso_cath_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="socso_cath_remark" id="socso_cath_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -246,10 +246,10 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addLeave_status">Add '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addsocso_cath">Add '.$pageTitle.' </button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updLeave_status">Edit '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updsocso_cath">Edit '.$pageTitle.' </button>';
                         break;
                 }
             ?>
@@ -278,7 +278,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("leaveStatusFormContainer");
+centerAlignment("socso_cath_FormContainer");
 </script>
 </body>
 </html>
