@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Identity Type";
+$pageTitle = "SOCSO CATEGORY";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';
@@ -7,8 +7,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/identity_type.php';
-$result = getData('*', '', ID_TYPE, $connect);
+$redirect_page = $SITEURL . '/socso_category.php';
+$result = getData('*', '', SOCSO_CATH, $connect);
 
 ?>
 
@@ -26,7 +26,7 @@ $result = getData('*', '', ID_TYPE, $connect);
          function(id)
          create DataTable (sortable table)
         */
-        createSortingTable('identity_type_table');
+        createSortingTable('socso_category_table');
     });
 </script>
 
@@ -48,7 +48,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                 </div>
             </div>
 
-            <table class="table table-striped" id="identity_type_table">
+            <table class="table table-striped" id="socso_category_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
@@ -80,7 +80,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                                             <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/identity_type_table.php','D')">Delete</a>
+                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/socso_category_table.php','D')">Delete</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -118,7 +118,7 @@ $result = getData('*', '', ID_TYPE, $connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('identity_type_table');
+    datatableAlignment('socso_category_table');
 </script>
 
 </html>
