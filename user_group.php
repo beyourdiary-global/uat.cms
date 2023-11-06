@@ -224,21 +224,8 @@ if(post('act') == 'D')
             $user_grp_id = $row['id'];
             $user_grp_name = $row['name'];
 
-            $query = "DELETE FROM ".USR_GRP." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$user_grp_name</b> from <b><i>User Permission Group Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = USR_GRP;
-            $log['page'] = 'User Permission Group';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(USR_GRP,$id,$user_grp_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

@@ -202,22 +202,11 @@ if(post('act') == 'D')
             $user_id = $row['id'];
             $user_username = $row['name'];
 
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$user_username,$connect,$cdate,$ctime,$pageTitle);
+            
             generateDBData($tblname, $connect);
 
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$user_username</b> from <b><i>User Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = $tblname;
-            $log['page'] = 'User';
-            $log['connect'] = $connect;
-            audit_log($log);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

@@ -165,21 +165,8 @@ if(post('act') == 'D')
             $prod_status_id = $row['id'];
             $prod_status_name = $row['name'];
 
-            $query = "DELETE FROM ".PROD_STATUS." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$prod_status_name</b> from <b><i>Product Status Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = PROD_STATUS;
-            $log['page'] = 'Product Status';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(PROD_STATUS,$id,$prod_status_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
