@@ -13,8 +13,8 @@ function deleteRecord($tbl,$id,$name,$connect,$cdate,$ctime,$tblname){
     $log['uid'] = $log['cby'] = USER_ID;
     $log['act_msg'] = USER_NAME . " deleted the data <b>$name</b> from <b><i>$tblname Table</i></b>.";
     $log['query_rec'] = $query;
-    $log['query_table'] = BANK;
-    $log['page'] = 'Bank';
+    $log['query_table'] = $tblname;
+    $log['page'] = $tblname;
     $log['connect'] = $connect;
     audit_log($log);
 }
