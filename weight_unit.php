@@ -167,23 +167,10 @@ if(post('act') == 'D')
 
             $wgt_unit_id = $row['id'];
             $wgt_unit = $row['unit'];
-
-            $query = "DELETE FROM ".$tblname." WHERE id = ".$id;
-            mysqli_query($connect, $query);
+            
+            //SET the record status to 'D'
+            deleteRecord($tblname,$id,$wgt_unit,$connect,$cdate,$ctime,$pageTitle);
             generateDBData($tblname, $connect);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$wgt_unit</b> from <b><i>Weight Unit Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = $tblname;
-            $log['page'] = 'Weight Unit';
-            $log['connect'] = $connect;
-            audit_log($log);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {

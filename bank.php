@@ -165,23 +165,11 @@ if(post('act') == 'D')
             $bank_id = $row['id'];
             $bank_name = $row['name'];
 
-            $query = "DELETE FROM ".BANK." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$bank_name</b> from <b><i>Bank Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = BANK;
-            $log['page'] = 'Bank';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(BANK,$id,$bank_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
+
         } catch(Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
