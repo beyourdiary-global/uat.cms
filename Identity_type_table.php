@@ -77,7 +77,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                                             <a class="dropdown-item" href="identity_type.php?id=<?php echo $row['id'] ?>">View</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="identity_type.php?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <a class="dropdown-item" href="identity_type.php?id=<?php echo $row['id'] . '&act=' . $act_2  ?>">Edit</a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/identity_type_table.php','D')">Delete</a>
