@@ -97,6 +97,7 @@ define('CUR_SEGMENTATION','customer_segmentation');
 define('RACE','race');
 define('L_STS','leave_status');
 define('ID_TYPE','identity_type');
+define('SOCSO_CATH','socso_category');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
