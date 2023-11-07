@@ -51,8 +51,6 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
                     </div>
                 </div>
             </div>
-
-
             <table class="table table-striped" id="cus_segmentation_table">
                 <thead>
                     <tr>
