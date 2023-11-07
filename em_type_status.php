@@ -165,21 +165,8 @@ if(post('act') == 'D')
             $em_type_status_id = $row['id'];
             $em_type_status_name = $row['name'];
 
-            $query = "DELETE FROM ".EM_TYPE_STATUS." WHERE id = ".$id;
-            mysqli_query($connect, $query);
-
-            // audit log
-            $log = array();
-            $log['log_act'] = 'delete';
-            $log['cdate'] = $cdate;
-            $log['ctime'] = $ctime;
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " deleted the data <b>$em_type_status_name</b> from <b><i>Employment Type Status Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] = EM_TYPE_STATUS;
-            $log['page'] = 'Employment Type Status';
-            $log['connect'] = $connect;
-            audit_log($log);
+            //SET the record status to 'D'
+            deleteRecord(EM_TYPE_STATUS,$id,$em_type_status_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
