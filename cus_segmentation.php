@@ -242,7 +242,7 @@ if (($cur_segmentation_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
                             <label class=" form-label" id="dept_remark_lbl" for="segmentation_color"><?php echo $pageTitle ?> Color</label><br>
                             <div class="col d-flex justify-content-start align-items-center">
                                 <input type="color" name="segmentation_color" id="segmentation_color" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($dataExisted)) echo $row['colorCode'] ?>" class="form-control"  style="height: 40px;">
-                                <span id="color-display" style="margin-left: 15px;"><?php if (isset($dataExisted)) echo $row['colorCode']; ?></span>
+                                <span id="color-display"><?php if (isset($dataExisted)) echo $row['colorCode']; ?></span>
                             </div>
                         </div>
                     </div>

@@ -94,11 +94,12 @@ $( document ).ready(() => {
                         <th scope="col">Name</th>
                         <th scope="col">Number Of Days</th>
                         <th scope="col">Leave Status</th>
+                        <th scope="col">Auto Assign</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php while($row = $result->fetch_assoc()) { ?>
+                <?php while($row = $result->fetch_assoc()) {  ?>
                     <tr>
                         <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                         <th scope="row"><?= $num; $num++ ?></th>
@@ -146,6 +147,7 @@ $( document ).ready(() => {
                             </ul>
                             </div>
                         </td>
+                        <td scope="row" style="text-transform: uppercase;"><?= $row['auto_assign'] ?></td>
                         <td scope="row">
                         <div class="dropdown" style="text-align:center">
                             <a
@@ -181,6 +183,7 @@ $( document ).ready(() => {
                         <th scope="col">Name</th>
                         <th scope="col">Number Of Days</th>
                         <th scope="col">Leave Status</th>
+                        <th scope="col">Auto Assign</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
