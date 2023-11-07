@@ -41,7 +41,7 @@ if (post('actionBtn')) {
             if ($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
                 if ($action == 'addLeaveType') {
                     try {
-                        $query = "INSERT INTO " . $tblname . "(name,num_of_days,leave_status,create_date,create_time,create_by,auto_assign) VALUES ('$leave_type','$num_of_days','Active',curdate(),curtime(),'" . USER_ID . "','$auto_assign')";
+                        $query = "INSERT INTO " . $tblname . "(name,num_of_days,leave_status,auto_assign,create_date,create_time,create_by) VALUES ('$leave_type','$num_of_days','Active','$auto_assign',curdate(),curtime(),'" . USER_ID . "')";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
                         $_SESSION['tempValConfirmBox'] = true;
@@ -107,7 +107,7 @@ if (post('actionBtn')) {
                         $_SESSION['tempValConfirmBox'] = true;
                         if ($oldval != '' && $chgval != '') {
                             // edit
-                            $query = "UPDATE " . $tblname . " SET name = '$leave_type', num_of_days = '$num_of_days', update_date = curdate(), update_time = curtime(), update_by = '" . USER_ID . "', auto_assign = '$auto_assign' WHERE id = '$leave_type_id'";
+                            $query = "UPDATE " . $tblname . " SET name = '$leave_type', num_of_days = '$num_of_days', auto_assign = '$auto_assign' ,update_date = curdate(), update_time = curtime(), update_by = '" . USER_ID . "' WHERE id = '$leave_type_id'";
                             mysqli_query($connect, $query);
                             generateDBData($tblname, $connect);
 
