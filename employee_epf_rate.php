@@ -212,9 +212,9 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
     ?></p>
 </div>
 
-<div id="leaveStatusFormContainer" class="container d-flex justify-content-center">
+<div id="employee_epf_rate_FormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="leaveStatusForm" method="post" action="">
+        <form id="employee_epf_rate_Form" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -278,7 +278,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("leaveStatusFormContainer");
+centerAlignment("employee_epf_rate_FormContainer");
 </script>
 </body>
 </html>
