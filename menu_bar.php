@@ -129,8 +129,18 @@ $menuList = array(
                 ),
                 'pin' => array('29'),
             ), 
+            array(
+                'Payroll Administration  Setting',
+                'mdi mdi-cash-multiple',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Payment Method', 'mdi mdi-contactless-payment-circle', 'payment_method_table.php','33'),
+                ),
+                'pin' => array('33'),
+            ), 
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33')
     ),
     array(
         'Audit Log',
