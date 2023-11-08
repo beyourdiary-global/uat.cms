@@ -5,10 +5,23 @@
 $pageTitle = "Login";
 include "header.php";
 include "./include/common.php";
+include "./include/common_variable.php";
+include "init.php";
 ?>
 <link rel="stylesheet" href="./css/main.css">
 <link rel="stylesheet" href="./css/login.css">
 </head>
+
+<?php
+$img_path = img_server.'themes/';
+$rst = getData('*', "id = '1'", PROJ, $connect);
+
+if ($rst != false) {
+    $dataExisted = 1;
+    $row = $rst->fetch_assoc();
+}
+?>
+
 
 <body>
 
@@ -17,7 +30,13 @@ include "./include/common.php";
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-center my-4" id="logo_element">
-                    <img src="./image/logo2.png">
+                <img id="logo" src="
+                    <?php
+                    if ($dataExisted)
+                        echo $img_path  . $row['logo'];
+                    else
+                        echo img . byd_logo;
+                    ?>">
                 </div>
             </div>
         </div>

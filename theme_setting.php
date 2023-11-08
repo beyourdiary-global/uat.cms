@@ -5,6 +5,7 @@ include 'menuHeader.php';
 $redirect_page = $SITEURL . '/dashboard.php';
 $tblname = PROJ;
 $allowed_ext = array("png","jpg","jpeg","svg");
+$projects_id = input('id');
 
 $img_path = img_server.'themes/';
 if(!file_exists($img_path))
@@ -13,7 +14,7 @@ if(!file_exists($img_path))
 }
 
 // to display data to input
-$rst = getData('*',"id = '1'",$tblname,$connect);
+$rst = getData('*',"",$tblname,$connect);
 
 if($rst != false)
 {
@@ -38,7 +39,7 @@ if(post('actionBtn'))
 
             if($website_name != '')
             {
-                $query .= "company_name = '$website_name'";
+                $query .= "company_name = '$website_name' ";
             } else $err = "Website Name cannot be empty.";
 
             // check image
@@ -74,7 +75,8 @@ if(post('actionBtn'))
                 }
                 else $err3 = "Only allow PNG, JPG, JPEG or SVG file";
             }
-            $query .= " WHERE id = '1'";
+
+            $query .= " WHERE id = 1";
 
             $oldvalarr = $chgvalarr = array();
 
