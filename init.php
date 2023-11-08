@@ -97,6 +97,8 @@ define('CUR_SEGMENTATION','customer_segmentation');
 define('RACE','race');
 define('L_STS','leave_status');
 define('ID_TYPE','identity_type');
+define('EMPLOYER_EPF','employer_epf_rate');
+define('EMPLOYEE_EPF','employee_epf_rate');
 define('SOCSO_CATH','socso_category');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
