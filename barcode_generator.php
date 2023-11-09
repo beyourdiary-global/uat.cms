@@ -69,7 +69,7 @@ if(post('actionBtn'))
                     echo '<div id="printArea" class="container2">';
                     for($x=1; $x<=$page_no; $x++)
                     {
-                        $qrCode_url = "stockRecord.php?barcode=".($barcode_next_number + $x)."&pkgid=".$product."&whseid=".$warehouse;
+                        $qrCode_url = "stockRecord.php?barcode=".($barcode_next_number + $x)."&prdid=".$product."&whseid=".$warehouse;
                         $filename=$PNG_TEMP_DIR.'barcode'.md5($qrCode_url.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
                         QRcode::png($qrCode_url, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
                         echo '<div class="column"><img src="' .$PNG_WEB_DIR.basename($filename).'" />'.'<p class="title">'.$product_name.' '.($barcode_next_number + $x).'
@@ -146,9 +146,9 @@ if(post('actionBtn'))
 
                                 if(isset($echoVal))
                                 {
-                                    $n_rst = getData('name',"id = '$echoVal'",$tblname,$connect);
-                                    $n = $n_rst->fetch_assoc();
-                                    echo $n['name'];
+                                    $rst = getData('name',"id = '$echoVal'",$tblname,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    if(isset($row['name'])) echo $row['name'];
                                 }
                             ?>">
 
@@ -156,7 +156,7 @@ if(post('actionBtn'))
                             "<?php
                                 if(isset($product) && $product != '')
                                     echo $product;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['name']))
                                     echo $row['name'];
                             ?>">
 
