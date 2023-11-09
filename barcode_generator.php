@@ -146,9 +146,9 @@ if(post('actionBtn'))
 
                                 if(isset($echoVal))
                                 {
-                                    $n_rst = getData('name',"id = '$echoVal'",$tblname,$connect);
-                                    $n = $n_rst->fetch_assoc();
-                                    if(isset($n['name'])) echo $n['name'];
+                                    $rst = getData('name',"id = '$echoVal'",$tblname,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    if(isset($row['name'])) echo $row['name'];
                                 }
                             ?>">
 
@@ -156,8 +156,8 @@ if(post('actionBtn'))
                             "<?php
                                 if(isset($product) && $product != '')
                                     echo $product;
-                                else if(isset($dataExisted) && isset($n['name']))
-                                    echo $n['name'];
+                                else if(isset($dataExisted) && isset($row['name']))
+                                    echo $row['name'];
                             ?>">
 
                             <div id="err_msg">
