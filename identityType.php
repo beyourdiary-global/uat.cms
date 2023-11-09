@@ -4,7 +4,7 @@ include 'menuHeader.php';
 
 $identity_type_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/identity_type_table.php';
+$redirect_page = $SITEURL . '/identityTypeTable.php';
 
 // to display data to input
 if ($identity_type_id) {

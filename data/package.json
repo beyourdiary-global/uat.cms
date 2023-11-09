@@ -1,1 +1,1 @@
-[]
+[{"id":"10","name":"ABC","price":"500","currency_unit":"1","product":"2","barcode_slot_total":"0","remark":"","create_date":"2023-11-07","create_time":"16:28:19","create_by":"5","update_date":null,"update_time":null,"update_by":null,"status":"A"},{"id":"9","name":"TTT","price":"120","currency_unit":"2","product":"2","barcode_slot_total":"0","remark":"123","create_date":"2023-11-07","create_time":"16:23:02","create_by":"5","update_date":null,"update_time":null,"update_by":null,"status":"A"}]

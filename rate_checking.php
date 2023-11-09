@@ -45,19 +45,12 @@ if(post('actionBtn'))
             $data['country'] = input('country');
 
             $from_arr = post('from');
+
             if($from_arr)
             {
                 $from_arr = explode('|',$from_arr);
                 $data['from'] = $from_arr[0] ? $from_arr[0] : '';
                 $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
-            }
-
-            $area_from_arr = post('area_from');
-            if($area_from_arr)
-            {
-                $area_from_arr = explode('|',$area_from_arr);
-                $data['area_from'] = $area_from_arr[0] ? $area_from_arr[0] : '';
-                $data['area_from_full'] = $area_from_arr[1] ? $area_from_arr[1] : '';
             }
 
             $data['postcode_from'] = post('postcode_from');
@@ -70,18 +63,10 @@ if(post('actionBtn'))
                 $data['to_full'] = $to_arr[1] ? $to_arr[1] : '';
             }
 
-            $area_to_arr = post('area_to');
-            if($area_to_arr)
-            {
-                $area_to_arr = explode('|',$area_to_arr);
-                $data['area_to'] = $area_to_arr[0] ? $area_to_arr[0] : '';
-                $data['area_to_full'] = $area_to_arr[1] ? $area_to_arr[1] : '';
-            }
-
             $data['postcode_to'] = post('postcode_to');
             $data['weight'] = post('weight');
 
-            if($data['postcode_from'] && $data['postcode_to'] && $data['area_from'] && $data['area_to'] && $data['weight'])
+            if($data['postcode_from'] && $data['postcode_to'] && $data['weight'])
             {
                 $rstRateCheck = rate_checking($data);
             }
@@ -92,12 +77,6 @@ if(post('actionBtn'))
 
                 if(!($data['postcode_to']))
                     $err2 = "Postcode is required.";
-
-                if(!($area_from_arr))
-                    $err3 = "Area is required.";
-
-                if(!($area_to_arr))
-                    $err4 = "Area is required.";
 
                 if(!($data['weight']))
                     $err5 = "Parcel weight is required.";
@@ -121,16 +100,6 @@ if(post('actionBtn'))
                 $data['from'] = $from_arr[0] ? $from_arr[0] : '';
                 $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
             }
-                
-            $data['area_to'] = '';
-
-            $area_from_arr = post('area_from');
-            if($area_from_arr)
-            {
-                $area_from_arr = explode('|',$area_from_arr);
-                $data['area_from'] = $area_from_arr[0] ? $area_from_arr[0] : '';
-                $data['area_from_full'] = $area_from_arr[1] ? $area_from_arr[1] : '';
-            }
 
             $data['postcode_from'] = post('postcode_from');
 
@@ -145,7 +114,7 @@ if(post('actionBtn'))
             $data['postcode_to'] = post('postcode_to');
             $data['weight'] = post('weight'); 
 
-            if($data['postcode_from'] && $data['postcode_to'] && $data['area_from'] && $data['weight'])
+            if($data['postcode_from'] && $data['postcode_to'] && $data['weight'])
             {
                 $rstRateCheck = rate_checking($data);
             }
@@ -156,9 +125,6 @@ if(post('actionBtn'))
 
                 if(!($data['postcode_to']))
                     $err7 = "Postcode is required.";
-
-                if(!($area_from_arr))
-                    $err8 = "Area is required.";
 
                 if(!($data['weight']))
                     $err9 = "Parcel weight is required.";
@@ -266,31 +232,6 @@ $( document ).ready(() => {
 
                                     <div class="row mb-3">
                                         <div class="col-12 col-md-6">
-                                            <select class="form-select mb-3 mb-md-0" id="area_from" name="area_from">
-                                                <option value="" disabled selected style="display:none;">Select your option</option>
-                                                <?php
-                                                    if(isset($area))
-                                                    {
-                                                        foreach($area as $key => $value)
-                                                        {
-                                                            $selected = '';
-                                                            if(isset($data['area_from']))
-                                                            {
-                                                                if($data['area_from'] == $key)
-                                                                    $selected = "selected";
-                                                            }
-
-                                                            echo "<option value=\"$key|$value\" $selected>$value</option>";
-                                                        }
-                                                    }
-                                                ?>
-                                            </select>
-                                            <div id="errMsg">
-                                                <span style="color:#ff0000;"><?= isset($err3) ? $err3 : ''; ?></span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_from') ? post('postcode_from') : '' ?>">
                                             <div id="errMsg">
                                                 <span style="color:#ff0000;"><?= isset($err) ? $err : ''; ?></span>
@@ -309,32 +250,7 @@ $( document ).ready(() => {
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-12 col-md-6">
-                                            <select class="form-select mb-3 mb-md-0" id="area_to" name="area_to">
-                                                <option value="" disabled selected style="display:none;">Select your option</option>
-                                                <?php
-                                                    if(isset($area))
-                                                    {
-                                                        foreach($area as $key => $value)
-                                                        {
-                                                            $selected = '';
-                                                            if(isset($data['area_to']))
-                                                            {
-                                                                if($data['area_to'] == $key)
-                                                                    $selected = "selected";
-                                                            }
-
-                                                            echo "<option value=\"$key|$value\" $selected>$value</option>";
-                                                        }
-                                                    }
-                                                ?>
-                                            </select>
-                                            <div id="errMsg">
-                                                <span style="color:#ff0000;"><?= isset($err4) ? $err4 : ''; ?></span>
-                                            </div>
-                                        </div>
-                                        
+                                    <div class="row"> 
                                         <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_to') ? post('postcode_to') : '' ?>">
                                             <div id="errMsg">
@@ -374,31 +290,6 @@ $( document ).ready(() => {
                                     </div>
 
                                     <div class="row mb-3">
-                                        <div class="col-12 col-md-6">
-                                            <select class="form-select mb-3 mb-md-0" id="area_from" name="area_from">
-                                                <option value="" disabled selected style="display:none;">Select your option</option>
-                                                <?php
-                                                    if(isset($area))
-                                                    {
-                                                        foreach($area as $key => $value)
-                                                        {
-                                                            $selected = '';
-                                                            if(isset($data['area_from']))
-                                                            {
-                                                                if($data['area_from'] == $key)
-                                                                    $selected = "selected";
-                                                            }
-
-                                                            echo "<option value=\"$key|$value\" $selected>$value</option>";
-                                                        }
-                                                    }
-                                                ?>
-                                            </select>
-                                            <div id="errMsg">
-                                                <span style="color:#ff0000;"><?= isset($err8) ? $err8 : ''; ?></span>
-                                            </div>
-                                        </div>
-                                        
                                         <div class="col-12 col-md-6">
                                             <input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?= post('postcode_from') ? post('postcode_from') : '' ?>">
                                             <div id="errMsg">
@@ -539,7 +430,6 @@ $( document ).ready(() => {
                                         continue;
                                 }
 
-                                
                                 // take required value
                                 $tmp_arr = array();
                                 $tmp_arr['sid'] = $b['service_id'];
@@ -551,13 +441,9 @@ $( document ).ready(() => {
                                 $tmp_arr['pickup_point'] = $b['pickup_point'];
                                 $tmp_arr['from'] = $data['from'];
                                 $tmp_arr['from_full'] = $data['from_full'];
-                                $tmp_arr['area_from'] = $data['area_from'];
-                                $tmp_arr['area_from_full'] = $data['area_from_full'];
                                 $tmp_arr['postcode_from'] = $data['postcode_from'];
                                 $tmp_arr['to'] = $data['to'];
                                 $tmp_arr['to_full'] = $data['to_full'];
-                                $tmp_arr['area_to'] = isset($data['area_to']) ? $data['area_to'] : '';
-                                $tmp_arr['area_to_full'] = isset($data['area_to_full']) ? $data['area_to_full'] : '';
                                 $tmp_arr['postcode_to'] = $data['postcode_to'];
                                 $tmp_arr['weight'] = $data['weight'];
                                 $tmp_arr['price'] = $b['price'];

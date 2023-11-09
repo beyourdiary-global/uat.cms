@@ -1,15 +1,15 @@
 <?php
-$pageTitle = "Employee EPF Rate";
+$pageTitle = "Payment Method";
 include 'menuHeader.php';
 
-$employee_epf_rate_id = input('id');
+$payment_method_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/employee_epf_rate_table.php';
+$redirect_page = $SITEURL . '/payment_method_table.php';
 
 // to display data to input
-if($employee_epf_rate_id)
+if($payment_method_id)
 {
-    $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
+    $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
 
     if($rst != false)
     {
@@ -18,7 +18,7 @@ if($employee_epf_rate_id)
     } 
 }
 
-if(!($employee_epf_rate_id) && !($act))
+if(!($payment_method_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
@@ -27,28 +27,36 @@ if(post('actionBtn'))
 
     switch($action)
     {
-        case 'addemployee_rate_epf': case 'updemployee_rate_epf':
-            $employee_epf_rate = postSpaceFilter('employee_epf_rate');
-            $employee_epf_rate_remark = postSpaceFilter('employee_epf_rate_remark');
+        case 'addpayment_method': case 'updpayment_method':
+            $payment_method_name = postSpaceFilter('payment_method_name');
+            $payment_method_remark = postSpaceFilter('payment_method_remark');
+            $payment_method_installment_period = postSpaceFilter('payment_method_installment_period');
+            $payment_method_service_rate = postSpaceFilter('payment_method_service_rate');
 
-            if($employee_epf_rate)
+            if($payment_method_name)
             {
-                if($action == 'addemployee_rate_epf')
+                if($action == 'addpayment_method')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".EMPLOYEE_EPF."(epf_rate,remark,create_by,create_date,create_time) VALUES ('$employee_epf_rate','$employee_epf_rate_remark','".USER_ID."',curdate(),curtime())";
+                        $query = "INSERT INTO ".PAY_METH."(name,installment_period,service_rate,remark,create_by,create_date,create_time) VALUES ('$payment_method_name','$payment_method_installment_period ','$payment_method_service_rate ','$payment_method_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
                         // check value
-                        if($employee_epf_rate != '')
-                            array_push($newvalarr, $employee_epf_rate);
+                        if($payment_method_name != '')
+                            array_push($newvalarr, $payment_method_name);
 
-                        if($employee_epf_rate_remark != '')
-                            array_push($newvalarr, $employee_epf_rate_remark);
+                        if($payment_method_installment_period != '')
+                            array_push($newvalarr, $payment_method_installment_period);
+
+                        if($payment_method_service_rate != '')
+                            array_push($newvalarr, $payment_method_service_rate);
+
+                        if($payment_method_remark != '')
+                            array_push($newvalarr, $payment_method_remark);
 
                         $newval = implode(",",$newvalarr);
 
@@ -58,9 +66,9 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$employee_epf_rate</b> into <b><i>$pageTitle Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$payment_method_name</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = EMPLOYEE_EPF;
+                        $log['query_table'] = PAY_METH;
                         $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
@@ -74,18 +82,32 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
+                        $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // check value
-                        if($row['epf_rate'] != $employee_epf_rate)
+                        if($row['name'] != $payment_method_name)
                         {
-                            array_push($oldvalarr, $row['epf_rate']);
-                            array_push($chgvalarr, $employee_epf_rate);
+                            array_push($oldvalarr, $row['name']);
+                            array_push($chgvalarr, $payment_method_name);
                         }
 
-                        if($row['remark'] != $employee_epf_rate_remark)
+                        // check value
+                        if($row['installment_period'] != $payment_method_installment_period)
+                        {
+                            array_push($oldvalarr, $row['installment_period']);
+                            array_push($chgvalarr, $payment_method_installment_period);
+                        }
+
+                        // check value
+                        if($row['service_rate'] != $payment_method_service_rate)
+                        {
+                            array_push($oldvalarr, $row['service_rate']);
+                            array_push($chgvalarr, $payment_method_service_rate);
+                        }
+
+                        if($row['remark'] != $payment_method_remark)
                         {
                             if($row['remark'] == '')
                                 $old_remark = 'Empty_Value';
@@ -93,9 +115,9 @@ if(post('actionBtn'))
 
                             array_push($oldvalarr, $old_remark);
 
-                            if($employee_epf_rate_remark == '')
+                            if($payment_method_remark == '')
                                 $new_remark = 'Empty_Value';
-                            else $new_remark = $employee_epf_rate_remark;
+                            else $new_remark = $payment_method_remark;
                             
                             array_push($chgvalarr, $new_remark);
                         }
@@ -108,7 +130,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {   
                             // edit
-                            $query = "UPDATE ".EMPLOYEE_EPF." SET epf_rate ='$employee_epf_rate', remark ='$employee_epf_rate_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$employee_epf_rate_id'";
+                            $query = "UPDATE ".PAY_METH." SET name ='$payment_method_name', installment_period = '$payment_method_installment_period', service_rate = '$payment_method_service_rate' ,remark ='$payment_method_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$payment_method_id'";
                             mysqli_query($connect, $query);
 
                             // audit log
@@ -129,7 +151,7 @@ if(post('actionBtn'))
                             $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = EMPLOYEE_EPF;
+                            $log['query_table'] = PAY_METH;
                             $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
@@ -142,7 +164,7 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "$pageTitle Epf Rate cannot be empty.";
+            else $err = "$pageTitle name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -159,14 +181,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",EMPLOYEE_EPF,$connect);
+            $rst = getData('*',"id = '$id'",PAY_METH,$connect);
             $row = $rst->fetch_assoc();
 
-            $employee_epf_rate_id = $row['id'];
-            $employee_epf_rate = $row['epf_rate'];
+            $payment_method_id = $row['id'];
+            $payment_method_name = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(EMPLOYEE_EPF,$id,$employee_epf_rate,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(PAY_METH,$id,$payment_method_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
@@ -175,9 +197,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($payment_method_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $employee_epf_rate = isset($dataExisted) ? $row['epf_rate'] : '';
+    $payment_method_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -186,7 +208,7 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$employee_epf_rate</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$payment_method_name</b> from <b><i>$pageTitle Table</i></b>.";
     $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
@@ -212,9 +234,9 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
     ?></p>
 </div>
 
-<div id="employee_epf_rate_FormContainer" class="container d-flex justify-content-center">
+<div id="payment_method_FormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="employee_epf_rate_Form" method="post" action="">
+        <form id="payment_method_Form" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -229,16 +251,31 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
-                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted)) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="payment_method_name_lbl" for="payment_method_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="payment_method_name" id="payment_method_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <div class="row">
+                    <div class="col-sm">
+                        <label class="form-label" id="payment_method_installment_period_lbl" for="payment_method_installment_period">Installment Period</label>
+                        <input class="form-control" type="number" name="payment_method_installment_period" id="payment_method_installment_period" step="any" value="<?php if (isset($dataExisted)) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                    </div>
+                    <div class="col-sm">
+                        <label class=" form-label" id="payment_method_service_rate_lbl" for="payment_service _rate">Service Rate</label><br>
+                        <div class="col d-flex justify-content-start align-items-center">
+                            <input type="number" name="payment_method_service_rate" id="payment_method_service_rate" step="any" <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($dataExisted)) echo $row['service_rate'] ?>" class="form-control"  style="height: 40px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label" id="payment_method_remark_lbl" for="payment_method_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="payment_method_remark" id="payment_method_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -246,10 +283,10 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addemployee_rate_epf">Add '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addpayment_method">Add '.$pageTitle.' </button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updemployee_rate_epf">Edit '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updpayment_method">Edit '.$pageTitle.' </button>';
                         break;
                 }
             ?>
@@ -278,7 +315,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("employee_epf_rate_FormContainer");
+centerAlignment("payment_method_FormContainer");
 </script>
 </body>
 </html>

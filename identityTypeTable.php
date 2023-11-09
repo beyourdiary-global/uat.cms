@@ -7,7 +7,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/identity_type.php';
+$redirect_page = $SITEURL . '/identityType.php';
 $result = getData('*', '', ID_TYPE, $connect);
 
 ?>
@@ -52,7 +52,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
@@ -77,10 +77,10 @@ $result = getData('*', '', ID_TYPE, $connect);
                                             <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="identity_type.php?id=<?php echo $row['id'] . '&act=' . $act_2  ?>">Edit</a>
+                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2  ?>">Edit</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/identity_type_table.php','D')">Delete</a>
+                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/identityTypeTable.php','D')">Delete</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -92,7 +92,7 @@ $result = getData('*', '', ID_TYPE, $connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
