@@ -245,14 +245,14 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_yes">Yes</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_yes" value="yes" <?php if ($act == '') echo 'disabled';
-                                                                                                                                if (isset($dataExisted) && $row['auto_assign'] == "yes") echo ' checked'; ?> required>
+                                                                                                                                if (isset($dataExisted) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                     <div class="col-2 col-md-2">
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_no">No</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_no" value="no" <?php if ($act == '') echo 'disabled';
-                                                                                                                            if (isset($dataExisted) && $row['auto_assign'] == "no") echo ' checked'; ?> required>
+                                                                                                                            if (!isset($dataExisted) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                 </div>
