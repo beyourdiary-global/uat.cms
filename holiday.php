@@ -226,7 +226,7 @@ if(($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 
             <div class="form-group mb-3">
                 <label class="form-label" id="holiday_name_lbl" for="holiday_name">Holiday Name</label>
-                <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -234,7 +234,7 @@ if(($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 
             <div class="form-group mb-3">
                 <label class="form-label" id="holiday_date_lbl" for="holiday_date">Holiday Date</label>
-                <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if(isset($dataExisted)) echo $row['date'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if(isset($dataExisted) && isset($row['date'])) echo $row['date'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
                 </div>

@@ -280,7 +280,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_name))
                                     echo $user_name;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['name'])) 
                                     echo $row['name'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -296,7 +296,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_username))
                                     echo $user_username;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['username'])) 
                                     echo $row['username'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -314,7 +314,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_email))
                                     echo $user_email;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['email'])) 
                                     echo $row['email'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">

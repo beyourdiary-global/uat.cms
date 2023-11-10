@@ -210,8 +210,8 @@ if(($race_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="race_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="race_name" id="race_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="race_lbl" for="race_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="race_name" id="race_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>

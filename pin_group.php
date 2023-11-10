@@ -243,7 +243,7 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 
             <div class="form-group mb-3">
                 <label class="form-label" id="pin_grp_name_lbl" for="pin_grp_name">Pin Group Name</label>
-                <input class="form-control" type="text" name="pin_grp_name" id="pin_grp_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="pin_grp_name" id="pin_grp_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; ?></span>
                 </div>
@@ -251,7 +251,7 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 
             <div class="form-group mb-3">
                 <label class="form-label" id="pin_grp_remark_lbl" for="pin_grp_remark">Pin Group Remark</label>
-                <textarea class="form-control" name="pin_grp_remark" id="pin_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="pin_grp_remark" id="pin_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
             
             <div class="form-group mb-3">
@@ -263,7 +263,7 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
             <div class="form-check">
                 <label class="form-label" id="pin_name_lbl" for="pin_name"><?php echo $pin_row['name'] ?></label>
                 <input class="form-check-input" name="pin_grp_pin[]" type="checkbox" value="<?php echo $pin_row['id']?>" id="pin_grp_pin[]" <?php
-                if(isset($dataExisted))
+                if(isset($dataExisted) && isset($row['pins']))
                 {
                     $pins = $row['pins'];
                     $curr_pin = $pin_row['id'];

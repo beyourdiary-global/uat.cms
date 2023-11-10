@@ -230,7 +230,7 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
             <div class="form-group mb-3">
                 <label class="form-label" id="mrtl_name_lbl" for="mrtl_name">Marital Status Name</label>
-                <input class="form-control" type="text" name="mrtl_name" id="mrtl_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="mrtl_name" id="mrtl_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -238,7 +238,7 @@ if(($mrtl_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
             <div class="form-group mb-3">
                 <label class="form-label" id="mrtl_remark_lbl" for="mrtl_remark">Marital Status Remark</label>
-                <textarea class="form-control" name="mrtl_remark" id="mrtl_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="mrtl_remark" id="mrtl_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

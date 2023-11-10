@@ -233,7 +233,7 @@ if(($cur_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewCh
 
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="cur_unit_lbl" for="cur_unit">Currency Unit</label>
-                <input class="form-control" type="text" name="cur_unit" id="cur_unit" value="<?php if(isset($dataExisted)) echo $row['unit'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="cur_unit" id="cur_unit" value="<?php if(isset($dataExisted) && isset($row['unit'])) echo $row['unit'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -241,7 +241,7 @@ if(($cur_unit_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewCh
 
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="cur_unit_remark_lbl" for="cur_unit_remark">Currency Unit Remark</label>
-                <textarea class="form-control" name="cur_unit_remark" id="cur_unit_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="cur_unit_remark" id="cur_unit_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
