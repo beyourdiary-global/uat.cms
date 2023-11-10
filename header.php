@@ -6,7 +6,22 @@
 <meta name="robots" content="beyourdiary">
 
 <!-- Website -->
-<link rel="icon" type="image" href="./image/logo2.png">
+
+<?php
+include_once "include/connection.php";
+include_once "include/common.php";
+include_once "include/common_variable.php";
+
+$img_path = img_server.'themes/';
+$rst = getData('*', "id = '1'", 'projects', $connect);
+
+if ($rst != false) {
+    $dataExisted = 1;
+    $row = $rst->fetch_assoc();
+}
+?>
+
+<link rel="icon" type="image" href="<?php if(isset($row['meta_logo'])) echo $img_path . $row['meta_logo'] ; ?>">
 <title><?= $pageTitle ?></title>
 
 <!-- Fonts -->
