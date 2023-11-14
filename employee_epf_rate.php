@@ -142,7 +142,7 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "$pageTitle Epf Rate cannot be empty.";
+            else $err = "$pageTitle cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
