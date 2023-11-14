@@ -4,9 +4,6 @@
 <head>
     <?php
     include_once "header.php";
-    include_once "include/connection.php";
-    include_once "include/common.php";
-    include_once "include/common_variable.php";
     ?>
     <link rel="stylesheet" href="./css/main.css">
 </head>
@@ -34,7 +31,7 @@ if ($rst != false) {
             <!-- Navbar brand -->
             <div class="d-flex align-items-center mx-2">
                 <a class="logo_section navbar-brand mx-4" href="#">
-                    <img id="logo" src="
+                    <img  id="logo" src="
                     <?php
                     if ($dataExisted)
                         echo $img_path  . $row['logo'];

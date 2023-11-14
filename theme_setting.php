@@ -39,7 +39,7 @@ if(post('actionBtn'))
 
             if($website_name != '')
             {
-                $query .= "company_name = '$website_name' ";
+                $query .= "project_title = '$website_name' ";
             } else $err = "Website Name cannot be empty.";
 
             // check image
@@ -185,7 +185,7 @@ if(post('actionBtn'))
                                 <label class="form-label form_lbl" id="website_name_lbl" for="website_name">Website Name</label>
                             </div>
                             <div class="col-12 col-md-9">
-                                <input class="form-control" type="text" name="website_name" id="website_name" value="<?= $row['company_name'] ?>">
+                                <input class="form-control" type="text" name="website_name" id="website_name" value="<?= $row['project_title'] ?>">
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                                 </div>
@@ -209,7 +209,7 @@ if(post('actionBtn'))
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="d-flex justify-content-center justify-content-md-end">
-                                    <img id="light_logo_preview" name="light_logo_preview" src="<?php if($row['logo'] == '' || $row['logo'] == NULL) echo img.byd_logo; else echo $img_path . $row['logo']; ?>" width="40px" height="40px">
+                                    <img id="light_logo_preview" name="light_logo_preview" src="<?php if($row['logo'] == '' || $row['logo'] == NULL) echo img.byd_logo; else echo $img_path . $row['logo']; ?>" width="160px" height="auto">
                                     <input type="hidden" name="light_logo_imageValue" value="<?= $row['logo'] ?>">
                                 </div>
                             </div>
@@ -232,7 +232,7 @@ if(post('actionBtn'))
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="d-flex justify-content-center justify-content-md-end">
-                                    <img id="favicon_preview" name="favicon_preview" src="<?php if($row['meta_logo'] == '' || $row['meta_logo'] == NULL) echo img.byd_logo; else echo $img_path . $row['meta_logo']; ?>" width="16px" height="16px">
+                                    <img id="favicon_preview" name="favicon_preview" src="<?php if($row['meta_logo'] == '' || $row['meta_logo'] == NULL) echo img.byd_logo; else echo $img_path . $row['meta_logo']; ?>" width="64px" height="auto">
                                     <input type="hidden" name="favicon_imageValue" value="<?= $row['meta_logo'] ?>">
                                 </div>
                             </div>
