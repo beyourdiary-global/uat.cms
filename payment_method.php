@@ -252,7 +252,7 @@ if(($payment_method_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 
             <div class="form-group mb-3">
                 <label class="form-label" id="payment_method_name_lbl" for="payment_method_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="payment_method_name" id="payment_method_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
+                <input class="form-control" type="text" name="payment_method_name" id="payment_method_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -262,12 +262,12 @@ if(($payment_method_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
                 <div class="row">
                     <div class="col-sm">
                         <label class="form-label" id="payment_method_installment_period_lbl" for="payment_method_installment_period">Installment Period</label>
-                        <input class="form-control" type="number" name="payment_method_installment_period" id="payment_method_installment_period" step="any" value="<?php if (isset($dataExisted)) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                        <input class="form-control" type="number" name="payment_method_installment_period" id="payment_method_installment_period" step="any" value="<?php if (isset($dataExisted) && isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
                     </div>
                     <div class="col-sm">
                         <label class=" form-label" id="payment_method_service_rate_lbl" for="payment_service _rate">Service Rate</label><br>
                         <div class="col d-flex justify-content-start align-items-center">
-                            <input type="number" name="payment_method_service_rate" id="payment_method_service_rate" step="any" <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($dataExisted)) echo $row['service_rate'] ?>" class="form-control"  style="height: 40px;">
+                            <input type="number" name="payment_method_service_rate" id="payment_method_service_rate" step="any" <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($dataExisted) && isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control"  style="height: 40px;">
                         </div>
                     </div>
                 </div>
@@ -275,7 +275,7 @@ if(($payment_method_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['
 
             <div class="form-group mb-3">
                 <label class="form-label" id="payment_method_remark_lbl" for="payment_method_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="payment_method_remark" id="payment_method_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="payment_method_remark" id="payment_method_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

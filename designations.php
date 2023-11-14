@@ -230,7 +230,7 @@ if(($desig_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 
             <div class="form-group mb-3">
                 <label class="form-label" id="desig_name_lbl" for="desig_name">Designation Name</label>
-                <input class="form-control" type="text" name="desig_name" id="desig_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="desig_name" id="desig_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -238,7 +238,7 @@ if(($desig_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 
             <div class="form-group mb-3">
                 <label class="form-label" id="desig_remark_lbl" for="desig_remark">Designation Remark</label>
-                <textarea class="form-control" name="desig_remark" id="desig_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="desig_remark" id="desig_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="row mt-5">

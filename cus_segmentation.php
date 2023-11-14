@@ -232,25 +232,25 @@ if (($cur_segmentation_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-sm">
-                            <label class="form-label" id="dept_name_lbl" for="cur_segmentation_name"><?php echo $pageTitle ?> Name</label>
-                            <input class="form-control" type="text" name="cur_segmentation_name" id="cur_segmentation_name" value="<?php if (isset($dataExisted)) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                            <label class="form-label" id="cus_segmentation_name_lbl" for="cur_segmentation_name"><?php echo $pageTitle ?> Name</label>
+                            <input class="form-control" type="text" name="cur_segmentation_name" id="cur_segmentation_name" value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                             </div>
                         </div>
                         <div class="col-sm">
-                            <label class=" form-label" id="dept_remark_lbl" for="segmentation_color"><?php echo $pageTitle ?> Color</label><br>
+                            <label class=" form-label" id="cus_segmentation_color_code_lbl" for="segmentation_color"><?php echo $pageTitle ?> Color</label><br>
                             <div class="col d-flex justify-content-start align-items-center">
-                                <input type="color" name="segmentation_color" id="segmentation_color" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($dataExisted)) echo $row['colorCode'] ?>" class="form-control"  style="height: 40px;">
-                                <span id="color-display"><?php if (isset($dataExisted)) echo $row['colorCode']; ?></span>
+                                <input type="color" name="segmentation_color" id="segmentation_color" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control"  style="height: 40px;">
+                                <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" id="dept_remark_lbl" for="cur_segmentation_remark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="cur_segmentation_remark" id="cur_segmentation_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($dataExisted)) echo $row['remark'] ?></textarea>
+                    <label class="form-label" id="cus_segmentation_remark_lbl" for="cur_segmentation_remark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="cur_segmentation_remark" id="cur_segmentation_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

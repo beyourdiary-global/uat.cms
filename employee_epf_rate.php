@@ -230,7 +230,7 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
 
             <div class="form-group mb-3">
                 <label class="form-label" id="employee_epf_rate_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
-                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted)) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted) && isset($row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -238,7 +238,7 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
 
             <div class="form-group mb-3">
                 <label class="form-label" id="employee_epf_rate_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

@@ -229,16 +229,16 @@ if(($socso_cath_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="socso_cath_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="socso_cath_name" id="socso_cath_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="socso_category_name_lbl" for="socso_cath_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="socso_cath_name" id="socso_cath_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_remark_lbl" for="socso_cath_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="socso_cath_remark" id="socso_cath_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="socso_category_remark_lbl" for="socso_cath_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="socso_cath_remark" id="socso_cath_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

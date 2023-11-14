@@ -302,7 +302,7 @@ tbody {
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-3">
                     <label class="form-label" id="user_grp_name_lbl" for="user_grp_name">User Group Name</label>
-                    <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted)) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
+                    <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
                     <div id="err_msg">
                         <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                     </div>
@@ -399,7 +399,7 @@ tbody {
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-3">
                     <label class="form-label" id="user_grp_remark_lbl" for="user_grp_remark">User Group Remark</label>
-                    <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                    <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
             </div>
 

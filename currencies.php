@@ -294,7 +294,7 @@ if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="exchg_cur_rate_lbl" for="exchg_cur_rate">Exchange Currency Rate</label>
-                <input class="form-control" type="text" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if(isset($dataExisted)) echo $row['exchange_currency_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if(isset($dataExisted) && isset($row['exchange_currency_unit'])) echo $row['exchange_currency_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -324,7 +324,7 @@ if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="currencies_remark_lbl" for="currencies_remark">Currency Unit Remark</label>
-                <textarea class="form-control" name="currencies_remark" id="currencies_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="currencies_remark" id="currencies_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
