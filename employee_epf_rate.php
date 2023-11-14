@@ -142,7 +142,7 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "$pageTitle Epf Rate cannot be empty.";
+            else $err = "$pageTitle cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -229,7 +229,7 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
+                <label class="form-label" id="employee_epf_rate_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
                 <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted)) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
@@ -237,7 +237,7 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
+                <label class="form-label" id="employee_epf_rate_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
                 <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
             </div>
 
