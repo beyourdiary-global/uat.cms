@@ -110,12 +110,14 @@ $menuList = array(
                     array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
                     array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
                     array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
-                    array('Identity Type', 'mdi mdi-book-search-outline', 'Identity_type_table.php','26'),
+                    array('Identity Type', 'mdi mdi-book-search-outline', 'identityTypeTable.php','26'),
                     array('Leave Status', 'mdi mdi-run-fast', 'leave_status_table.php','27'),
                     array('Race', 'mdi mdi-account-star-outline', 'race_table.php', '28'),
                     array('Socso Category', 'mdi mdi-google-fit', 'socso_category_table.php', '30'),
+                    array('Employer EPF Rate', 'mdi mdi-account-star-outline', 'employer_epf_rate_table.php', '32'),
+                    array('Employee Epf Rate', 'mdi mdi-account-supervisor', 'employee_epf_rate_table.php', '31'),
                 ),
-                'pin' => array('12','13','6','24','26','27','28', '30'),
+                'pin' => array('12','13','6','24','26','27','28', '30', '31', '32'),
             ),   
             array(
                 'Customer Administration Setting',
@@ -127,9 +129,18 @@ $menuList = array(
                 ),
                 'pin' => array('29'),
             ), 
+            array(
+                'Payroll Administration  Setting',
+                'mdi mdi-cash-multiple',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Payment Method', 'mdi mdi-contactless-payment-circle', 'payment_method_table.php','33'),
+                ),
+                'pin' => array('33'),
+            ), 
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30')
-
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33')
     ),
     array(
         'Audit Log',

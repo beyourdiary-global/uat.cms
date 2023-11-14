@@ -230,7 +230,7 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 
             <div class="form-group mb-3">
                 <label class="form-label" id="prod_status_name_lbl" for="prod_status_name">Product Status Name</label>
-                <input class="form-control" type="text" name="prod_status_name" id="prod_status_name" value="<?php if(isset($dataExisted)) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <input class="form-control" type="text" name="prod_status_name" id="prod_status_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
@@ -238,7 +238,7 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 
             <div class="form-group mb-3">
                 <label class="form-label" id="prod_status_remark_lbl" for="prod_status_remark">Product Status Remark</label>
-                <textarea class="form-control" name="prod_status_remark" id="prod_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <textarea class="form-control" name="prod_status_remark" id="prod_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

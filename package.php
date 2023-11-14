@@ -320,7 +320,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_name))
                                 echo $pkg_name;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['name'])) 
                                 echo $row['name'];
 
                         ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -337,7 +337,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_price))
                                 echo $pkg_price;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['price'])) 
                                 echo $row['price'];
 
                         ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -355,7 +355,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                             unset($echoVal);
                             if(isset($cur_unit) && $cur_unit != '')
                                 $echoVal = $cur_unit;
-                            else if(isset($dataExisted))
+                            else if(isset($dataExisted) && isset($row['currency_unit']))
                                 $echoVal = $row['currency_unit'];
 
                             if(isset($echoVal))
@@ -369,7 +369,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($cur_unit) && $cur_unit != '')
                                 echo $cur_unit;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['currency_unit'])) 
                                 echo $row['currency_unit'];
 
                         ?>">
@@ -405,7 +405,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 unset($echoVal);
                                 if(isset($prod_list) && $prod_list != '')
                                     $echoVal = $prod_list;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['product']))
                                     $echoVal = $row['product'];
 
                                 // echo
@@ -485,14 +485,14 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                     echo $barcode_slot_total;
                                 else
                                 {
-                                    if(isset($dataExisted)) 
+                                    if(isset($dataExisted) && isset($row['barcode_slot_total'])) 
                                         echo $row['barcode_slot_total'];
                                     else echo '0';
                                 }
                                 ?><input name="barcode_slot_total_hidden" id="barcode_slot_total_hidden" type="hidden" value="<?php
                                 if(isset($barcode_slot_total) && $barcode_slot_total != '')
                                     echo $barcode_slot_total;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['barcode_slot_total'])) 
                                     echo $row['barcode_slot_total'];
 
                                 ?>"></td>
@@ -510,7 +510,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         <textarea class="form-control" id="package_remark" name="package_remark" style="width:100%" rows="5"><?php
                         if(isset($pkg_remark) && $pkg_remark != '')
                             echo $pkg_remark;
-                        else if(isset($dataExisted)) 
+                        else if(isset($dataExisted) && isset($row['remark'])) 
                             echo $row['remark'];
 
                         ?></textarea>

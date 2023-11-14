@@ -27,7 +27,7 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
          function(id)
          create DataTable (sortable table)
         */
-        createSortingTable('cur_segmentation_table');
+        createSortingTable('cus_segmentation_table');
     });
 </script>
 
@@ -51,9 +51,7 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
                     </div>
                 </div>
             </div>
-
-
-            <table class="table table-striped" id="leave_status_table">
+            <table class="table table-striped" id="cus_segmentation_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
@@ -86,7 +84,7 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
                                             <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cur_segmentation_table.php','D')">Delete</a>
+                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cus_segmentation_table.php','D')">Delete</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -123,7 +121,7 @@ $result = getData('*', '', CUR_SEGMENTATION, $connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('cur_segmentation_table');
+    datatableAlignment('cus_segmentation_table');
 </script>
 
 </html>

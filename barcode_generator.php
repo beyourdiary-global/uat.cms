@@ -4,13 +4,27 @@ include 'menuHeader.php';
 include "./header/phpqrcode/qrlib.php";
 
 $redirect_page = '';
-$tblname = PKG;
+$tblname = PROD;
+$product_id = input('id');
+$act = input('act');
 
 //set it to writable location, a place for temp generated PNG files
 $PNG_TEMP_DIR = dirname(__FILE__).DIRECTORY_SEPARATOR.'temp'.DIRECTORY_SEPARATOR;
 if(!file_exists($PNG_TEMP_DIR))
 {
     mkdir($PNG_TEMP_DIR, 0777, true);
+}
+
+// to display data to input
+if($product_id)
+{
+    $rst = getData('*',"id = '$product_id'",$tblname,$connect);
+
+    if($rst != false)
+    {
+        $dataExisted = 1;
+        $row = $rst->fetch_assoc();
+    }
 }
 
 //html PNG location prefix
@@ -27,13 +41,13 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'generate':
-            $pkg_name = postSpaceFilter('pkg');
-            $pkg = postSpaceFilter('pkg_hidden');
+            $product_name = postSpaceFilter('product');
+            $product = postSpaceFilter('product_hidden');
             $page_no = postSpaceFilter('page_no');
             $warehouse = postSpaceFilter('warehouse');
 
-            if(!$pkg && $pkg == '')
-                $err = 'Please select the package to generate barcode.';
+            if(!$product && $product == '')
+                $err = 'Please select the product to generate barcode.';
 
             if(!$page_no || !($page_no != '0'))
                 $err2 = 'Page Number cannot be empty or less than 1.';
@@ -41,7 +55,7 @@ if(post('actionBtn'))
             if($warehouse == 'noValue')
                 $err3 = 'Please select the warehouse to generate barcode';
 
-            if(($pkg && $pkg != '') && ($page_no || ($page_no != '0')) && ($warehouse != 'noValue'))
+            if(($product && $product != '') && ($page_no || ($page_no != '0')) && ($warehouse != 'noValue'))
             {
                 $rst_projInfo = getData("barcode_prefix,barcode_next_number","id='1'",PROJ,$connect);
                 $projInfo = $rst_projInfo->fetch_assoc();
@@ -55,10 +69,10 @@ if(post('actionBtn'))
                     echo '<div id="printArea" class="container2">';
                     for($x=1; $x<=$page_no; $x++)
                     {
-                        $qrCode_url = "stockRecord.php?barcode=".($barcode_next_number + $x)."&pkgid=".$pkg."&whseid=".$warehouse;
+                        $qrCode_url = "stockRecord.php?barcode=".($barcode_next_number + $x)."&prdid=".$product."&whseid=".$warehouse;
                         $filename=$PNG_TEMP_DIR.'barcode'.md5($qrCode_url.'|'.$errorCorrectionLevel.'|'.$matrixPointSize).'.png';
                         QRcode::png($qrCode_url, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
-                        echo '<div class="column"><img src="' .$PNG_WEB_DIR.basename($filename).'" />'.'<p class="title">'.$pkg_name.' '.($barcode_next_number + $x).'
+                        echo '<div class="column"><img src="' .$PNG_WEB_DIR.basename($filename).'" />'.'<p class="title">'.$product_name.' '.($barcode_next_number + $x).'
                             </p>
                         </div>';
                     }
@@ -121,24 +135,31 @@ if(post('actionBtn'))
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="pkg_lbl" for="pkg">Package Name</label>
-                            <input class="form-control" type="text" name="pkg" id="pkg" value=
+                            <label class="form-label form_lbl" id="pkg_lbl" for="product">Product Name</label>
+                            <input class="form-control" type="text" name="product" id="product" value=
                             "<?php
                                 unset($echoVal);
-                                if(isset($pkg) && $pkg != '')
-                                    $echoVal = $pkg;
+                                if(isset($product) && $product != '')
+                                    $echoVal = $product;
+                                else if(isset($dataExisted))
+                                    $echoVal = $row['id'];
 
                                 if(isset($echoVal))
                                 {
-                                    $n_rst = getData('name',"id = '$echoVal'",$tblname,$connect);
-                                    $n = $n_rst->fetch_assoc();
-                                    echo $n['name'];
+                                    $rst = getData('name',"id = '$echoVal'",$tblname,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    if(isset($row['name'])) echo $row['name'];
                                 }
                             ?>">
-                            <input type="hidden" name="pkg_hidden" id="pkg_hidden" value="<?php
-                                if(isset($pkg))
-                                    echo $pkg;
+
+                            <input type="hidden" name="product_hidden" id="product_hidden" value=
+                            "<?php
+                                if(isset($product) && $product != '')
+                                    echo $product;
+                                else if(isset($dataExisted) && isset($row['name']))
+                                    echo $row['name'];
                             ?>">
+
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                             </div>
@@ -208,13 +229,14 @@ if(post('actionBtn'))
 ?>
 </body>
 <script>
+
 $(document).ready(function(){
-    var packageName = $("#pkg");
+    var packageName = $("#product");
 
     packageName.keyup(function(e){
         var param = {
             search: $(this).val(),                              // search value
-            searchType: 'name',                                  // column of the table
+            searchType: 'name',                                 // column of the table
             elementID: $(this).attr('id'),                      // id of the input
             hiddenElementID: $(this).attr('id') + '_hidden',    // hidden input for storing the value
             dbTable: '<?= $tblname ?>'                             // json filename (generated when login)

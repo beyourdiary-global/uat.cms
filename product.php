@@ -354,7 +354,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_name))
                                     echo $prod_name;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['name'])) 
                                    echo $row['name'];
 
                             ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -372,21 +372,21 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_brand) && $prod_brand != '')
                                     $echoVal = $prod_brand;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['brand']))
                                     $echoVal = $row['brand'];
 
                                 if(isset($echoVal))
                                 {
-                                    $n_rst = getData('name',"id = '$echoVal'",BRAND,$connect);
-                                    $n = $n_rst->fetch_assoc();
-                                    echo $n['name'];
+                                    $rst = getData('name',"id = '$echoVal'",BRAND,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    echo $row['name'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value=
                             "<?php
                                 if(isset($prod_brand) && $prod_brand != '')
                                     echo $prod_brand;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['brand']))
                                     echo $row['brand'];
 
                             ?>">
@@ -406,21 +406,21 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     $echoVal = $prod_wgt_unit;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['weight_unit']))
                                     $echoVal = $row['weight_unit'];
 
                                 if(isset($echoVal))
                                 {
-                                    $u_rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
-                                    $u = $u_rst->fetch_assoc();
-                                    echo $u['unit'];
+                                    $rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    echo $row['unit'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value=
                             "<?php 
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     echo $prod_wgt_unit;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['weight_unit'])) 
                                     echo $row['weight_unit'];
                             ?>">
                             <div id="err_msg">
@@ -436,7 +436,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_wgt) && $prod_wgt != '')
                                     echo $prod_wgt;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['weight'])) 
                                     echo $row['weight'];
 
                             ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -456,21 +456,21 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     $echoVal = $prod_cur_unit;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['currency_unit']))
                                     $echoVal = $row['currency_unit'];
 
                                 if(isset($echoVal))
                                 {
-                                    $u_rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
-                                    $u = $u_rst->fetch_assoc();
-                                    echo $u['unit'];
+                                    $rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    echo $row['unit'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value=
                             "<?php
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     echo $prod_cur_unit;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['currency_unit'])) 
                                     echo $row['currency_unit'];
                             ?>">
                             <div id="err_msg">
@@ -485,7 +485,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php 
                                 if(isset($prod_cost) && $prod_cost != '')
                                     echo $prod_cost;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['cost'])) 
                                     echo $row['cost'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -505,7 +505,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($prod_barcode_status))
                                     echo $prod_barcode_status != 'Yes' ?: ' checked';
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['barcode_status'])) 
                                     echo $row['barcode_status'] != 'Yes' ? '' : ' checked';
                             ?>>
                         </div>
@@ -518,7 +518,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($prod_barcode_slot) && $prod_barcode_slot != '')
                                     echo $prod_barcode_slot;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['barcode_slot'])) 
                                     echo $row['barcode_slot'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -536,7 +536,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php 
                                 if(isset($prod_expire_date) && $prod_expire_date != '')
                                     echo $prod_expire_date;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['expire_date'])) 
                                     echo $row['expire_date'];
 
                             ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -554,21 +554,21 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                                 unset($echoVal);
                                 if(isset($parent_prod) && $parent_prod != '')
                                     $echoVal = $parent_prod;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['parent_product']))
                                     $echoVal = $row['parent_product'];
 
                                 if(isset($echoVal) && $echoVal != '')
                                 {
-                                    $n_rst = getData('name',"id = '$echoVal'",PROD,$connect);
-                                    $n = $n_rst->fetch_assoc();
-                                    echo $n['name'];
+                                    $rst = getData('name',"id = '$echoVal'",PROD,$connect);
+                                    $row = $rst->fetch_assoc();
+                                    echo $row['name'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value=
                             "<?php
                             if(isset($parent_prod) && $parent_prod != '')
                                 echo $parent_prod;
-                            else if(isset($dataExisted) && $row['parent_product'] != '')
+                            else if(isset($dataExisted) && isset($row['parent_product']) && $row['parent_product'] != '')
                                 echo $row['parent_product'];
                             ?>">
                         </div>

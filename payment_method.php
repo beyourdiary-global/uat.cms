@@ -1,15 +1,15 @@
 <?php
-$pageTitle = "Leave Status";
+$pageTitle = "Payment Method";
 include 'menuHeader.php';
 
-$leave_status_id = input('id');
+$payment_method_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/leave_status_table.php';
+$redirect_page = $SITEURL . '/payment_method_table.php';
 
 // to display data to input
-if($leave_status_id)
+if($payment_method_id)
 {
-    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+    $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
 
     if($rst != false)
     {
@@ -18,7 +18,7 @@ if($leave_status_id)
     } 
 }
 
-if(!($leave_status_id) && !($act))
+if(!($payment_method_id) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
 
 if(post('actionBtn'))
@@ -27,28 +27,36 @@ if(post('actionBtn'))
 
     switch($action)
     {
-        case 'addLeave_status': case 'updLeave_status':
-            $Leave_status_name = postSpaceFilter('Leave_status_name');
-            $Leave_status_remark = postSpaceFilter('Leave_status_remark');
+        case 'addpayment_method': case 'updpayment_method':
+            $payment_method_name = postSpaceFilter('payment_method_name');
+            $payment_method_remark = postSpaceFilter('payment_method_remark');
+            $payment_method_installment_period = postSpaceFilter('payment_method_installment_period');
+            $payment_method_service_rate = postSpaceFilter('payment_method_service_rate');
 
-            if($Leave_status_name)
+            if($payment_method_name)
             {
-                if($action == 'addLeave_status')
+                if($action == 'addpayment_method')
                 {
                     try
                     {
-                        $query = "INSERT INTO ".L_STS."(name,remark,create_by,create_date,create_time) VALUES ('$Leave_status_name','$Leave_status_remark','".USER_ID."',curdate(),curtime())";
+                        $query = "INSERT INTO ".PAY_METH."(name,installment_period,service_rate,remark,create_by,create_date,create_time) VALUES ('$payment_method_name','$payment_method_installment_period ','$payment_method_service_rate ','$payment_method_remark','".USER_ID."',curdate(),curtime())";
                         mysqli_query($connect, $query);
                         $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
                         // check value
-                        if($Leave_status_name != '')
-                            array_push($newvalarr, $Leave_status_name);
+                        if($payment_method_name != '')
+                            array_push($newvalarr, $payment_method_name);
 
-                        if($Leave_status_remark != '')
-                            array_push($newvalarr, $Leave_status_remark);
+                        if($payment_method_installment_period != '')
+                            array_push($newvalarr, $payment_method_installment_period);
+
+                        if($payment_method_service_rate != '')
+                            array_push($newvalarr, $payment_method_service_rate);
+
+                        if($payment_method_remark != '')
+                            array_push($newvalarr, $payment_method_remark);
 
                         $newval = implode(",",$newvalarr);
 
@@ -58,9 +66,9 @@ if(post('actionBtn'))
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$Leave_status_name</b> into <b><i>$pageTitle Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$payment_method_name</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
-                        $log['query_table'] = L_STS;
+                        $log['query_table'] = PAY_METH;
                         $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
@@ -74,18 +82,32 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+                        $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
                         // check value
-                        if($row['name'] != $Leave_status_name)
+                        if($row['name'] != $payment_method_name)
                         {
                             array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $Leave_status_name);
+                            array_push($chgvalarr, $payment_method_name);
                         }
 
-                        if($row['remark'] != $Leave_status_remark)
+                        // check value
+                        if($row['installment_period'] != $payment_method_installment_period)
+                        {
+                            array_push($oldvalarr, $row['installment_period']);
+                            array_push($chgvalarr, $payment_method_installment_period);
+                        }
+
+                        // check value
+                        if($row['service_rate'] != $payment_method_service_rate)
+                        {
+                            array_push($oldvalarr, $row['service_rate']);
+                            array_push($chgvalarr, $payment_method_service_rate);
+                        }
+
+                        if($row['remark'] != $payment_method_remark)
                         {
                             if($row['remark'] == '')
                                 $old_remark = 'Empty_Value';
@@ -93,9 +115,9 @@ if(post('actionBtn'))
 
                             array_push($oldvalarr, $old_remark);
 
-                            if($Leave_status_remark == '')
+                            if($payment_method_remark == '')
                                 $new_remark = 'Empty_Value';
-                            else $new_remark = $Leave_status_remark;
+                            else $new_remark = $payment_method_remark;
                             
                             array_push($chgvalarr, $new_remark);
                         }
@@ -108,7 +130,7 @@ if(post('actionBtn'))
                         if($oldval != '' && $chgval != '')
                         {   
                             // edit
-                            $query = "UPDATE ".L_STS." SET name ='$Leave_status_name', remark ='$Leave_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$leave_status_id'";
+                            $query = "UPDATE ".PAY_METH." SET name ='$payment_method_name', installment_period = '$payment_method_installment_period', service_rate = '$payment_method_service_rate' ,remark ='$payment_method_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$payment_method_id'";
                             mysqli_query($connect, $query);
 
                             // audit log
@@ -129,7 +151,7 @@ if(post('actionBtn'))
                             $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                             $log['query_rec'] = $query;
-                            $log['query_table'] = L_STS;
+                            $log['query_table'] = PAY_METH;
                             $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
@@ -159,14 +181,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",L_STS,$connect);
+            $rst = getData('*',"id = '$id'",PAY_METH,$connect);
             $row = $rst->fetch_assoc();
 
-            $leave_status_id = $row['id'];
-            $Leave_status_name = $row['name'];
+            $payment_method_id = $row['id'];
+            $payment_method_name = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(L_STS,$id,$Leave_status_name,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(PAY_METH,$id,$payment_method_name,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
@@ -175,9 +197,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($payment_method_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $Leave_status_name = isset($dataExisted) ? $row['name'] : '';
+    $payment_method_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -186,7 +208,7 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$Leave_status_name</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$payment_method_name</b> from <b><i>$pageTitle Table</i></b>.";
     $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
@@ -212,9 +234,9 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
     ?></p>
 </div>
 
-<div id="leaveStatusFormContainer" class="container d-flex justify-content-center">
+<div id="payment_method_FormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="leaveStatusForm" method="post" action="">
+        <form id="payment_method_Form" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
@@ -229,16 +251,31 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="leave_status_name_lbl" for="Leave_status_name"><?php echo $pageTitle ?> Name</label>
-                <input class="form-control" type="text" name="Leave_status_name" id="Leave_status_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
+                <label class="form-label" id="payment_method_name_lbl" for="payment_method_name"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="payment_method_name" id="payment_method_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly'  ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="leave_status_remark_lbl" for="Leave_status_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="Leave_status_remark" id="Leave_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                <div class="row">
+                    <div class="col-sm">
+                        <label class="form-label" id="payment_method_installment_period_lbl" for="payment_method_installment_period">Installment Period</label>
+                        <input class="form-control" type="number" name="payment_method_installment_period" id="payment_method_installment_period" step="any" value="<?php if (isset($dataExisted) && isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                    </div>
+                    <div class="col-sm">
+                        <label class=" form-label" id="payment_method_service_rate_lbl" for="payment_service _rate">Service Rate</label><br>
+                        <div class="col d-flex justify-content-start align-items-center">
+                            <input type="number" name="payment_method_service_rate" id="payment_method_service_rate" step="any" <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($dataExisted) && isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control"  style="height: 40px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="form-label" id="payment_method_remark_lbl" for="payment_method_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="payment_method_remark" id="payment_method_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -246,10 +283,10 @@ if(($leave_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vi
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addLeave_status">Add '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addpayment_method">Add '.$pageTitle.' </button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updLeave_status">Edit '.$pageTitle.' </button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updpayment_method">Edit '.$pageTitle.' </button>';
                         break;
                 }
             ?>
@@ -278,7 +315,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("leaveStatusFormContainer");
+centerAlignment("payment_method_FormContainer");
 </script>
 </body>
 </html>

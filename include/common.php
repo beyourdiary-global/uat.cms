@@ -1057,10 +1057,8 @@ function rate_checking($data=array()){
 			$bulk = array(
 				array(
 				'pick_code'	=> $data['postcode_from'],
-				'pick_state'	=> $data['area_from'],
 				'pick_country'	=> $data['from'],
 				'send_code'	=> $data['postcode_to'],
-				'pick_state'	=> $data['area_to'],
 				'send_country'	=> $data['to'],
 				'weight'	=> $data['weight'],
 				'width'	=> '0',
