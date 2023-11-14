@@ -4,19 +4,22 @@
 <head>
     <?php
     include_once "header.php";
+    include_once "include/connection.php";
+    include_once "include/common.php";
+    include_once "include/common_variable.php";
+
+    $img_path = img_server . 'themes/';
+    $rst = getData('*', "id = '1'", 'projects', $connect);
+
+    if ($rst != false) {
+        $dataExisted = 1;
+        $row = $rst->fetch_assoc();
+    }
     ?>
+    <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
-<?php
-$img_path = img_server.'themes/';
-$rst = getData('*', "id = '1'", PROJ, $connect);
-
-if ($rst != false) {
-    $dataExisted = 1;
-    $row = $rst->fetch_assoc();
-}
-?>
 
 <!-- Navbar -->
 <div class="sticky-top">
@@ -31,7 +34,7 @@ if ($rst != false) {
             <!-- Navbar brand -->
             <div class="d-flex align-items-center mx-2">
                 <a class="logo_section navbar-brand mx-4" href="#">
-                    <img  id="logo" src="
+                    <img id="logo" src="
                     <?php
                     if ($dataExisted)
                         echo $img_path  . $row['logo'];

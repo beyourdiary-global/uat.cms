@@ -7,12 +7,7 @@ include "header.php";
 include "./include/common.php";
 include "./include/common_variable.php";
 include "init.php";
-?>
-<link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/login.css">
-</head>
 
-<?php
 $img_path = img_server.'themes/';
 $rst = getData('*', "id = '1'", PROJ, $connect);
 
@@ -20,8 +15,12 @@ if ($rst != false) {
     $dataExisted = 1;
     $row = $rst->fetch_assoc();
 }
-?>
 
+?>
+<link rel="stylesheet" href="./css/main.css">
+<link rel="stylesheet" href="./css/login.css">
+<link rel="icon" type="image" href="<?php if(isset($row['meta_logo'])) echo $img_path . $row['meta_logo'] ; ?>">
+</head>
 
 <body>
 
@@ -30,7 +29,7 @@ if ($rst != false) {
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-center my-4" id="logo_element">
-                <img id="logo" src="
+                <img id="logo" style="min-height:100px; max-height : 150px; width : auto;" src="
                     <?php
                     if ($dataExisted)
                         echo $img_path  . $row['logo'];
