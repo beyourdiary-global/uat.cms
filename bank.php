@@ -28,12 +28,14 @@ if (post('actionBtn')) {
             $bank_name = postSpaceFilter('bank_name');
             $bank_remark = postSpaceFilter('bank_remark');
 
-            if (!$bank_name)
+            if (!$bank_name){
                 $err = "Bank name cannot be empty.";
-
-            else if(isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id))
+                break;
+            }
+            else if(isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id)){
                 $err = "Duplicate record found for Bank name.";
-
+                break;
+            }
             else if($action == 'addBank') {
                 try {
                     $query = "INSERT INTO " . BANK . "(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','" . USER_ID . "',curdate(),curtime())";
