@@ -57,7 +57,7 @@ $( document ).ready(() => {
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,7 +101,7 @@ $( document ).ready(() => {
                         <th scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
-                        <th scope="col">Action</th>
+                        <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
             </table>

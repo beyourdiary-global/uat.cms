@@ -190,6 +190,27 @@ function isStatusFieldAvailable($tbl, $conn) {
     return $result && $result->num_rows > 0;
 }
 
+function isDuplicateRecord($fieldName,$fieldValue,$tbl,$connect,$primaryKeyValue)
+{
+	if($fieldValue){
+		$query = "SELECT COUNT(*) as count FROM $tbl WHERE $fieldName = '$fieldValue' AND status = 'A'";
+    
+		// If editing an existing record, exclude the current record from the duplicate check
+		if ($primaryKeyValue) {
+			$query .= " AND id != '$primaryKeyValue'";
+		}
+	
+		$result = mysqli_query($connect, $query);
+	
+		if ($result) {
+			$row = mysqli_fetch_assoc($result);
+			$count = $row['count'];
+			return $count > 0; // If count is greater than 0, it's a duplicate
+		}
+	}
+    return false; // Error in executing the query
+}
+
 function getData($search_val, $val, $tbl, $conn){
 
 	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
