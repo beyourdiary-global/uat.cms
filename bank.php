@@ -28,110 +28,110 @@ if (post('actionBtn')) {
             $bank_name = postSpaceFilter('bank_name');
             $bank_remark = postSpaceFilter('bank_remark');
 
-            if ($bank_name) {
-                if (!isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id)) {
-                    if ($action == 'addBank') {
-                        try {
-                            $query = "INSERT INTO " . BANK . "(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','" . USER_ID . "',curdate(),curtime())";
-                            mysqli_query($connect, $query);
-                            $_SESSION['tempValConfirmBox'] = true;
+            if (!$bank_name)
+                $err = "Bank name cannot be empty.";
 
-                            $newvalarr = array();
+            else if(isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id))
+                $err = "Duplicate record found for Bank name.";
 
-                            // check value
-                            if ($bank_name != '')
-                                array_push($newvalarr, $bank_name);
+            else if($action == 'addBank') {
+                try {
+                    $query = "INSERT INTO " . BANK . "(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','" . USER_ID . "',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
 
-                            if ($bank_remark != '')
-                                array_push($newvalarr, $bank_remark);
+                    $newvalarr = array();
 
-                            $newval = implode(",", $newvalarr);
+                    // check value
+                    if ($bank_name != '')
+                        array_push($newvalarr, $bank_name);
 
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'add';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-                            $log['act_msg'] = USER_NAME . " added <b>$bank_name</b> into <b><i>Bank Table</i></b>.";
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = BANK;
-                            $log['page'] = 'Bank';
-                            $log['newval'] = $newval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        } catch (Exception $e) {
-                            echo 'Message: ' . $e->getMessage();
-                        }
-                    } else {
-                        try {
-                            // take old value
-                            $rst = getData('*', "id = '$bank_id'", BANK, $connect);
-                            $row = $rst->fetch_assoc();
-                            $oldvalarr = $chgvalarr = array();
+                    if ($bank_remark != '')
+                        array_push($newvalarr, $bank_remark);
 
-                            // check value
-                            if ($row['name'] != $bank_name) {
-                                array_push($oldvalarr, $row['name']);
-                                array_push($chgvalarr, $bank_name);
-                            }
+                    $newval = implode(",", $newvalarr);
 
-                            if ($row['remark'] != $bank_remark) {
-                                if ($row['remark'] == '')
-                                    $old_remark = 'Empty_Value';
-                                else $old_remark = $row['remark'];
-
-                                array_push($oldvalarr, $old_remark);
-
-                                if ($bank_remark == '')
-                                    $new_remark = 'Empty_Value';
-                                else $new_remark = $bank_remark;
-
-                                array_push($chgvalarr, $new_remark);
-                            }
-
-                            // convert into string
-                            $oldval = implode(",", $oldvalarr);
-                            $chgval = implode(",", $chgvalarr);
-
-                            $_SESSION['tempValConfirmBox'] = true;
-                            if ($oldval != '' && $chgval != '') {
-                                // edit
-                                $query = "UPDATE " . BANK . " SET name ='$bank_name', remark ='$bank_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$bank_id'";
-                                mysqli_query($connect, $query);
-
-                                // audit log
-                                $log = array();
-                                $log['log_act'] = 'edit';
-                                $log['cdate'] = $cdate;
-                                $log['ctime'] = $ctime;
-                                $log['uid'] = $log['cby'] = USER_ID;
-
-                                $log['act_msg'] = USER_NAME . " edited the data";
-                                for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                                    if ($i == 0)
-                                        $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                                    else
-                                        $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                                }
-                                $log['act_msg'] .= " from <b><i>Bank Table</i></b>.";
-
-                                $log['query_rec'] = $query;
-                                $log['query_table'] = BANK;
-                                $log['page'] = 'Bank';
-                                $log['oldval'] = $oldval;
-                                $log['changes'] = $chgval;
-                                $log['connect'] = $connect;
-                                audit_log($log);
-                            } else $act = 'NC';
-                        } catch (Exception $e) {
-                            echo 'Message: ' . $e->getMessage();
-                        }
-                    }
-                } else {
-                    $err = "Duplicate record found for Bank name.";
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$bank_name</b> into <b><i>Bank Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = BANK;
+                    $log['page'] = 'Bank';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
-            } else $err = "Bank name cannot be empty.";
+            } else {
+                try {
+                    // take old value
+                    $rst = getData('*', "id = '$bank_id'", BANK, $connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if ($row['name'] != $bank_name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $bank_name);
+                    }
+
+                    if ($row['remark'] != $bank_remark) {
+                        if ($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if ($bank_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $bank_remark;
+
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if ($oldval != '' && $chgval != '') {
+                        // edit
+                        $query = "UPDATE " . BANK . " SET name ='$bank_name', remark ='$bank_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$bank_id'";
+                        mysqli_query($connect, $query);
+
+                        // audit log
+                        $log = array();
+                        $log['log_act'] = 'edit';
+                        $log['cdate'] = $cdate;
+                        $log['ctime'] = $ctime;
+                        $log['uid'] = $log['cby'] = USER_ID;
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+                            if ($i == 0)
+                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Bank Table</i></b>.";
+
+                        $log['query_rec'] = $query;
+                        $log['query_table'] = BANK;
+                        $log['page'] = 'Bank';
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
+                        $log['connect'] = $connect;
+                        audit_log($log);
+                    } else $act = 'NC';
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
             break;
         case 'back':
             echo ("<script>location.href = '$redirect_page';</script>");
