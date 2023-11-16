@@ -31,118 +31,121 @@ if(post('actionBtn'))
             $dept_name = postSpaceFilter('dept_name');
             $dept_remark = postSpaceFilter('dept_remark');
 
-            if($dept_name)
-            {
-                if($action == 'addDept')
+            if (!$dept_name){
+                $err = "Department name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $dept_name, DEPT, $connect, $dept_id)){
+                $err = "Duplicate record found for department name.";
+                break;
+            }
+            else if($action == 'addDept'){
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".DEPT."(name,remark,create_by,create_date,create_time) VALUES ('$dept_name','$dept_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($dept_name != '')
+                        array_push($newvalarr, $dept_name);
+
+                    if($dept_remark != '')
+                        array_push($newvalarr, $dept_remark);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$dept_name</b> into <b><i>Department Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = DEPT;
+                    $log['page'] = 'Department';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$dept_id'",DEPT,$connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['name'] != $dept_name)
                     {
-                        $query = "INSERT INTO ".DEPT."(name,remark,create_by,create_date,create_time) VALUES ('$dept_name','$dept_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $dept_name);
+                    }
+
+                    if($row['remark'] != $dept_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if($dept_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $dept_remark;
+                        
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {   
+                        // edit
+                        $query = "UPDATE ".DEPT." SET name ='$dept_name', remark ='$dept_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$dept_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($dept_name != '')
-                            array_push($newvalarr, $dept_name);
-
-                        if($dept_remark != '')
-                            array_push($newvalarr, $dept_remark);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$dept_name</b> into <b><i>Department Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Department Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = DEPT;
                         $log['page'] = 'Department';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$dept_id'",DEPT,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $dept_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $dept_name);
-                        }
-
-                        if($row['remark'] != $dept_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if($dept_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $dept_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {   
-                            // edit
-                            $query = "UPDATE ".DEPT." SET name ='$dept_name', remark ='$dept_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$dept_id'";
-                            mysqli_query($connect, $query);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Department Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = DEPT;
-                            $log['page'] = 'Department';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
                 }
-            }
-            else $err = "Department name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");

@@ -29,132 +29,136 @@ if(post('actionBtn'))
     switch($action)
     {
         case 'addPinGrp': case 'updPinGrp':
+
             $pin_grp_name = postSpaceFilter('pin_grp_name');
             $pin_grp_remark = postSpaceFilter('pin_grp_remark');
             $pin_grp_pin_arr = post('pin_grp_pin');
             $pin_grp_pin = implode(",", $pin_grp_pin_arr);
 
-            if($pin_grp_name)
-            {
-                if($action == 'addPinGrp')
+            if (!$pin_grp_name){
+                $err = "Pin group name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $pin_grp_name, PIN_GRP, $connect, $pin_grp_id)){
+                $err = "Duplicate record found for pin group name.";
+                break;
+            }
+            else if($action == 'addPinGrp') {
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".PIN_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$pin_grp_name','$pin_grp_pin','$pin_grp_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($pin_grp_name != '')
+                        array_push($newvalarr, $pin_grp_name);
+
+                    if($pin_grp_remark != '')
+                        array_push($newvalarr, $pin_grp_remark);
+
+                    if($pin_grp_pin != '')
+                        array_push($newvalarr, $pin_grp_pin);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$pin_grp_name</b> into <b><i>Pin Group Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = PIN_GRP;
+                    $log['page'] = 'Pin Group';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['name'] != $pin_grp_name)
                     {
-                        $query = "INSERT INTO ".PIN_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$pin_grp_name','$pin_grp_pin','$pin_grp_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $pin_grp_name);
+                    }
+
+                    if($row['remark'] != $pin_grp_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if($pin_grp_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $pin_grp_remark;
+                        
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    if($row['pins'] != $pin_grp_pin)
+                    {
+                        array_push($oldvalarr, $row['pins']);
+                        array_push($chgvalarr, $pin_grp_pin);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {
+                         // edit
+                        $query = "UPDATE ".PIN_GRP." SET name = '$pin_grp_name', pins = '$pin_grp_pin', remark = '$pin_grp_remark' WHERE id = '$pin_grp_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($pin_grp_name != '')
-                            array_push($newvalarr, $pin_grp_name);
-
-                        if($pin_grp_remark != '')
-                            array_push($newvalarr, $pin_grp_remark);
-
-                        if($pin_grp_pin != '')
-                            array_push($newvalarr, $pin_grp_pin);
-
-                        $newval = implode(",",$newvalarr);
-
+                        
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$pin_grp_name</b> into <b><i>Pin Group Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Pin Group Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = PIN_GRP;
                         $log['page'] = 'Pin Group';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
-                }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $pin_grp_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $pin_grp_name);
-                        }
-
-                        if($row['remark'] != $pin_grp_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if($pin_grp_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $pin_grp_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        if($row['pins'] != $pin_grp_pin)
-                        {
-                            array_push($oldvalarr, $row['pins']);
-                            array_push($chgvalarr, $pin_grp_pin);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                             // edit
-                            $query = "UPDATE ".PIN_GRP." SET name = '$pin_grp_name', pins = '$pin_grp_pin', remark = '$pin_grp_remark' WHERE id = '$pin_grp_id'";
-                            mysqli_query($connect, $query);
-                            
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Pin Group Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = PIN_GRP;
-                            $log['page'] = 'Pin Group';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
             }
-            else $pinnameErr = "Pin Group name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -245,7 +249,7 @@ if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
                 <label class="form-label" id="pin_grp_name_lbl" for="pin_grp_name">Pin Group Name</label>
                 <input class="form-control" type="text" name="pin_grp_name" id="pin_grp_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($pinnameErr)) echo $pinnameErr; ?></span>
+                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 

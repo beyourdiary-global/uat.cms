@@ -31,118 +31,122 @@ if(post('actionBtn'))
             $Leave_status_name = postSpaceFilter('Leave_status_name');
             $Leave_status_remark = postSpaceFilter('Leave_status_remark');
 
-            if($Leave_status_name)
-            {
-                if($action == 'addLeave_status')
+
+            if (!$Leave_status_name){
+                $err = "Leave status name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $Leave_status_name, L_STS, $connect, $leave_status_id)){
+                $err = "Duplicate record found for leave status name.";
+                break;
+            }
+            else if($action == 'addLeave_status'){
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".L_STS."(name,remark,create_by,create_date,create_time) VALUES ('$Leave_status_name','$Leave_status_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($Leave_status_name != '')
+                        array_push($newvalarr, $Leave_status_name);
+
+                    if($Leave_status_remark != '')
+                        array_push($newvalarr, $Leave_status_remark);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$Leave_status_name</b> into <b><i>$pageTitle Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = L_STS;
+                    $log['page'] = $pageTitle;
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['name'] != $Leave_status_name)
                     {
-                        $query = "INSERT INTO ".L_STS."(name,remark,create_by,create_date,create_time) VALUES ('$Leave_status_name','$Leave_status_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $Leave_status_name);
+                    }
+
+                    if($row['remark'] != $Leave_status_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if($Leave_status_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $Leave_status_remark;
+                        
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {   
+                        // edit
+                        $query = "UPDATE ".L_STS." SET name ='$Leave_status_name', remark ='$Leave_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$leave_status_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($Leave_status_name != '')
-                            array_push($newvalarr, $Leave_status_name);
-
-                        if($Leave_status_remark != '')
-                            array_push($newvalarr, $Leave_status_remark);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$Leave_status_name</b> into <b><i>$pageTitle Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = L_STS;
                         $log['page'] = $pageTitle;
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
-                }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $Leave_status_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $Leave_status_name);
-                        }
-
-                        if($row['remark'] != $Leave_status_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if($Leave_status_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $Leave_status_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {   
-                            // edit
-                            $query = "UPDATE ".L_STS." SET name ='$Leave_status_name', remark ='$Leave_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$leave_status_id'";
-                            mysqli_query($connect, $query);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = L_STS;
-                            $log['page'] = $pageTitle;
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
             }
-            else $err = "$pageTitle name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");

@@ -54,8 +54,20 @@ if(post('actionBtn'))
             {
                 $err5 = "User Group cannot be empty.";
             }
-
-            if($user_username != '' && $user_name != '' && $user_email != '' && $user_group != 'noneVal')
+            
+            if(isDuplicateRecord("username", $user_username, $tblname, $connect, $user_id)){
+                $err = "Duplicate record found for username name.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $user_name, $tblname, $connect, $user_id)){
+                $err2 = "Duplicate record found for user name.";
+                break;
+            }
+            else if(isDuplicateRecord("email", $user_email, $tblname, $connect, $user_id)){
+                $err3 = "Duplicate record found for user email.";
+                break;
+            }
+            else if($user_username != '' && $user_name != '' && $user_email != '' && $user_group != 'noneVal')
             {
                 if($action == 'addUser')
                 {

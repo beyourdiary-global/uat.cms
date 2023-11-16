@@ -192,9 +192,9 @@ function isStatusFieldAvailable($tbl, $conn) {
 
 function isDuplicateRecord($fieldName,$fieldValue,$tbl,$connect,$primaryKeyValue)
 {
-	if($fieldValue){
-		$query = "SELECT COUNT(*) as count FROM $tbl WHERE $fieldName = '$fieldValue' AND status = 'A'";
-    
+	if($fieldValue !== null){
+		$query = "SELECT COUNT(*) as count FROM `$tbl` WHERE `$fieldName` = '$fieldValue' AND `status` = 'A'";
+		//Help to check the query where wrong
 		// If editing an existing record, exclude the current record from the duplicate check
 		if ($primaryKeyValue) {
 			$query .= " AND id != '$primaryKeyValue'";
