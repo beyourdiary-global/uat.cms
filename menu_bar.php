@@ -29,8 +29,9 @@ $menuList = array(
             array('Designations', '
             ', 'designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', 'department_table.php', '5'),
+            array('Employee Details', 'mdi mdi-information-outline', 'employeeDetailsTable.php', '34'),
         ),
-        'pin' => array('4','5')
+        'pin' => array('4','5','34')
     ),
     array(
         'Product',
@@ -140,7 +141,7 @@ $menuList = array(
                 'pin' => array('33'),
             ), 
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33','34')
     ),
     array(
         'Audit Log',
