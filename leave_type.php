@@ -30,6 +30,7 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addLeaveType':
         case 'updLeaveType':
+
             if ($leave_type == '') {
                 $err = "Leave Type cannot be empty.";
             }
@@ -37,8 +38,12 @@ if (post('actionBtn')) {
             if ($num_of_days == '') {
                 $err2 = "Number of Days cannot be empty.";
             }
-
-            if ($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
+            
+            if(isDuplicateRecord("name", $leave_type, $tblname, $connect, $leave_type_id) && isDuplicateRecord("num_of_days", $num_of_days, $tblname, $connect, $leave_type_id)){
+                $err = "Duplicate record found for leave type record.";
+                break;
+            }
+            else if($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
                 if ($action == 'addLeaveType') {
                     try {
                         $query = "INSERT INTO " . $tblname . "(name,num_of_days,leave_status,auto_assign,create_date,create_time,create_by) VALUES ('$leave_type','$num_of_days','Active','$auto_assign',curdate(),curtime(),'" . USER_ID . "')";
@@ -245,14 +250,14 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_yes">Yes</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_yes" value="yes" <?php if ($act == '') echo 'disabled';
-                                                                                                                                if (isset($dataExisted) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
+                                                                                                                                if (isset($dataExisted,$row['auto_assign']) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                     <div class="col-2 col-md-2">
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_no">No</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_no" value="no" <?php if ($act == '') echo 'disabled';
-                                                                                                                            if (!isset($dataExisted) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
+                                                                                                                            if (!isset($dataExisted,$row['auto_assign']) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                 </div>

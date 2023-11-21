@@ -7,172 +7,160 @@ $act = input('act');
 $redirect_page = $SITEURL . '/holiday_table.php';
 
 // to display data to input
-if($holiday_id)
-{
-    $rst = getData('*',"id = '$holiday_id'",HOLIDAY,$connect);
+if ($holiday_id) {
+    $rst = getData('*', "id = '$holiday_id'", HOLIDAY, $connect);
 
-    if($rst != false)
-    {
+    if ($rst != false) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
     }
 }
 
-if(!($holiday_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
+if (!($holiday_id) && !($act))
+    echo ("<script>location.href = '$redirect_page';</script>");
 
-if(post('actionBtn'))
-{
+if (post('actionBtn')) {
     $action = post('actionBtn');
 
-    switch($action)
-    {
-        case 'addHoliday': case 'updHoliday':
+    switch ($action) {
+        case 'addHoliday':
+        case 'updHoliday':
             $holiday_name = postSpaceFilter('holiday_name');
             $holiday_date = postSpaceFilter('holiday_date');
 
-            if(!($holiday_name))
+            if (!($holiday_name))
                 $err = "Holiday name cannot be empty.";
-            
-            if(!($holiday_date))
+
+            if (!($holiday_date))
                 $err2 = "Holiday date cannot be empty.";
 
-            if($holiday_name && $holiday_date)
-            {
-                if($action == 'addHoliday')
-                {
-                    try
-                    {
-                        $query = "INSERT INTO ".HOLIDAY."(name,date,create_by,create_date,create_time) VALUES ('$holiday_name','$holiday_date','".USER_ID."',curdate(),curtime())";
+            if (isDuplicateRecord("name", $holiday_name, HOLIDAY, $connect, $holiday_id)) {
+                $err = "Duplicate record found for Holiday name.";
+                break;
+            }
+            else if(isDuplicateRecord("date", $holiday_date, HOLIDAY, $connect, $holiday_id)){
+                $err2 = "Duplicate record found for Holiday date.";
+                break;
+            } else if ($action == 'addHoliday') {
+                try {
+                    $query = "INSERT INTO " . HOLIDAY . "(name,date,create_by,create_date,create_time) VALUES ('$holiday_name','$holiday_date','" . USER_ID . "',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if ($holiday_name != '')
+                        array_push($newvalarr, $holiday_name);
+
+                    if ($holiday_date != '')
+                        array_push($newvalarr, $holiday_date);
+
+                    $newval = implode(",", $newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$holiday_name</b> into <b><i>Holiday Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = HOLIDAY;
+                    $log['page'] = 'Holiday';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            } else {
+                try {
+                    // take old value
+                    $rst = getData('*', "id = '$holiday_id'", HOLIDAY, $connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if ($row['name'] != $holiday_name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $holiday_name);
+                    }
+
+                    if ($row['date'] != $holiday_date) {
+                        array_push($oldvalarr, $row['date']);
+                        array_push($chgvalarr, $holiday_date);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if ($oldval != '' && $chgval != '') {
+                        // edit
+                        $query = "UPDATE " . HOLIDAY . " SET name ='$holiday_name', date ='$holiday_date', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$holiday_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($holiday_name != '')
-                            array_push($newvalarr, $holiday_name);
-
-                        if($holiday_date != '')
-                            array_push($newvalarr, $holiday_date);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$holiday_name</b> into <b><i>Holiday Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+                            if ($i == 0)
+                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Holiday Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = HOLIDAY;
                         $log['page'] = 'Holiday';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$holiday_id'",HOLIDAY,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $holiday_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $holiday_name);
-                        }
-
-                        if($row['date'] != $holiday_date)
-                        {
-                            array_push($oldvalarr, $row['date']);
-                            array_push($chgvalarr, $holiday_date);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {    
-                            // edit
-                            $query = "UPDATE ".HOLIDAY." SET name ='$holiday_name', date ='$holiday_date', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$holiday_id'";
-                            mysqli_query($connect, $query);
-                            
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Holiday Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = HOLIDAY;
-                            $log['page'] = 'Holiday';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    } else $act = 'NC';
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
             }
+
             break;
         case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
+            echo ("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
 
-if(post('act') == 'D')
-{
+if (post('act') == 'D') {
     $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
+
+    if ($id) {
+        try {
             // take name
-            $rst = getData('*',"id = '$id'",HOLIDAY,$connect);
+            $rst = getData('*', "id = '$id'", HOLIDAY, $connect);
             $row = $rst->fetch_assoc();
 
             $holiday_id = $row['id'];
             $holiday_name = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(HOLIDAY,$id,$holiday_name,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(HOLIDAY, $id, $holiday_name, $connect, $cdate, $ctime, $pageTitle);
 
             $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
 }
 
-if(($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
+if (($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $holiday_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
@@ -191,93 +179,102 @@ if(($holiday_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Holiday</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add Holiday'; break;
-        case 'E': echo 'Edit Holiday'; break;
-        default: echo 'View Holiday';
-    }
-    ?></p>
-</div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>">Holiday</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php
+            switch ($act) {
+                case 'I':
+                    echo 'Add Holiday';
+                    break;
+                case 'E':
+                    echo 'Edit Holiday';
+                    break;
+                default:
+                    echo 'View Holiday';
+            }
+            ?></p>
+    </div>
 
-<div id="holidayFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="holidayForm" method="post" action="">
-            <div class="form-group mb-5">
-                <h2>
+    <div id="holidayFormContainer" class="container d-flex justify-content-center">
+        <div class="col-6 col-md-6 formWidthAdjust">
+            <form id="holidayForm" method="post" action="">
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo 'Add Holiday';
+                                break;
+                            case 'E':
+                                echo 'Edit Holiday';
+                                break;
+                            default:
+                                echo 'View Holiday';
+                        }
+                        ?>
+                    </h2>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" id="holiday_name_lbl" for="holiday_name">Holiday Name</label>
+                    <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" id="holiday_date_lbl" for="holiday_date">Holiday Date</label>
+                    <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if (isset($dataExisted) && isset($row['date'])) echo $row['date'] ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                     <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Holiday'; break;
-                        case 'E': echo 'Edit Holiday'; break;
-                        default: echo 'View Holiday';
+                    switch ($act) {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addHoliday">Add Holiday</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updHoliday">Edit Holiday</button>';
+                            break;
                     }
                     ?>
-                </h2>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="holiday_name_lbl" for="holiday_name">Holiday Name</label>
-                <input class="form-control" type="text" name="holiday_name" id="holiday_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="holiday_date_lbl" for="holiday_date">Holiday Date</label>
-                <input class="form-control" type="date" name="holiday_date" id="holiday_date" value="<?php if(isset($dataExisted) && isset($row['date'])) echo $row['date'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                </div>
-            </div>
-
-            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-            <?php
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addHoliday">Add Holiday</button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updHoliday">Edit Holiday</button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
-<?php
-/*
+    <?php
+    /*
   oufei 20231014
   common.fun.js
   function(title, subtitle, page name, ajax url path, redirect path, action)
   to show action dialog after finish certain action (eg. edit)
 */
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Holiday","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
-<script>
-/**
+    if (isset($_SESSION['tempValConfirmBox'])) {
+        unset($_SESSION['tempValConfirmBox']);
+        echo '<script>confirmationDialog("","","Holiday","","' . $redirect_page . '","' . $act . '");</script>';
+    }
+    ?>
+    <script>
+        /**
   oufei 20231014
   common.fun.js
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("holidayFormContainer");
-</script>
+        centerAlignment("holidayFormContainer");
+    </script>
 </body>
+
 </html>

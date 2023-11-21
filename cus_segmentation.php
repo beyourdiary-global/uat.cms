@@ -29,115 +29,125 @@ if (post('actionBtn')) {
             $cur_segmentation_remark = postSpaceFilter('cur_segmentation_remark');
             $color_segmentation = postSpaceFilter('segmentation_color');
 
-            if ($cur_segmentation_name) {
-                if ($action == 'addcur_segmentation') {
-                    try {
-                        $query = "INSERT INTO " . CUR_SEGMENTATION . "(name,remark,colorCode,create_by,create_date,create_time) VALUES ('$cur_segmentation_name','$cur_segmentation_remark','$color_segmentation','" . USER_ID . "',curdate(),curtime())";
+            if (!$cur_segmentation_name){
+                $err = "Customer segmentation name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $cur_segmentation_name, CUR_SEGMENTATION, $connect, $cur_segmentation_id)){
+                $err = "Duplicate record found for customer segmentation name.";
+                break;
+            }
+            else if(isDuplicateRecord("colorCode", $color_segmentation, CUR_SEGMENTATION, $connect, $cur_segmentation_id)){
+                $err2 = "Duplicate record found for customer segmentation color code.";
+                break;
+            }
+            else if($action == 'addcur_segmentation') {
+                try {
+                    $query = "INSERT INTO " . CUR_SEGMENTATION . "(name,remark,colorCode,create_by,create_date,create_time) VALUES ('$cur_segmentation_name','$cur_segmentation_remark','$color_segmentation','" . USER_ID . "',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if ($cur_segmentation_name != '')
+                        array_push($newvalarr, $cur_segmentation_name);
+
+                    if ($cur_segmentation_remark != '')
+                        array_push($newvalarr, $cur_segmentation_remark);
+
+                    if ($color_segmentation != '')
+                        array_push($newvalarr, $color_segmentation);
+
+                    $newval = implode(",", $newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$cur_segmentation_name</b> into <b><i>$pageTitle Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = CUR_SEGMENTATION;
+                    $log['page'] = $pageTitle;
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            } else {
+                try {
+                    // take old value
+                    $rst = getData('*', "id = '$cur_segmentation_id'", CUR_SEGMENTATION, $connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if ($row['name'] != $cur_segmentation_name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $cur_segmentation_name);
+                    }
+
+                    if ($row['colorCode'] != $color_segmentation) {
+                        array_push($oldvalarr, $row['colorCode']);
+                        array_push($chgvalarr, $color_segmentation);
+                    }
+
+                    if ($row['remark'] != $cur_segmentation_remark) {
+                        if ($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if ($cur_segmentation_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $cur_segmentation_remark;
+
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldval != '' && $chgval != '') {
+                        // edit
+                        $query = "UPDATE " . CUR_SEGMENTATION . " SET name ='$cur_segmentation_name', remark ='$cur_segmentation_remark', colorCode = '$color_segmentation' ,update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$cur_segmentation_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if ($cur_segmentation_name != '')
-                            array_push($newvalarr, $cur_segmentation_name);
-
-                        if ($cur_segmentation_remark != '')
-                            array_push($newvalarr, $cur_segmentation_remark);
-
-                        if ($color_segmentation != '')
-                            array_push($newvalarr, $color_segmentation);
-
-                        $newval = implode(",", $newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$cur_segmentation_name</b> into <b><i>$pageTitle Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+                            if ($i == 0)
+                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = CUR_SEGMENTATION;
                         $log['page'] = $pageTitle;
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch (Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
-                } else {
-                    try {
-                        // take old value
-                        $rst = getData('*', "id = '$cur_segmentation_id'", CUR_SEGMENTATION, $connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if ($row['name'] != $cur_segmentation_name) {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $cur_segmentation_name);
-                        }
-
-                        if ($row['colorCode'] != $color_segmentation) {
-                            array_push($oldvalarr, $row['colorCode']);
-                            array_push($chgvalarr, $color_segmentation);
-                        }
-
-                        if ($row['remark'] != $cur_segmentation_remark) {
-                            if ($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if ($cur_segmentation_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $cur_segmentation_remark;
-
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",", $oldvalarr);
-                        $chgval = implode(",", $chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        if ($oldval != '' && $chgval != '') {
-                            // edit
-                            $query = "UPDATE " . CUR_SEGMENTATION . " SET name ='$cur_segmentation_name', remark ='$cur_segmentation_remark', colorCode = '$color_segmentation' ,update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$cur_segmentation_id'";
-                            mysqli_query($connect, $query);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                                if ($i == 0)
-                                    $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = CUR_SEGMENTATION;
-                            $log['page'] = $pageTitle;
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        } else $act = 'NC';
-                    } catch (Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    } else $act = 'NC';
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
-            } else $err = "$pageTitle name cannot be empty.";
+            }
             break;
         case 'back':
             echo ("<script>location.href = '$redirect_page';</script>");
@@ -243,6 +253,10 @@ if (($cur_segmentation_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
                             <div class="col d-flex justify-content-start align-items-center">
                                 <input type="color" name="segmentation_color" id="segmentation_color" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control"  style="height: 40px;">
                                 <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
+
+                            </div>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
                             </div>
                         </div>
                     </div>

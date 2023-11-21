@@ -61,7 +61,15 @@ if(post('actionBtn'))
             $user_grp_name = postSpaceFilter('user_grp_name');
             $user_grp_remark = postSpaceFilter('user_grp_remark');
 
-            if($user_grp_name)
+            if (!$user_grp_name){
+                $err = "User group name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $user_grp_name, USR_GRP, $connect, $user_grp_id)){
+                $err = "Duplicate record found for user group name.";
+                break;
+            }
+            else 
             {
                 $arr = post('user_grp_chkbox_val');
                 $storevalue = array();
@@ -201,7 +209,6 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "User Group Name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");

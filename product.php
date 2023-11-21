@@ -80,7 +80,21 @@ if(post('actionBtn'))
                 $err8 = "Product Expire Date cannot be empty.";
             }
 
-            if($prod_name != '' && $prod_brand != '' && $prod_wgt != '' && $prod_wgt_unit != '' && $prod_cost != '' && $prod_cur_unit != '' && $prod_barcode_status != '' && $prod_expire_date != '')
+            $check_duplicate_record = isDuplicateRecord("name", $prod_name, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("brand", $prod_brand, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("weight", $prod_wgt, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("weight_unit", $prod_wgt_unit, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("cost", $prod_cost, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("currency_unit", $prod_cur_unit, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("barcode_status", $prod_barcode_status, $tblname, $connect, $prod_id)
+            && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblname, $connect, $prod_id);
+
+
+            if($check_duplicate_record){
+                $err9 = "Duplicate record found for this product.";
+                break;
+            }
+            else if($prod_name != '' && $prod_brand != '' && $prod_wgt != '' && $prod_wgt_unit != '' && $prod_cost != '' && $prod_cur_unit != '' && $prod_barcode_status != '' && $prod_expire_date != '')
             {
                 if($action == 'addProd')
                 {
@@ -346,6 +360,10 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     </div>
                 </div>
 
+                <div id="err_msg">
+                    <span class="mt-n2" style="font-size : 21px"><?php if (isset($err9)) echo $err9; ?></span>
+                </div>
+
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
@@ -367,9 +385,10 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand</label>
-                            <input class="form-control" type="text" name="prod_brand" id="prod_brand" value=
-                            "<?php
+                            <input class="form-control" type="text" name="prod_brand" id="prod_brand" value="<?php
+
                                 unset($echoVal);
+                                
                                 if(isset($prod_brand) && $prod_brand != '')
                                     $echoVal = $prod_brand;
                                 else if(isset($dataExisted) && isset($row['brand']))
@@ -377,11 +396,12 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $rst = getData('name',"id = '$echoVal'",BRAND,$connect);
-                                    $row = $rst->fetch_assoc();
-                                    echo $row['name'];
+                                    $brand_rst = getData('name',"id = '$echoVal'",BRAND,$connect);
+                                    $brand_row = $brand_rst->fetch_assoc();
+                                    echo $brand_row['name'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
+                            
                             <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value=
                             "<?php
                                 if(isset($prod_brand) && $prod_brand != '')
@@ -401,9 +421,10 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                 <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
-                            <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" value=
-                            "<?php
+                            <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" value="<?php
+
                                 unset($echoVal);
+
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     $echoVal = $prod_wgt_unit;
                                 else if(isset($dataExisted) && isset($row['weight_unit']))
@@ -411,13 +432,13 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
-                                    $row = $rst->fetch_assoc();
-                                    echo $row['unit'];
+                                    $weight_rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
+                                    $weight_row = $weight_rst->fetch_assoc();
+                                    echo $weight_row['unit'];
                                 }
+
                             ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value=
-                            "<?php 
+                            <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value="<?php 
                                 if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
                                     echo $prod_wgt_unit;
                                 else if(isset($dataExisted) && isset($row['weight_unit'])) 
@@ -431,8 +452,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
-                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value=
-                            "<?php
+                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php
                                 unset($echoVal);
                                 if(isset($prod_wgt) && $prod_wgt != '')
                                     echo $prod_wgt;
@@ -451,8 +471,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                 <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
-                            <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" value=
-                            "<?php
+                            <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" value="<?php
                                 unset($echoVal);
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     $echoVal = $prod_cur_unit;
@@ -461,13 +480,12 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
-                                    $row = $rst->fetch_assoc();
-                                    echo $row['unit'];
+                                    $currency_unit_rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
+                                    $currency_unit_row = $currency_unit_rst->fetch_assoc();
+                                    echo $currency_unit_row['unit'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value=
-                            "<?php
+                            <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value="<?php
                                 if(isset($prod_cur_unit) && $prod_cur_unit != '')
                                     echo $prod_cur_unit;
                                 else if(isset($dataExisted) && isset($row['currency_unit'])) 
@@ -481,8 +499,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
-                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value=
-                            "<?php 
+                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php 
                                 if(isset($prod_cost) && $prod_cost != '')
                                     echo $prod_cost;
                                 else if(isset($dataExisted) && isset($row['cost'])) 
@@ -514,8 +531,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
-                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value=
-                            "<?php
+                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php
                                 if(isset($prod_barcode_slot) && $prod_barcode_slot != '')
                                     echo $prod_barcode_slot;
                                 else if(isset($dataExisted) && isset($row['barcode_slot'])) 
@@ -532,8 +548,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date</label>
-                            <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value=
-                            "<?php 
+                            <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php 
                                 if(isset($prod_expire_date) && $prod_expire_date != '')
                                     echo $prod_expire_date;
                                 else if(isset($dataExisted) && isset($row['expire_date'])) 
@@ -549,8 +564,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="parent_prod_lbl" for="parent_prod">Parent Product</label>
-                            <input class="form-control" type="text" name="parent_prod" id="parent_prod" value=
-                            "<?php
+                            <input class="form-control" type="text" name="parent_prod" id="parent_prod" value="<?php
                                 unset($echoVal);
                                 if(isset($parent_prod) && $parent_prod != '')
                                     $echoVal = $parent_prod;
@@ -559,9 +573,9 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal) && $echoVal != '')
                                 {
-                                    $rst = getData('name',"id = '$echoVal'",PROD,$connect);
-                                    $row = $rst->fetch_assoc();
-                                    echo $row['name'];
+                                    $product_rst = getData('name',"id = '$echoVal'",PROD,$connect);
+                                    $product_row = $product_rst->fetch_assoc();
+                                    echo $product_row['name'];
                                 }
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value=

@@ -32,120 +32,124 @@ if(post('actionBtn'))
             $wgt_unit = trim(post('wgt_unit'));
             $wgt_unit_remark = trim(post('wgt_unit_remark'));
 
-            if($wgt_unit)
-            {
-                if($action == 'addWgtUnit')
+            if (!$wgt_unit){
+                $err = "Weight unit cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("unit", $wgt_unit, $tblname, $connect, $wgt_unit_id)){
+                $err = "Duplicate record found for weight unit.";
+                break;
+            }
+            else if($action == 'addWgtUnit'){
+                  
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$wgt_unit','$wgt_unit_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    generateDBData($tblname, $connect);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($wgt_unit != '')
+                        array_push($newvalarr, $wgt_unit);
+
+                    if($wgt_unit_remark != '')
+                        array_push($newvalarr, $wgt_unit_remark);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$wgt_unit</b> into <b><i>Weight Unit Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = $tblname;
+                    $log['page'] = 'Weight Unit';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['unit'] != $wgt_unit)
                     {
-                        $query = "INSERT INTO ".$tblname."(unit,remark,create_by,create_date,create_time) VALUES ('$wgt_unit','$wgt_unit_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['unit']);
+                        array_push($chgvalarr, $wgt_unit);
+                    }
+
+                    if($row['remark'] != $wgt_unit_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if($wgt_unit_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $wgt_unit_remark;
+                        
+                        array_push($chgvalarr, $wgt_unit_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {
+                        // edit
+                        $query = "UPDATE ".$tblname." SET unit ='$wgt_unit', remark ='$wgt_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$wgt_unit_id";
                         mysqli_query($connect, $query);
                         generateDBData($tblname, $connect);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($wgt_unit != '')
-                            array_push($newvalarr, $wgt_unit);
-
-                        if($wgt_unit_remark != '')
-                            array_push($newvalarr, $wgt_unit_remark);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$wgt_unit</b> into <b><i>Weight Unit Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Weight Unit Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
                         $log['page'] = 'Weight Unit';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
-                }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['unit'] != $wgt_unit)
-                        {
-                            array_push($oldvalarr, $row['unit']);
-                            array_push($chgvalarr, $wgt_unit);
-                        }
-
-                        if($row['remark'] != $wgt_unit_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if($wgt_unit_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $wgt_unit_remark;
-                            
-                            array_push($chgvalarr, $wgt_unit_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                            // edit
-                            $query = "UPDATE ".$tblname." SET unit ='$wgt_unit', remark ='$wgt_unit_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$wgt_unit_id";
-                            mysqli_query($connect, $query);
-                            generateDBData($tblname, $connect);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Weight Unit Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = $tblname;
-                            $log['page'] = 'Weight Unit';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
             }
-            else $err = "Weight Unit cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");

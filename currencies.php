@@ -7,197 +7,180 @@ $act = input('act');
 $redirect_page = $SITEURL . '/currencies_table.php';
 
 // to display data to input
-if($currencies_id)
-{
-    $rst = getData('*',"id = '$currencies_id'",CURRENCIES,$connect);
+if ($currencies_id) {
+    $rst = getData('*', "id = '$currencies_id'", CURRENCIES, $connect);
 
-    if($rst != false)
-    {
+    if ($rst != false) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
     }
 }
 
-if(!($currencies_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
+if (!($currencies_id) && !($act))
+    echo ("<script>location.href = '$redirect_page';</script>");
 
 // to list out the currency unit for selection 
-$cur_list_result = getData('*','',CUR_UNIT,$connect);
+$cur_list_result = getData('*', '', CUR_UNIT, $connect);
 
 // currency unit
 $cur_unit_arr = array();
-if($cur_list_result != false)
-{
-    while($row2 = $cur_list_result->fetch_assoc())
-    {
+if ($cur_list_result != false) {
+    while ($row2 = $cur_list_result->fetch_assoc()) {
         $x = $row2['id'];
         $y = $row2['unit'];
         $cur_unit_arr[$x] = $y;
     }
-    
 }
 
-if(post('actionBtn'))
-{
+if (post('actionBtn')) {
     $action = post('actionBtn');
 
-    switch($action)
-    {
-        case 'addCurrencies': case 'updCurrencies':
+    switch ($action) {
+        case 'addCurrencies':
+        case 'updCurrencies':
             $dflt_cur_unit = post('dflt_cur_unit');
-            $dflt_cur_unit = explode(":", $dflt_cur_unit);
             $exchg_cur_rate = post('exchg_cur_rate');
             $exchg_cur_unit = post('exchg_cur_unit');
+            $dflt_cur_unit = explode(":", $dflt_cur_unit);
             $exchg_cur_unit = explode(":", $exchg_cur_unit);
             $currencies_remark = postSpaceFilter('currencies_remark');
 
-            if($exchg_cur_rate)
-            {
-                if($action == 'addCurrencies')
-                {
-                    try
-                    {
-                        $query = "INSERT INTO ".CURRENCIES."(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','".USER_ID."',curdate(),curtime())";
+            if (!$exchg_cur_rate && $exchg_cur_rate < 0) {
+                $err = "Exchange currency rate cannot be empty.";
+                break;
+            } else if (
+                isDuplicateRecord("default_currency_unit", $dflt_cur_unit[0], CURRENCIES, $connect, $currencies_id) && isDuplicateRecord("exchange_currency_rate", $exchg_cur_rate, CURRENCIES, $connect, $currencies_id) && isDuplicateRecord("exchange_currency_unit", $exchg_cur_unit[0], CURRENCIES, $connect, $currencies_id)) {
+                $err1 = "Duplicate record found for exchange currency record.";
+                break;
+            } else if ($action == 'addCurrencies') {
+
+                try {
+                    $query = "INSERT INTO " . CURRENCIES . "(default_currency_unit,exchange_currency_rate,exchange_currency_unit,remark,create_by,create_date,create_time) VALUES ('$dflt_cur_unit[0]','$exchg_cur_rate','$exchg_cur_unit[0]','$currencies_remark','" . USER_ID . "',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if ($dflt_cur_unit != '')
+                        array_push($newvalarr, $dflt_cur_unit[0]);
+
+                    if ($exchg_cur_rate != '')
+                        array_push($newvalarr, $exchg_cur_rate);
+
+                    if ($exchg_cur_unit != '')
+                        array_push($newvalarr, $exchg_cur_unit[0]);
+
+                    if ($currencies_remark != '')
+                        array_push($newvalarr, $currencies_remark);
+
+                    $newval = implode(",", $newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$dflt_cur_unit[1] -> $exchg_cur_unit[1]</b> into <b><i>Currencies Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = CURRENCIES;
+                    $log['page'] = 'Currencies';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            } else {
+                try {
+                    // take old value
+                    $rst = getData('*', "id = '$currencies_id'", CURRENCIES, $connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if ($row['default_currency_unit'] != $dflt_cur_unit[0]) {
+                        array_push($oldvalarr, $row['default_currency_unit']);
+                        array_push($chgvalarr, $dflt_cur_unit[0]);
+                    }
+
+                    if ($row['exchange_currency_rate'] != $exchg_cur_rate) {
+                        array_push($oldvalarr, $row['exchange_currency_rate']);
+                        array_push($chgvalarr, $exchg_cur_rate);
+                    }
+
+                    if ($row['exchange_currency_unit'] != $exchg_cur_unit[0]) {
+                        array_push($oldvalarr, $row['exchange_currency_unit']);
+                        array_push($chgvalarr, $exchg_cur_unit[0]);
+                    }
+
+                    if ($row['remark'] != $currencies_remark) {
+                        if ($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if ($currencies_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $currencies_remark;
+
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if ($oldval != '' && $chgval != '') {
+                        // edit
+                        $query = "UPDATE " . CURRENCIES . " SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$currencies_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($dflt_cur_unit != '')
-                            array_push($newvalarr, $dflt_cur_unit[0]);
-
-                        if($exchg_cur_rate != '')
-                            array_push($newvalarr, $exchg_cur_rate);
-
-                        if($exchg_cur_unit != '')
-                            array_push($newvalarr, $exchg_cur_unit[0]);
-
-                        if($currencies_remark != '')
-                            array_push($newvalarr, $currencies_remark);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$dflt_cur_unit[1] -> $exchg_cur_unit[1]</b> into <b><i>Currencies Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+                            if ($i == 0)
+                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                        }
+                        $log['act_msg'] .= "  from <b><i>Currencies Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = CURRENCIES;
                         $log['page'] = 'Currencies';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$currencies_id'",CURRENCIES,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['default_currency_unit'] != $dflt_cur_unit[0])
-                        {
-                            array_push($oldvalarr, $row['default_currency_unit']);
-                            array_push($chgvalarr, $dflt_cur_unit[0]);
-                        }
-
-                        if($row['exchange_currency_rate'] != $exchg_cur_rate)
-                        {
-                            array_push($oldvalarr, $row['exchange_currency_rate']);
-                            array_push($chgvalarr, $exchg_cur_rate);
-                        }
-
-                        if($row['exchange_currency_unit'] != $exchg_cur_unit[0])
-                        {
-                            array_push($oldvalarr, $row['exchange_currency_unit']);
-                            array_push($chgvalarr, $exchg_cur_unit[0]);
-                        }
-
-                        if($row['remark'] != $currencies_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-                            
-                            if($currencies_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $currencies_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                            // edit
-                            $query = "UPDATE ".CURRENCIES." SET default_currency_unit ='$dflt_cur_unit[0]', exchange_currency_rate ='$exchg_cur_rate', exchange_currency_unit ='$exchg_cur_unit[0]', remark ='$currencies_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$currencies_id'";
-                            mysqli_query($connect, $query);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= "  from <b><i>Currencies Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = CURRENCIES;
-                            $log['page'] = 'Currencies';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    } else $act = 'NC';
+                } catch (Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
             }
-            else $err = "Exchange Currency Rate cannot be empty.";
             break;
         case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
+            echo ("<script>location.href = '$redirect_page';</script>");
             break;
     }
 }
 
-if(post('act') == 'D')
-{
+if (post('act') == 'D') {
     $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
+
+    if ($id) {
+        try {
             // take name
-            $rst = getData('*',"id = '$id'",CURRENCIES,$connect);
+            $rst = getData('*', "id = '$id'", CURRENCIES, $connect);
             $row = $rst->fetch_assoc();
 
             $currencies_id = $row['id'];
@@ -207,17 +190,16 @@ if(post('act') == 'D')
             $dataDetails = "$cur_unit_arr[$dflt_cur_unit] -> $cur_unit_arr[$exchg_cur_unit]";
 
             //SET the record status to 'D'
-            deleteRecord(CURRENCIES,$id,$dataDetails,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(CURRENCIES, $id, $dataDetails, $connect, $cdate, $ctime, $pageTitle);
 
             $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
 }
 
-if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
+if (($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $dflt_cur_unit = isset($dataExisted) ? $row['default_currency_unit'] : '';
     $exchg_cur_unit = isset($dataExisted) ? $row['exchange_currency_unit'] : '';
     $_SESSION['viewChk'] = 1;
@@ -237,134 +219,143 @@ if(($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Currencies</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add Currencies'; break;
-        case 'E': echo 'Edit Currencies'; break;
-        default: echo 'View Currencies';
-    }
-    ?></p>
-</div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>">Currencies</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php
+            switch ($act) {
+                case 'I':
+                    echo 'Add Currencies';
+                    break;
+                case 'E':
+                    echo 'Edit Currencies';
+                    break;
+                default:
+                    echo 'View Currencies';
+            }
+            ?></p>
+    </div>
 
-<div id="currenciesFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="currenciesForm" method="post" action="">
-            <div class="form-group mb-5">
-                <h2>
-                    <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Currencies'; break;
-                        case 'E': echo 'Edit Currencies'; break;
-                        default: echo 'View Currencies';
-                    }
-                    ?>
-                </h2>
-            </div>
+    <div id="currenciesFormContainer" class="container d-flex justify-content-center">
+        <div class="col-6 col-md-6 formWidthAdjust">
+            <form id="currenciesForm" method="post" action="">
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo 'Add Currencies';
+                                break;
+                            case 'E':
+                                echo 'Edit Currencies';
+                                break;
+                            default:
+                                echo 'View Currencies';
+                        }
+                        ?>
+                    </h2>
+                </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="dflt_cur_unit">Default Currency Unit</label>
-                <select class="form-select" id="dflt_cur_unit" name="dflt_cur_unit" <?php if($act == '') echo 'disabled' ?>>
-                    <?php
-                        if($cur_list_result->num_rows >= 1)
-                        {
+                <div id="err_msg">
+                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="dflt_cur_unit">Default Currency Unit</label>
+                    <select class="form-select" id="dflt_cur_unit" name="dflt_cur_unit" <?php if ($act == '') echo 'disabled' ?>>
+                        <?php
+                        if ($cur_list_result->num_rows >= 1) {
                             $cur_list_result->data_seek(0);
-                            while($row2 = $cur_list_result->fetch_assoc())
-                            {
+                            while ($row2 = $cur_list_result->fetch_assoc()) {
                                 $selected = "";
-                                if(isset($dataExisted))
+                                if (isset($dataExisted,$row['default_currency_unit']))
                                     $selected = $row['default_currency_unit'] == $row2['id'] ? " selected" : "";
 
-                                echo "<option value=\"".$row2['id'].":".$row2['unit']."\"$selected>".$row2['unit']."</option>";
+                                echo "<option value=\"" . $row2['id'] . ":" . $row2['unit'] . "\"$selected>" . $row2['unit'] . "</option>";
                             }
                         } else {
                             echo "<option value=\"0\">None</option>";
                         }
-                    ?>
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="exchg_cur_rate_lbl" for="exchg_cur_rate">Exchange Currency Rate</label>
-                <input class="form-control" type="text" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if(isset($dataExisted) && isset($row['exchange_currency_unit'])) echo $row['exchange_currency_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                        ?>
+                    </select>
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="exchg_cur_unit">Exchange Currency Unit</label>
-                <select class="form-select" id="exchg_cur_unit" name="exchg_cur_unit" <?php if($act == '') echo 'disabled' ?>>
-                    <?php
-                        if($cur_list_result->num_rows >= 1)
-                        {
+                <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="exchg_cur_rate_lbl" for="exchg_cur_rate">Exchange Currency Rate</label>
+                    <input class="form-control" type="number" step="any" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if (isset($dataExisted) && isset($row['exchange_currency_unit'])) echo $row['exchange_currency_rate'] ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="exchg_cur_unit">Exchange Currency Unit</label>
+                    <select class="form-select" id="exchg_cur_unit" name="exchg_cur_unit" <?php if ($act == '') echo 'disabled' ?>>
+                        <?php
+                        if ($cur_list_result->num_rows >= 1) {
                             $cur_list_result->data_seek(0);
-                            while($row2 = $cur_list_result->fetch_assoc())
-                            {
+                            while ($row2 = $cur_list_result->fetch_assoc()) {
                                 $selected = "";
-                                if(isset($dataExisted))
+                                if (isset($dataExisted,$row['exchange_currency_unit']))
                                     $selected = $row['exchange_currency_unit'] == $row2['id'] ? " selected" : "";
 
-                                echo "<option value=\"".$row2['id'].":".$row2['unit']."\"$selected>".$row2['unit']."</option>";
+                                echo "<option value=\"" . $row2['id'] . ":" . $row2['unit'] . "\"$selected>" . $row2['unit'] . "</option>";
                             }
                         } else {
                             echo "<option value=\"0\">None</option>";
                         }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="currencies_remark_lbl" for="currencies_remark">Currency Unit Remark</label>
+                    <textarea class="form-control" name="currencies_remark" id="currencies_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php
+                    switch ($act) {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addCurrencies">Add Currencies</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updCurrencies">Edit Currencies</button>';
+                            break;
+                    }
                     ?>
-                </select>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="currencies_remark_lbl" for="currencies_remark">Currency Unit Remark</label>
-                <textarea class="form-control" name="currencies_remark" id="currencies_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-            </div>
-
-            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-            <?php
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addCurrencies">Add Currencies</button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updCurrencies">Edit Currencies</button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-            </div>
-        </form>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<?php
-/*
+    <?php
+    /*
   oufei 20231014
   common.fun.js
   function(title, subtitle, page name, ajax url path, redirect path, action)
   to show action dialog after finish certain action (eg. edit)
 */
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Currencies","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
-<script>
-/**
+    if (isset($_SESSION['tempValConfirmBox'])) {
+        unset($_SESSION['tempValConfirmBox']);
+        echo '<script>confirmationDialog("","","Currencies","","' . $redirect_page . '","' . $act . '");</script>';
+    }
+    ?>
+    <script>
+        /**
   oufei 20231014
   common.fun.js
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("currenciesFormContainer");
-</script>
+        centerAlignment("currenciesFormContainer");
+    </script>
 </body>
+
 </html>

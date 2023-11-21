@@ -31,118 +31,121 @@ if(post('actionBtn'))
             $em_type_status_name = postSpaceFilter('em_type_status_name');
             $em_type_status_remark = postSpaceFilter('em_type_status_remark');
 
-            if($em_type_status_name)
-            {
-                if($action == 'addEmTypeStatus')
+            if (!$em_type_status_name){
+                $err = "Employee type status name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $em_type_status_name, EM_TYPE_STATUS, $connect, $em_type_status_id)){
+                $err = "Duplicate record found for employee type status name.";
+                break;
+            }
+            else if($action == 'addEmTypeStatus'){
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".EM_TYPE_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$em_type_status_name','$em_type_status_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($em_type_status_name != '')
+                        array_push($newvalarr, $em_type_status_name);
+
+                    if($em_type_status_remark != '')
+                        array_push($newvalarr, $em_type_status_remark);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$em_type_status_name</b> into <b><i>Employment Type Status Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = EM_TYPE_STATUS;
+                    $log['page'] = 'Employment Type Status';
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$em_type_status_id'",EM_TYPE_STATUS,$connect);;
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['name'] != $em_type_status_name)
                     {
-                        $query = "INSERT INTO ".EM_TYPE_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$em_type_status_name','$em_type_status_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $em_type_status_name);
+                    }
+
+                    if($row['remark'] != $em_type_status_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+                        
+                        if($em_type_status_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $em_type_status_remark;
+                        
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {
+                        // edit
+                        $query = "UPDATE ".EM_TYPE_STATUS." SET name ='$em_type_status_name', remark ='$em_type_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$em_type_status_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($em_type_status_name != '')
-                            array_push($newvalarr, $em_type_status_name);
-
-                        if($em_type_status_remark != '')
-                            array_push($newvalarr, $em_type_status_remark);
-
-                        $newval = implode(",",$newvalarr);
-
+                        
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$em_type_status_name</b> into <b><i>Employment Type Status Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>Employment Type Status Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = EM_TYPE_STATUS;
                         $log['page'] = 'Employment Type Status';
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$em_type_status_id'",EM_TYPE_STATUS,$connect);;
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $em_type_status_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $em_type_status_name);
-                        }
-
-                        if($row['remark'] != $em_type_status_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-                            
-                            if($em_type_status_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $em_type_status_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                            // edit
-                            $query = "UPDATE ".EM_TYPE_STATUS." SET name ='$em_type_status_name', remark ='$em_type_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$em_type_status_id'";
-                            mysqli_query($connect, $query);
-                            
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Employment Type Status Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = EM_TYPE_STATUS;
-                            $log['page'] = 'Employment Type Status';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
-                }
-            }
-            else $err = "Employment Type Status name cannot be empty.";
+            }      
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
