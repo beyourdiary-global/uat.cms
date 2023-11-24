@@ -101,6 +101,9 @@ define('EMPLOYER_EPF','employer_epf_rate');
 define('EMPLOYEE_EPF','employee_epf_rate');
 define('SOCSO_CATH','socso_category');
 define('PAY_METH','payment_method');
+define('EMPINFO','employee_info');
+define('EMPPERSONALINFO','employee_personal_info');
+
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
