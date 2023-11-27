@@ -59,8 +59,23 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Identity Type</th>
                         <th scope="col">Identity Number</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Birthday</th>
+                        <th scope="col">Race</th>
+                        <th scope="col">Residence </th>
+                        <th scope="col">Nationality </th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Alternate Phone Number</th>
+                        <th scope="col">Address Line 1</th>
+                        <th scope="col">Address Line 2</th>
+                        <th scope="col">City</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Postcode</th>
+                        <th scope="col">Marital status</th>
+                        <th scope="col">Number of kids</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
@@ -71,8 +86,54 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <th scope="row"><?= $num;
                                             $num++ ?></th>
                             <td scope="row"><?= $row['name'] ?></td>
+
+                            <?php
+                            $result = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
+
+                            while ($rowIDType = $result->fetch_assoc()) {
+                                echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
+                            }
+                            ?>
+
                             <td scope="row"><?= $row['id_number'] ?></td>
                             <td scope="row"><?= $row['email'] ?></td>
+                            <td scope="row"><?= $row['gender'] ?></td>
+                            <td scope="row"><?= $row['date_of_birth'] ?></td>
+
+                            <?php
+                            $result = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
+
+                            while ($rowRace = $result->fetch_assoc()) {
+                                echo "<td scope='row'>" . $rowRace['name'] . "</td>";
+                            }
+                            ?>
+
+                            <td scope="row"><?= $row['residence_status'] ?></td>
+
+                            <?php
+                            $result = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
+
+                            while ($rowNationality = $result->fetch_assoc()) {
+                                echo "<td scope='row'>" . $rowNationality['name'] . "</td>";
+                            }
+                            ?>
+
+                            <td scope="row"><?= $row['phone_number'] ?></td>
+                            <td scope="row"><?= $row['phone_number'] ?></td>
+                            <td scope="row"><?= $row['address_line_1'] ?></td>
+                            <td scope="row"><?= $row['address_line_2'] ?></td>
+                            <td scope="row"><?= $row['city'] ?></td>
+                            <td scope="row"><?= $row['state'] ?></td>
+                            <td scope="row"><?= $row['postcode'] ?></td>
+                            <?php
+                            $result = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
+
+                            while ($rowIDType = $result->fetch_assoc()) {
+                                echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
+                            }
+                            ?>
+
+                            <td scope="row"><?= $row['no_of_children'] ?></td>
                             <td scope="row">
                                 <div class="dropdown" style="text-align:center">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -99,8 +160,23 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
+                        <th scope="col">Identity Type</th>
                         <th scope="col">Identity Number</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Birthday</th>
+                        <th scope="col">Race</th>
+                        <th scope="col">Residence </th>
+                        <th scope="col">Nationality </th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Alternate Phone Number</th>
+                        <th scope="col">Address Line 1</th>
+                        <th scope="col">Address Line 2</th>
+                        <th scope="col">City</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Postcode</th>
+                        <th scope="col">Marital status</th>
+                        <th scope="col">Number of kids</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
