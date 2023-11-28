@@ -262,7 +262,7 @@ if (($currencies_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                     </h2>
                 </div>
 
-                <div id="err_msg">
+                <div id="err_msg" class="mb-3">
                     <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                 </div>
 

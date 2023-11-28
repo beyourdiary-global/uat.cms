@@ -316,7 +316,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                     </h2>
             </div>
 
-            <div id="err_msg">
+            <div id="err_msg"  class="mb-3">
                  <span class="mt-n1" style="font-size: 21px;"><?php if (isset($err5)) echo $err5; ?></span>
             </div>
 
