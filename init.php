@@ -103,7 +103,7 @@ define('SOCSO_CATH','socso_category');
 define('PAY_METH','payment_method');
 define('EMPINFO','employee_info');
 define('EMPPERSONALINFO','employee_personal_info');
-
+define('TAG','tag');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
