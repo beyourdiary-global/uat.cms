@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Weight Table";
+$pageTitle = "Weight Unit";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

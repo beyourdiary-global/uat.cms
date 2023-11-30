@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Product Status Table";
+$pageTitle = "Product Status";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';
