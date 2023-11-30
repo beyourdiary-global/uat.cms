@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Marital Status Table";
+$pageTitle = "Marital Status";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

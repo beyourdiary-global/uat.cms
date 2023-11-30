@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Holiday Table";
+$pageTitle = "Holiday";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';

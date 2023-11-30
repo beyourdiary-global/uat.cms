@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Pin Group Table";
+$pageTitle = "Pin Group";
 include 'menuHeader.php';
 
 $_SESSION['act'] = '';
