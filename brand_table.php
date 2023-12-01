@@ -43,7 +43,7 @@ $result = getData('*', '', BRAND, $connect);
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2>Brand</h2>
                         <div class="mt-auto mb-auto">
-                            <?php if (isActionAllowed("add", $pinAccess)) : ?>
+                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Brand </a>
                             <?php endif; ?>
                         </div>
@@ -76,17 +76,17 @@ $result = getData('*', '', BRAND, $connect);
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                         <li>
-                                            <?php if (isActionAllowed("view", $pinAccess)) : ?>
+                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
                                                 <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
                                             <?php endif; ?>
                                         </li>
                                         <li>
-                                            <?php if (isActionAllowed("edit", $pinAccess)) : ?>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
                                                 <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
                                             <?php endif; ?>
                                         </li>
                                         <li>
-                                            <?php if (isActionAllowed("delete", $pinAccess)) : ?>
+                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
                                                 <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'Brand','<?= $redirect_page ?>','<?= $SITEURL ?>/brand_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>

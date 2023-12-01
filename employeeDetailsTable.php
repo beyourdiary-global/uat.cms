@@ -1,6 +1,9 @@
 <?php
 $pageTitle = "Employee Details";
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
@@ -47,7 +50,9 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
-                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -141,13 +146,19 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                         <li>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
+                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
+                                            <?php endif; ?>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
+                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
+                                            <?php endif; ?>
                                         </li>
                                     </ul>
                                 </div>
