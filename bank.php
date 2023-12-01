@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Bank";
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
 $bank_id = input('id');
 $act = input('act');
@@ -16,7 +17,12 @@ if ($bank_id) {
     }
 }
 
-if (!($bank_id) && !($act))
+$validActions = ['I' => 'Add', 'E' => 'Edit', 'D' => 'Delete'];
+$act = isset($act) ? $act : post('act');
+$pageAction = $validActions[$act] ?? 'View';
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+if (!($bank_id) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo ("<script>location.href = '$redirect_page';</script>");
 
 if (post('actionBtn')) {
@@ -28,15 +34,13 @@ if (post('actionBtn')) {
             $bank_name = postSpaceFilter('bank_name');
             $bank_remark = postSpaceFilter('bank_remark');
 
-            if (!$bank_name){
+            if (!$bank_name) {
                 $err = "Bank name cannot be empty.";
                 break;
-            }
-            else if(isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id)){
+            } else if (isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id)) {
                 $err = "Duplicate record found for Bank name.";
                 break;
-            }
-            else if($action == 'addBank') {
+            } else if ($action == 'addBank') {
                 try {
                     $query = "INSERT INTO " . BANK . "(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','" . USER_ID . "',curdate(),curtime())";
                     mysqli_query($connect, $query);
@@ -191,18 +195,8 @@ if (($bank_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>">Bank</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php
-            switch ($act) {
-                case 'I':
-                    echo 'Add Bank';
-                    break;
-                case 'E':
-                    echo 'Edit Bank';
-                    break;
-                default:
-                    echo 'View Bank';
-            }
-            ?></p>
+            <?php echo $pageAction . " " . $pageTitle  ?>
+        </p>
     </div>
 
     <div id="bankFormContainer" class="container d-flex justify-content-center">
@@ -210,18 +204,7 @@ if (($bank_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
             <form id="bankForm" method="post" action="">
                 <div class="form-group mb-5">
                     <h2>
-                        <?php
-                        switch ($act) {
-                            case 'I':
-                                echo 'Add Bank';
-                                break;
-                            case 'E':
-                                echo 'Edit Bank';
-                                break;
-                            default:
-                                echo 'View Bank';
-                        }
-                        ?>
+                        <?php echo $pageAction . " " . $pageTitle  ?>
                     </h2>
                 </div>
 
