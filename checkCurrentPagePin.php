@@ -3,21 +3,21 @@
 
 function getPins($connect)
 {
-    if ($_SESSION['userid']) {
+    if (isset($_SESSION['userid'])) {
         $resultUser = getData('*', "id = '" . $_SESSION['userid'] . "'", 'user', $connect);
 
         if ($resultUser != false) {
-            $dataExisted = 1;
             $rowUser = $resultUser->fetch_assoc();
 
             $pinResult = getData('pins', "id = '" . $rowUser['access_id'] . "'", 'user_group', $connect);
 
             if ($pinResult !== false) {
                 $pinArray = $pinResult->fetch_assoc();
+                return $pinArray;
             }
         }
     }
-    return $pinArray;
+    return '';
 }
 
 function getValuesByPinAssocIndex($data, $pin)
@@ -41,31 +41,32 @@ function getValuesByPinAssocIndex($data, $pin)
 
 function checkCurrentPin($connect, $currentPage)
 {
+    $result = getData('*', "", PIN, $connect);
+    $actionMapping = [];
+
+    while ($resultPin = $result->fetch_assoc()) {
+        $actionMapping[$resultPin['id']] = $resultPin['name'];
+    }
+
     $result = getData('*', "name = '$currentPage'", PIN_GRP, $connect);
-    $resultPin = $result->fetch_assoc();
-    $currentPin = $resultPin['id'];
 
-    $pinArray = getPins($connect);
-    
-    $result = getValuesByPinAssocIndex($pinArray, $currentPin);
+    if ($result && $result->num_rows > 0) {
+        $resultPin = $result->fetch_assoc();
+        $currentPin = $resultPin['id'];
 
-    $actionMapping = [
-        "8" => "Log out",
-        "7" => "Log in",
-        "6" => "Export",
-        "5" => "Import",
-        "4" => "add",
-        "3" => "delete",
-        "2" => "edit",
-        "1" => "view"
-    ];
+        $pinArray = getPins($connect);
+        $result = getValuesByPinAssocIndex($pinArray, $currentPin);
 
-    $result = array_map(function ($permission) use ($actionMapping) {
-        return $actionMapping[$permission];
-    }, $result);
+        $result = array_map(function ($permission) use ($actionMapping) {
+            return $actionMapping[$permission];
+        }, $result);
 
-    return $result;
+        return $result;
+    } else {
+        return [];
+    }
 }
+
 
 function isActionAllowed($action, $allowedActions)
 {
