@@ -96,7 +96,6 @@ input {
 # Menu Header               
 ------------------------------------------------------*/
 .topNav {
-    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%) !important;
     color: #FFFFFF;
     z-index: 99;
     height: 50px;
@@ -365,7 +364,6 @@ transform: translate(-50%, 0) !important;
 }
 
 #login_btn, #resetpass_btn {
-    background-image: linear-gradient(to right, #ff9b44 0%, #fc6075 100%);
     height: 50px;
     margin-bottom: 40px;
 }
@@ -410,7 +408,6 @@ transform: translate(-50%, 0) !important;
 }
 
 #addBtn {
-    background-color: #FF9B44;
     box-shadow: 0 0 !important;
     font-size: 18px;
     text-transform: none !important;
@@ -432,7 +429,6 @@ transform: translate(-50%, 0) !important;
 }
 
 #actionBtn {
-    background-color: #FF9B44;
     box-shadow: 0 0 !important;
     font-weight: bold;
     font-size: 18px;

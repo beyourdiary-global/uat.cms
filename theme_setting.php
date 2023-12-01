@@ -26,6 +26,8 @@ if ($rst != false) {
 if (post('actionBtn')) {
 
     $website_name = postSpaceFilter('website_name');
+    $themesColor = postSpaceFilter('themesColor');
+    $buttonColor = postSpaceFilter('buttonColor');
     $light_logo = post('light_logo');
     $favicon = post('favicon');
 
@@ -39,6 +41,16 @@ if (post('actionBtn')) {
             if ($website_name != '') {
                 $query .= "project_title = '$website_name' ";
             } else $err = "Website Name cannot be empty.";
+
+            if($themesColor != '')
+            {
+                $query .= " ,themesColor = '$themesColor' ";
+            } 
+
+            if($buttonColor != '')
+            {
+                $query .= " ,buttonColor = '$buttonColor' ";
+            } 
 
             // check image
             if ($_FILES["light_logo"]["size"] != 0) {
@@ -72,9 +84,23 @@ if (post('actionBtn')) {
 
             $oldvalarr = $chgvalarr = array();
 
-            if ($row['company_name'] != $website_name) {
-                array_push($oldvalarr, $row['company_name']);
+            if($row['project_title'] != $website_name)
+            {
+                array_push($oldvalarr, $row['project_title']);
                 array_push($chgvalarr, $website_name);
+            }
+
+            
+            if($row['themesColor'] != $themesColor)
+            {
+                array_push($oldvalarr, $row['themesColor']);
+                array_push($chgvalarr, $themesColor);
+            }
+
+            if($row['buttonColor'] != $buttonColor)
+            {
+                array_push($oldvalarr, $row['buttonColor']);
+                array_push($chgvalarr, $buttonColor);
             }
 
             $light_logo_name = isset($light_logo_name) ? $light_logo_name : '';
@@ -98,7 +124,9 @@ if (post('actionBtn')) {
 
             $act = 'E';
             $_SESSION['tempValConfirmBox'] = true;
-            if ($oldval != '' && $chgval != '') {
+            
+            if($oldval != '' && $chgval != '')
+            {
                 // edit
                 mysqli_query($connect, $query);
                 generateDBData($tblname, $connect);
@@ -180,6 +208,34 @@ if (post('actionBtn')) {
                         </div>
                     </div>
                 </div>
+
+                <div class="row d-flex justify-content-center mb-3">
+                    <div class="col-12 col-md-10 mb-3">
+                        <div class="form-group d-flex flex-md-row flex-column">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label form_lbl" id="themesColorLbl" for="themesColor">Themes Color</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <input class="form-control" type="color" name="themesColor" id="themesColor" value="<?= $row['themesColor'] ?>" style ="height:40px ;"  >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="row d-flex justify-content-center mb-3">
+                    <div class="col-12 col-md-10 mb-3">
+                        <div class="form-group d-flex flex-md-row flex-column">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label form_lbl" id="buttonColorLbl" for="buttonColor">Button Color</label>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <input class="form-control" type="color" name="buttonColor" id="buttonColor" value="<?= $row['buttonColor'] ?>" style ="height:40px ;"  >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row d-flex justify-content-center mb-3">
                     <div class="col-12 col-md-10">

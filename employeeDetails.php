@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Employee Details";
 include 'menuHeader.php';
+include 'employeeLeave.php';
 
 $empDetailsID = input('id');
 $act = input('act');
@@ -28,6 +29,7 @@ if (post('actionBtn')) {
     $action = post('actionBtn');
 
     switch ($action) {
+
         case 'addEmpDetails':
         case 'updEmpDetails':
 
@@ -195,6 +197,9 @@ if (post('actionBtn')) {
                             curtime()
                             );";
                         mysqli_query($connect, $queryTwo);
+
+                        //Assign Leave Days To New Employee
+                        employeeLeaveCheckColumn($connect, $empIDRow['id']);
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -277,6 +282,11 @@ if (post('actionBtn')) {
                     audit_log($log);
 
                     $newval = implode(",", $newvalarr);
+
+                    echo '<script>';
+                    echo 'localStorage.clear();';
+                    echo '</script>';
+                    
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
                 }
@@ -357,6 +367,7 @@ if (post('actionBtn')) {
                     // Update query for the first table
 
                     if ($oldval != '' && $chgval != '') {
+
                         $query = "UPDATE $tblnameOne SET
                                 name = '$employeeName',
                                 email = '$employeeEmail',
@@ -589,12 +600,22 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
         display: none;
     }
 
-    /*
+    @media (max-width: 576px) {
+            .button-bottom {
+                width: 100%; /* Change the column width to 100% for small screens */
+            }
+
+            .button-bottom button{
+                width: 100%;
+            }
+        }
+
+
     #employeeDetailsForm .form-footer {
         overflow: auto;
         gap: 20px;
     }
-    */
+    
 </style>
 <!-- -->
 
@@ -660,7 +681,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="identityTypeLbl" for="identityType">Identity type <span class="requireRed">*</span></label>
+                                    <label class="form-label" id="identityTypeLbl" for="identityType">Identity type </label>
                                     <select class="form-select" aria-label="Default select example" name="identityType" id="identityType" required>
                                         <?php
                                         $result = getData('*', '', ID_TYPE, $connect);
@@ -745,13 +766,16 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="nationalityLbl" for="employeeNationality">Nationality <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="employeeNationality" id="employeeNationality" required>
                                         <?php
+                                        // Replace this with your database connection and query
+                                        // Assume you have a function getData to fetch data from the database
                                         $result = getData('*', '', 'countries', $connect);
 
                                         echo "<option disabled selected>Select employee nationality</option>";
 
                                         while ($rowNationality = $result->fetch_assoc()) {
+                                            $phoneCode = $rowNationality['phonecode'];
                                             $selected = isset($dataExisted, $row['nationality']) && $rowNationality['id'] == $row['nationality'] ? "selected" : "";
-                                            echo "<option value='{$rowNationality['id']}' $selected>{$rowNationality['name']}</option>";
+                                            echo "<option value='{$rowNationality['id']}' data-phone-code='{$phoneCode}' $selected>{$rowNationality['name']}</option>";
                                         }
                                         ?>
                                     </select>
@@ -759,26 +783,26 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                             </div>
                         </div>
 
-
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number <span class="requireRed">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+60</span>
-                                        <input type="text" name="employeePhone" id="employeePhone" value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>" class="form-control" style="height: 40px;" required>
+                                        <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
+                                        <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>">
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
                                     <label class="form-label" id="employeeAlternatePhoneLbl" for="employeeAlternatePhone">Alternate Phone Number</label>
                                     <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+60</span>
+                                        <span class="input-group-text" style="height: 40px;">+<span id="alternatePhoneCodeSpan">00</span></span>
                                         <input type="text" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($dataExisted, $row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </fieldset>
 
                     <fieldset class="border p-2" style="border-radius: 3px;">
@@ -788,9 +812,6 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                 <div class="col-sm-6">
                                     <label class="form-label" id="employeeAddressOneLbl" for="employeeAddress1">Address Line 1</label>
                                     <input class="form-control " type="text" name="employeeAddress1" id="employeeAddress1" value="<?php if (isset($dataExisted, $row['address_line_1'])) echo $row['address_line_1'] ?>">
-                                    <div id="err_msg">
-                                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                                    </div>
                                 </div>
 
 
@@ -867,16 +888,17 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
                         <div class="form-group mb-3">
                             <div class="row">
-
                                 <div class="col-sm-6">
                                     <label class="form-label" id="emergencyRelationshipLbl" for="emergencyRelationship">Relationship <span class="requireRed">*</span></label>
                                     <input class="form-control" type="text" name="emergencyRelationship" id="emergencyRelationship" value="<?php if (isset($dataExisted, $row['emergency_relationship'])) echo $row['emergency_relationship'] ?>" required>
                                 </div>
 
-
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Contact Number <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" name="emergencyContactNum" id="emergencyContactNum" value="<?php if (isset($dataExisted, $row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
+                                    <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Emergency Contact Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="height: 40px;">+<span id="emergencyContactNumSpan">00</span></span>
+                                        <input type="text" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($dataExisted, $row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1169,18 +1191,18 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                     </fieldset>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-4 text-start">
-                        <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="">Previous</button>
+                <div class="row" style="padding-bottom : 20px;">
+                    <div class="col-sm-4 text-start button-bottom">
+                        <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
                     </div>
 
-                    <div class="col-md-4 text-center">
-                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="window.location.href='employeeDetailsTable.php';">Back</button>
-                        <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails">Edit</button>
+                    <div class="col-sm-4 text-center button-bottom">
+                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="window.location.href='employeeDetailsTable.php';" style="font-size: 15px;">Back</button>
+                        <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
                     </div>
 
-                    <div class="col-md-4 text-end">
-                        <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="">Next</button>
+                    <div class="col-sm-4 text-end button-bottom">
+                        <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="" style="font-size: 15px;">Next</button>
                     </div>
                 </div>
             </form>
@@ -1278,23 +1300,60 @@ switch ($act) {
         var x, y, i, valid = true;
         x = document.getElementsByClassName("step");
         y = x[currentTab].querySelectorAll("input, select");
+
         for (i = 0; i < y.length; i++) {
             if ((y[i].value === "" || (y[i].tagName === "SELECT" && y[i].selectedIndex === 0)) && y[i].hasAttribute("required")) {
                 y[i].classList.add("invalid");
                 y[i].style.borderColor = "red";
                 valid = false;
+
+                displayErrorMessage(y[i], "Please fill the " + getLabelContent(y[i]) + " field.");
             } else {
                 y[i].classList.remove("invalid");
                 y[i].style.borderColor = ""; // Reset border color
+
+                // Hide error message
+                hideErrorMessage(y[i]);
             }
         }
+
         if (valid) {
             document.getElementsByClassName("stepIndicator")[currentTab].classList.add("finish");
-        } else {
-            alert('Please complete a required field');
         }
+
         return valid;
     }
+
+    function displayErrorMessage(inputField, message) {
+
+        var errorMessageElement = inputField.nextElementSibling;
+
+        if (!errorMessageElement || errorMessageElement.className !== "error-message") {
+            errorMessageElement = document.createElement("span");
+            errorMessageElement.className = "error-message";
+            errorMessageElement.style.color = "red";
+            errorMessageElement.style.display = "block";
+            inputField.parentNode.appendChild(errorMessageElement);
+        }
+
+        errorMessageElement.innerHTML = message;
+    }
+
+    function hideErrorMessage(inputField) {
+        var errorMessageElement = inputField.nextElementSibling;
+        if (errorMessageElement && errorMessageElement.className === "error-message") {
+            errorMessageElement.parentNode.removeChild(errorMessageElement);
+        }
+    }
+
+    function getLabelContent(inputField) {
+        // Find the associated label element
+        var label = document.querySelector('[for="' + inputField.id + '"]');
+
+        // Get the content of the label excluding any child elements
+        return label ? label.childNodes[0].nodeValue.trim() : "this field";
+    }
+
 
     function fixStepIndicator(n) {
         var i, x = document.getElementsByClassName("stepIndicator");
@@ -1372,6 +1431,26 @@ switch ($act) {
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Define a function to update the phone code
+        function updatePhoneCode() {
+            // Retrieve the selected country element
+            var selectedCountry = document.getElementById('employeeNationality').options[document.getElementById('employeeNationality').selectedIndex];
+
+            // Update the phone code in the span elements
+            var phoneCode = selectedCountry.getAttribute('data-phone-code');
+            document.getElementById('phoneCodeSpan').textContent = phoneCode;
+            document.getElementById('alternatePhoneCodeSpan').textContent = phoneCode;
+            document.getElementById('emergencyContactNumSpan').textContent = phoneCode;
+        }
+
+        // Add event listener to the employeeNationality select element
+        document.getElementById('employeeNationality').addEventListener('change', updatePhoneCode);
+
+        // Call the function to update the phone code initially
+        updatePhoneCode();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
         var epfOptionDropdown = document.getElementById('epfOption');
         var epfNoInput = document.getElementById('epfNo');
         var employeeEpfRateSelect = document.getElementById('employeeEpfRate');
@@ -1389,6 +1468,9 @@ switch ($act) {
 
                 employeeEpfRateSelect.required = true;
                 employerEpfRateSelect.required = true;
+
+                employeeEpfRateSelect.disabled = false;
+                employerEpfRateSelect.disabled = false;
             } else {
                 epfNoInput.disabled = true;
                 epfNoInput.required = false;
@@ -1396,8 +1478,8 @@ switch ($act) {
                 employeeEpfRateLabel.innerHTML = 'Employee EPF Rate';
                 employerEpfRateLabel.innerHTML = 'Employer EPF Rate';
 
-                employeeEpfRateSelect.required = false;
-                employerEpfRateSelect.required = false;
+                employeeEpfRateSelect.disabled = true;
+                employerEpfRateSelect.disabled = true;
             }
         }
 

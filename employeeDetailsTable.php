@@ -93,9 +93,9 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['name'] ?></td>
 
                             <?php
-                            $result = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
+                            $resultIDType = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
 
-                            while ($rowIDType = $result->fetch_assoc()) {
+                            while ($rowIDType = $resultIDType->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
                             }
                             ?>
@@ -106,9 +106,9 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['date_of_birth'] ?></td>
 
                             <?php
-                            $result = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
+                            $resultRace = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
 
-                            while ($rowRace = $result->fetch_assoc()) {
+                            while ($rowRace = $resultRace->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowRace['name'] . "</td>";
                             }
                             ?>
@@ -116,9 +116,9 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['residence_status'] ?></td>
 
                             <?php
-                            $result = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
+                            $resultNationality = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
 
-                            while ($rowNationality = $result->fetch_assoc()) {
+                            while ($rowNationality = $resultNationality->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowNationality['name'] . "</td>";
                             }
                             ?>
@@ -130,11 +130,13 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['city'] ?></td>
                             <td scope="row"><?= $row['state'] ?></td>
                             <td scope="row"><?= $row['postcode'] ?></td>
-                            <?php
-                            $result = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
 
-                            while ($rowIDType = $result->fetch_assoc()) {
-                                echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
+                            <?php
+
+                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
+
+                            while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
+                                echo "<td scope='row'>" . $rowMrtSts['name'] . "</td>";
                             }
                             ?>
 
