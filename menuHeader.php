@@ -20,10 +20,9 @@
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
-
 <!-- Navbar -->
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-md topNav p-0">
+    <nav class="navbar navbar-expand-md topNav p-0" id="topNav">
         <!-- Container wrapper -->
         <div class="container-fluid p-0">
             <!-- Toggle button -->
@@ -169,5 +168,19 @@
     <!-- Navbar -->
     <?php include "menu_bar.php"; ?>
 </div>
+
+<!-- Move the script block to the end of the body -->
+<script>
+    function setThemesColor() {
+        var topnav = document.getElementById('topNav');
+        topnav.style.backgroundColor = '<?php if ($dataExisted) echo $row['themesColor']; ?>';
+    }
+
+    setThemesColor();
+    
+    <?php include 'cmsThemes.php'; ?>
+
+</script>
+
 
 </html>
