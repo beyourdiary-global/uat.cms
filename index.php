@@ -79,7 +79,7 @@
                     </div>
 
                     <div class="row d-flex justify-content-center">
-            
+
                         <div class="col-10">
                             <div class="form-group mb-3">
                                 <button class="btn btn-block btn-primary" name="login_btn" id="login_btn" style="background-color: <?php echo ($dataExisted) ? $row['themesColor'] : ''; ?>">Login</button>
@@ -99,6 +99,9 @@
                                                 break;
                                             case '3':
                                                 echo "Account is been blocked. Please reset your password.";
+                                                break;
+                                            case '4':
+                                                echo "<p class='text-center'>You Don't Have Permission Access To ".$row['project_title']."</p>";
                                                 break;
                                             default:
                                                 echo "";

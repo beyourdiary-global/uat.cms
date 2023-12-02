@@ -1,7 +1,7 @@
 
 <?php
 
-function getPins($connect)
+function getUserPinGroup($connect)
 {
     if (isset($_SESSION['userid'])) {
         $resultUser = getData('*', "id = '" . $_SESSION['userid'] . "'", 'user', $connect);
@@ -13,11 +13,17 @@ function getPins($connect)
 
             if ($pinResult !== false) {
                 $pinArray = $pinResult->fetch_assoc();
-                return $pinArray;
             }
         }
     }
-    return '';
+
+    if (!isset($pinArray["pins"]) || empty($pinArray["pins"])) {
+        echo '<script>';
+        echo 'window.location.href = "logout.php";';
+        echo '</script>';
+    }
+
+    return $pinArray;
 }
 
 function getValuesByPinAssocIndex($data, $pin)
@@ -39,7 +45,7 @@ function getValuesByPinAssocIndex($data, $pin)
     return [];
 }
 
-function checkCurrentPin($connect, $currentPage)
+function getPin($connect)
 {
     $result = getData('*', "", PIN, $connect);
     $actionMapping = [];
@@ -48,22 +54,34 @@ function checkCurrentPin($connect, $currentPage)
         $actionMapping[$resultPin['id']] = $resultPin['name'];
     }
 
+    return $actionMapping;
+}
+
+function checkCurrentPin($connect, $currentPage)
+{
+
     $result = getData('*', "name = '$currentPage'", PIN_GRP, $connect);
 
     if ($result && $result->num_rows > 0) {
         $resultPin = $result->fetch_assoc();
         $currentPin = $resultPin['id'];
 
-        $pinArray = getPins($connect);
+        $pinArray = getUserPinGroup($connect);
         $result = getValuesByPinAssocIndex($pinArray, $currentPin);
+
+        $actionMapping = getPin($connect);
 
         $result = array_map(function ($permission) use ($actionMapping) {
             return $actionMapping[$permission];
         }, $result);
 
+        if (empty($result)) {
+            echo '<script>';
+            echo 'window.location.href = "dashboard.php";';
+            echo '</script>';
+        }
+
         return $result;
-    } else {
-        return [];
     }
 }
 
