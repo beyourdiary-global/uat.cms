@@ -20,12 +20,10 @@ function employeeLeaveCheckColumn($connect, $empID)
                 $result = mysqli_query($connect, $query);
 
                 if (!$result || mysqli_num_rows($result) == 0) {
-                    // Column does not exist, add it
-                    $query = "ALTER TABLE employee_leave ADD COLUMN $columnName INT";
+                    $query = "ALTER TABLE employee_leave ADD COLUMN $columnName INT AFTER employeeID";
                     mysqli_query($connect, $query);
                 }
 
-                // Add values for the newly added column
                 $empLeaveFields .= ", $columnName";
                 $empLeaveValues .= ", " . $empLeaveRow['num_of_days'];
 
