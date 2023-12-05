@@ -62,7 +62,7 @@ $result = getData('*', '', EMPLOYER_EPF, $connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">ID</th>
-                        <th scope="col">EPF Rate</th>
+                        <th scope="col"><?php echo $pageTitle ?> (%)</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -106,7 +106,7 @@ $result = getData('*', '', EMPLOYER_EPF, $connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">ID</th>
-                        <th scope="col">EPF Rate</th>
+                        <th scope="col"><?php echo $pageTitle ?> (%)</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
