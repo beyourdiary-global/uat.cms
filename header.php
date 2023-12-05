@@ -6,7 +6,6 @@
 <meta name="robots" content="beyourdiary">
 
 <!-- Website -->
-<link rel="icon" type="image" href="./image/logo2.png">
 <title><?= $pageTitle ?></title>
 
 <!-- Fonts -->

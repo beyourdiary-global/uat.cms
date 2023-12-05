@@ -31,118 +31,121 @@ if(post('actionBtn'))
             $employee_epf_rate = postSpaceFilter('employee_epf_rate');
             $employee_epf_rate_remark = postSpaceFilter('employee_epf_rate_remark');
 
-            if($employee_epf_rate)
-            {
-                if($action == 'addemployee_rate_epf')
+            if (!$employee_epf_rate){
+                $err = "Employee epf rate cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("epf_rate", $employee_epf_rate, EMPLOYEE_EPF, $connect, $employee_epf_rate_id)){
+                $err = "Duplicate record found for employee epf rate.";
+                break;
+            }
+            else if($action == 'addemployee_rate_epf'){
+                try
                 {
-                    try
+                    $query = "INSERT INTO ".EMPLOYEE_EPF."(epf_rate,remark,create_by,create_date,create_time) VALUES ('$employee_epf_rate','$employee_epf_rate_remark','".USER_ID."',curdate(),curtime())";
+                    mysqli_query($connect, $query);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    $newvalarr = array();
+
+                    // check value
+                    if($employee_epf_rate != '')
+                        array_push($newvalarr, $employee_epf_rate);
+
+                    if($employee_epf_rate_remark != '')
+                        array_push($newvalarr, $employee_epf_rate_remark);
+
+                    $newval = implode(",",$newvalarr);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'add';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " added <b>$employee_epf_rate</b> into <b><i>$pageTitle Table</i></b>.";
+                    $log['query_rec'] = $query;
+                    $log['query_table'] = EMPLOYEE_EPF;
+                    $log['page'] = $pageTitle;
+                    $log['newval'] = $newval;
+                    $log['connect'] = $connect;
+                    audit_log($log);
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
+                }
+            }
+            else
+            {
+                try
+                {
+                    // take old value
+                    $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
+                    $row = $rst->fetch_assoc();
+                    $oldvalarr = $chgvalarr = array();
+
+                    // check value
+                    if($row['epf_rate'] != $employee_epf_rate)
                     {
-                        $query = "INSERT INTO ".EMPLOYEE_EPF."(epf_rate,remark,create_by,create_date,create_time) VALUES ('$employee_epf_rate','$employee_epf_rate_remark','".USER_ID."',curdate(),curtime())";
+                        array_push($oldvalarr, $row['epf_rate']);
+                        array_push($chgvalarr, $employee_epf_rate);
+                    }
+
+                    if($row['remark'] != $employee_epf_rate_remark)
+                    {
+                        if($row['remark'] == '')
+                            $old_remark = 'Empty_Value';
+                        else $old_remark = $row['remark'];
+
+                        array_push($oldvalarr, $old_remark);
+
+                        if($employee_epf_rate_remark == '')
+                            $new_remark = 'Empty_Value';
+                        else $new_remark = $employee_epf_rate_remark;
+                        
+                        array_push($chgvalarr, $new_remark);
+                    }
+
+                    // convert into string
+                    $oldval = implode(",",$oldvalarr);
+                    $chgval = implode(",",$chgvalarr);
+
+                    $_SESSION['tempValConfirmBox'] = true;
+                    if($oldval != '' && $chgval != '')
+                    {   
+                        // edit
+                        $query = "UPDATE ".EMPLOYEE_EPF." SET epf_rate ='$employee_epf_rate', remark ='$employee_epf_rate_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$employee_epf_rate_id'";
                         mysqli_query($connect, $query);
-                        $_SESSION['tempValConfirmBox'] = true;
-
-                        $newvalarr = array();
-
-                        // check value
-                        if($employee_epf_rate != '')
-                            array_push($newvalarr, $employee_epf_rate);
-
-                        if($employee_epf_rate_remark != '')
-                            array_push($newvalarr, $employee_epf_rate_remark);
-
-                        $newval = implode(",",$newvalarr);
 
                         // audit log
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = 'edit';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$employee_epf_rate</b> into <b><i>$pageTitle Table</i></b>.";
+
+                        $log['act_msg'] = USER_NAME . " edited the data";
+                        for($i=0; $i<sizeof($oldvalarr); $i++)
+                        {
+                            if($i==0)
+                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                            else
+                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
+                        }
+                        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
+
                         $log['query_rec'] = $query;
                         $log['query_table'] = EMPLOYEE_EPF;
                         $log['page'] = $pageTitle;
-                        $log['newval'] = $newval;
+                        $log['oldval'] = $oldval;
+                        $log['changes'] = $chgval;
                         $log['connect'] = $connect;
                         audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
                     }
+                    else $act = 'NC';
+                } catch(Exception $e) {
+                    echo 'Message: ' . $e->getMessage();
                 }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['epf_rate'] != $employee_epf_rate)
-                        {
-                            array_push($oldvalarr, $row['epf_rate']);
-                            array_push($chgvalarr, $employee_epf_rate);
-                        }
-
-                        if($row['remark'] != $employee_epf_rate_remark)
-                        {
-                            if($row['remark'] == '')
-                                $old_remark = 'Empty_Value';
-                            else $old_remark = $row['remark'];
-
-                            array_push($oldvalarr, $old_remark);
-
-                            if($employee_epf_rate_remark == '')
-                                $new_remark = 'Empty_Value';
-                            else $new_remark = $employee_epf_rate_remark;
-                            
-                            array_push($chgvalarr, $new_remark);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {   
-                            // edit
-                            $query = "UPDATE ".EMPLOYEE_EPF." SET epf_rate ='$employee_epf_rate', remark ='$employee_epf_rate_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$employee_epf_rate_id'";
-                            mysqli_query($connect, $query);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = EMPLOYEE_EPF;
-                            $log['page'] = $pageTitle;
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
-                }
-            }
-            else $err = "$pageTitle Epf Rate cannot be empty.";
+            }         
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -229,16 +232,16 @@ if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
-                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted)) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="employee_epf_rate_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?></label>
+                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted) && isset($row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="dept_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="employee_epf_rate_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

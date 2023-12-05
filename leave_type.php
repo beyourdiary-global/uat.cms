@@ -30,6 +30,7 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addLeaveType':
         case 'updLeaveType':
+
             if ($leave_type == '') {
                 $err = "Leave Type cannot be empty.";
             }
@@ -37,8 +38,12 @@ if (post('actionBtn')) {
             if ($num_of_days == '') {
                 $err2 = "Number of Days cannot be empty.";
             }
-
-            if ($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
+            
+            if(isDuplicateRecord("name", $leave_type, $tblname, $connect, $leave_type_id) && isDuplicateRecord("num_of_days", $num_of_days, $tblname, $connect, $leave_type_id)){
+                $err = "Duplicate record found for leave type record.";
+                break;
+            }
+            else if($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
                 if ($action == 'addLeaveType') {
                     try {
                         $query = "INSERT INTO " . $tblname . "(name,num_of_days,leave_status,auto_assign,create_date,create_time,create_by) VALUES ('$leave_type','$num_of_days','Active','$auto_assign',curdate(),curtime(),'" . USER_ID . "')";
@@ -245,14 +250,14 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_yes">Yes</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_yes" value="yes" <?php if ($act == '') echo 'disabled';
-                                                                                                                                if (isset($dataExisted) && $row['auto_assign'] == "yes") echo ' checked'; ?> required>
+                                                                                                                                if (isset($dataExisted,$row['auto_assign']) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                     <div class="col-2 col-md-2">
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_no">No</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_no" value="no" <?php if ($act == '') echo 'disabled';
-                                                                                                                            if (isset($dataExisted) && $row['auto_assign'] == "no") echo ' checked'; ?> required>
+                                                                                                                            if (!isset($dataExisted,$row['auto_assign']) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                 </div>
@@ -265,7 +270,7 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="leave_type_lbl" for="leave_type">Leave Type</label>
                             <input class="form-control" type="text" name="leave_type" id="leave_type" value="<?php if (isset($leave_type)) echo $leave_type;
-                                                                                                                else if (isset($dataExisted)) echo $row['name']; ?>" <?php if ($act == '') echo 'readonly' ?>>
+                                                                                                                else if (isset($dataExisted) && isset($row['name'])) echo $row['name']; ?>" <?php if ($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                             </div>
@@ -278,7 +283,7 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="num_of_days_lbl" for="num_of_days">Number of Days</label>
                             <input class="form-control" type="number" min="1" step="1" name="num_of_days" id="num_of_days" value="<?php if (isset($num_of_days)) echo $num_of_days;
-                                                                                                                                    else if (isset($dataExisted)) echo $row['num_of_days']; ?>" <?php if ($act == '') echo 'readonly' ?>>
+                                                                                                                                    else if (isset($dataExisted) && isset($row['num_of_days'])) echo $row['num_of_days']; ?>" <?php if ($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
                             </div>

@@ -15,7 +15,7 @@ if($pkg_id)
     if($rst != false)
     {
         $dataExisted = 1;
-        $row = $rst->fetch_assoc();
+        $row = $rst->fetch_assoc(); 
     }
 }
 
@@ -32,6 +32,7 @@ if(post('actionBtn'))
     // middle
     $prod_list = post('prod_val');
     $prod_list = implode(',', array_filter($prod_list));
+
 
     $barcode_slot_total = postSpaceFilter('barcode_slot_total_hidden');
     $pkg_remark = postSpaceFilter('package_remark');
@@ -61,8 +62,11 @@ if(post('actionBtn'))
                 $err4 = "Must have at least one product inside the package.";
             }
 
-            if($pkg_name != '' && $pkg_price != '' && $cur_unit != '' && $prod_list != '')
-            {
+
+            if (isDuplicateRecord("name", $pkg_name, $tblname, $connect, $pkg_id) && isDuplicateRecord("price", $pkg_price, $tblname, $connect, $pkg_id) && isDuplicateRecord("currency_unit", $cur_unit, $tblname, $connect, $pkg_id) && isDuplicateRecord("product", $prod_list, $tblname, $connect, $pkg_id)) {
+                $err5 = "Duplicate record found for this package.";
+                break;
+            }else if ($pkg_name != '' && $pkg_price != '' && $cur_unit != '' && $prod_list != '' && !isset($err5)) {
                 if($action == 'addPkg')
                 {   
                     try
@@ -312,6 +316,10 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                     </h2>
             </div>
 
+            <div id="err_msg"  class="mb-3">
+                 <span class="mt-n1" style="font-size: 21px;"><?php if (isset($err5)) echo $err5; ?></span>
+            </div>
+
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="form-group mb-3">
@@ -320,7 +328,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_name))
                                 echo $pkg_name;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['name'])) 
                                 echo $row['name'];
 
                         ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -337,7 +345,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         "<?php
                             if(isset($pkg_price))
                                 echo $pkg_price;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['price'])) 
                                 echo $row['price'];
 
                         ?>" <?php if($act == '') echo 'readonly' ?>>
@@ -355,21 +363,21 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                             unset($echoVal);
                             if(isset($cur_unit) && $cur_unit != '')
                                 $echoVal = $cur_unit;
-                            else if(isset($dataExisted))
+                            else if(isset($dataExisted) && isset($row['currency_unit']))
                                 $echoVal = $row['currency_unit'];
 
                             if(isset($echoVal))
                             {
-                                $u_rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
-                                $u = $u_rst->fetch_assoc();
-                                echo $u['unit'];
+                                $product_info_result = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
+                                $product_info_row = $product_info_result->fetch_assoc();
+                                echo $product_info_row['unit'];
                             }
                         ?>" <?php if($act == '') echo 'readonly' ?>>
                         <input type="hidden" name="cur_unit_hidden" id="cur_unit_hidden" value=
                         "<?php
                             if(isset($cur_unit) && $cur_unit != '')
                                 echo $cur_unit;
-                            else if(isset($dataExisted)) 
+                            else if(isset($dataExisted) && isset($row['currency_unit'])) 
                                 echo $row['currency_unit'];
 
                         ?>">
@@ -405,7 +413,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                 unset($echoVal);
                                 if(isset($prod_list) && $prod_list != '')
                                     $echoVal = $prod_list;
-                                else if(isset($dataExisted))
+                                else if(isset($dataExisted) && isset($row['product']))
                                     $echoVal = $row['product'];
 
                                 // echo
@@ -416,21 +424,21 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                     foreach($echoVal as $prod_id)
                                     {
                                         // product info
-                                        $u_rst = getData('*',"id = '$prod_id'",PROD,$connect);
-                                        $u = $u_rst->fetch_assoc();
+                                        $product_info_result = getData('*',"id = '$prod_id'",PROD,$connect);
+                                        $product_info_row = $product_info_result->fetch_assoc();
 
-                                        $pid = $u['id'];
-                                        $pn = $u['name'];
-                                        $pw = $u['weight'];
-                                        $pwu = $u['weight_unit'];
-                                        $ps = $u['barcode_status'];
-                                        $pslot = $u['barcode_slot'];
+                                        $pid = $product_info_row['id'];
+                                        $pn = $product_info_row['name'];
+                                        $pw = $product_info_row['weight'];
+                                        $pwu = $product_info_row['weight_unit'];
+                                        $ps = $product_info_row['barcode_status'];
+                                        $pslot = $product_info_row['barcode_slot'];
 
                                         // weight unit info
-                                        $u_rst = getData('unit',"id = '$pwu'",WGT_UNIT,$connect);
-                                        $u = $u_rst->fetch_assoc();
+                                        $product_info_result = getData('unit',"id = '$pwu'",WGT_UNIT,$connect);
+                                        $product_info_row = $product_info_result->fetch_assoc();
 
-                                        $pwun = $u['unit'];
+                                        $pwun = $product_info_row['unit'];
                             ?>
                             <tr>
                                 <td><?= $num ?></td>
@@ -485,14 +493,14 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                     echo $barcode_slot_total;
                                 else
                                 {
-                                    if(isset($dataExisted)) 
+                                    if(isset($dataExisted) && isset($row['barcode_slot_total'])) 
                                         echo $row['barcode_slot_total'];
                                     else echo '0';
                                 }
                                 ?><input name="barcode_slot_total_hidden" id="barcode_slot_total_hidden" type="hidden" value="<?php
                                 if(isset($barcode_slot_total) && $barcode_slot_total != '')
                                     echo $barcode_slot_total;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['barcode_slot_total'])) 
                                     echo $row['barcode_slot_total'];
 
                                 ?>"></td>
@@ -510,7 +518,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                         <textarea class="form-control" id="package_remark" name="package_remark" style="width:100%" rows="5"><?php
                         if(isset($pkg_remark) && $pkg_remark != '')
                             echo $pkg_remark;
-                        else if(isset($dataExisted)) 
+                        else if(isset($dataExisted) && isset($row['remark'])) 
                             echo $row['remark'];
 
                         ?></textarea>

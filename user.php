@@ -54,8 +54,20 @@ if(post('actionBtn'))
             {
                 $err5 = "User Group cannot be empty.";
             }
-
-            if($user_username != '' && $user_name != '' && $user_email != '' && $user_group != 'noneVal')
+            
+            if(isDuplicateRecord("username", $user_username, $tblname, $connect, $user_id)){
+                $err = "Duplicate record found for username name.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $user_name, $tblname, $connect, $user_id)){
+                $err2 = "Duplicate record found for user name.";
+                break;
+            }
+            else if(isDuplicateRecord("email", $user_email, $tblname, $connect, $user_id)){
+                $err3 = "Duplicate record found for user email.";
+                break;
+            }
+            else if($user_username != '' && $user_name != '' && $user_email != '' && $user_group != 'noneVal')
             {
                 if($action == 'addUser')
                 {
@@ -280,7 +292,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_name))
                                     echo $user_name;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['name'])) 
                                     echo $row['name'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -296,7 +308,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_username))
                                     echo $user_username;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['username'])) 
                                     echo $row['username'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -314,7 +326,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             "<?php
                                 if(isset($user_email))
                                     echo $user_email;
-                                else if(isset($dataExisted)) 
+                                else if(isset($dataExisted) && isset($row['email'])) 
                                     echo $row['email'];
                             ?>" <?php if($act == '') echo 'readonly' ?>>
                             <div id="err_msg">

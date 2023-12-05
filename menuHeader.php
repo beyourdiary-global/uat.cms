@@ -7,23 +7,22 @@
     include_once "include/connection.php";
     include_once "include/common.php";
     include_once "include/common_variable.php";
+
+    $img_path = img_server . 'themes/';
+    $rst = getData('*', "id = '1'", 'projects', $connect);
+
+    if ($rst != false) {
+        $dataExisted = 1;
+        $row = $rst->fetch_assoc();
+    }
     ?>
+    <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
-<?php
-$img_path = img_server.'themes/';
-$rst = getData('*', "id = '1'", PROJ, $connect);
-
-if ($rst != false) {
-    $dataExisted = 1;
-    $row = $rst->fetch_assoc();
-}
-?>
-
 <!-- Navbar -->
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-md topNav p-0">
+    <nav class="navbar navbar-expand-md topNav p-0" id="topNav">
         <!-- Container wrapper -->
         <div class="container-fluid p-0">
             <!-- Toggle button -->
@@ -169,5 +168,19 @@ if ($rst != false) {
     <!-- Navbar -->
     <?php include "menu_bar.php"; ?>
 </div>
+
+<!-- Move the script block to the end of the body -->
+<script>
+    function setThemesColor() {
+        var topnav = document.getElementById('topNav');
+        topnav.style.backgroundColor = '<?php if ($dataExisted) echo $row['themesColor']; ?>';
+    }
+
+    setThemesColor();
+    
+    <?php include 'cmsThemes.php'; ?>
+
+</script>
+
 
 </html>

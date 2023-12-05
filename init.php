@@ -9,6 +9,7 @@ define('dbuser', 'root');
 define('dbpwd', '');
 define('dbhost', '127.0.0.1');
 define('dbname', 'byd_cms');
+define('dbFinance', 'beyourdi_financial');
 /* define('SITEURL', 'https://localhost'); */
 define('SITEURL', '//localhost/uat/uat.cms');
 $SITEURL = SITEURL;
@@ -101,8 +102,12 @@ define('EMPLOYER_EPF','employer_epf_rate');
 define('EMPLOYEE_EPF','employee_epf_rate');
 define('SOCSO_CATH','socso_category');
 define('PAY_METH','payment_method');
+define('EMPINFO','employee_info');
+define('EMPPERSONALINFO','employee_personal_info');
+define('TAG','tag');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
+$finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
 
 //define session
 ?>

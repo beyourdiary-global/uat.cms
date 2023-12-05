@@ -1,59 +1,60 @@
 <?php
-$pageTitle = "Product Status";
+$pageTitle = "Tag";
 include 'menuHeader.php';
 
-$prod_status_id = input('id');
+$tagID = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/prod_status_table.php';
+$redirect_page = $SITEURL . '/tagTable.php';
 
 // to display data to input
-if($prod_status_id)
+if($tagID)
 {
-    $rst = getData('*',"id = '$prod_status_id'",PROD_STATUS,$connect);
+    $rst = getData('*',"id = '$tagID'",TAG,$connect);
 
     if($rst != false)
     {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
-    }
+    } 
 }
 
-if(!($prod_status_id) && !($act))
+if(!($tagID) && !($act))
     echo("<script>location.href = '$redirect_page';</script>");
-
+ 
 if(post('actionBtn'))
 {
     $action = post('actionBtn');
 
     switch($action)
     {
-        case 'addProdStatus': case 'updProdStatus':
-            $prod_status_name = postSpaceFilter('prod_status_name');
-            $prod_status_remark = postSpaceFilter('prod_status_remark');
+        case 'addsocso_cath': case 'updsocso_cath':
+            $tagName = postSpaceFilter('tagName');
+            $tagRemark = postSpaceFilter('tagRemark');
 
-            if (!$prod_status_name){
-                $err = "Product status name cannot be empty.";
+            if (!$tagName){
+                $err = "Tag name cannot be empty.";
                 break;
             }
-            else if(isDuplicateRecord("name", $prod_status_name, PROD_STATUS, $connect, $prod_status_id)){
-                $err = "Duplicate record found for product status name.";
+            else if(isDuplicateRecord("name", $tagName, TAG, $connect, $tagID)){
+                $err = "Duplicate record found for tag name.";
                 break;
             }
-            else if($action == 'addProdStatus') {
+            else if($action == 'addsocso_cath') {
+                    
                 try
                 {
-                    $query = "INSERT INTO ".PROD_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$prod_status_name','$prod_status_remark','".USER_ID."',curdate(),curtime())";
+                    $query = "INSERT INTO ".TAG."(name,remark,create_by,create_date,create_time) VALUES ('$tagName','$tagRemark','".USER_ID."',curdate(),curtime())";
                     mysqli_query($connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
 
                     $newvalarr = array();
 
                     // check value
-                    if($prod_status_name != '')
-                        array_push($newvalarr, $prod_status_name);
+                    if($tagName != '')
+                        array_push($newvalarr, $tagName);
 
-                    if($prod_status_remark != '')
-                        array_push($newvalarr, $prod_status_remark);
+                    if($tagRemark != '')
+                        array_push($newvalarr, $tagRemark);
 
                     $newval = implode(",",$newvalarr);
 
@@ -63,10 +64,10 @@ if(post('actionBtn'))
                     $log['cdate'] = $cdate;
                     $log['ctime'] = $ctime;
                     $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$prod_status_name</b> into <b><i>Product Status Table</i></b>.";
+                    $log['act_msg'] = USER_NAME . " added <b>$tagName</b> into <b><i>$pageTitle Table</i></b>.";
                     $log['query_rec'] = $query;
-                    $log['query_table'] = PROD_STATUS;
-                    $log['page'] = 'Product Status';
+                    $log['query_table'] = TAG;
+                    $log['page'] = $pageTitle;
                     $log['newval'] = $newval;
                     $log['connect'] = $connect;
                     audit_log($log);
@@ -79,18 +80,18 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$prod_status_id'",PROD_STATUS,$connect);
+                    $rst = getData('*',"id = '$tagID'",TAG,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
                     // check value
-                    if($row['name'] != $prod_status_name)
+                    if($row['name'] != $tagName)
                     {
                         array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $prod_status_name);
+                        array_push($chgvalarr, $tagName);
                     }
 
-                    if($row['remark'] != $prod_status_remark)
+                    if($row['remark'] != $tagRemark)
                     {
                         if($row['remark'] == '')
                             $old_remark = 'Empty_Value';
@@ -98,9 +99,9 @@ if(post('actionBtn'))
 
                         array_push($oldvalarr, $old_remark);
 
-                        if($prod_status_remark == '')
+                        if($tagRemark == '')
                             $new_remark = 'Empty_Value';
-                        else $new_remark = $prod_status_remark;
+                        else $new_remark = $tagRemark;
                         
                         array_push($chgvalarr, $new_remark);
                     }
@@ -111,9 +112,9 @@ if(post('actionBtn'))
 
                     $_SESSION['tempValConfirmBox'] = true;
                     if($oldval != '' && $chgval != '')
-                    {
+                    {   
                         // edit
-                        $query = "UPDATE ".PROD_STATUS." SET name ='$prod_status_name', remark ='$prod_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '".$prod_status_id."'";
+                        $query = "UPDATE ".TAG." SET name ='$tagName', remark ='$tagRemark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$tagID'";
                         mysqli_query($connect, $query);
 
                         // audit log
@@ -131,11 +132,11 @@ if(post('actionBtn'))
                             else
                                 $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
                         }
-                        $log['act_msg'] .= " from <b><i>Product Status Table</i></b>.";
+                        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                         $log['query_rec'] = $query;
-                        $log['query_table'] = PROD_STATUS;
-                        $log['page'] = 'Product Status';
+                        $log['query_table'] = TAG;
+                        $log['page'] = $pageTitle;
                         $log['oldval'] = $oldval;
                         $log['changes'] = $chgval;
                         $log['connect'] = $connect;
@@ -162,14 +163,14 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PROD_STATUS,$connect);
+            $rst = getData('*',"id = '$id'",TAG,$connect);
             $row = $rst->fetch_assoc();
 
-            $prod_status_id = $row['id'];
-            $prod_status_name = $row['name'];
+            $tagID = $row['id'];
+            $tagName = $row['name'];
 
             //SET the record status to 'D'
-            deleteRecord(PROD_STATUS,$id,$prod_status_name,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord(TAG,$id,$tagName,$connect,$cdate,$ctime,$pageTitle);
 
             $_SESSION['delChk'] = 1;
         } catch(Exception $e) {
@@ -178,9 +179,9 @@ if(post('act') == 'D')
     }
 }
 
-if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
+if(($tagID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
 {
-    $prod_status_name = isset($dataExisted) ? $row['name'] : '';
+    $tagName = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     // audit log
@@ -189,8 +190,8 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$prod_status_name</b> from <b><i>Product Status Table</i></b>.";
-    $log['page'] = 'Product Status';
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$tagName</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -205,43 +206,43 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 <body>
 
 <div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Product Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+    <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
     switch($act)
     {
-        case 'I': echo 'Add Product Status'; break;
-        case 'E': echo 'Edit Product Status'; break;
-        default: echo 'View Product Status';
+        case 'I': echo 'Add '.$pageTitle ; break;
+        case 'E': echo 'Edit '.$pageTitle ; break;
+        default: echo 'View '.$pageTitle ;
     }
     ?></p>
 </div>
 
-<div id="prodstatusFormContainer" class="container d-flex justify-content-center">
+<div id="tagFormContainer" class="container d-flex justify-content-center">
     <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="prodstatusForm" method="post" action="">
+        <form id="tagForm" method="post" action="">
             <div class="form-group mb-5">
                 <h2>
                     <?php
                     switch($act)
                     {
-                        case 'I': echo 'Add Product Status'; break;
-                        case 'E': echo 'Edit Product Status'; break;
-                        default: echo 'View Product Status';
+                        case 'I': echo 'Add '.$pageTitle ; break;
+                        case 'E': echo 'Edit '.$pageTitle ; break;
+                        default: echo 'View '.$pageTitle ;
                     }
                     ?>
                 </h2>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="prod_status_name_lbl" for="prod_status_name">Product Status Name</label>
-                <input class="form-control" type="text" name="prod_status_name" id="prod_status_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="tagNameLbl" for="tagName"><?php echo $pageTitle ?> Name</label>
+                <input class="form-control" type="text" name="tagName" id="tagName" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="prod_status_remark_lbl" for="prod_status_remark">Product Status Remark</label>
-                <textarea class="form-control" name="prod_status_remark" id="prod_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                <label class="form-label" id="tagRemarkLbl" for="tagRemark"><?php echo $pageTitle ?> Remark</label>
+                <textarea class="form-control" name="tagRemark" id="tagRemark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
             </div>
 
             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -249,10 +250,10 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                 switch($act)
                 {
                     case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addProdStatus">Add Product Status</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addsocso_cath">Add '.$pageTitle.' </button>';
                         break;
                     case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updProdStatus">Edit Product Status</button>';
+                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updsocso_cath">Edit '.$pageTitle.' </button>';
                         break;
                 }
             ?>
@@ -271,7 +272,7 @@ if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 if(isset($_SESSION['tempValConfirmBox']))
 {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product Status","","'.$redirect_page.'","'.$act.'");</script>';
+    echo '<script>confirmationDialog("","","'.$pageTitle.'","","'.$redirect_page.'","'.$act.'");</script>';
 }
 ?>
 <script>
@@ -281,7 +282,7 @@ if(isset($_SESSION['tempValConfirmBox']))
   function(id)
   to resize form with "centered" class
 */
-centerAlignment("prodstatusFormContainer");
+centerAlignment("tagFormContainer");
 </script>
 </body>
 </html>

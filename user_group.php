@@ -61,7 +61,15 @@ if(post('actionBtn'))
             $user_grp_name = postSpaceFilter('user_grp_name');
             $user_grp_remark = postSpaceFilter('user_grp_remark');
 
-            if($user_grp_name)
+            if (!$user_grp_name){
+                $err = "User group name cannot be empty.";
+                break;
+            }
+            else if(isDuplicateRecord("name", $user_grp_name, USR_GRP, $connect, $user_grp_id)){
+                $err = "Duplicate record found for user group name.";
+                break;
+            }
+            else 
             {
                 $arr = post('user_grp_chkbox_val');
                 $storevalue = array();
@@ -201,7 +209,6 @@ if(post('actionBtn'))
                     }
                 }
             }
-            else $err = "User Group Name cannot be empty.";
             break;
         case 'back':
             echo("<script>location.href = '$redirect_page';</script>");
@@ -302,7 +309,7 @@ tbody {
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-3">
                     <label class="form-label" id="user_grp_name_lbl" for="user_grp_name">User Group Name</label>
-                    <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted)) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
+                    <input class="form-control" type="text" name="user_grp_name" id="user_grp_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name']; ?>" <?php if($act == '') echo 'readonly' ?>>
                     <div id="err_msg">
                         <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                     </div>
@@ -399,7 +406,7 @@ tbody {
             <div class="row d-flex justify-content-center">
                 <div class="form-group mb-3">
                     <label class="form-label" id="user_grp_remark_lbl" for="user_grp_remark">User Group Remark</label>
-                    <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted)) echo $row['remark'] ?></textarea>
+                    <textarea class="form-control" name="user_grp_remark" id="user_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
             </div>
 
