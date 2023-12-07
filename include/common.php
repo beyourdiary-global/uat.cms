@@ -1306,4 +1306,15 @@ function make_order_payment($data=array()){
 	$json = json_decode($return, true);
 	return $json;
 }
+
+function displayPageAction($act, $page) {
+    switch ($act) {
+        case 'I':
+            return "Add $page";
+        case 'E':
+            return "Edit $page";
+        default:
+            return "View $page";
+    }
+}
 ?>

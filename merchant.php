@@ -8,16 +8,29 @@ $redirect_page = $SITEURL . '/merchant_table.php';
 
 // to display data to input
 if ($merchant_id) {
+    
     $rst = getData('*', "id = '$merchant_id'", MERCHANT, $finance_connect);
-
-    if ($rst != false) {
+    //$rst = false; //testing script
+    if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
+    } else {
+        // If $rst is false or no data found
+        echo '<script>
+                alert("Data not found or an error occurred.");
+                window.location.href = "' . $redirect_page . '"; // Redirect to previous page
+              </script>';
+        exit(); // Stop script execution
     }
 }
 
-if (!($merchant_id) && !($act))
-    echo ("<script>location.href = '$redirect_page';</script>");
+if (!($merchant_id) && !($act)) {
+    echo '<script>
+    alert("Invalid action.");
+    window.location.href = "' . $redirect_page . '"; // Redirect to previous page
+    </script>';
+    exit(); // Stop script execution
+}
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
@@ -44,51 +57,57 @@ if (post('actionBtn')) {
 
                 try {
                     $query = "INSERT INTO " . MERCHANT . "(name,business_no,contact,email,address,person_in_charges,person_in_charges_contact,remark,create_by,create_date,create_time) VALUES ('$merchant_name','$mrcht_business_no','$mrcht_contact','$mrcht_email','$mrcht_address','$mrcht_pic','$mrcht_pic_contact','$mrcht_business_no','" . USER_ID . "',curdate(),curtime())";
-                    mysqli_query($finance_connect, $query);
-                    $_SESSION['tempValConfirmBox'] = true;
-
-                    $newvalarr = array();
-
-                    // check value
-                    if ($merchant_name != '')
-                        array_push($newvalarr, $merchant_name);
-
-                    if ($mrcht_business_no != '')
-                        array_push($newvalarr, $mrcht_business_no);
-
-                    if ($mrcht_email != '')
-                        array_push($newvalarr, $mrcht_email);
-
-                    if ($mrcht_contact != '')
-                        array_push($newvalarr, $mrcht_contact);
-
-                    if ($mrcht_address != '')
-                        array_push($newvalarr, $mrcht_address);
-
-                    if ($mrcht_pic != '')
-                        array_push($newvalarr, $mrcht_pic);
+                    // Execute the query
+                    $queryResult = mysqli_query($finance_connect, $query);
                     
-                    if ($mrcht_pic_contact != '')
-                        array_push($newvalarr, $mrcht_pic_contact);
+                    if ($queryResult) {
+                        $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($merchant_remark != '')
-                        array_push($newvalarr, $merchant_remark);
+                        $newvalarr = array();
 
-                    $newval = implode(",", $newvalarr);
+                        // check value
+                        if ($merchant_name != '')
+                            array_push($newvalarr, $merchant_name);
 
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$merchant_name</b> into <b><i>Merchant Table</i></b>.";
-                    $log['query_rec'] = $query;
-                    $log['query_table'] = MERCHANT;
-                    $log['page'] = 'Merchant';
-                    $log['newval'] = $newval;
-                    $log['connect'] = $finance_connect;
-                    audit_log($log);
+                        if ($mrcht_business_no != '')
+                            array_push($newvalarr, $mrcht_business_no);
+
+                        if ($mrcht_email != '')
+                            array_push($newvalarr, $mrcht_email);
+
+                        if ($mrcht_contact != '')
+                            array_push($newvalarr, $mrcht_contact);
+
+                        if ($mrcht_address != '')
+                            array_push($newvalarr, $mrcht_address);
+
+                        if ($mrcht_pic != '')
+                            array_push($newvalarr, $mrcht_pic);
+                        
+                        if ($mrcht_pic_contact != '')
+                            array_push($newvalarr, $mrcht_pic_contact);
+
+                        if ($merchant_remark != '')
+                            array_push($newvalarr, $merchant_remark);
+
+                        $newval = implode(",", $newvalarr);
+
+                        // audit log
+                        $log = array();
+                        $log['log_act'] = 'add';
+                        $log['cdate'] = $cdate;
+                        $log['ctime'] = $ctime;
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " added <b>$merchant_name</b> into <b><i>Merchant Table</i></b>.";
+                        $log['query_rec'] = $query;
+                        $log['query_table'] = MERCHANT;
+                        $log['page'] = 'Merchant';
+                        $log['newval'] = $newval;
+                        $log['connect'] = $finance_connect;
+                        audit_log($log);
+                    } else{ // Query failed
+                        echo '<script>displayErrorMessage("Failed");</script>';
+                    }
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
                 }
@@ -153,35 +172,39 @@ if (post('actionBtn')) {
                     $oldval = implode(",", $oldvalarr);
                     $chgval = implode(",", $chgvalarr);
 
-                    $_SESSION['tempValConfirmBox'] = true;
                     if ($oldval != '' && $chgval != '') {
                         // edit
                         $query = "UPDATE " . MERCHANT . " SET name = '$merchant_name',business_no = '$mrcht_business_no',email = '$mrcht_email', contact = '$mrcht_contact', address ='$mrcht_address', person_in_charges ='$mrcht_pic', person_in_charges_contact ='$mrcht_pic_contact', remark ='$merchant_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$merchant_id'";
-                        mysqli_query($finance_connect, $query);
+                        $queryResult = mysqli_query($finance_connect, $query);
+                  
+                        if ($queryResult) {
+                            $_SESSION['tempValConfirmBox'] = true;
+                            // audit log
+                            $log = array();
+                            $log['log_act'] = 'edit';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = USER_ID;
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
+                            $log['act_msg'] = USER_NAME . " edited the data";
+                            for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+                                if ($i == 0)
+                                    $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                                else
+                                    $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            }
+                            $log['act_msg'] .= "  from <b><i>Merchant Table</i></b>.";
 
-                        $log['act_msg'] = USER_NAME . " edited the data";
-                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                            if ($i == 0)
-                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+                            $log['query_rec'] = $query;
+                            $log['query_table'] = MERCHANT;
+                            $log['page'] = 'Merchant';
+                            $log['oldval'] = $oldval;
+                            $log['changes'] = $chgval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+                        }else{
+                            //pop up msg
                         }
-                        $log['act_msg'] .= "  from <b><i>Merchant Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = MERCHANT;
-                        $log['page'] = 'Merchant';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
                     } else $act = 'NC';
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -216,7 +239,7 @@ if (post('act') == 'D') {
     }
 }
 
-if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
+if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $merchant_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
@@ -243,14 +266,9 @@ if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewC
 <body>
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>">Merchant</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        switch($act)
-        {
-            case 'I': echo 'Add Merchant'; break;
-            case 'E': echo 'Edit Merchant'; break;
-            default: echo 'View Merchant';
-        }
+        echo displayPageAction($act, 'Merchant');
         ?></p>
-        
+
     </div>
 
 
@@ -260,16 +278,7 @@ if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewC
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                        switch ($act) {
-                            case 'I':
-                                echo 'Add Merchant';
-                                break;
-                            case 'E':
-                                echo 'Edit Merchant';
-                                break;
-                            default:
-                                echo 'View Merchant';
-                        }
+                            echo displayPageAction($act, 'Merchant');
                         ?>
                     </h2>
                 </div>
@@ -280,37 +289,44 @@ if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewC
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="merchant_name_lbl" for="merchant_name">Merchant
-                        Name</label>
-                    <input class="form-control" type="text" name="merchant_name" id="merchant_name"
-                        value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
-                    <div id="err_msg">
-                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="merchant_name_lbl" for="merchant_name">Merchant
+                                Name</label>
+                            <input class="form-control" type="text" name="merchant_name" id="merchant_name"
+                                value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="mrcht_business_no_lbl"
+                                for="mrcht_business_no">Merchant Business No</label>
+                            <input class="form-control" type="text" name="mrcht_business_no" id="mrcht_business_no"
+                                value="<?php if (isset($dataExisted) && isset($row['business_no'])) echo $row['business_no'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_business_no_lbl" for="mrcht_business_no">Merchant
-                        Business No</label>
-                    <input class="form-control" type="text" name="mrcht_business_no" id="mrcht_business_no"
-                        value="<?php if (isset($dataExisted) && isset($row['business_no'])) echo $row['business_no'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact">Merchant
-                        Contact</label>
-                    <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact"
-                        value="<?php if (isset($dataExisted) && isset($row['contact'])) echo $row['contact'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email">Merchant Email</label>
-                    <input class="form-control" type="text" name="mrcht_email" id="mrcht_email"
-                        value="<?php if (isset($dataExisted) && isset($row['email'])) echo $row['email'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact">Merchant
+                                Contact</label>
+                            <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact"
+                                value="<?php if (isset($dataExisted) && isset($row['contact'])) echo $row['contact'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email">Merchant
+                                Email</label>
+                            <input class="form-control" type="text" name="mrcht_email" id="mrcht_email"
+                                value="<?php if (isset($dataExisted) && isset($row['email'])) echo $row['email'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group mb-3">
@@ -322,19 +338,25 @@ if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewC
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge</label>
-                    <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic"
-                        value="<?php if (isset($dataExisted) && isset($row['person_in_charges'])) echo $row['person_in_charges'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
-
-
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In
+                                Charge</label>
+                            <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic"
+                                value="<?php if (isset($dataExisted) && isset($row['person_in_charges'])) echo $row['person_in_charges'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label form_lbl" id="mrcht_pic_contact_lbl" for="mrcht_pic_contact">Person
+                                In Charge Contact</label>
+                            <input class="form-control" type="number" step="any" name="mrcht_pic_contact"
+                                id="mrcht_pic_contact"
+                                value="<?php if (isset($dataExisted) && isset($row['person_in_charges_contact'])) echo $row['person_in_charges_contact'] ?>"
+                                <?php if ($act == '') echo 'readonly' ?>>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_pic_contact_lbl" for="mrcht_pic_contact">Person In Charge Contact</label>
-                    <input class="form-control" type="number" step="any" name="mrcht_pic_contact" id="mrcht_pic_contact"
-                        value="<?php if (isset($dataExisted) && isset($row['person_in_charges_contact'])) echo $row['person_in_charges_contact'] ?>"
-                        <?php if ($act == '') echo 'readonly' ?>>
-                </div>
+
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="merchant_remark_lbl" for="merchant_remark">Merchant
                         Remark</label>
