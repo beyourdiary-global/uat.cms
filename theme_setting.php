@@ -1,6 +1,9 @@
 <?php
 $pageTitle = "Theme Setting";
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $redirect_page = $SITEURL . '/dashboard.php';
 $tblname = PROJ;
@@ -269,6 +272,7 @@ if (post('actionBtn')) {
                             <div class="col-12 col-md-2">
                                 <div class="d-flex justify-content-center justify-content-md-end px-4">
                                     <img id="favicon_preview" name="favicon_preview" src="<?php echo ($row['meta_logo'] == '' || $row['meta_logo'] == NULL) ? 'img/byd_logo' : $img_path . $row['meta_logo']; ?>" class="img-thumbnail" alt="Meta Logo Preview">
+
                                     <input type="hidden" name="favicon_imageValue" value="<?= $row['meta_logo'] ?>">
                                 </div>
                             </div>
@@ -280,6 +284,7 @@ if (post('actionBtn')) {
                             <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                                 <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="save">Save</button>
                             </div>
+
                         </div>
                     </div>
             </form>
@@ -293,6 +298,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     echo '<script>confirmationDialog("","","Theme Setting","","' . $redirect_page . '","' . $act . '");</script>';
 }
 ?>
+
 
 <script>
     /**

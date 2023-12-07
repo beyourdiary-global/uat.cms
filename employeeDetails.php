@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Employee Details";
 include 'menuHeader.php';
+include 'employeeLeave.php';
 
 $empDetailsID = input('id');
 $act = input('act');
@@ -28,6 +29,7 @@ if (post('actionBtn')) {
     $action = post('actionBtn');
 
     switch ($action) {
+
         case 'addEmpDetails':
         case 'updEmpDetails':
 
@@ -195,6 +197,9 @@ if (post('actionBtn')) {
                             curtime()
                             );";
                         mysqli_query($connect, $queryTwo);
+
+                        //Assign Leave Days To New Employee
+                        employeeLeaveCheckColumn($connect, $empIDRow['id']);
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -277,6 +282,10 @@ if (post('actionBtn')) {
                     audit_log($log);
 
                     $newval = implode(",", $newvalarr);
+
+                    echo '<script>';
+                    echo 'localStorage.clear();';
+                    echo '</script>';
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
                 }
@@ -357,6 +366,7 @@ if (post('actionBtn')) {
                     // Update query for the first table
 
                     if ($oldval != '' && $chgval != '') {
+
                         $query = "UPDATE $tblnameOne SET
                                 name = '$employeeName',
                                 email = '$employeeEmail',
@@ -412,6 +422,9 @@ if (post('actionBtn')) {
                                 update_time = curtime(), 
                                 update_by ='" . USER_ID . "'
                             WHERE employee_id = '$empDetailsID';";
+
+                        error_log("Residence Status: " . postSpaceFilter('employeeResidenceStatus'));
+                        error_log("Nationality: " . $_POST['employeeNationality']);
 
                         mysqli_query($connect, $query);
 
@@ -589,12 +602,22 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
         display: none;
     }
 
-    /*
+    @media (max-width: 576px) {
+        .button-bottom {
+            width: 100%;
+            /* Change the column width to 100% for small screens */
+        }
+
+        .button-bottom button {
+            width: 100%;
+        }
+    }
+
+
     #employeeDetailsForm .form-footer {
         overflow: auto;
         gap: 20px;
     }
-    */
 </style>
 <!-- -->
 
@@ -660,7 +683,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="identityTypeLbl" for="identityType">Identity type <span class="requireRed">*</span></label>
+                                    <label class="form-label" id="identityTypeLbl" for="identityType">Identity type </label>
                                     <select class="form-select" aria-label="Default select example" name="identityType" id="identityType" required>
                                         <?php
                                         $result = getData('*', '', ID_TYPE, $connect);
@@ -750,8 +773,9 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                         echo "<option disabled selected>Select employee nationality</option>";
 
                                         while ($rowNationality = $result->fetch_assoc()) {
+                                            $phoneCode = $rowNationality['phonecode'];
                                             $selected = isset($dataExisted, $row['nationality']) && $rowNationality['id'] == $row['nationality'] ? "selected" : "";
-                                            echo "<option value='{$rowNationality['id']}' $selected>{$rowNationality['name']}</option>";
+                                            echo "<option value='{$rowNationality['id']}' data-phone-code='{$phoneCode}' $selected>{$rowNationality['name']}</option>";
                                         }
                                         ?>
                                     </select>
@@ -759,26 +783,26 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                             </div>
                         </div>
 
-
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number <span class="requireRed">*</span></label>
+                                    <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number<span class="requireRed">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+60</span>
-                                        <input type="text" name="employeePhone" id="employeePhone" value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>" class="form-control" style="height: 40px;" required>
+                                        <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
+                                        <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>">
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
                                     <label class="form-label" id="employeeAlternatePhoneLbl" for="employeeAlternatePhone">Alternate Phone Number</label>
                                     <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+60</span>
+                                        <span class="input-group-text" style="height: 40px;">+<span id="alternatePhoneCodeSpan">00</span></span>
                                         <input type="text" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($dataExisted, $row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </fieldset>
 
                     <fieldset class="border p-2" style="border-radius: 3px;">
@@ -788,9 +812,6 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                 <div class="col-sm-6">
                                     <label class="form-label" id="employeeAddressOneLbl" for="employeeAddress1">Address Line 1</label>
                                     <input class="form-control " type="text" name="employeeAddress1" id="employeeAddress1" value="<?php if (isset($dataExisted, $row['address_line_1'])) echo $row['address_line_1'] ?>">
-                                    <div id="err_msg">
-                                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                                    </div>
                                 </div>
 
 
@@ -867,16 +888,17 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
                         <div class="form-group mb-3">
                             <div class="row">
-
                                 <div class="col-sm-6">
                                     <label class="form-label" id="emergencyRelationshipLbl" for="emergencyRelationship">Relationship <span class="requireRed">*</span></label>
                                     <input class="form-control" type="text" name="emergencyRelationship" id="emergencyRelationship" value="<?php if (isset($dataExisted, $row['emergency_relationship'])) echo $row['emergency_relationship'] ?>" required>
                                 </div>
 
-
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Contact Number <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" name="emergencyContactNum" id="emergencyContactNum" value="<?php if (isset($dataExisted, $row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
+                                    <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Emergency Contact Number <span class="requireRed">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="height: 40px;">+<span id="emergencyContactNumSpan">00</span></span>
+                                        <input type="text" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($dataExisted, $row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1090,8 +1112,8 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                 </div>
 
                                 <div class="col-sm-6">
-                                    <label class="form-label" id="epfNoLbl" for="epfNo">Contributing EPF No <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" name="epfNo" id="epfNo" value="<?php if (isset($dataExisted, $row2['contributing_epf_no'])) echo $row2['contributing_epf_no'] ?>" required>
+                                    <label class="form-label" id="epfNoLbl" for="epfNo">Contributing EPF No </label>
+                                    <input class="form-control" type="number" name="epfNo" id="epfNo" value="<?php if (isset($dataExisted, $row2['contributing_epf_no'])) echo $row2['contributing_epf_no'] ?>">
                                 </div>
                             </div>
                         </div>
@@ -1169,18 +1191,18 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                     </fieldset>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-4 text-start">
-                        <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="">Previous</button>
+                <div class="row" style="padding-bottom : 20px;">
+                    <div class="col-sm-4 text-start button-bottom">
+                        <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
                     </div>
 
-                    <div class="col-md-4 text-center">
-                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="window.location.href='employeeDetailsTable.php';">Back</button>
-                        <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails">Edit</button>
+                    <div class="col-sm-4 text-center button-bottom">
+                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="window.location.href='employeeDetailsTable.php';" style="font-size: 15px;">Back</button>
+                        <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
                     </div>
 
-                    <div class="col-md-4 text-end">
-                        <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="">Next</button>
+                    <div class="col-sm-4 text-end button-bottom">
+                        <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="" style="font-size: 15px;">Next</button>
                     </div>
                 </div>
             </form>
@@ -1226,9 +1248,7 @@ switch ($act) {
         currentTab = currentTab + n;
 
         if (currentTab >= x.length) {
-            // Check if it's the final step (step 5 in this case)
             if (currentTab === x.length) {
-                // Change the type of the "Next" button to "submit"
                 document.getElementById("nextBtn").type = "submit";
             }
             document.getElementById("employeeDetailsForm").submit();
@@ -1238,15 +1258,13 @@ switch ($act) {
         showTab(currentTab);
     }
 
-    // Display the current tab
     function showTab(n) {
-        // This function will display the specified tab of the form...
+
 
         var x = document.getElementsByClassName("step");
         var editButton = document.getElementById("editButton");
         x[n].style.display = "block";
 
-        //... and fix the Previous/Next buttons:
         if (n == 0) {
             document.getElementById("prevBtn").style.display = "none";
         } else {
@@ -1270,7 +1288,6 @@ switch ($act) {
             document.getElementById("nextBtn").innerHTML = "Next";
         }
 
-        //... and run a function that will display the correct step indicator:
         fixStepIndicator(n);
     }
 
@@ -1278,23 +1295,59 @@ switch ($act) {
         var x, y, i, valid = true;
         x = document.getElementsByClassName("step");
         y = x[currentTab].querySelectorAll("input, select");
+
         for (i = 0; i < y.length; i++) {
             if ((y[i].value === "" || (y[i].tagName === "SELECT" && y[i].selectedIndex === 0)) && y[i].hasAttribute("required")) {
                 y[i].classList.add("invalid");
                 y[i].style.borderColor = "red";
                 valid = false;
+
+                displayErrorMessage(y[i], "Please fill the " + getLabelContent(y[i]) + " field.");
             } else {
                 y[i].classList.remove("invalid");
-                y[i].style.borderColor = ""; // Reset border color
+                y[i].style.borderColor = "";
+
+                hideErrorMessage(y[i]);
             }
         }
+
         if (valid) {
             document.getElementsByClassName("stepIndicator")[currentTab].classList.add("finish");
-        } else {
-            alert('Please complete a required field');
         }
+
         return valid;
     }
+
+    function displayErrorMessage(inputField, message) {
+
+        var errorMessageElement = inputField.nextElementSibling;
+
+        if (!errorMessageElement || errorMessageElement.className !== "error-message") {
+            errorMessageElement = document.createElement("span");
+            errorMessageElement.className = "error-message";
+            errorMessageElement.style.color = "red";
+            errorMessageElement.style.display = "block";
+            inputField.parentNode.appendChild(errorMessageElement);
+        }
+
+        errorMessageElement.innerHTML = message;
+    }
+
+    function hideErrorMessage(inputField) {
+        var errorMessageElement = inputField.nextElementSibling;
+        if (errorMessageElement && errorMessageElement.className === "error-message") {
+            errorMessageElement.parentNode.removeChild(errorMessageElement);
+        }
+    }
+
+    function getLabelContent(inputField) {
+        // Find the associated label element
+        var label = document.querySelector('[for="' + inputField.id + '"]');
+
+        // Get the content of the label excluding any child elements
+        return label ? label.childNodes[0].nodeValue.trim() : "this field";
+    }
+
 
     function fixStepIndicator(n) {
         var i, x = document.getElementsByClassName("stepIndicator");
@@ -1351,13 +1404,10 @@ switch ($act) {
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Select the marital status dropdown and the noOfChild input field
         var maritalStatusDropdown = document.getElementById('maritalStatus');
         var noOfChildInput = document.getElementById('noOfChild');
 
-        // Function to update the noOfChild input field based on marital status
         function updateNoOfChildInput() {
-            // Check if the selected value is "Married"
             if (maritalStatusDropdown.value === '2') {
                 noOfChildInput.disabled = false;
             } else {
@@ -1372,33 +1422,27 @@ switch ($act) {
     });
 
     document.addEventListener('DOMContentLoaded', function() {
+
         var epfOptionDropdown = document.getElementById('epfOption');
         var epfNoInput = document.getElementById('epfNo');
+        var epfNoInputLbl = document.getElementById('epfNoLbl');
         var employeeEpfRateSelect = document.getElementById('employeeEpfRate');
         var employerEpfRateSelect = document.getElementById('employerEpfRate');
         var employeeEpfRateLabel = document.getElementById('employeeEpfRateLbl');
         var employerEpfRateLabel = document.getElementById('employerEpfRateLbl');
 
+        function updateEpfFields(enabled, required, label, input) {
+            input.required = required;
+            input.disabled = !enabled;
+            label.innerHTML = label.textContent + (required ? '<span class="requireRed">*</span>' : '');
+        }
+
         function updateEpfNoField() {
-            if (epfOptionDropdown.value === 'Yes') {
-                epfNoInput.disabled = false;
-                epfNoInput.required = true;
+            var isEpfYes = epfOptionDropdown.value === 'Yes';
 
-                employeeEpfRateLabel.innerHTML = 'Employee EPF Rate<span class="requireRed">*</span>';
-                employerEpfRateLabel.innerHTML = 'Employer EPF Rate<span class="requireRed">*</span>';
-
-                employeeEpfRateSelect.required = true;
-                employerEpfRateSelect.required = true;
-            } else {
-                epfNoInput.disabled = true;
-                epfNoInput.required = false;
-
-                employeeEpfRateLabel.innerHTML = 'Employee EPF Rate';
-                employerEpfRateLabel.innerHTML = 'Employer EPF Rate';
-
-                employeeEpfRateSelect.required = false;
-                employerEpfRateSelect.required = false;
-            }
+            updateEpfFields(isEpfYes, isEpfYes, 'Employee EPF Rate', employeeEpfRateSelect);
+            updateEpfFields(isEpfYes, isEpfYes, 'Employer EPF Rate', employerEpfRateSelect);
+            updateEpfFields(isEpfYes, isEpfYes, 'Contributing EPF No', epfNoInput);
         }
 
         epfOptionDropdown.addEventListener('change', updateEpfNoField);
@@ -1406,6 +1450,28 @@ switch ($act) {
         updateEpfNoField();
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        var epfOptionDropdown = document.getElementById('epfOption');
+        var epfNoInput = document.getElementById('epfNo');
+        var employeeEpfRateSelect = document.getElementById('employeeEpfRate');
+        var employerEpfRateSelect = document.getElementById('employerEpfRate');
+
+        function clearEpfFields() {
+            epfNoInput.value = '';
+            employeeEpfRateSelect.selectedIndex = 0;
+            employerEpfRateSelect.selectedIndex = 0;
+        }
+
+        function updateEpfNoField() {
+            if (epfOptionDropdown.value === 'No') {
+                clearEpfFields();
+            }
+        }
+
+        epfOptionDropdown.addEventListener('change', updateEpfNoField);
+
+        updateEpfNoField();
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
         var formElements = document.querySelectorAll('.form-select, input, textarea');
@@ -1420,6 +1486,61 @@ switch ($act) {
                 }
             }
         });
+    });
+/*
+    document.addEventListener('DOMContentLoaded', function() {
+        var residenceStatusSelect = document.getElementById("employeeResidenceStatus");
+        var nationalitySelect = document.getElementById("employeeNationality");
+
+        function updataEmpNationality() {
+            for (var i = 0; i < nationalitySelect.options.length; i++) {
+                if (nationalitySelect.options[i].text === "MALAYSIA") {
+                    nationalitySelect.options[i].selected = true;
+                    nationalitySelect.disabled = true;
+
+                    var phoneCode = nationalitySelect.options[i].getAttribute('data-phone-code');
+                    document.getElementById('phoneCodeSpan').textContent = phoneCode;
+                    document.getElementById('alternatePhoneCodeSpan').textContent = phoneCode;
+                    document.getElementById('emergencyContactNumSpan').textContent = phoneCode;
+
+                    break;
+                }
+            }
+        }
+
+        residenceStatusSelect.value = localStorage.getItem('employeeResidenceStatus') || residenceStatusSelect.value;
+
+        if (residenceStatusSelect.value === "Resident") {
+            updataEmpNationality();
+        } else {
+            nationalitySelect.disabled = false;
+        }
+
+        residenceStatusSelect.addEventListener("change", function() {
+            if (residenceStatusSelect.value === "Resident") {
+                updataEmpNationality();
+                localStorage.setItem('employeeResidenceStatus', residenceStatusSelect.value);
+                localStorage.setItem('employeeNationality', nationalitySelect.value);
+            } else {
+                nationalitySelect.disabled = false;
+            }
+        });
+    });
+*/
+    document.addEventListener('DOMContentLoaded', function() {
+
+        function updatePhoneCode() {
+            var selectedCountry = document.getElementById('employeeNationality').options[document.getElementById('employeeNationality').selectedIndex];
+
+            var phoneCode = selectedCountry.getAttribute('data-phone-code');
+            document.getElementById('phoneCodeSpan').textContent = phoneCode;
+            document.getElementById('alternatePhoneCodeSpan').textContent = phoneCode;
+            document.getElementById('emergencyContactNumSpan').textContent = phoneCode;
+        }
+
+        document.getElementById('employeeNationality').addEventListener('change', updatePhoneCode);
+
+        updatePhoneCode();
     });
 </script>
 

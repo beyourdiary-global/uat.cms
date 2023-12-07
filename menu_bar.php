@@ -127,8 +127,9 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php','29'),
+                    array('Tag', 'mdi mdi-account-group-outline', 'tagTable.php','35'),
                 ),
-                'pin' => array('29'),
+                'pin' => array('29','35'),
             ), 
             array(
                 'Payroll Administration  Setting',
@@ -141,7 +142,7 @@ $menuList = array(
                 'pin' => array('33'),
             ), 
         ),
-        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33','34')
+        'pin' => array('1','2','3','8','11','10','14','16','19','15','9','12','13','6','24','26', '27', '28','29', '30', '31', '32','33','34','35')
     ),
     array(
         'Audit Log',
