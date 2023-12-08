@@ -54,14 +54,12 @@ if (post('actionBtn')) {
                 $err = "Duplicate record found for Merchant name.";
                 break;
             } else if ($action == 'addMerchant') {
-
                 try {
                     $query = "INSERT INTO " . MERCHANT . "(name,business_no,contact,email,address,person_in_charges,person_in_charges_contact,remark,create_by,create_date,create_time) VALUES ('$merchant_name','$mrcht_business_no','$mrcht_contact','$mrcht_email','$mrcht_address','$mrcht_pic','$mrcht_pic_contact','$mrcht_business_no','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $queryResult = mysqli_query($finance_connect, $query);
-                    
+                    $_SESSION['tempValConfirmBox'] = true;
                     if ($queryResult) {
-                        $_SESSION['tempValConfirmBox'] = true;
 
                         $newvalarr = array();
 
@@ -106,7 +104,7 @@ if (post('actionBtn')) {
                         $log['connect'] = $finance_connect;
                         audit_log($log);
                     } else{ // Query failed
-                        echo '<script>displayErrorMessage("Failed");</script>';
+                        
                     }
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -167,18 +165,17 @@ if (post('actionBtn')) {
 
                         array_push($chgvalarr, $new_remark);
                     }
-
+                    
                     // convert into string
                     $oldval = implode(",", $oldvalarr);
                     $chgval = implode(",", $chgvalarr);
-
+                    $_SESSION['tempValConfirmBox'] = true;
                     if ($oldval != '' && $chgval != '') {
                         // edit
                         $query = "UPDATE " . MERCHANT . " SET name = '$merchant_name',business_no = '$mrcht_business_no',email = '$mrcht_email', contact = '$mrcht_contact', address ='$mrcht_address', person_in_charges ='$mrcht_pic', person_in_charges_contact ='$mrcht_pic_contact', remark ='$merchant_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$merchant_id'";
                         $queryResult = mysqli_query($finance_connect, $query);
-                  
+
                         if ($queryResult) {
-                            $_SESSION['tempValConfirmBox'] = true;
                             // audit log
                             $log = array();
                             $log['log_act'] = 'edit';
@@ -203,7 +200,8 @@ if (post('actionBtn')) {
                             $log['connect'] = $connect;
                             audit_log($log);
                         }else{
-                            //pop up msg
+                            //pop up msg async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
+
                         }
                     } else $act = 'NC';
                 } catch (Exception $e) {
@@ -219,7 +217,6 @@ if (post('actionBtn')) {
 
 if (post('act') == 'D') {
     $id = post('id');
-
     if ($id) {
         try {
             // take name
@@ -239,7 +236,7 @@ if (post('act') == 'D') {
     }
 }
 
-if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
+if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $merchant_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
@@ -261,6 +258,8 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
 
 <head>
     <link rel="stylesheet" href="./css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
 </head>
 
 <body>
@@ -375,7 +374,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn"
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
                         value="back">Back</button>
                 </div>
             </form>
@@ -383,23 +382,55 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
     </div>
     <?php
     /*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
+        oufei 20231014
+        common.fun.js
+        function(title, subtitle, page name, ajax url path, redirect path, action)
+        to show action dialog after finish certain action (eg. edit)
+    */
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
         echo '<script>confirmationDialog("","","Merchant","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
     <script>
-    /**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
+    $(document).ready(function() {
+        $("#merchantForm").validate({
+            ignore: ".ignore-validation", // Ignore validation
+            rules: {
+                merchant_name: {
+                    required: true,
+                    maxlength: 255
+                },
+                mrcht_email: {
+                    email: true,
+                    maxlength: 100
+                },
+                mrcht_business_no: {
+                    maxlength: 100 // Maximum length of 100 characters for business_no
+                },
+                mrcht_contact: {
+                    maxlength: 100 // Maximum length of 100 characters for contact
+                },
+                mrcht_address: {
+                    maxlength: 255 // Maximum length of 255 characters for address
+                },
+                mrcht_pic: {
+                    maxlength: 100 // You can add similar rules for other fields if needed
+                },
+                mrcht_pic_contact: {
+                    maxlength: 100 // Maximum length of 100 characters for mrcht_pic_contact
+                },
+                merchant_remark: {
+                    maxlength: 255 // Maximum length of 255 characters for remarks
+                }
+            },
+            messages: {
+                merchant_name: {
+                    required: "Please enter Merchant name."
+                }
+            }
+        });
+    });
     </script>
 </body>
 

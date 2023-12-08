@@ -794,45 +794,4 @@ function setText(element,val,val2){
 	}
 }
 
-async function displayErrorMessage(errorMessage) {
-    const modalElem = document.createElement('div');
-    modalElem.id = "modal-error";
-    modalElem.className = "modal fade";
-    modalElem.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-            <div class="modal-content">
-                <div class="modal-body fs-6 mt-3">
-                    <p style="text-align: center; font-weight: bold; font-size: 25px;">Error</p>
-                    <p class="mt-n2" style="text-align: center;">${errorMessage}</p>
-                </div>
-                <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top: 0px">
-                    <button id="closeErrorBtn" type="button" class="btn"
-                        style="border: 1px solid #FF9B44; background-color: #FFFFFF; color: #FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform: none;">OK</button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modalElem);
-
-    const myModal = new bootstrap.Modal(modalElem, {
-        keyboard: false,
-        backdrop: 'static'
-    });
-
-    myModal.show();
-
-    return new Promise((resolve, reject) => {
-        document.body.addEventListener('click', response);
-
-        function response(e) {
-            if (e.target.id === 'closeErrorBtn') {
-                document.body.removeEventListener('click', response);
-                document.body.querySelector('.modal-backdrop').remove();
-                modalElem.remove();
-                resolve(true);
-            }
-        }
-    });
-}
 
