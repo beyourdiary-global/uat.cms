@@ -15,7 +15,7 @@ if ($merchant_id) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
     } else {
-        // If $rst is false or no data found
+        // If $rst is false or no data found ($act==null)
         echo '<script>
                 alert("Data not found or an error occurred.");
                 window.location.href = "' . $redirect_page . '"; // Redirect to previous page
@@ -29,7 +29,6 @@ if (!($merchant_id) && !($act)) {
     alert("Invalid action.");
     window.location.href = "' . $redirect_page . '"; // Redirect to previous page
     </script>';
-    exit(); // Stop script execution
 }
 
 if (post('actionBtn')) {
@@ -59,6 +58,7 @@ if (post('actionBtn')) {
                     // Execute the query
                     $queryResult = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
+                    
                     if ($queryResult) {
 
                         $newvalarr = array();
@@ -104,7 +104,7 @@ if (post('actionBtn')) {
                         $log['connect'] = $finance_connect;
                         audit_log($log);
                     } else{ // Query failed
-                        
+                        $act = 'F';
                     }
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -200,8 +200,7 @@ if (post('actionBtn')) {
                             $log['connect'] = $connect;
                             audit_log($log);
                         }else{
-                            //pop up msg async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
-
+                            $act = 'F';
                         }
                     } else $act = 'NC';
                 } catch (Exception $e) {
@@ -228,7 +227,7 @@ if (post('act') == 'D') {
 
             //SET the record status to 'D'
             deleteRecord(MERCHANT, $id, $merchant_name, $finance_connect, $cdate, $ctime, $pageTitle);
-
+            
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -236,7 +235,7 @@ if (post('act') == 'D') {
     }
 }
 
-if (($merchant_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
+if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $merchant_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
