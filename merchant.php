@@ -294,9 +294,9 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <input class="form-control" type="text" name="merchant_name" id="merchant_name"
                                 value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
+                            <!-- <div id="err_msg">
                                 <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-md-6">
                             <label class="form-label form_lbl" id="mrcht_business_no_lbl"
@@ -366,10 +366,10 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                     <?php
                     switch ($act) {
                         case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addMerchant">Add Merchant</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addMerchant">Add Merchant</button>';
                             break;
                         case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updMerchant">Edit Merchant</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updMerchant">Edit Merchant</button>';
                             break;
                     }
                     ?>
@@ -392,44 +392,103 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
     }
     ?>
     <script>
-    $(document).ready(function() {
-        $("#merchantForm").validate({
-            ignore: ".ignore-validation", // Ignore validation
-            rules: {
-                merchant_name: {
-                    required: true,
-                    maxlength: 255
-                },
-                mrcht_email: {
-                    email: true,
-                    maxlength: 100
-                },
-                mrcht_business_no: {
-                    maxlength: 100 // Maximum length of 100 characters for business_no
-                },
-                mrcht_contact: {
-                    maxlength: 100 // Maximum length of 100 characters for contact
-                },
-                mrcht_address: {
-                    maxlength: 255 // Maximum length of 255 characters for address
-                },
-                mrcht_pic: {
-                    maxlength: 100 // You can add similar rules for other fields if needed
-                },
-                mrcht_pic_contact: {
-                    maxlength: 100 // Maximum length of 100 characters for mrcht_pic_contact
-                },
-                merchant_remark: {
-                    maxlength: 255 // Maximum length of 255 characters for remarks
-                }
-            },
-            messages: {
-                merchant_name: {
-                    required: "Please enter Merchant name."
+        $(document).ready(function() {
+            // Input change event listener
+            $("#merchant_name").on("input", function() {
+                $(".error-message").remove(); 
+                validateMerchantName($(this).val());
+            });
+
+            $("#mrcht_email").on("input", function() {
+                validateEmail($(this).val());
+                $(".error-message").remove(); 
+            });
+
+            $("#mrcht_business_no").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 100); 
+            });
+
+            $("#mrcht_contact").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 100); 
+            });
+
+            $("#mrcht_address").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 255); 
+            });
+
+            $("#mrcht_pic").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 100); 
+            });
+
+            $("#mrcht_pic_contact").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 100); 
+            });
+            $("#mrcht_remark").on("input", function() {
+                $(".error-message").remove(); 
+                isValidLength($(this).val(), 255); 
+            });
+
+        
+            function validateMerchantName(merchantName) {
+                if (merchantName.trim() === "") {
+                    $("#merchant_name").after('<span class="error-message">Merchant name is required</span>');
+                } else {
+                    $(".error-message").remove();
                 }
             }
+
+            function validateEmail(email) {
+                var emailPattern = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+                if (!emailPattern.test(email)) {
+                    $("#mrcht_email").after('<span class="error-message">Invalid email format</span>');
+                } else {
+                    $(".error-message").remove();
+                }
+            }
+
+            function isValidLength(value, maxLength) {
+                // Check if the value is defined and not null
+                if (value && value.length !== undefined) {
+                    // Check if the length is less than or equal to the specified maxLength
+                    return value.length <= maxLength;
+                }
+                // Handle the case where value is undefined or null
+                return true;
+            }
+
+            $(".submitBtn").click(function (e) {
+                // Validate all form fields
+                var merchantName = $("#merchant_name").val();
+                var email = $("#mrcht_email").val();
+
+                var isValid = true;
+
+                // Perform validation for each field
+                if (merchantName.trim() == "") {
+                    validateMerchantName(merchantName);
+                    isValid = false;
+                }
+
+                if (!(email.trim() == "")) {
+                    validateEmail(email);
+                    isValid = false;
+                }
+
+                console.log("isValid:", isValid); //testing
+
+                if (isValid) {
+                    $(this).closest("form").submit();
+                } else if (!isValid) {
+                    e.preventDefault();
+                }
+            })
+                
         });
-    });
     </script>
 </body>
 

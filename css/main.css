@@ -519,6 +519,6 @@ transform: translate(-50%, 0) !important;
     padding-bottom: 10px;
 }
 
-.error {
+.error-message {
     color: red !important;
 }
