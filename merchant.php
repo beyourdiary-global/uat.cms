@@ -47,10 +47,13 @@ if (post('actionBtn')) {
             $merchant_remark = postSpaceFilter('merchant_remark');
 
             if (!$merchant_name) {
-                $err = "Merchant name cannot be empty.";
+                $name_err = "Merchant name cannot be empty.";
                 break;
             } else if (isDuplicateRecord("name", $merchant_name, MERCHANT, $finance_connect, $merchant_id)) {
-                $err = "Duplicate record found for Merchant name.";
+                $name_err = "Duplicate record found for Merchant name.";
+                break;
+            } else if ($mrcht_email && !isEmail($mrcht_email)) {
+                $email_err = "Wrong email format!";
                 break;
             } else if ($action == 'addMerchant') {
                 try {
@@ -101,7 +104,7 @@ if (post('actionBtn')) {
                         $log['query_table'] = MERCHANT;
                         $log['page'] = 'Merchant';
                         $log['newval'] = $newval;
-                        $log['connect'] = $finance_connect;
+                        $log['connect'] = $connect;
                         audit_log($log);
                     } else{ // Query failed
                         $act = 'F';
@@ -294,9 +297,11 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <input class="form-control" type="text" name="merchant_name" id="merchant_name"
                                 value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
-                            <!-- <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                            </div> -->
+                            <?php if (isset($name_err)) {?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $name_err; ?></span>
+                            </div>
+                            <?php } ?>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label form_lbl" id="mrcht_business_no_lbl"
@@ -323,6 +328,11 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <input class="form-control" type="text" name="mrcht_email" id="mrcht_email"
                                 value="<?php if (isset($dataExisted) && isset($row['email'])) echo $row['email'] ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
+                            <?php if (isset($email_err)) {?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $email_err; ?></span>
+                            </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -392,104 +402,45 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
     }
     ?>
     <script>
-        $(document).ready(function() {
-            // Input change event listener
-            $("#merchant_name").on("input", function() {
-                $(".error-message").remove(); 
-                validateMerchantName($(this).val());
-            });
+    $("#merchant_name").on("input", function() {
+        $(".mrcht-name-err").remove();
+    });
 
-            $("#mrcht_email").on("input", function() {
-                validateEmail($(this).val());
-                $(".error-message").remove(); 
-            });
+    $("#mrcht_email").on("input", function() {
+        $(".mrcht-email-err").remove();
+    });
 
-            $("#mrcht_business_no").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 100); 
-            });
+    $('.submitBtn').on('click', () => {
+        $(".error-message").remove();
+        //event.preventDefault();
+        var name_chk = 0;
+        var email_chk = 0;
 
-            $("#mrcht_contact").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 100); 
-            });
+        if (($('#merchant_name').val() === '' || $('#merchant_name').val() === null || $('#merchant_name')
+            .val() === undefined)) {
+            name_chk = 0;
+            $("#merchant_name").after(
+                '<span class="error-message mrcht-name-err">Merchant name is required!</span>');
+        } else {
+            $(".error-message").remove();
+            name_chk = 1;
+        }
 
-            $("#mrcht_address").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 255); 
-            });
+        if (!($('#mrcht_email').val() === '' || $('#mrcht_email').val() === null || $('#mrcht_email').val() ===
+                undefined) && !(isEmail($('#mrcht_email').val()))) {
+            email_chk = 0;
+            $("#mrcht_email").after('<span class="error-message mrcht-email-err">Wrong email format!</span>');
+        } else {
+            email_chk = 1;
+            $(".mrcht-email-err").remove();
+        }
 
-            $("#mrcht_pic").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 100); 
-            });
+        if (name_chk == 1 && email_chk == 1)
+            $(this).closest('form').submit();
+        else
+            return false;
 
-            $("#mrcht_pic_contact").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 100); 
-            });
-            $("#mrcht_remark").on("input", function() {
-                $(".error-message").remove(); 
-                isValidLength($(this).val(), 255); 
-            });
-
-        
-            function validateMerchantName(merchantName) {
-                if (merchantName.trim() === "") {
-                    $("#merchant_name").after('<span class="error-message">Merchant name is required</span>');
-                } else {
-                    $(".error-message").remove();
-                }
-            }
-
-            function validateEmail(email) {
-                var emailPattern = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
-                if (!emailPattern.test(email)) {
-                    $("#mrcht_email").after('<span class="error-message">Invalid email format</span>');
-                } else {
-                    $(".error-message").remove();
-                }
-            }
-
-            function isValidLength(value, maxLength) {
-                // Check if the value is defined and not null
-                if (value && value.length !== undefined) {
-                    // Check if the length is less than or equal to the specified maxLength
-                    return value.length <= maxLength;
-                }
-                // Handle the case where value is undefined or null
-                return true;
-            }
-
-            $(".submitBtn").click(function (e) {
-                $(".error-message").remove();
-                // Validate all form fields
-                var merchantName = $("#merchant_name").val();
-                var email = $("#mrcht_email").val();
-
-                var isValid = true;
-
-                // Perform validation for each field
-                if (merchantName.trim() == "") {
-                    validateMerchantName(merchantName);
-                    isValid = false;
-                }
-
-                if (!(email.trim() == "")) {
-                    validateEmail(email);
-                    isValid = false;
-                }
-
-                console.log("isValid:", isValid); //testing
-
-                if (isValid) {
-                    $(this).closest("form").submit();
-                } else if (!isValid) {
-                    e.preventDefault();
-                }
-            })
-                
-        });
+    })
     </script>
 </body>
 
