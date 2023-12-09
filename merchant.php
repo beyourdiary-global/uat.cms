@@ -462,6 +462,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
             }
 
             $(".submitBtn").click(function (e) {
+                $(".error-message").remove();
                 // Validate all form fields
                 var merchantName = $("#merchant_name").val();
                 var email = $("#mrcht_email").val();
