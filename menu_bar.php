@@ -45,6 +45,25 @@ $menuList = array(
         'pin' => array('20','21')
     ),
     array(
+        'Finance',
+        'mdi mdi-finance',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array(
+                'Accounting',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Merchant', 'mdi storefront-outline', 'merchant_table.php', '36')
+                ),
+                'pin' => array('36'),
+            ),
+        ),
+        'pin' => array('36')
+    ),
+    array(
         'Other',
         'mdi mdi-dots-horizontal',
         'javascript:void(0)',
