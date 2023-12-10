@@ -1,10 +1,11 @@
 <?php
 $pageTitle = "Merchant";
-include 'menuHeader.php';
+$isFinance = 1;
+include '../menuHeader.php';
 
 $merchant_id = input('id');
 $act = input('act');
-$redirect_page = $SITEURL . '/merchant_table.php';
+$redirect_page = $SITEURL . '/finance/merchant_table.php';
 
 // to display data to input
 if ($merchant_id) {
@@ -173,7 +174,9 @@ if (post('actionBtn')) {
                     $oldval = implode(",", $oldvalarr);
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
-                    if ($oldval != '' && $chgval != '') {
+                    error_log("Old Values Array: " . print_r($oldvalarr, true));
+
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         // edit
                         $query = "UPDATE " . MERCHANT . " SET name = '$merchant_name',business_no = '$mrcht_business_no',email = '$mrcht_email', contact = '$mrcht_contact', address ='$mrcht_address', person_in_charges ='$mrcht_pic', person_in_charges_contact ='$mrcht_pic_contact', remark ='$merchant_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$merchant_id'";
                         $queryResult = mysqli_query($finance_connect, $query);
@@ -259,9 +262,8 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
+    <link rel="stylesheet" href="../css/main.css">
+    
 </head>
 
 <body>

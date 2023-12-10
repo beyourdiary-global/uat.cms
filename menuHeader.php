@@ -17,7 +17,7 @@
     }
     ?>
     <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <!-- Navbar -->
@@ -166,7 +166,7 @@
         <!-- Container wrapper -->
     </nav>
     <!-- Navbar -->
-    <?php include "menu_bar.php"; ?>
+    <?php include ROOT."/menu_bar.php"; ?>
 </div>
 
 <!-- Move the script block to the end of the body -->
@@ -178,7 +178,7 @@
 
     setThemesColor();
     
-    <?php include 'cmsThemes.php'; ?>
+    <?php include ROOT.'/cmsThemes.php'; ?>
 
 </script>
 
