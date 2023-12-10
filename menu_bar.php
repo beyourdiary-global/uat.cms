@@ -136,6 +136,7 @@ $menuList = array(
                     array('Socso Category', 'mdi mdi-google-fit', $SITEURL.'/socso_category_table.php', '30'),
                     array('Employer EPF Rate', 'mdi mdi-account-star-outline', $SITEURL.'/employer_epf_rate_table.php', '32'),
                     array('Employee Epf Rate', 'mdi mdi-account-supervisor', $SITEURL.'/employee_epf_rate_table.php', '31'),
+
                 ),
                 'pin' => array('12','13','6','24','26','27','28', '30', '31', '32'),
             ),   

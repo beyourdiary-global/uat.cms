@@ -38,19 +38,17 @@ if (post('actionBtn')) {
             $act = 'E';
             $query = "UPDATE " . PROJ . " SET ";
 
-            if ($website_name != '') {
+            if ($website_name) {
                 $query .= "project_title = '$website_name' ";
             } else $err = "Website Name cannot be empty.";
 
-            if($themesColor != '')
-            {
+            if ($themesColor) {
                 $query .= " ,themesColor = '$themesColor' ";
-            } 
+            }
 
-            if($buttonColor != '')
-            {
+            if ($buttonColor) {
                 $query .= " ,buttonColor = '$buttonColor' ";
-            } 
+            }
 
             // check image
             if ($_FILES["light_logo"]["size"] != 0) {
@@ -84,21 +82,18 @@ if (post('actionBtn')) {
 
             $oldvalarr = $chgvalarr = array();
 
-            if($row['project_title'] != $website_name)
-            {
+            if ($row['project_title'] != $website_name) {
                 array_push($oldvalarr, $row['project_title']);
                 array_push($chgvalarr, $website_name);
             }
 
-            
-            if($row['themesColor'] != $themesColor)
-            {
+
+            if ($row['themesColor'] != $themesColor) {
                 array_push($oldvalarr, $row['themesColor']);
                 array_push($chgvalarr, $themesColor);
             }
 
-            if($row['buttonColor'] != $buttonColor)
-            {
+            if ($row['buttonColor'] != $buttonColor) {
                 array_push($oldvalarr, $row['buttonColor']);
                 array_push($chgvalarr, $buttonColor);
             }
@@ -123,10 +118,11 @@ if (post('actionBtn')) {
             $rst = getData('*', "id = '1'", $tblname, $connect);
 
             $act = 'E';
+
             $_SESSION['tempValConfirmBox'] = true;
-            
-            if($oldval != '' && $chgval != '')
-            {
+
+            if ($oldval != '' && $chgval != '') {
+
                 // edit
                 mysqli_query($connect, $query);
                 generateDBData($tblname, $connect);
@@ -216,13 +212,13 @@ if (post('actionBtn')) {
                                 <label class="form-label form_lbl" id="themesColorLbl" for="themesColor">Themes Color</label>
                             </div>
                             <div class="col-12 col-md-9">
-                                <input class="form-control" type="color" name="themesColor" id="themesColor" value="<?= $row['themesColor'] ?>" style ="height:40px ;"  >
+                                <input class="form-control" type="color" name="themesColor" id="themesColor" value="<?= $row['themesColor'] ?>" style="height:40px ;">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                
+
                 <div class="row d-flex justify-content-center mb-3">
                     <div class="col-12 col-md-10 mb-3">
                         <div class="form-group d-flex flex-md-row flex-column">
@@ -230,7 +226,7 @@ if (post('actionBtn')) {
                                 <label class="form-label form_lbl" id="buttonColorLbl" for="buttonColor">Button Color</label>
                             </div>
                             <div class="col-12 col-md-9">
-                                <input class="form-control" type="color" name="buttonColor" id="buttonColor" value="<?= $row['buttonColor'] ?>" style ="height:40px ;"  >
+                                <input class="form-control" type="color" name="buttonColor" id="buttonColor" value="<?= $row['buttonColor'] ?>" style="height:40px ;">
                             </div>
                         </div>
                     </div>
@@ -243,7 +239,7 @@ if (post('actionBtn')) {
                             <div class="col-12 col-md-3">
                                 <label class="form-label form_lbl" id="light_logo_lbl" for="light_logo">Light Logo</label>
                             </div>
-                            <div class="col-12 col-md-7">
+                            <div class="col-12 col-md-7 mb-3 mb-md-0">
                                 <input class="form-control" type="file" name="light_logo" id="light_logo" value="">
                                 <span class="mt-n1">Recommended image size is 40px x 40px</span>
                                 <div id="err_msg">
@@ -251,9 +247,8 @@ if (post('actionBtn')) {
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
-                                <div class="d-flex justify-content-center justify-content-md-end">
-                                    <img id="light_logo_preview" name="light_logo_preview" src="<?php if ($row['logo'] == '' || $row['logo'] == NULL) echo img . byd_logo;
-                                                                                                else echo $img_path . $row['logo']; ?>" width="160px" height="auto">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <img id="light_logo_preview" name="light_logo_preview" src="<?php echo ($row['logo'] == '' || $row['logo'] == NULL) ? 'img/byd_logo' : $img_path . $row['logo']; ?>" class="img-thumbnail" alt="Logo Preview">
                                     <input type="hidden" name="light_logo_imageValue" value="<?= $row['logo'] ?>">
                                 </div>
                             </div>
@@ -267,7 +262,7 @@ if (post('actionBtn')) {
                             <div class="col-12 col-md-3">
                                 <label class="form-label form_lbl" id="favicon_lbl" for="favicon">Favicon</label>
                             </div>
-                            <div class="col-12 col-md-7">
+                            <div class="col-12 col-md-7 mb-3 mb-md-0">
                                 <input class="form-control" type="file" name="favicon" id="favicon" value="">
                                 <span class="mt-n1">Recommended image size is 16px x 16px</span>
                                 <div id="err_msg">
@@ -275,35 +270,36 @@ if (post('actionBtn')) {
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
-                                <div class="d-flex justify-content-center justify-content-md-end">
-                                    <img id="favicon_preview" name="favicon_preview" src="<?php if ($row['meta_logo'] == '' || $row['meta_logo'] == NULL) echo img . byd_logo;
-                                                                                            else echo $img_path . $row['meta_logo']; ?>" width="64px" height="auto">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <img id="favicon_preview" name="favicon_preview" src="<?php echo ($row['meta_logo'] == '' || $row['meta_logo'] == NULL) ? 'img/byd_logo' : $img_path . $row['meta_logo']; ?>" class="img-thumbnail" alt="Meta Logo Preview">
+
                                     <input type="hidden" name="favicon_imageValue" value="<?= $row['meta_logo'] ?>">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
-                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                                 <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="save">Save</button>
-                            <?php endif; ?>
+                            </div>
+
                         </div>
                     </div>
-                </div>
             </form>
         </div>
     </div>
-    <?php
-    if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo '<script>confirmationDialog("","","Theme Setting","","' . $redirect_page . '","' . $act . '");</script>';
-    }
-    ?>
 </body>
+
+<?php
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo '<script>confirmationDialog("","","Theme Setting","","' . $redirect_page . '","' . $act . '");</script>';
+}
+?>
+
+
 <script>
     /**
   oufei 20231014
