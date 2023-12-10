@@ -15,7 +15,7 @@ $menuList = array(
     array(
         'Dashboard',                    // pagename
         'mdi mdi-view-dashboard',       // icon class
-        'dashboard.php',                // page
+        $SITEURL.'/dashboard.php',                // page
         'n',                            // check whether is a dropdown
         'expand' => array(),            // dropdown list item
         'pin' => array('0')             // action
@@ -27,9 +27,9 @@ $menuList = array(
         'y',
         'expand' => array(
             array('Designations', '
-            ', 'designations_table.php', '4'),
-            array('Departments', 'mdi mdi-domain', 'department_table.php', '5'),
-            array('Employee Details', 'mdi mdi-information-outline', 'employeeDetailsTable.php', '34'),
+            ', $SITEURL.'/designations_table.php', '4'),
+            array('Departments', 'mdi mdi-domain', $SITEURL.'/department_table.php', '5'),
+            array('Employee Details', 'mdi mdi-information-outline', $SITEURL.'/employeeDetailsTable.php', '34'),
         ),
         'pin' => array('4','5','34')
     ),
@@ -39,8 +39,8 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Product', 'mdi mdi-package-variant', 'product_table.php', '20'),
-            array('Package', 'mdi mdi-package', 'package_table.php', '21'),
+            array('Product', 'mdi mdi-package-variant', $SITEURL.'/product_table.php', '20'),
+            array('Package', 'mdi mdi-package', $SITEURL.'/package_table.php', '21'),
         ),
         'pin' => array('20','21')
     ),
@@ -56,7 +56,7 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Merchant', 'mdi storefront-outline', 'merchant_table.php', '36')
+                    array('Merchant', 'mdi storefront-outline', $SITEURL.'/finance/merchant_table.php', '36')
                 ),
                 'pin' => array('36'),
             ),
@@ -69,9 +69,9 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Barcode Generator', 'mdi mdi-barcode', 'barcode_generator.php', '22'),
-            array('Rate Checking', 'mdi mdi-package-variant', 'rate_checking.php', '17'),
-            array('Theme Setting', 'mdi mdi-brush-variant', 'theme_setting.php', '23'),
+            array('Barcode Generator', 'mdi mdi-barcode', $SITEURL.'/barcode_generator.php', '22'),
+            array('Rate Checking', 'mdi mdi-package-variant', $SITEURL.'/rate_checking.php', '17'),
+            array('Theme Setting', 'mdi mdi-brush-variant', $SITEURL.'/theme_setting.php', '23'),
         ),
         'pin' => array('22','17','23')
     ),
@@ -87,9 +87,9 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Pin', 'mdi mdi-pin', 'pin_table.php', '1'),
-                    array('Pin Group', 'mdi mdi-ungroup', 'pin_group_table.php', '2'),
-                    array('User Group', 'mdi mdi-account-wrench-outline', 'user_group_table.php', '3'),
+                    array('Pin', 'mdi mdi-pin', $SITEURL.'/pin_table.php', '1'),
+                    array('Pin Group', 'mdi mdi-ungroup', $SITEURL.'/pin_group_table.php', '2'),
+                    array('User Group', 'mdi mdi-account-wrench-outline', $SITEURL.'/user_group_table.php', '3'),
                 ),
                 'pin' => array('1','2','3'),
             ),
@@ -100,12 +100,12 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Bank', 'mdi mdi-bank', 'bank_table.php', '8'),
-                    array('Currencies', 'mdi mdi-swap-horizontal', 'currencies_table.php', '11'),
-                    array('Currency Unit', 'mdi mdi-currency-usd', 'currency_unit_table.php', '10'),
-                    array('Platform', 'mdi mdi-home-outline', 'platform_table.php', '14'),
-                    array('Warehouse', 'mdi mdi-warehouse', 'warehouse.php', '16'),
-                    array('Weight Unit', 'mdi mdi-weight', 'weight_unit_table.php', '19'),
-                    array('Change Password', 'mdi mdi-key-change', 'changePassword.php', '25'),
+                    array('Currencies', 'mdi mdi-swap-horizontal', $SITEURL.'/currencies_table.php', '11'),
+                    array('Currency Unit', 'mdi mdi-currency-usd', $SITEURL.'/currency_unit_table.php', '10'),
+                    array('Platform', 'mdi mdi-home-outline', $SITEURL.'/platform_table.php', '14'),
+                    array('Warehouse', 'mdi mdi-warehouse', $SITEURL.'/warehouse.php', '16'),
+                    array('Weight Unit', 'mdi mdi-weight', $SITEURL.'/weight_unit_table.php', '19'),
+                    array('Change Password', 'mdi mdi-key-change', $SITEURL.'/changePassword.php', '25'),
                 ),
                 'pin' => array('8','11','10','14','16','19','25'),
             ),
@@ -115,8 +115,8 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Product Status', 'mdi mdi-package-variant-closed', 'prod_status_table.php', '15'),
-                    array('Brand', 'mdi mdi-label-outline', 'brand_table.php', '9'),
+                    array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL.'/prod_status_table.php', '15'),
+                    array('Brand', 'mdi mdi-label-outline', $SITEURL.'/brand_table.php', '9'),
                 ),
                 'pin' => array('15','9'),
             ),
@@ -126,16 +126,16 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Employment Type Status', 'mdi mdi-account-question-outline', 'em_type_status_table.php', '12'),
-                    array('Marital Status', 'mdi mdi-account-heart-outline', 'marital_status_table.php', '13'),
-                    array('Holidays', 'mdi mdi-calendar-star', 'holiday_table.php', '6'),
-                    array('Leave Type', 'mdi mdi-run-fast', 'leave_type_table.php', '24'),
-                    array('Identity Type', 'mdi mdi-book-search-outline', 'identityTypeTable.php','26'),
-                    array('Leave Status', 'mdi mdi-run-fast', 'leave_status_table.php','27'),
-                    array('Race', 'mdi mdi-account-star-outline', 'race_table.php', '28'),
-                    array('Socso Category', 'mdi mdi-google-fit', 'socso_category_table.php', '30'),
-                    array('Employer EPF Rate', 'mdi mdi-account-star-outline', 'employer_epf_rate_table.php', '32'),
-                    array('Employee Epf Rate', 'mdi mdi-account-supervisor', 'employee_epf_rate_table.php', '31'),
+                    array('Employment Type Status', 'mdi mdi-account-question-outline', $SITEURL.'/em_type_status_table.php', '12'),
+                    array('Marital Status', 'mdi mdi-account-heart-outline', $SITEURL.'/marital_status_table.php', '13'),
+                    array('Holidays', 'mdi mdi-calendar-star', $SITEURL.'/holiday_table.php', '6'),
+                    array('Leave Type', 'mdi mdi-run-fast', $SITEURL.'/leave_type_table.php', '24'),
+                    array('Identity Type', 'mdi mdi-book-search-outline', $SITEURL.'/identityTypeTable.php','26'),
+                    array('Leave Status', 'mdi mdi-run-fast', $SITEURL.'/leave_status_table.php','27'),
+                    array('Race', 'mdi mdi-account-star-outline', $SITEURL.'/race_table.php', '28'),
+                    array('Socso Category', 'mdi mdi-google-fit', $SITEURL.'/socso_category_table.php', '30'),
+                    array('Employer EPF Rate', 'mdi mdi-account-star-outline', $SITEURL.'/employer_epf_rate_table.php', '32'),
+                    array('Employee Epf Rate', 'mdi mdi-account-supervisor', $SITEURL.'/employee_epf_rate_table.php', '31'),
                 ),
                 'pin' => array('12','13','6','24','26','27','28', '30', '31', '32'),
             ),   
@@ -145,8 +145,8 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Customer Segmentation', 'mdi mdi-account-group-outline', 'cus_segmentation_table.php','29'),
-                    array('Tag', 'mdi mdi-account-group-outline', 'tagTable.php','35'),
+                    array('Customer Segmentation', 'mdi mdi-account-group-outline', $SITEURL.'/cus_segmentation_table.php','29'),
+                    array('Tag', 'mdi mdi-account-group-outline', $SITEURL.'/tagTable.php','35'),
                 ),
                 'pin' => array('29','35'),
             ), 
@@ -156,7 +156,7 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Payment Method', 'mdi mdi-contactless-payment-circle', 'payment_method_table.php','33'),
+                    array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL.'/payment_method_table.php','33'),
                 ),
                 'pin' => array('33'),
             ), 
@@ -177,7 +177,7 @@ $menuList = array(
 
 
 <head>
-<link rel="stylesheet" href="./css/main.css">
+<link rel="stylesheet" href="<?php $SITEURL.'/css/main.css'?>">
 </head>
 
 <style>

@@ -1,7 +1,7 @@
 <?php
 $pageTitle = "Merchant";
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
+include $_SERVER['DOCUMENT_ROOT'].'/uat/uat.cms/menuHeader.php';
+include '../checkCurrentPagePin.php';
 
 //insert Merchant into Pin table (byd_cms)
 //added pin to user_group(id=1)
@@ -12,7 +12,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/merchant.php';
+$redirect_page = $SITEURL . '/finance/merchant.php';
 $result = getData('*', '', MERCHANT, $finance_connect);
 ?>
 
@@ -20,7 +20,7 @@ $result = getData('*', '', MERCHANT, $finance_connect);
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>

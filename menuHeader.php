@@ -3,10 +3,10 @@
 
 <head>
     <?php
-    include_once "header.php";
-    include_once "include/connection.php";
-    include_once "include/common.php";
-    include_once "include/common_variable.php";
+    include_once $_SERVER['DOCUMENT_ROOT']."/uat/uat.cms/header.php";
+    include_once $_SERVER['DOCUMENT_ROOT']."/uat/uat.cms/include/connection.php";
+    include_once $_SERVER['DOCUMENT_ROOT']."/uat/uat.cms/include/common.php";
+    include_once $_SERVER['DOCUMENT_ROOT']."/uat/uat.cms/include/common_variable.php";
 
     $img_path = img_server . 'themes/';
     $rst = getData('*', "id = '1'", 'projects', $connect);
@@ -17,7 +17,7 @@
     }
     ?>
     <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 
 <!-- Navbar -->
@@ -166,7 +166,7 @@
         <!-- Container wrapper -->
     </nav>
     <!-- Navbar -->
-    <?php include "menu_bar.php"; ?>
+    <?php include ROOT."/uat/uat.cms/menu_bar.php"; ?>
 </div>
 
 <!-- Move the script block to the end of the body -->
@@ -178,7 +178,7 @@
 
     setThemesColor();
     
-    <?php include 'cmsThemes.php'; ?>
+    <?php include ROOT.'/uat/uat.cms/cmsThemes.php'; ?>
 
 </script>
 
