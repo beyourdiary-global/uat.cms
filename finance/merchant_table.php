@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Merchant";
-include $_SERVER['DOCUMENT_ROOT'].'/uat/uat.cms/menuHeader.php';
+include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
 //insert Merchant into Pin table (byd_cms)

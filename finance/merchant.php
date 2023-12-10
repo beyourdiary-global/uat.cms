@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Merchant";
-include $SITEURL . '/menuHeader.php';
+include '../menuHeader.php';
 
 $merchant_id = input('id');
 $act = input('act');

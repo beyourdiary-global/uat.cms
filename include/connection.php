@@ -1,9 +1,9 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'].'/uat/uat.cms/init.php';
+include $_SERVER['DOCUMENT_ROOT'].'/init.php';
 
 $path =  $_SERVER['PHP_SELF'];
 $path = explode("/", $path);
-$login_url = ROOT."/uat/uat.cms/index.php";
+$login_url = ROOT."/index.php";
 
 if(!($path[sizeof($path)-1] == 'forgotPassword.php'))
     if(!(isset($_SESSION['userid'])))
@@ -21,5 +21,5 @@ include ROOT.'/include/footer.php'; */
 // include ROOT.'/includes/get_country.php';
 // include ROOT.'/auditlog/auditor.php';
 
-include ROOT.'/uat/uat.cms/recordDelete.php';
+include ROOT.'/recordDelete.php';
 ?>
