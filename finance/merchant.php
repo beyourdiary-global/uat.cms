@@ -1,5 +1,6 @@
 <?php
 $pageTitle = "Merchant";
+$isFinance = 1;
 include '../menuHeader.php';
 
 $merchant_id = input('id');

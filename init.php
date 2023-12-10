@@ -13,7 +13,7 @@ define('dbFinance', 'beyourdi_financial');
 /* define('SITEURL', 'https://localhost'); */
 define('SITEURL', '//localhost');
 $SITEURL = SITEURL;
-define('ROOT', $_SERVER['DOCUMENT_ROOT']);
+define('ROOT', dirname(__FILE__));
 define('email_cc', "admin@beyourdiary.co");
 
 

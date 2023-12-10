@@ -1,6 +1,9 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'].'/init.php';
-
+if (isset($isFinance) && ($isFinance ==1)) {
+    include '../init.php';
+} else if (empty($isFinance) || !(isset($isFinance) || $isFinance == null)) {
+    include 'init.php';
+}
 $path =  $_SERVER['PHP_SELF'];
 $path = explode("/", $path);
 $login_url = ROOT."/index.php";
