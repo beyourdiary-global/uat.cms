@@ -104,6 +104,7 @@ define('PAY_METH','payment_method');
 define('EMPINFO','employee_info');
 define('EMPPERSONALINFO','employee_personal_info');
 define('TAG','tag');
+define('EMPLEAVE','employee_leave');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 
