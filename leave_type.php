@@ -32,18 +32,17 @@ if (post('actionBtn')) {
         case 'updLeaveType':
 
             if ($leave_type == '') {
-                $err = "Leave Type cannot be empty.";
+                $err = "$pageTitle cannot be empty.";
             }
 
             if ($num_of_days == '') {
                 $err2 = "Number of Days cannot be empty.";
             }
-            
-            if(isDuplicateRecord("name", $leave_type, $tblname, $connect, $leave_type_id) && isDuplicateRecord("num_of_days", $num_of_days, $tblname, $connect, $leave_type_id)){
-                $err = "Duplicate record found for leave type record.";
+
+            if (isDuplicateRecord("name", $leave_type, $tblname, $connect, $leave_type_id) && isDuplicateRecord("num_of_days", $num_of_days, $tblname, $connect, $leave_type_id)) {
+                $err = "Duplicate record found for $pageTitle record.";
                 break;
-            }
-            else if($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
+            } else if ($leave_type != '' && $num_of_days != '' && $auto_assign != '') {
                 if ($action == 'addLeaveType') {
                     try {
                         $query = "INSERT INTO " . $tblname . "(name,num_of_days,leave_status,auto_assign,create_date,create_time,create_by) VALUES ('$leave_type','$num_of_days','Active','$auto_assign',curdate(),curtime(),'" . USER_ID . "')";
@@ -71,10 +70,10 @@ if (post('actionBtn')) {
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$leave_type</b> into <b><i>Leave Type Table</i></b>.";
+                        $log['act_msg'] = USER_NAME . " added <b>$leave_type</b> into <b><i>$pageTitle Table</i></b>.";
                         $log['query_rec'] = $query;
                         $log['query_table'] = $tblname;
-                        $log['page'] = 'Leave Type';
+                        $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
@@ -130,11 +129,11 @@ if (post('actionBtn')) {
                                 else
                                     $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
                             }
-                            $log['act_msg'] .= " from <b><i>Leave Type Table</i></b>.";
+                            $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
 
                             $log['query_rec'] = $query;
                             $log['query_table'] = $tblname;
-                            $log['page'] = 'Leave Type';
+                            $log['page'] = $pageTitle;
                             $log['oldval'] = $oldval;
                             $log['changes'] = $chgval;
                             $log['connect'] = $connect;
@@ -166,9 +165,9 @@ if (post('act') == 'D') {
 
 
             //SET the record status to 'D'
-            deleteRecord($tblname,$id,$leave_type,$connect,$cdate,$ctime,$pageTitle);
+            deleteRecord($tblname, $id, $leave_type, $connect, $cdate, $ctime, $pageTitle);
             generateDBData($tblname, $connect);
-            
+
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -186,8 +185,8 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
     $log['cdate'] = $cdate;
     $log['ctime'] = $ctime;
     $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$leave_type</b> from <b><i>Leave Type Table</i></b>.";
-    $log['page'] = 'Leave Type';
+    $log['act_msg'] = USER_NAME . " viewed the data <b>$leave_type</b> from <b><i>$pageTitle Table</i></b>.";
+    $log['page'] = $pageTitle;
     $log['connect'] = $connect;
     audit_log($log);
 }
@@ -203,17 +202,17 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 <body>
 
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">Leave Type</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+        <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
             <?php
             switch ($act) {
                 case 'I':
-                    echo 'Add Leave Type';
+                    echo 'Add ' . $pageTitle;
                     break;
                 case 'E':
-                    echo 'Edit Leave Type';
+                    echo 'Edit ' . $pageTitle;
                     break;
                 default:
-                    echo 'View Leave Type';
+                    echo 'View ' . $pageTitle;
             }
             ?></p>
     </div>
@@ -228,13 +227,13 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                                 <?php
                                 switch ($act) {
                                     case 'I':
-                                        echo 'Add Leave Type';
+                                        echo 'Add ' . $pageTitle;
                                         break;
                                     case 'E':
-                                        echo 'Edit Leave Type';
+                                        echo 'Edit ' . $pageTitle;
                                         break;
                                     default:
-                                        echo 'View Leave Type';
+                                        echo 'View ' . $pageTitle;
                                 }
                                 ?>
                             </h2>
@@ -243,32 +242,29 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                 </div>
 
                 <div class="row d-flex justify-content-center">
-                    <div class="col-8 col-md-4">
-                        <label class="form-label form_lbl" for="auto_assign">Leave Type Auto Assign</label>
+                    <div class="col-12 col-md-4 mb-2 mb-md-0">
+                        <label class="form-label form_lbl" for="auto_assign"><?php echo $pageTitle ?> Auto Assign</label>
                     </div>
-                    <div class="col-2 col-md-2">
+                    <div class="col-6 col-md-2">
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_yes">Yes</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_yes" value="yes" <?php if ($act == '') echo 'disabled';
-                                                                                                                                if (isset($dataExisted,$row['auto_assign']) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
+                                                                                                                                if (isset($dataExisted, $row['auto_assign']) && $row['auto_assign'] == "yes") echo ' checked'; ?>>
                         </div>
                     </div>
-                    <div class="col-2 col-md-2">
+                    <div class="col-6 col-md-2">
                         <div class="form-check">
                             <label class="form-check-label" for="auto_assign_no">No</label>
                             <input class="form-check-input" type="radio" name="auto_assign" id="auto_assign_no" value="no" <?php if ($act == '') echo 'disabled';
-                                                                                                                            if (!isset($dataExisted,$row['auto_assign']) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
+                                                                                                                            if (!isset($dataExisted, $row['auto_assign']) || $row['auto_assign'] != "yes") echo ' checked'; ?>>
                         </div>
                     </div>
                 </div>
 
-
-
-
                 <div class="row d-flex justify-content-center" style="margin-top: 10px;">
                     <div class="col-12 col-md-8">
                         <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="leave_type_lbl" for="leave_type">Leave Type</label>
+                            <label class="form-label form_lbl" id="leave_type_lbl" for="leave_type"><?php echo $pageTitle ?></label>
                             <input class="form-control" type="text" name="leave_type" id="leave_type" value="<?php if (isset($leave_type)) echo $leave_type;
                                                                                                                 else if (isset($dataExisted) && isset($row['name'])) echo $row['name']; ?>" <?php if ($act == '') echo 'readonly' ?>>
                             <div id="err_msg">
@@ -297,10 +293,10 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
                             <?php
                             switch ($act) {
                                 case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addLeaveType">Add Leave Type</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addLeaveType">Add ' . $pageTitle . '</button>';
                                     break;
                                 case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updLeaveType">Edit Leave Type</button>';
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updLeaveType">Edit ' . $pageTitle . '</button>';
                                     break;
                             }
                             ?>
@@ -320,7 +316,7 @@ if (($leave_type_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['vie
 */
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
-        echo '<script>confirmationDialog("","","Leave Type","","' . $redirect_page . '","' . $act . '");</script>';
+        echo '<script>confirmationDialog("","","'.$pageTitle.'","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
 </body>

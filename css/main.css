@@ -518,3 +518,7 @@ transform: translate(-50%, 0) !important;
 .table-responsive .dataTables_length {
     padding-bottom: 10px;
 }
+
+.error-message {
+    color: red !important;
+}
