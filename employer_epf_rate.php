@@ -232,8 +232,8 @@ if(($employer_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSIO
             </div>
 
             <div class="form-group mb-3">
-                <label class="form-label" id="employer_epf_rate_lbl" for="employer_epf_rate"><?php echo $pageTitle ?></label>
-                <input class="form-control" type="number" step="any" name="employer_epf_rate" id="employer_epf_rate" value="<?php if(isset($dataExisted) && isset($row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
+                <label class="form-label" id="employer_epf_rate_lbl" for="employer_epf_rate"><?php echo $pageTitle ?> (%)</label>
+                <input class="form-control" type="number" step="any" name="employer_epf_rate" id="employer_epf_rate" value="<?php if(isset($dataExisted,$row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
                 <div id="err_msg">
                     <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>

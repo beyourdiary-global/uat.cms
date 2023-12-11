@@ -1,6 +1,7 @@
 <?php
 $pageTitle = "Brand";
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
 $brand_id = input('id');
 $act = input('act');
@@ -17,7 +18,12 @@ if ($brand_id) {
     }
 }
 
-if (!($brand_id) && !($act))
+$validActions = ['I' => 'Add', 'E' => 'Edit', 'D' => 'Delete'];
+$act = isset($act) ? $act : post('act');
+$pageAction = $validActions[$act] ?? 'View';
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+if (!($brand_id) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo ("<script>location.href = '$redirect_page';</script>");
 
 if (post('actionBtn')) {

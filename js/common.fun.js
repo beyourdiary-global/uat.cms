@@ -513,6 +513,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
                     break;
 		case 'PC':  var title = "Successful Change " + pagename;
 					break;
+		case 'F':	var title = "An error occurred. Please try again later.";
+					break;
         default:    var title = "Error";
     }
 
@@ -634,7 +636,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 		} else console.log("Operation Cancelled.");
 	}
 
-	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC')
+	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC' || act == 'F')
 	{
 		const myModal2 = new bootstrap.Modal(modelResult, {
 			keyboard: false,
@@ -670,6 +672,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 			}
 		})
 	}
+	
 }
 
 /* Rate Checking */
@@ -793,3 +796,5 @@ function setText(element,val,val2){
 		$(val2).val('').trigger('input');		// to trigger input event from package page
 	}
 }
+
+

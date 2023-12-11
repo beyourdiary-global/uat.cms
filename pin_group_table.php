@@ -70,12 +70,14 @@ $result = getData('*', '', PIN_GRP, $connect);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { ?>
+                    <?php while ($row = $result->fetch_assoc()) {
+						$pin_id =  $row['id'];
+						?>
                         <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th class="hideColumn" scope="row"><?= $pin_id; ?></th>
                             <th scope="row"><?= $num;
                                             $num++ ?></th>
-                            <td scope="row"><?= $row['name'] ?></td>
+                            <td scope="row"><?= $row['name'] . " (".$pin_id.")"; ?></td>
                             <td scope="row">
                                 <?php
                                 $pin_arr = explode(",", $row['pins']);
