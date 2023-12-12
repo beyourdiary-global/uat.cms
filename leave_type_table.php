@@ -34,7 +34,7 @@ if (post('l_status_option')) {
     if ($oldval && $chgval) {
         $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
         mysqli_query($connect, $query);
-        generateDBData($tblname , $connect);
+        generateDBData($tblname, $connect);
 
         // audit log
         $log = array();
@@ -50,6 +50,8 @@ if (post('l_status_option')) {
         $log['changes'] = $chgval;
         $log['connect'] = $connect;
         audit_log($log);
+
+        echo '<script>location.reload();</script>';
     }
 }
 ?>
@@ -214,9 +216,6 @@ if (post('l_status_option')) {
                 l_type_id: id,
                 l_status_option: status,
             },
-            success: (result) => {
-                location.reload();
-            }
         })
     }
 </script>
