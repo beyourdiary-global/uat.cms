@@ -1,8 +1,10 @@
 <?php
 $pageTitle = "Bank";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+$tblName = BANK;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -11,7 +13,14 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/bank.php';
-$result = getData('*', '', BANK, $connect);
+
+try {
+    $result = getData('*', '', $tblName, $connect);
+} catch (Exception $e) {
+    echo '<script>console.error("Error Message : ' . $e->getMessage() . '");</script>';
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,17 +28,10 @@ $result = getData('*', '', BANK, $connect);
 
 <head>
     <link rel="stylesheet" href="./css/main.css">
-
 </head>
 <script>
     $(document).ready(() => {
-        /**
-         oufei 20231014
-         common.fun.js
-         function(id)
-         create DataTable (sortable table)
-        */
-        createSortingTable('bank_table');
+        createSortingTable('table');
     });
 </script>
 
@@ -41,70 +43,76 @@ $result = getData('*', '', BANK, $connect);
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Bank</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2>Bank</h2>
+                        <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Bank </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table class="table table-striped" id="bank_table">
+            <table class="table table-striped" id="table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { ?>
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num;
-                                            $num++ ?></th>
-                            <td scope="row"><?= $row['name'] ?></td>
-                            <td scope="row"><?= $row['remark'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'Bank','<?= $redirect_page ?>','<?= $SITEURL ?>/bank_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                    <?php
+                    while ($row = $result->fetch_assoc()) {
+                        if (!empty($row['name'])) { ?>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row"><?= $row['name'] ?></td>
+                                <td scope="row"><?= $row['remark'] ?></td>
+                                <td scope="row">
+                                    <div class="dropdown" style="text-align:center">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                            <li>
+                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/bank_table.php','D')">Delete</a>
+                                                <?php endif; ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php
+                        }
+                    }
+                    ?>
                 </tbody>
+
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
@@ -112,26 +120,15 @@ $result = getData('*', '', BANK, $connect);
                 </tfoot>
             </table>
         </div>
-
     </div>
 
+    <script>
+        //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+        dropdownMenuDispFix();
+        //to resize table with bootstrap 5 classes
+        datatableAlignment('table');
+        setButtonColor();
+    </script>
 </body>
-<script>
-    /**
-  oufei 20231014
-  common.fun.js
-  function(void)
-  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-*/
-    dropdownMenuDispFix();
-
-    /**
-      oufei 20231014
-      common.fun.js
-      function(id)
-      to resize table with bootstrap 5 classes
-    */
-    datatableAlignment('bank_table');
-</script>
 
 </html>

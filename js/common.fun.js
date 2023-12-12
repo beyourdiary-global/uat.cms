@@ -1,9 +1,11 @@
 function obj(str){
 	return document.getElementById(str);
 }
+
 function objValue(str){
 	return document.getElementById(str).value;
 }
+
 function toggle(str){
 	if(obj(str).style.display=="none"){
 		obj(str).style.display="block";
@@ -14,14 +16,17 @@ function toggle(str){
 		return false;
 	}
 }
+
 function isEmail(str){
 	var filter = /^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$/;
 	return filter.test(str);
 }
+
 function isNumber(str){
 	var filter = /^[0-9]+$/;
 	return filter.test(str);
 }
+
 function MM_findObj(n, d) {
 	var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
 	d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
@@ -29,18 +34,22 @@ function MM_findObj(n, d) {
 	for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
 	if(!x && d.getElementById) x=d.getElementById(n); return x;
 }
+
 function MM_jumpMenu(targ,selObj,restore){
 	eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
 	if (restore)
 	selObj.selectedIndex=0;
 }
+
 function MM_swapImage() {
 	var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
 	if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
 }
+
 function MM_swapImgRestore() {
 	var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
 }
+
 function isNumberKey(evt){
 	var charCode = (evt.which) ? evt.which : event.keyCode
 	if (charCode > 31 && (charCode < 48 || charCode > 57))
@@ -64,22 +73,26 @@ function clearDefaultText(ele, style1, style2, txt){
 		}
 	}
 }
+
 function popUp(webaddy,title,x,y) {
 	var features = 'toolbars=0, scrollbars=1, location=0, statusbars=0, menubars=0, resizable=0, width=' + x + ', height=' + y + ', left = 168, top = 118';
 	props=window.open(webaddy, title, features);
 }
+
 function limitText(limitField, limitCount, limitNum){
 	if (limitField.value.length > limitNum)
 		limitField.value = limitField.value.substring(0, limitNum);
 	else
 		limitCount.value = limitNum - limitField.value.length;
 }
+
 function colorInputValidationCheck(ob, ob_des, msg){
 	ob1 = obj(ob);
 	ob2 = obj(ob_des);
 	ob1.className = 'redthickborder';
 	ob2.innerHTML = '<span class="font_red">'+msg+'</span>';
 }
+
 function removeColorInput(ob, ob_des){
 	ob1 = obj(ob);
 	ob2 = obj(ob_des);
@@ -97,6 +110,7 @@ function convertSpecialChars(){
 		}
 	}
 }
+
 function isScrolledVisible(elem){
     var docViewTop = jQuery(window).scrollTop();
 	var elemTop = jQuery(elem).offset().top+jQuery(elem).height();
@@ -105,6 +119,7 @@ function isScrolledVisible(elem){
 	else //!scroll to elem
 		return (elemTop<jQuery(window).height()+docViewTop?true:false); //elem not within browser window
 }
+
 function showStickybar(elem){
 	if(jQuery('#stickybar').length==1){
 		if(!isScrolledVisible(elem)) //elem not visible on load
@@ -123,7 +138,6 @@ function showStickybar(elem){
 		});
 	}
 }
-
 
 var tooltipsfun = function( sensorele, tooltipID ) {
 	jQuery(sensorele).css('cursor', 'pointer');
@@ -256,7 +270,6 @@ function checkValidDate(inDate, futurecheck) {
 	if (inDate=='')
 		return true;
 	var d="312831303130313130313031";
-	var yr;
 
 	/* For invalid dates, return false */
 	if (inDate.length>0 && inDate.length<8) return false;
@@ -459,16 +472,20 @@ function datatableAlignment(elementID)
 }
 
 function centerAlignment(elementID) {
-	$(window).on('load resize', () => {
-		var form = $('#'+elementID);
+    $(window).on('load resize', () => {
+        var form = $('#' + elementID);
 
-		if(window.matchMedia('(max-width: 769px)').matches) {
-			if(form.hasClass('centered'))
-				form.removeClass('centered');
-		} else {
-			form.addClass('centered');
-		}
-	})
+        if (window.matchMedia('(max-height: 750px)').matches) {
+            if (form.hasClass('centered'))
+                form.removeClass('centered');
+            
+            form.css('overflow', 'auto');
+        } else {
+            form.addClass('centered');
+            
+            form.css('overflow', 'visible');
+        }
+    });
 }
 
 function floatInput(element) {
@@ -797,4 +814,122 @@ function setText(element,val,val2){
 	}
 }
 
+function setAutofocus(action) {
+	if (action === 'I' || action === 'E') {
+		var firstInputOrSelect = document.querySelector('input, select');
 
+		if (firstInputOrSelect) {
+			$(document).ready(function() {
+				$('input:visible:enabled:first').focus();
+			});
+		}
+	}
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var actionBtn = document.getElementById('actionBtn');
+
+    // Retrieve data from localStorage on page load
+    retrieveDataFromLocalStorage();
+
+    // Attach input event listener to each input field
+    var inputFields = document.querySelectorAll('input, textarea');
+    inputFields.forEach(function (input) {
+        if (!input.readOnly) {
+            input.addEventListener('input', function () {
+                // Save form data to localStorage when user types
+                saveFormDataToLocalStorage();
+            });
+        }
+    });
+
+    actionBtn.addEventListener('click', function (event) {
+        if (!validateForm()) {
+            event.preventDefault();
+            displayPreviousData();
+        } else {
+            // Save form data to localStorage when validation passes
+            saveFormDataToLocalStorage();
+        }
+    });
+
+    function retrieveDataFromLocalStorage() {
+        var inputFields = document.querySelectorAll('input, textarea');
+        inputFields.forEach(function (input) {
+            // Check if the input is not readonly and has stored data
+            if (!input.readOnly && localStorage.getItem(input.id)) {
+                input.value = localStorage.getItem(input.id);
+            }
+        });
+    }
+
+	function saveFormDataToLocalStorage() {
+		var inputFields = document.querySelectorAll('input, textarea');
+		inputFields.forEach(function (input) {
+			if (!input.readOnly) {
+				localStorage.setItem(input.id, input.value);
+			}
+		});
+	}
+
+    function displayPreviousData() {
+        // Loop through input fields and restore previous data
+        var inputFields = document.querySelectorAll('input, textarea');
+        inputFields.forEach(function (input) {
+            // Check if the input is not readonly and has previous data
+            if (!input.readOnly && localStorage.getItem(input.id)) {
+                input.value = localStorage.getItem(input.id);
+            }
+        });
+    }
+
+    function validateForm() {
+        var alertMessages = document.querySelectorAll('span[role="alert"]');
+        alertMessages.forEach(function (alert) {
+            alert.parentNode.removeChild(alert);
+        });
+
+        checkRequiredInputs();
+
+        return document.querySelectorAll('span[role="alert"]').length === 0;
+    }
+
+    function checkRequiredInputs() {
+        var requiredInputs = document.querySelectorAll('input[required]');
+
+        requiredInputs.forEach(function (input) {
+            if (input.value.trim() === '') {
+                var labelContent = document.querySelector('label[for="' + input.id + '"]').textContent;
+
+                var alertMessage = document.createElement('span');
+                alertMessage.textContent = labelContent + ' is required!';
+                alertMessage.style.color = 'red';
+                alertMessage.setAttribute('role', 'alert');
+
+                input.parentNode.appendChild(alertMessage);
+
+                // Save the current value as the previous value
+                input.setAttribute('data-previous-value', input.value);
+            }
+        });
+    }
+});
+
+  // Wait for the DOM to be ready
+  document.addEventListener("DOMContentLoaded", function () {
+	// Get the input field and error message elements
+	var currentDataNameInput = document.getElementById("currentDataName");
+	var errorSpan = document.getElementById("errorSpan");
+
+	// Function to toggle error message visibility
+	function toggleErrorMessage() {
+		var inputValue = currentDataNameInput.value.trim();
+		errorSpan.style.display = (inputValue !== "" && inputValue !== localStorage.getItem("currentDataName")) ? "none" : "block";
+	}
+
+	// Attach an input event listener to the input field
+	currentDataNameInput.addEventListener("input", toggleErrorMessage);
+
+	// Initial toggle to set the initial state
+	toggleErrorMessage();
+});

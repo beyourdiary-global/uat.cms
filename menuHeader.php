@@ -17,7 +17,7 @@
     }
     ?>
     <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <!-- Navbar -->
@@ -177,10 +177,14 @@
     }
 
     setThemesColor();
-    
-    <?php include ROOT.'/cmsThemes.php'; ?>
 
+    function setButtonColor() {
+        var buttons = document.querySelectorAll('#actionBtn, #addBtn');
+
+        buttons.forEach(function(button) {
+            button.style.backgroundColor = '<?php echo ($dataExisted ? $row['buttonColor'] : ''); ?>';
+        });
+    }
 </script>
-
 
 </html>
