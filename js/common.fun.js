@@ -857,20 +857,22 @@ document.addEventListener('DOMContentLoaded', function () {
         var inputFields = document.querySelectorAll('input, textarea');
         inputFields.forEach(function (input) {
             // Check if the input is not readonly and has stored data
-            if (!input.readOnly && localStorage.getItem(input.id)) {
+            if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
                 input.value = localStorage.getItem(input.id);
             }
         });
     }
 
-	function saveFormDataToLocalStorage() {
-		var inputFields = document.querySelectorAll('input, textarea');
-		inputFields.forEach(function (input) {
-			if (!input.readOnly) {
-				localStorage.setItem(input.id, input.value);
-			}
-		});
-	}
+function saveFormDataToLocalStorage() {
+    var inputFields = document.querySelectorAll('input, textarea');
+    
+    inputFields.forEach(function (input) {
+        if (!input.readOnly && input.id) {
+            localStorage.setItem(input.id, input.value);
+        }
+    });
+}
+
 
     function displayPreviousData() {
         // Loop through input fields and restore previous data
