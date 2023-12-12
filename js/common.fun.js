@@ -513,6 +513,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
                     break;
 		case 'PC':  var title = "Successful Change " + pagename;
 					break;
+		case 'MO':  var title = "Successful Place Order ["+msg+"]";
+		            break;
+		
         default:    var title = "Error";
     }
 
@@ -634,7 +637,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
 		} else console.log("Operation Cancelled.");
 	}
 
-	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC')
+	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC' || act == 'MO')
 	{
 		const myModal2 = new bootstrap.Modal(modelResult, {
 			keyboard: false,
