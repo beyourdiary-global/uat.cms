@@ -147,7 +147,7 @@ if (post('actionBtn')) {
 
                     if (mysqli_query($connect, $queryOne)) {
 
-                        $empIDQuery = "SELECT id FROM $tblnameOne WHERE name = '$employeeName'";
+                        $empIDQuery = "SELECT id FROM $tblnameOne WHERE id_number = '$idNumber'";
                         $empIDResult =  mysqli_query($connect, $empIDQuery);
                         $empIDRow = mysqli_fetch_assoc($empIDResult);
 
