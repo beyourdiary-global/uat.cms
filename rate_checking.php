@@ -19,7 +19,7 @@
     if ($country) {
         $dispCountrySel = "style=\"display: none;\"";
         $dispDeliverOpt = "";
-        $country2 = getCountry($country);
+        $country2 = getCountry($country,$connect);
         $domestic = "<option value=\"$country|$country2\" selected style=\"display:none;\">$country2</option>";
     } else {
         $dispCountrySel = "";
@@ -318,7 +318,7 @@
                                             <div class="col-6 col-md-6">
                                                 <select class="form-select mb-3 h-75" id="to" name="to">
                                                     <?php
-                                                    $all_country = getCountry('all');
+                                                    $all_country = getCountry('all',$connect);
                                                     foreach ($all_country as $key => $val) {
 
                                                         if (strcasecmp($key, $country) == 0)
