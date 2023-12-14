@@ -230,28 +230,31 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 			return $count > 0; // If count is greater than 0, it's a duplicate
 		}
 	}
-	return false; // Error in executing the query
 }
 
 function getData($search_val, $val, $tbl, $conn)
 {
+	try {
+		$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
-	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
+		//Checking a status is available in data field or not then check a val is exist or not
+		if ($statusAvailable) {
+			$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+		} else {
+			$chk_val = $val == '' ? "" : "WHERE $val";
+		}
+		//combine together to process a query
+		$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc";
 
-	//Checking a status is available in data field or not then check a val is exist or not
-	if ($statusAvailable) {
-		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
-	} else {
-		$chk_val = $val == '' ? "" : "WHERE $val";
-	}
-	//combine together to process a query
-	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc";
+		$result = $conn->query($query);
 
-	$result = $conn->query($query);
-
-	if (empty($result) && $result->num_rows == 0)
+		if (empty($result) && $result->num_rows == 0)
+			return false;
+		else
+			return $result;
+	} catch (Exception $e) {
 		return false;
-	else return $result;
+	}
 }
 
 function generateDBData($tblname, $conn)
@@ -280,7 +283,7 @@ function audit_log($data = array())
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 			case 'Edit':
-				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, old_value, changes, user_id, action_message, create_date, create_time, create_by) VALUES ('2', '$page', \"$query_rec\", '$query_table', '$oldval', '$changes', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, old_value, changes, user_id, action_message, create_date, create_time, create_by) VALUES ('2', '$page', \"$query_rec\", '$query_table', '$oldval', '$changes', '$uid', \"$act_msg\", '$cdate', '$ctime', '$cby')";
 				break;
 			case 'delete':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('3', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
@@ -304,7 +307,6 @@ function audit_log($data = array())
 
 		if (isset($query))
 			mysqli_query($connect, $query);
-		/* return $query; */
 	}
 }
 
@@ -1821,19 +1823,19 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName)
+function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
 {
+	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
 
-	$actMsg = '';
-
-	$actMsg = USER_NAME . " edited the data ";
 	for ($i = 0; $i < sizeof($oldvalarr); $i++) {
 		if ($i == 0)
 			$actMsg .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
 		else
-		$actMsg .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+			$actMsg .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
 	}
 	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
+
+	(!empty($errorMsg)) ? $actMsg .= "( $errorMsg )" : '';
 
 	return $actMsg;
 }

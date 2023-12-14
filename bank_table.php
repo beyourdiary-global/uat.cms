@@ -14,10 +14,9 @@ $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/bank.php';
 
-try {
-    $result = getData('*', '', $tblName, $connect);
-} catch (Exception $e) {
-    echo '<script>console.error("Error Message : ' . $e->getMessage() . '");</script>';
+$result = getData('*', '', $tblName, $connect);
+
+if(!$result){
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
 }
