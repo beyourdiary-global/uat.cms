@@ -4,12 +4,12 @@
 <head>
     <?php
     $pageTitle = "Login";
-    include "header.php";
     include "./include/common.php";
     include "./include/common_variable.php";
     include "init.php";
+    include "header.php";
 
-    $img_path = img_server . 'themes/';
+    $img_path = $SITEURL.'/'.img_server . 'themes/';
     $rst = getData('*', "id = '1'", PROJ, $connect);
 
     if ($rst != false) {
