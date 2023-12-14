@@ -1,8 +1,10 @@
 <?php
 $pageTitle = "Leave Type";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+$tblname = L_TYPE;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -11,38 +13,28 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/leave_type.php';
-$result = getData('*', '', L_TYPE, $connect);
-
-// change status
-/* $l_status = post('l_status_option'); */
+$result = getData('*', '', $tblname, $connect);
 
 if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
-    $rst = getData('*', "id = '$leave_type_id'", L_TYPE, $connect);
+    $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
         $rowLeaveType = $rst->fetch_assoc();
     }
 
-    $oldvalarr = $chgvalarr = array();
-
-    echo $$rowLeaveType['leave_status'] ." ". $leave_type_status;
-
     if ($rowLeaveType['leave_status'] !== $leave_type_status) {
-        array_push($oldvalarr, $rowLeaveType['leave_status']);
-        array_push($chgvalarr, $leave_type_status);
+        $oldval = $rowLeaveType['leave_status'];
+        $chgval = $leave_type_status;
     }
 
-    $oldval = implode(",", $oldvalarr);
-    $chgval = implode(",", $chgvalarr);
-
     if ($oldval && $chgval) {
-        $query = "UPDATE " . L_TYPE . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
+        $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
         mysqli_query($connect, $query);
-        generateDBData(L_TYPE, $connect);
+        generateDBData($tblname, $connect);
 
         // audit log
         $log = array();
@@ -50,16 +42,7 @@ if (post('l_status_option')) {
         $log['cdate'] = $cdate;
         $log['ctime'] = $ctime;
         $log['uid'] = $log['cby'] = USER_ID;
-
-        $log['act_msg'] = USER_NAME . " edited the data";
-        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-            if ($i == 0)
-                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-            else
-                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-        }
-        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
-
+        $log['act_msg'] = USER_NAME . " edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>.";
         $log['query_rec'] = $query;
         $log['query_table'] = $tblname;
         $log['page'] = $pageTitle;
@@ -67,6 +50,8 @@ if (post('l_status_option')) {
         $log['changes'] = $chgval;
         $log['connect'] = $connect;
         audit_log($log);
+
+        echo '<script>location.reload();</script>';
     }
 }
 ?>
@@ -231,9 +216,6 @@ if (post('l_status_option')) {
                 l_type_id: id,
                 l_status_option: status,
             },
-            success: (result) => {
-                location.reload();
-            }
         })
     }
 </script>
