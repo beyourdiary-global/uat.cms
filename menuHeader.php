@@ -3,11 +3,11 @@
 
 <head>
     <?php
-    include_once "header.php";
     include_once "include/connection.php";
     include_once "include/common.php";
     include_once "include/common_variable.php";
-
+    include_once "header.php";
+    
     $img_path = img_server . 'themes/';
     $rst = getData('*', "id = '1'", 'projects', $connect);
 
