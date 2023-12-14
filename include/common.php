@@ -230,7 +230,6 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 			return $count > 0; // If count is greater than 0, it's a duplicate
 		}
 	}
-	return false; // Error in executing the query
 }
 
 function getData($search_val, $val, $tbl, $conn)
@@ -249,9 +248,14 @@ function getData($search_val, $val, $tbl, $conn)
 
 	$result = $conn->query($query);
 
-	if (empty($result) && $result->num_rows == 0)
+
+		if (empty($result) && $result->num_rows == 0)
+			return false;
+		else
+			return $result;
+	} catch (Exception $e) {
 		return false;
-	else return $result;
+	}
 }
 
 function generateDBData($tblname, $conn)
@@ -281,6 +285,7 @@ function audit_log($data = array())
 				break;
 			case 'edit':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, old_value, changes, user_id, action_message, create_date, create_time, create_by) VALUES ('2', '$page', \"$query_rec\", '$query_table', '$oldval', '$changes', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+
 				break;
 			case 'delete':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('3', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
@@ -304,7 +309,6 @@ function audit_log($data = array())
 
 		if (isset($query))
 			mysqli_query($connect, $query);
-		/* return $query; */
 	}
 }
 
@@ -350,6 +354,7 @@ function getCountryTelCode($param, $connect)
 		}
 	} else {
 		return 'Query failed';
+
 	}
 }
 
@@ -609,4 +614,39 @@ function make_order_payment($data = array())
 
 	$json = json_decode($return, true);
 	return $json;
+}
+
+
+function displayPageAction($act, $page)
+{
+	switch ($act) {
+		case 'I':
+			return "Add $page";
+		case 'E':
+			return "Edit $page";
+		default:
+			return "View $page";
+	}
+}
+
+function implodeWithComma($data)
+{
+	return implode(",", $data);
+}
+
+function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
+{
+	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
+
+	for ($i = 0; $i < sizeof($oldvalarr); $i++) {
+		if ($i == 0)
+			$actMsg .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+		else
+			$actMsg .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+	}
+	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
+
+	(!empty($errorMsg)) ? $actMsg .= "( $errorMsg )" : '';
+
+	return $actMsg;
 }

@@ -1,8 +1,10 @@
 <?php
 $pageTitle = "Leave Type";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+$tblname = L_TYPE;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -11,19 +13,28 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/leave_type.php';
-$result = getData('*', '', L_TYPE, $connect);
-
-// change status
-/* $l_status = post('l_status_option'); */
+$result = getData('*', '', $tblname, $connect);
 
 if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
-    if ($leave_type_id != '') {
-        $query = "UPDATE " . L_TYPE . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
+    $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
+
+    if ($rst != false) {
+        $dataExisted = 1;
+        $rowLeaveType = $rst->fetch_assoc();
+    }
+
+    if ($rowLeaveType['leave_status'] !== $leave_type_status) {
+        $oldval = $rowLeaveType['leave_status'];
+        $chgval = $leave_type_status;
+    }
+
+    if ($oldval && $chgval) {
+        $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
         mysqli_query($connect, $query);
-        generateDBData(L_TYPE, $connect);
+        generateDBData($tblname, $connect);
 
         // audit log
         $log = array();
@@ -31,23 +42,16 @@ if (post('l_status_option')) {
         $log['cdate'] = $cdate;
         $log['ctime'] = $ctime;
         $log['uid'] = $log['cby'] = USER_ID;
-
-        $log['act_msg'] = USER_NAME . " edited the data";
-        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-            if ($i == 0)
-                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-            else
-                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-        }
-        $log['act_msg'] .= " from <b><i>Leave Type Table</i></b>.";
-
+        $log['act_msg'] = USER_NAME . " edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>.";
         $log['query_rec'] = $query;
         $log['query_table'] = $tblname;
-        $log['page'] = 'Leave Type';
+        $log['page'] = $pageTitle;
         $log['oldval'] = $oldval;
         $log['changes'] = $chgval;
         $log['connect'] = $connect;
         audit_log($log);
+
+        echo '<script>location.reload();</script>';
     }
 }
 ?>
@@ -74,15 +78,15 @@ if (post('l_status_option')) {
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Leave Type</p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2>Leave Type</h2>
+                        <h2> <?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Leave Type </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -103,6 +107,7 @@ if (post('l_status_option')) {
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) {  ?>
+                        <?php $leave_status = $row['leave_status']; ?>
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                             <th scope="row"><?= $num;
@@ -113,12 +118,7 @@ if (post('l_status_option')) {
                                 <div class="dropdown">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="leaveStatusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <button class="roundedSelectionBtn">
-                                            <span class="mdi mdi-record-circle-outline" style="<?php
-                                                                                                $leave_status = $row['leave_status'];
-                                                                                                if ($leave_status == 'Active')
-                                                                                                    echo 'color:#008000;';
-                                                                                                else echo 'color:#ff0000;';
-                                                                                                ?>"></span>
+                                            <span class="mdi mdi-record-circle-outline" style="<?php echo ($leave_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
                                             <?php
                                             switch ($leave_status) {
                                                 case 'Active':
@@ -162,7 +162,7 @@ if (post('l_status_option')) {
                                         </li>
                                         <li>
                                             <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>'],'Leave Type','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_type_table.php','D')">Delete</a>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_type_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>
                                     </ul>
@@ -216,9 +216,6 @@ if (post('l_status_option')) {
                 l_type_id: id,
                 l_status_option: status,
             },
-            success: (result) => {
-                location.reload();
-            }
         })
     }
 </script>
