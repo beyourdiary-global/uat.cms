@@ -7,7 +7,7 @@
     include_once "include/common.php";
     include_once "include/common_variable.php";
     include_once "header.php";
-
+  
     $img_path = $SITEURL.'/'.img_server . 'themes/';
     $rst = getData('*', "id = '1'", 'projects', $connect);
 

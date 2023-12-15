@@ -1,15 +1,7 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <?php
-    $pageTitle = "Make Order";
-    include 'menuHeader.php';
-    ?>
-    <link rel="stylesheet" href="./css/main.css">
-</head>
-
 <?php
+$pageTitle = "Make Order";
+include 'menuHeader.php';
+
 if (post('bookBtn')) {
     $courier_info = json_decode(unserialize(base64_decode(post('bookBtn'))), true);
     $_SESSION['makeorder_courier_info'] = $courier_info;
@@ -18,39 +10,50 @@ if (post('bookBtn')) {
 }
 
 $sid = $courier_info['sid'];
-/* echo $sid;  // delete */
+$redirect_page =  $SITEURL . '/rate_checking.php';
+
+//CourierInfo
 $service_detail = $courier_info['service_detail'];
 $dropoff_point = $courier_info['dropoff_point'];
 $courier_id = $courier_info['courier_id'];
 $courier_name = $courier_info['courier_name'];
 $courier_logo = $courier_info['courier_logo'];
 
+//Parcel Send Place
 $from = $courier_info['from'];
 $from_full = isset($courier_info['from_full']) ? $courier_info['from_full'] : '';
-
 $postcode_from = $courier_info['postcode_from'];
 
+//Parcel Receive Place
 $to = $courier_info['to'];
 $to_full = isset($courier_info['to_full']) ? $courier_info['to_full'] : '';
-
 $postcode_to = $courier_info['postcode_to'];
 
+//Parcel Info
 $weight = $courier_info['weight'];
-$pickup_date = $courier_info['pickup_date'];
 $price = $courier_info['price'];
 $currency = $courier_info['currency'];
-$country_telcode_from = getCountryTelCode($from);
-$country_telcode_to = getCountryTelCode($to);
+
+//Country Phone Code
+$country_telcode_from = getCountryTelCode($from, $connect);
+$country_telcode_to = getCountryTelCode($to, $connect);
 
 if (post('actionBtn')) {
     $act = post('actionBtn');
     switch ($act) {
         case 'makeOrder':
+
+            //Parcel Info
             $dataMO = array();
             $dataMO['weight'] = $weight;
+            $dataMO['sid'] = $sid;
             $dataMO['content'] = postSpaceFilter('parcel_content');
             $dataMO['value'] = postSpaceFilter('parcel_value');
-            $dataMO['sid'] = $sid;
+            $dataMO['collect_date'] = post('pickup_date');
+            $dataMO['send_email'] = postSpaceFilter('receiver_email');
+            $dataMO['reference'] = postSpaceFilter('parcel_reference');
+
+            //Receiver Info
             $dataMO['pick_point'] = post('sender_dropoffpoint') ? post('sender_dropoffpoint') : '';
             $dataMO['pick_name'] = postSpaceFilter('sender_name');
             $dataMO['pick_company'] = post('sender_company');
@@ -61,6 +64,8 @@ if (post('actionBtn')) {
             $dataMO['pick_city'] = postSpaceFilter('sender_city');
             $dataMO['pick_code'] = post('sender_postcode');
             $dataMO['pick_country'] = $from;
+
+            //Sender Info
             $dataMO['send_point'] = '';
             $dataMO['send_name'] = postSpaceFilter('receiver_name');
             $dataMO['send_company'] = post('receiver_company');
@@ -71,9 +76,6 @@ if (post('actionBtn')) {
             $dataMO['send_city'] = postSpaceFilter('receiver_city');
             $dataMO['send_code'] = post('receiver_postcode');
             $dataMO['send_country'] = $to;
-            $dataMO['collect_date'] = $pickup_date;
-            $dataMO['send_email'] = postSpaceFilter('receiver_email');
-            $dataMO['reference'] = postSpaceFilter('parcel_reference');
 
             // get unit
             $currency_unit = getCurrencyUnit($from);
@@ -82,46 +84,49 @@ if (post('actionBtn')) {
             $currency_unit_id = $currency_unit_id['id'];
 
             $rstMakeOrder = make_order($dataMO);
-            /* var_dump($rstMakeOrder);  // delete */
+
             if (isset($rstMakeOrder)) {
                 $dataMOP = array();
                 if ($rstMakeOrder['api_status'] == 'Success') {
-                    foreach ($rstMakeOrder['result'] as $result => $a) {
-                        if ($a['status'] == 'Success') {
-                            $dataMOP['order_number'] = $a['order_number'];
+                    foreach ($rstMakeOrder['result'] as $result => $orderInfo) {
+                        if ($orderInfo['status'] == 'Success') {
+                            $dataMOP['order_number'] = $orderInfo['order_number'];
                             $dataMOP['country'] = $from;
-                            $dataMOP['price'] = $a['price'];
-                            $dataMOP['remarks'] = $a['remarks'];
-                            $dataMOP['collect_date'] = $a['collect_date'];
+                            $dataMOP['price'] = $orderInfo['price'];
+                            $dataMOP['remarks'] = $orderInfo['remarks'];
+                            $dataMOP['collect_date'] = $orderInfo['collect_date'];
                             $pickup_time = "09:00:00";
                         }
                     }
                 }
 
-                foreach ($rstMakeOrder['result'] as $result => $a) {
-                    if ($a['status'] != 'fail') {
+                foreach ($rstMakeOrder['result'] as $result => $orderInfo) {
+                    if ($orderInfo['status'] != 'fail') {
                         $rstMakeOrderPayment = make_order_payment($dataMOP);
+                    } else {
+                        echo  '<script>
+                        window.alert("' . $orderInfo['remarks'] . '");
+                      </script>
+                      ';
                     }
                 }
             }
 
             if (isset($rstMakeOrderPayment)) {
                 if ($rstMakeOrderPayment['api_status'] == 'Success') {
-                    foreach ($rstMakeOrderPayment['result'] as $result => $a) {
-                        $message = $a['messagenow'];
+                    foreach ($rstMakeOrderPayment['result'] as $result => $orderInfo) {
+                        $message = $orderInfo['messagenow'];
                         switch ($from) {
                             case 'MY':
                             case 'my':
-                                foreach ($a['parcel'] as $parcel => $b) {
+                                foreach ($orderInfo['parcel'] as $parcel => $b) {
                                     $parcel_no = $b['parcelno'];
                                     $awb = $b['awb'];
                                 }
                                 break;
                             case 'SG':
                             case 'sg':
-                                var_dump($rstMakeOrderPayment['result']);
-                                var_dump($a['parcel']);
-                                $b = $a['parcel'];
+                                $b = $orderInfo['parcel'];
                                 $parcel_no = $b['parcelno'];
                                 $awb = $b['awb'];
                                 break;
@@ -135,13 +140,39 @@ if (post('actionBtn')) {
                     if ($courier_id) {
                         // check courier id
                         $rstcourierchk = $connect->query("SELECT * FROM " . COURIER . " WHERE id='$courier_id'");
+
                         if ($rstcourierchk->num_rows == 0) {
                             $insertCourierQry = "INSERT INTO " . COURIER . " (id,name,create_date,create_time,create_by) VALUES ('$courier_id','$courier_name',curdate(),curtime(),'" . USER_ID . "')";
                             $connect->query($insertCourierQry);
+
+                            $courierNewvalarr = array();
+
+                            if ($courier_id != '')
+                                array_push($courierNewvalarr, $courier_id);
+
+                            if ($courier_name != '')
+                                array_push($courierNewvalarr, $courier_name);
+
+                            $courierNewval = implode(",", $courierNewvalarr);
+
+                            $log = array();
+                            $log['log_act'] = 'add';
+                            $log['cdate'] = $cdate;
+                            $log['ctime'] = $ctime;
+                            $log['uid'] = $log['cby'] = USER_ID;
+                            $log['act_msg'] = USER_NAME . " added $courier_name into ".COURIER." Table.";
+                            $log['query_rec'] = $insertCourierQry;
+                            $log['query_table'] = COURIER;
+                            $log['page'] = $pageTitle;
+                            $log['newval'] = $courierNewval;
+                            $log['connect'] = $connect;
+                            audit_log($log);
+    
+
                         }
 
                         // insert customer
-                        $insertCust = "INSERT INTO " . CUST . " (name,company_name,address_1,address_2,postcode,contact,alt_contact,email,state,country,create_date,create_time,create_by) VALUES ('" . $dataMO['send_name'] . "','" . $dataMO['send_company'] . "','" . $dataMO['send_addr1'] . "','" . $dataMO['send_addr2'] . "','" . $dataMO['send_code'] . "','" . $dataMO['send_contact'] . "','" . $dataMO['send_mobile'] . "','" . $dataMO['send_email'] . "','" . $dataMO['send_state'] . "','" . $dataMO['send_country'] . "',curdate(),curtime()," . USER_ID . ")";
+                        $insertCust = "INSERT INTO " . CUST . " (name,company_name,address_1,address_2,postcode,contact,alt_contact,email,country,create_date,create_time,create_by) VALUES ('" . $dataMO['send_name'] . "','" . $dataMO['send_company'] . "','" . $dataMO['send_addr1'] . "','" . $dataMO['send_addr2'] . "','" . $dataMO['send_code'] . "','" . $dataMO['send_contact'] . "','" . $dataMO['send_mobile'] . "','" . $dataMO['send_email'] . "','" . $dataMO['send_country'] . "',curdate(),curtime()," . USER_ID . ")";
                         $connect->query($insertCust);
                         $cust_id = mysqli_insert_id($connect);
 
@@ -172,9 +203,6 @@ if (post('actionBtn')) {
                         if ($dataMO['send_email'] != '')
                             array_push($newvalarr, $dataMO['send_email']);
 
-                        if ($dataMO['send_state'] != '')
-                            array_push($newvalarr, $dataMO['send_state']);
-
                         if ($dataMO['send_country'] != '')
                             array_push($newvalarr, $dataMO['send_country']);
 
@@ -184,10 +212,10 @@ if (post('actionBtn')) {
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " . $dataMO['send_name'] . " into Customer Table.";
+                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " . $dataMO['send_name'] . " into ".CUST." Table.";
                         $log['query_rec'] = $insertCust;
                         $log['query_table'] = CUST;
-                        $log['page'] = 'Make Order';
+                        $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
@@ -196,7 +224,6 @@ if (post('actionBtn')) {
                         $insertShipReq = "INSERT INTO " . SHIPREQ . " (order_no,customer_id,courier_id,awb,shipping_cost,currency_unit,shipping_type_id,parcel_content,parcel_value,weight,pickup_date,pickup_time,create_date,create_time,create_by) VALUES ('" . $dataMOP['order_number'] . "','$cust_id','$courier_id','$awb','" . $dataMOP['price'] . "','$currency_unit_id','$service_detail','" . $dataMO['content'] . "','" . $dataMO['value'] . "','$weight','" . $dataMOP['collect_date'] . "','$pickup_time',curdate(),curtime(),'" . USER_ID . "')";
                         $connect->query($insertShipReq);
                         $shipreq_id = mysqli_insert_id($connect);
-                        $_SESSION['tempValConfirmBox'] = true;
 
                         // audit log
                         $newvalarr = array();
@@ -243,13 +270,15 @@ if (post('actionBtn')) {
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " . $dataMOP['order_number'] . " into Shipping Request Table.";
+                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " . $dataMOP['order_number'] . " into ".SHIPREQ." Table.";
                         $log['query_rec'] = $insertShipReq;
                         $log['query_table'] = SHIPREQ;
-                        $log['page'] = 'Make Order';
+                        $log['page'] = $pageTitle;
                         $log['newval'] = $newval;
                         $log['connect'] = $connect;
                         audit_log($log);
+
+                        $_SESSION['tempValConfirmBox'] = true;
                     }
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -261,36 +290,23 @@ if (post('actionBtn')) {
             break;
     }
 }
+
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo '<script>confirmationDialog("","' . $dataMOP['order_number'] . '","' . $pageTitle . '","","' . $redirect_page . '","MO");</script>';
+}
 ?>
 
 <style>
-    @media (max-width: 768px) {
-        /* .form-width {
-        width:100%;
-    } */
-    }
-
-    .title-form {
-        font-size: 28px;
-        font-weight: 500;
-        color: #000000;
-    }
-
-    .chkRate {
-        background-color: #FFFFFF;
-        border-radius: 5px;
-        box-shadow: 0px 0px 1px 1px #E4E6E6;
-    }
-
-    .disabledSelection {
-        pointer-events: none;
-    }
-
     .input-group-text {
         max-width: 55px;
         width: 55px;
         display: flex;
         justify-content: center;
+    }
+
+    .invalid-msg {
+        color: red;
     }
 </style>
 
@@ -310,38 +326,35 @@ if (post('actionBtn')) {
             </div>
         </div>
 
-        <form class="row needs-validation" id="makrOrderForm" method="post" action="make_order.php" novalidate>
+        <form class="row" id="makeOrderForm" method="post" action="" novalidate>
             <div class="col-12 col-md-8">
                 <!-- Sender Detail -->
                 <div class="col-12 mb-3">
                     <div class="row">
                         <div class="col-12">
-                            <div class="chkRate">
-                                <div class="px-4 py-4">
-                                    <div class="form-group mb-2">
-                                        <span class="title-form">Sender details</span>
-                                    </div>
-
+                            <fieldset class="border p-2" style="border-radius: 3px;">
+                                <legend class="float-none w-auto p-2"></b>Sender Details</b></legend>
+                                <div class="px-4 py-2">
                                     <?php
                                     if (!(empty(array_filter($dropoff_point)))) {
                                     ?>
                                         <div class="row">
-                                            <div class="col-12 col-md-12 mb-2">
-                                                <div class="input-group has-validation">
+                                            <div class="has-validation col-12 col-md-12 mb-2">
+                                                <div class="input-group">
                                                     <select class="form-select" id="sender_dropoffpoint" name="sender_dropoffpoint" required>
                                                         <option value="" disabled selected style="display:none;">Select the dropoff point</option>
                                                         <?php
-                                                        foreach ($dropoff_point as $point => $a) {
-                                                            $key = $a['point_id'];
-                                                            $value = $a['point_id'] . ' - ' . $a['point_name'] . ' - ' . $a['point_postcode'];
+                                                        foreach ($dropoff_point as $point => $orderInfo) {
+                                                            $key = $orderInfo['point_id'];
+                                                            $value = $orderInfo['point_id'] . ' - ' . $orderInfo['point_name'] . ' - ' . $orderInfo['point_postcode'];
                                                             echo "<option value=\"$key\" >$value</option>";
                                                         }
                                                         ?>
                                                     </select>
-                                                    <div class="invalid-tooltip">
-                                                        Please select the dropoff point.
-                                                    </div>
+                                                </div>
 
+                                                <div class="invalid-msg">
+                                                    Please select the dropoff point.
                                                 </div>
                                             </div>
                                         </div>
@@ -350,37 +363,43 @@ if (post('actionBtn')) {
                                     ?>
 
                                     <div class="row">
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
+
+                                        <div class="has-validation col-12 col-md-4 mb-2">
+                                            <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-account"></i></span>
                                                 </div>
-                                                <input class="form-control" type="text" name="sender_name" id="sender_name" placeholder="Sender Name" value="" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the sender name.
-                                                </div>
+                                                <input class="form-control" type="text" name="sender_name" id="sender_name" value="" placeholder="Sender Name" required>
+                                            </div>
+
+                                            <div class="invalid-msg">
+                                                Please enter the sender name.
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
+
+                                        <div class="has-validation col-12 col-md-4 mb-2">
+                                            <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                                 </div>
                                                 <input class="form-control" type="text" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the sender email.
-                                                </div>
+                                            </div>
+
+                                            <div class="invalid-msg">
+                                                Please enter the sender email.
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
+
+                                        <div class="has-validation col-12 col-md-4 mb-2">
+                                            <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <input class="form-control" style="max-width: 80px; height : 36px ; border-radius:none ; text-align : center;" type="text" name="sender_tel_code" id="sender_tel_code" value="<?= $country_telcode_from ?>" readonly>
+                                                    <span class="form-control" style="max-width: 80px; height: 36px; border-radius: none; text-align: center; display: inline-block;"><?= $country_telcode_from ?></span>
                                                 </div>
                                                 <input class="form-control" type="tel" name="sender_tel" id="sender_tel" placeholder="Sender ContactNum" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the sender contact number.
-                                                </div>
+                                            </div>
+
+                                            <div class="invalid-msg">
+                                                Please enter the sender contact number.
                                             </div>
                                         </div>
                                     </div>
@@ -391,6 +410,7 @@ if (post('actionBtn')) {
                                                 <input class="form-control" type="text" name="sender_country" id="sender_country" placeholder="Country" value="<?= isset($from_full) ? $from_full : ''; ?>" required readonly>
                                             </div>
                                         </div>
+
                                         <div class="col-12 col-md-4 mb-2">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
@@ -399,11 +419,15 @@ if (post('actionBtn')) {
                                                 <input class="form-control" type="text" name="sender_company" id="sender_company" placeholder="Sender Company">
                                             </div>
                                         </div>
+
                                         <div class="col-12 col-md-4 mb-2">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <input class="form-control" style="max-width: 80px; height : 36px ; border-radius:none ; text-align : center;" type="text" name="sender_alt_tel_code" id="sender_alt_tel_code" value="<?= $country_telcode_from ?>" readonly>
+                                                    <span class="input-group-text" style="max-width: 80px; height: 36px; border-radius: none; text-align: center; display: inline-block;">
+                                                        <?= $country_telcode_from ?>
+                                                    </span>
                                                 </div>
+
                                                 <input class="form-control" type="tel" name="sender_alt_tel" id="sender_alt_tel" placeholder="Sender Alt.ContactNum">
                                             </div>
                                         </div>
@@ -413,25 +437,19 @@ if (post('actionBtn')) {
                                     if ($from == 'SG') {
                                     ?>
                                         <div class="row">
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
+                                            <div class="col-12 col-md-8 mb-2 has-validation">
+                                                <div class="input-group">
                                                     <input class="form-control" type="text" name="sender_addr_1" id="sender_addr_1" placeholder="Unit: eg #07-222" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender unit.
-                                                    </div>
+                                                </div>
+
+                                                <div class="invalid-msg">
+                                                    Please enter the sender unit.
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="sender_postcode" id="sender_postcode" placeholder="Postcode" value="<?= isset($postcode_from) ? $postcode_from : '' ?>" required readonly>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender postcode.
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                             <div class="col-12 col-md-4 mb-2">
                                                 <div class="input-group">
-                                                    <input class="form-control" type="text" name="sender_area" id="sender_area" placeholder="<?= $from == 'SG' ? 'Zone' : 'State' ?>" value="<?= isset($area_from_full) ? $area_from_full : '' ?>" required readonly>
+                                                    <input class="form-control" type="text" name="sender_postcode" id="sender_postcode" placeholder="Postcode" value="<?= isset($postcode_from) ? $postcode_from : '' ?>" required readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -439,16 +457,17 @@ if (post('actionBtn')) {
                                     } else {
                                     ?>
                                         <div class="row">
-                                            <div class="col-12 col-md-8 mb-2">
-                                                <div class="input-group has-validation">
+                                            <div class="col-12 col-md-6 mb-2 has-validation">
+                                                <div class="input-group">
                                                     <input class="form-control" type="text" name="sender_addr_1" id="sender_addr_1" placeholder="Address Line 1" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender address.
-                                                    </div>
+                                                </div>
+
+                                                <div class="invalid-msg">
+                                                    Please enter the sender address.
                                                 </div>
                                             </div>
 
-                                            <div class="col-12 col-md-4 mb-2">
+                                            <div class="col-12 col-md-6 mb-2">
                                                 <div class="input-group">
                                                     <input class="form-control" type="text" name="sender_addr_2" id="sender_addr_2" placeholder="Address Line 2">
                                                 </div>
@@ -456,25 +475,18 @@ if (post('actionBtn')) {
                                         </div>
 
                                         <div class="row">
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
+                                            <div class="col-12 col-md-8 mb-2 has-validation">
+                                                <div class="input-group">
                                                     <input class="form-control" type="text" name="sender_city" id="sender_city" placeholder="City" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender city.
-                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="sender_postcode" id="sender_postcode" placeholder="Postcode" value="<?= isset($postcode_from) ? $postcode_from : '' ?>" required readonly>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender postcode.
-                                                    </div>
+
+                                                <div class="invalid-msg">
+                                                    Please enter the sender city.
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-4 mb-2">
                                                 <div class="input-group">
-                                                    <input class="form-control" type="text" name="sender_area" id="sender_area" placeholder="<?= $from == 'SG' ? 'Zone' : 'State' ?>" value="<?= isset($area_from_full) ? $area_from_full : '' ?>" required readonly>
+                                                    <input class="form-control" type="text" name="sender_postcode" id="sender_postcode" placeholder="Postcode" value="<?= isset($postcode_from) ? $postcode_from : '' ?>" required readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -482,7 +494,7 @@ if (post('actionBtn')) {
                                     }
                                     ?>
                                 </div>
-                            </div>
+                            </fieldset>
                         </div>
                     </div>
                 </div>
@@ -492,330 +504,308 @@ if (post('actionBtn')) {
                 <div class="col-12 mb-3">
                     <div class="row">
                         <div class="col-12">
-                            <div class="chkRate">
-                                <div class="px-4 py-4">
-                                    <div class="form-group mb-2">
-                                        <span class="title-form">Receiver details</span>
-                                    </div>
+                            <fieldset class="border p-2" style="border-radius: 3px;">
+                                <legend class="float-none w-auto p-2"><b>Receiver Details</b></legend>
+                                <div class="px-4 py-2">
 
                                     <div class="row">
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
+                                        <div class="col-12 col-md-4 mb-2 has-validation">
+                                            <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-account"></i></span>
                                                 </div>
                                                 <input class="form-control" type="text" name="receiver_name" id="receiver_name" placeholder="Receiver Name" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the receiver name.
-                                                </div>
+                                            </div>
+                                            <div class="invalid-msg">
+                                                Please enter the receiver name.
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
-                                                </div>
-                                                <input class="form-control" type="text" name="receiver_email" id="receiver_email" placeholder="Receiver Email">
-                                                <div class="invalid-tooltip">
-                                                    Please enter the receiver email.
-                                                </div>
+
+                                        <div class="col-12 col-md-4 mb-2 has-validation"">
+                                            <div class=" input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                             </div>
+                                            <input class="form-control" type="text" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group has-validation">
-                                                <div class="input-group-prepend">
-                                                    <?php
-                                                    if (is_array($country_telcode_to)) {
-                                                    ?>
-                                                        <select class="form-select" style="height:35px;" name="receiver_tel_code" id="receiver_tel_code">
-                                                            <?php
-                                                            for ($i = 0; $i < sizeof($country_telcode_to); $i++) {
-                                                                echo "<option value=\"" . $country_telcode_to[$i] . "\">" . $country_telcode_to[$i] . "</option>";
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    <?php
-                                                    } else {
-                                                    ?>
-                                                        <input class="form-control" style="max-width: 80px; height : 36px ; border-radius:none ; text-align : center;" type="text" name="receiver_tel_code" id="receiver_tel_code" value="<?= $country_telcode_to ?>" readonly>
-                                                    <?php
-                                                    }
-                                                    ?>
-                                                </div>
-                                                <input class="form-control" type="tel" name="receiver_tel" id="receiver_tel" placeholder="Receiver ContactNum" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the receiver contact number.
-                                                </div>
-                                            </div>
+
+                                        <div class="invalid-msg">
+                                            Please enter the receiver email.
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group">
-                                                <input class="form-control" type="text" name="receiver_country" id="receiver_country" placeholder="Country" value="<?= isset($to_full) ? $to_full : ''; ?>" required readonly>
+                                    <div class="col-12 col-md-4 mb-2 has-validation">
+                                        <div class=" input-group">
+                                            <div class="input-group-prepend">
+                                                <?php if (is_array($country_telcode_to)) : ?>
+                                                    <span class="form-control" style="height: 35px; line-height: 35px; border-radius: none; text-align: center; display: inline-block;">
+                                                        <?= implode(', ', $country_telcode_to) ?>
+                                                    </span>
+                                                <?php else : ?>
+                                                    <span class="form-control" style="max-width: 80px; height: 36px; border-radius: none; text-align: center; display: inline-block;">
+                                                        <?= $country_telcode_to ?>
+                                                    </span>
+                                                <?php endif; ?>
                                             </div>
+                                            <input class="form-control" type="tel" name="receiver_tel" id="receiver_tel" placeholder="Receiver ContactNum" required>
                                         </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id=""><i class="mdi mdi-domain"></i></span>
-                                                </div>
-                                                <input class="form-control" type="text" name="receiver_company" id="receiver_company" placeholder="Receiver Company">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-md-4 mb-2">
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <?php
-                                                    if (is_array($country_telcode_to)) {
-                                                    ?>
-                                                        <select class="form-select" style="height:35px;" name="receiver_alt_tel_code" id="receiver_alt_tel_code">
-                                                            <?php
-                                                            for ($i = 0; $i < sizeof($country_telcode_to); $i++) {
-                                                                echo "<option value=\"" . $country_telcode_to[$i] . "\">" . $country_telcode_to[$i] . "</option>";
-                                                            }
-                                                            ?>
-                                                        </select>
-                                                    <?php
-                                                    } else {
-                                                    ?>
-                                                        <input class="form-control" type="text" style="max-width: 80px; height : 36px ; border-radius:none ; text-align : center;" name="receiver_alt_tel_code" id="receiver_alt_tel_code" value="<?= $country_telcode_to ?>" readonly>
-                                                    <?php
-                                                    }
-                                                    ?>
-                                                </div>
-                                                <input class="form-control" type="tel" name="receiver_alt_tel" id="receiver_alt_tel" placeholder="Receiver Alt.ContactNum">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <?php
-                                    if ($to == 'SG') {
-                                    ?>
-                                        <div class="row">
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="receiver_addr_1" id="sender_unit" placeholder="Unit: eg #07-222" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender unit.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="receiver_postcode" id="receiver_postcode" placeholder="Postcode" value="<?= isset($postcode_to) ? $postcode_to : '' ?>" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the receiver postcode.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group">
-                                                    <input class="form-control" type="tel" name="receiver_area" id="receiver_area" placeholder="<?= $from == 'SG' ? 'Zone' : 'State' ?>" value="<?= isset($area_to) ? $area_to : '' ?>" required readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php
-                                    } else {
-                                    ?>
-                                        <div class="row">
-                                            <div class="col-12 col-md-8 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="receiver_addr_1" id="receiver_addr_1" placeholder="Address Line 1" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the sender address.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-4 mb-2">
-                                                <div class="input-group">
-                                                    <input class="form-control" type="text" name="receiver_addr_2" id="receiver_addr_2" placeholder="Address Line 2">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-md-6 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="receiver_city" id="receiver_city" placeholder="City">
-                                                    <div class="invalid-tooltip" required>
-                                                        Please enter the receiver city.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-6 mb-2">
-                                                <div class="input-group has-validation">
-                                                    <input class="form-control" type="text" name="receiver_postcode" id="receiver_postcode" placeholder="Postcode" value="<?= isset($postcode_to) ? $postcode_to : '' ?>" required>
-                                                    <div class="invalid-tooltip">
-                                                        Please enter the receiver postcode.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Receiver Detail -->
-
-                <!-- Parcel Detail -->
-                <div class="col-12 mb-3">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="chkRate">
-                                <div class="px-4 py-4">
-                                    <div class="form-group mb-2">
-                                        <span class="title-form">Parcel details</span>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-md-12 mb-2">
-                                            <div class="input-group">
-                                                <input class="form-control" type="text" name="parcel_content" id="parcel_content" placeholder="Parcel Content" required>
-                                                <div class="invalid-tooltip">
-                                                    Please enter the parcel content.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-4 mb-2">
-                                            <div class="input-group">
-                                                <select class="form-select" aria-label="Default select example" name="curUnit" id="curUnit" required>
-                                                    <?php
-                                                    $result = getData('*', '', CUR_UNIT, $connect);
-
-                                                    echo "<option disabled selected>Select the currecncy unit</option>";;
-
-                                                    while ($rowCurUnit = $result->fetch_assoc()) {
-                                                        $selected = isset($price) && $currency == $rowCurUnit['unit'] ? "selected" : "";
-                                                        echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
-                                                    }
-                                                    ?>
-                                                </select>
-                                                <div class="invalid-tooltip" id="parcel-value_err">
-                                                    Please select the currency unit
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-12 col-sm-8 mb-2">
-                                            <div class="input-group">
-                                                <input class="form-control" min="0" step=".01" type="number" name="parcel_value" id="parcel_value" placeholder="Parcel Value (Ex. 9.90)" required style="height: 40px;">
-                                                <div class="invalid-tooltip" id="parcel-value_err">
-                                                    Please enter the value of the items.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-md-12 mb-2">
-                                            <div class="input-group">
-                                                <input class="form-control" type="text" name="parcel_reference" id="parcel_reference" placeholder="Reference (optional)">
-                                            </div>
+                                        <div class="invalid-msg">
+                                            Please enter the receiver contact number.
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-4 mb-2">
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="receiver_country" id="receiver_country" placeholder="Country" value="<?= isset($to_full) ? $to_full : ''; ?>" required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4 mb-2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id=""><i class="mdi mdi-domain"></i></span>
+                                            </div>
+                                            <input class="form-control" type="text" name="receiver_company" id="receiver_company" placeholder="Receiver Company">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4 mb-2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <?php if (is_array($country_telcode_to)) : ?>
+                                                    <span class="form-control" style="height: 35px; line-height: 35px; border-radius: none; text-align: center; display: inline-block;">
+                                                        <?= implode(', ', $country_telcode_to) ?>
+                                                    </span>
+                                                <?php else : ?>
+                                                    <span class="form-control" style="max-width: 80px; height: 36px; border-radius: none; text-align: center; display: inline-block;">
+                                                        <?= $country_telcode_to ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <input class="form-control" type="tel" name="receiver_alt_tel" id="receiver_alt_tel" placeholder="Receiver Alt.ContactNum">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php
+                                if ($to == 'SG') {
+                                ?>
+                                    <div class="row">
+                                        <div class="has-validation col-12 col-md-6 mb-2">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_addr_1" id="sender_unit" placeholder="Unit: eg #07-222" required>
+                                            </div>
+
+                                            <div class="invalid-msg">
+                                                Please enter the receiver unit.
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-2">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_postcode" id="receiver_postcode" placeholder="Postcode" value="<?= isset($postcode_to) ? $postcode_to : '' ?>" readonly required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <?php
+                                } else {
+                                ?>
+
+                                    <div class="row">
+                                        <div class="has-validation col-12 col-md-6 mb-2">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_addr_1" id="receiver_addr_1" placeholder="Address Line 1" required>
+                                            </div>
+
+                                            <div class="invalid-msg">
+                                                Please enter the receiver address.
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-2">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_addr_2" id="receiver_addr_2" placeholder="Address Line 2">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 col-md-6 mb-2 has-validation">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_city" id="receiver_city" placeholder="City" required>
+                                            </div>
+
+                                            <div class="invalid-msg" for="receiver_city">
+                                                Please enter the receiver city.
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 mb-2">
+                                            <div class="input-group">
+                                                <input class="form-control" type="text" name="receiver_postcode" id="receiver_postcode" placeholder="Postcode" value="<?= isset($postcode_to) ? $postcode_to : '' ?>" readonly required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php
+                                }
+                                ?>
                         </div>
+                        </fieldset>
                     </div>
                 </div>
-                <!-- Parcel Detail -->
             </div>
+            <!-- Receiver Detail -->
 
-            <div class="col-12 col-md-4">
-                <div class="chkRate" id="">
-                    <div class="px-4 py-4">
-                        <div class="mb-2">
-                            <span class="title-form">Courier Details</span>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <img src="<?= isset($courier_logo) ? $courier_logo : ''; ?>" style="width:50%">
-                            </div>
-                        </div>
-                        <hr class="hr" />
-                        <div class="row">
-                            <div class="col-12">
-                                <span>
-                                    <?php
-                                    if (isset($service_detail)) {
-                                        switch ($service_detail) {
-                                            case 'pickup':
-                                                echo '<span class="mdi mdi-truck" style="font-size:20px"><span style="font-size:15px"> Pick Up</span></span>';
-                                                break;
-                                            case 'dropoff':
-                                                echo '<span class="mdi mdi-run" style="font-size:20px"><span style="font-size:15px"> Drop Off</span></span>';
-                                                break;
-                                        }
-                                    }
-                                    ?>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 d-flex">
-                                <div class="col-4 text-start">
-                                    <span><?= isset($from_full) ? $from_full : '' ?></span><br>
+            <!-- Parcel Detail -->
+            <div class="col-12 mb-3">
+                <div class="row">
+                    <div class="col-12">
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2"><b>Parcel Details</b></legend>
+                            <div class="px-4 py-2">
+                                <div class="row">
+                                    <div class="has-validation col-12 col-md-12 mb-2">
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="parcel_content" id="parcel_content" placeholder="Parcel Content" required>
+                                        </div>
+                                        <div class="invalid-msg">
+                                            Please enter the parcel content
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4 d-flex justify-content-center">
-                                    <span><i style="font-size:28px;" class="mdi mdi-ray-start-arrow"></i></span>
+
+                                <div class="row">
+
+                                    <div class="col-12 col-sm-4 mb-2 has-validation">
+                                        <div class="input-group">
+                                            <input class="form-control" type="date" name="pickup_date" id="pickup_date" placeholder="Pickup Date" required style="border-radius:3px;height: 40px;" data-toggle="tooltip" data-placement="right" title="Pickup Date">
+                                        </div>
+
+                                        <div class="invalid-msg">
+                                            Please enter the pickup date
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-4 mb-2">
+                                        <div class="input-group">
+                                            <select class="form-select" aria-label="Default select example" name="curUnit" id="curUnit" style="border-radius:3px;height: 40px;" required data-toggle="tooltip" data-placement="right" title="Currency Unit">
+                                                <?php
+                                                $result = getData('*', '', CUR_UNIT, $connect);
+
+                                                while ($rowCurUnit = $result->fetch_assoc()) {
+                                                    $selected = isset($price) && $currency == $rowCurUnit['unit'] ? "selected" : "";
+                                                    echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-4 mb-2 has-validation">
+                                        <div class="input-group">
+                                            <input class="form-control" type="number" step="any" name="parcel_value" id="parcel_value" placeholder="Parcel Value (Ex. 9.90)" required style="border-radius:3px;height: 40px;">
+                                        </div>
+
+                                        <div class="invalid-msg">
+                                            Please enter the parcel value
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4 text-end">
-                                    <span><?= isset($to_full) ? $to_full : '' ?></span><br>
-                                </div>
-                            </div>
-                        </div>
-                        <hr class="hr" />
-                        <div class="row">
-                            <div class="col-12 d-flex">
-                                <span>Weight: <b><?= isset($weight) ? $weight : '' ?> kg</b></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 d-flex">
-                                <span>Date: <span id="pickup_date"><?= isset($pickup_date) ? $pickup_date : '' ?></span></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12 d-flex">
-                                <span id="displayedPrice">Price: <?= isset($price) ? $currency . ' ' . $price : '' ?></span></span>
-                            </div>
-                        </div>
-                        <hr class="hr" />
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="d-flex justify-content-center">
-                                    <a class="btn btn-default btn-primary" type="button" href="<?= "$SITEURL/rate_checking.php?country=" . urlencode($from) . "&postcodefrom=" . urlencode($postcode_from) . "&postcodeto=" . urlencode($postcode_to) .  "&from_full=" . urlencode($from_full) . "&to_full=" . urlencode($to_full); ?>" id="backBtn">Back</a>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-12 mb-2">
+                                        <div class="input-group">
+                                            <input class="form-control" type="text" name="parcel_reference" id="parcel_reference" placeholder="Reference (optional)">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="d-flex justify-content-center">
-                                    <button class="btn btn-default btn-primary" type="submit" value="makeOrder" name="actionBtn" id="actionBtn">Book</button>
-                                </div>
-                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- Parcel Detail -->
+
+    <!-- Courier Detail -->
+    <div class="col-12 col-md-4">
+        <fieldset class="border p-2" style="border-radius: 3px;">
+            <legend class="float-none w-auto p-2"><b>Courier Details</b></legend>
+            <div class="px-4 py-2">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <img src="<?= isset($courier_logo) ? $courier_logo : ''; ?>" style="width:50%">
+                    </div>
+                </div>
+                <hr class="hr" />
+                <div class="row">
+                    <div class="col-12">
+                        <span>
+                            <?php
+                            if (isset($service_detail)) {
+                                switch ($service_detail) {
+                                    case 'pickup':
+                                        echo '<span class="mdi mdi-truck" style="font-size:20px"><span style="font-size:15px"> Pick Up</span></span>';
+                                        break;
+                                    case 'dropoff':
+                                        echo '<span class="mdi mdi-run" style="font-size:20px"><span style="font-size:15px"> Drop Off</span></span>';
+                                        break;
+                                }
+                            }
+                            ?>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 d-flex">
+                        <div class="col-4 text-start">
+                            <span><?= isset($from_full) ? $from_full : '' ?></span><br>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <span><i style="font-size:28px;" class="mdi mdi-ray-start-arrow"></i></span>
+                        </div>
+                        <div class="col-4 text-end">
+                            <span><?= isset($to_full) ? $to_full : '' ?> </span><br>
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr" />
+                <div class="row">
+                    <div class="col-12 d-flex">
+                        <span>Weight : <b><?= isset($weight) ? $weight : '' ?> kg</b></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 d-flex">
+                        <span id="displayedPrice">Price : <b><?= isset($price) ? $currency . ' ' . $price : '' ?></b></span>
+                    </div>
+                </div>
+                <hr class="hr" />
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex justify-content-center">
+                            <a class="btn btn-default btn-primary" type="button" href="<?= "$SITEURL/rate_checking.php?country=" . urlencode($from) . "&postcodefrom=" . urlencode($postcode_from) . "&postcodeto=" . urlencode($postcode_to) .  "&from_full=" . urlencode($from_full) . "&to_full=" . urlencode($to_full); ?>" id="backBtn">Back</a>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex justify-content-center">
+                            <button class="btn btn-default btn-primary" type="submit" value="makeOrder" name="actionBtn" id="actionBtn">Book</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        </fieldset>
+    </div>
+    </div>
+    <!-- Courier Detail -->
+    </form>
     </div>
 
     <?php
-    /*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
         echo '<script>confirmationDialog("","","Shipping Request","",' . $SITEURL . '"/rate_checking.php?country=' . $from . '","I");</script>';
@@ -824,55 +814,41 @@ if (post('actionBtn')) {
 </body>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        'use strict';
+    document.addEventListener("DOMContentLoaded", function() {
 
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.querySelectorAll('.needs-validation');
+        const hasValidationElements = document.querySelectorAll('.has-validation');
 
-        // Loop over them and prevent submission
-        Array.prototype.slice.call(forms)
-            .forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    // Check the validity of each form element with the 'required' attribute
-                    var elements = form.querySelectorAll('[required]');
-                    for (var i = 0; i < elements.length; i++) {
-                        if (!elements[i].checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            elements[i].classList.add('is-invalid');
-                        } else {
-                            elements[i].classList.remove('is-invalid');
-                        }
+        hasValidationElements.forEach(function(container) {
+            const inputField = container.querySelector('input, select');
+            const errorMessage = container.querySelector('.invalid-msg');
+
+            if (inputField && inputField.hasAttribute('required')) {
+                errorMessage.style.display = 'none';
+
+                inputField.addEventListener('input', function() {
+                    if (inputField.validity.valid) {
+                        errorMessage.style.display = 'none';
+                        inputField.style.borderColor = '';
+                    } else {
+                        errorMessage.style.display = 'block';
                     }
+                });
+            }
+        });
 
-                    // Add the 'was-validated' class to the form
-                    form.classList.add('was-validated');
+        document.getElementById('makeOrderForm').addEventListener('submit', function(event) {
+            hasValidationElements.forEach(function(container) {
+                const inputField = container.querySelector('input, select');
+                const errorMessage = container.querySelector('.invalid-msg');
 
-                    // Set the value of an element with the ID 'submissionChk' to "Cont"
-                    document.getElementById('submissionChk').value = "Cont";
-                }, false);
+                if (inputField && !inputField.validity.valid) {
+                    errorMessage.style.display = 'block';
+                    inputField.style.borderColor = 'red';
+                    event.preventDefault();
+                }
             });
+        });
     });
-
-
-
-    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    var d = $("#pickup_date").text();
-    d = new Date(d);
-    let day = weekday[d.getDay()];
-
-    $("#pickup_date").append(' <b>' + day + '</b>')
-
-    document.getElementById('parcel_value').addEventListener('input', function() {
-        let actualValue = this.value.replace(".", "");
-        this.value = (parseInt(actualValue) / 100).toFixed(2);
-
-        if (this.value == '0' || this.value == '0.00')
-            this.value = '';
-    })
-
-
 </script>
 
 </html>

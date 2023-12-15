@@ -892,34 +892,30 @@ function previewImage(input, output) {
 }
 
 async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
-  switch (act) {
-    case "I":
-      var title = "Successful Insert " + pagename;
-      var title2 = "Are you sure want to insert?";
-      var btn = "Insert";
-      break;
-    case "E":
-      var title = "Successful Edit " + pagename;
-      var title2 = "Are you sure want to edit?";
-      var btn = "Edit";
-      break;
-    case "D":
-      var title = "Successful Delete " + pagename;
-      var title2 = "Are you sure want to delete?";
-      var btn = "Delete";
-      break;
-    case "NC":
-      var title = "No changes were made.";
-      break;
-    case "PC":
-      var title = "Successful Change " + pagename;
-      break;
-    case "F":
-      var title = "An error occurred. Please try again later.";
-      break;
-    default:
-      var title = "Error";
-  }
+    switch(act)
+    {
+        case 'I':   var title = "Successful Insert " + pagename;
+                    var title2 = "Are you sure want to insert?";
+                    var btn = "Insert";
+                    break;
+        case 'E':   var title = "Successful Edit " + pagename;
+                    var title2 = "Are you sure want to edit?";
+                    var btn = "Edit";
+                    break;
+        case 'D':   var title = "Successful Delete " + pagename;
+                    var title2 = "Are you sure want to delete?";
+                    var btn = "Delete";
+                    break;
+        case 'NC':	var title = "No changes were made.";
+                    break;
+		case 'PC':  var title = "Successful Change " + pagename;
+					break;
+		case 'MO':  var title = "Successful Place Order ["+msg+"]";
+		            break;
+		
+        default:    var title = "Error";
+    }
+
 
   var message = "";
   if (msg.length >= 1) {
@@ -965,110 +961,116 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     </div>
     `;
 
-  if (act == "D") {
-    const myModal = new bootstrap.Modal(modalElem, {
-      keyboard: false,
-      backdrop: "static",
-    });
-    myModal.show();
+	if(act == 'D')
+	{
+		const myModal = new bootstrap.Modal(modalElem, {
+			keyboard: false,
+			backdrop: 'static'
+		})
+		myModal.show()
+	
+		const result = await new Promise((resolve, reject) => {
+			document.body.addEventListener('click', response)
+	
+			function response(e) {
+				let bool = false
+				if (e.target.id == 'rejectBtn') bool = false
+				else if (e.target.id == 'acceptBtn') bool = true
+				else return
+				document.body.removeEventListener('click', response);
+				document.body.querySelector('.modal-backdrop').remove();
+				modalElem.remove();
+				resolve(bool);
+			}
+		})
+	
+		if(result) 
+		{
+			$.ajax({
+				type: 'POST',
+				url: path,
+				data: {
+					id: id,
+					act: act
+				},
+				cache: false,
+				success: (result) => {	
+						const myModal2 = new bootstrap.Modal(modelResult, {
+							keyboard: false,
+							backdrop: 'static'
+						})
+						myModal2.show()
+	
+						return new Promise((resolve, reject) => {
+							document.body.addEventListener('click', response)
+	
+							var myTimeout = setTimeout(() => {
+								document.body.removeEventListener('click', response)
+								document.body.querySelector('.modal-backdrop').remove()
+								modelResult.remove()
+								resolve(true)
+								location.reload();
+							},5000);
+	
+							function response(e) {           
+								let bool = false
+								let timeOut = false
+	
+								if (e.target.id == 'contBtn') {
+									bool = true;
+									clearTimeout(myTimeout);
+								}
+								else return
+	
+								document.body.removeEventListener('click', response)
+								document.body.querySelector('.modal-backdrop').remove()
+								modelResult.remove()
+								resolve(bool)
+								location.reload();
+							}
+						})
+				}
+			})
+		} else console.log("Operation Cancelled.");
+	}
 
-    const result = await new Promise((resolve, reject) => {
-      document.body.addEventListener("click", response);
+	if(act == 'I' || act == 'E' || act == 'NC' || act == 'PC' || act == 'MO')
+	{
+		const myModal2 = new bootstrap.Modal(modelResult, {
+			keyboard: false,
+			backdrop: 'static'
+		})
+		myModal2.show()
 
-      function response(e) {
-        let bool = false;
-        if (e.target.id == "rejectBtn") bool = false;
-        else if (e.target.id == "acceptBtn") bool = true;
-        else return;
-        document.body.removeEventListener("click", response);
-        document.body.querySelector(".modal-backdrop").remove();
-        modalElem.remove();
-        resolve(bool);
-      }
-    });
+		return new Promise((resolve, reject) => {
+			document.body.addEventListener('click', response)
 
-    if (result) {
-      $.ajax({
-        type: "POST",
-        url: path,
-        data: {
-          id: id,
-          act: act,
-        },
-        cache: false,
-        success: (result) => {
-          const myModal2 = new bootstrap.Modal(modelResult, {
-            keyboard: false,
-            backdrop: "static",
-          });
-          myModal2.show();
+			var myTimeout = setTimeout(() => {
+				document.body.removeEventListener('click', response)
+				document.body.querySelector('.modal-backdrop').remove()
+				modelResult.remove()
+				resolve(true)
+				window.location.href = pathreturn
+			},5000);
 
-          return new Promise((resolve, reject) => {
-            document.body.addEventListener("click", response);
+			function response(e) {           
+				let bool = false
+				let timeOut = false
 
-            var myTimeout = setTimeout(() => {
-              document.body.removeEventListener("click", response);
-              document.body.querySelector(".modal-backdrop").remove();
-              modelResult.remove();
-              resolve(true);
-              location.reload();
-            }, 5000);
+				if (e.target.id == 'contBtn') {
+					bool = true;
+					clearTimeout(myTimeout);
+				}
+				else return
 
-            function response(e) {
-              let bool = false;
-              let timeOut = false;
+				document.body.removeEventListener('click', response)
+				document.body.querySelector('.modal-backdrop').remove()
+				resolve(bool)
+				window.location.href = pathreturn
+			}
+		})
+	}
 
-              if (e.target.id == "contBtn") {
-                bool = true;
-                clearTimeout(myTimeout);
-              } else return;
-
-              document.body.removeEventListener("click", response);
-              document.body.querySelector(".modal-backdrop").remove();
-              modelResult.remove();
-              resolve(bool);
-              location.reload();
-            }
-          });
-        },
-      });
-    } else console.log("Operation Cancelled.");
-  }
-
-  if (act == "I" || act == "E" || act == "NC" || act == "PC" || act == "F") {
-    const myModal2 = new bootstrap.Modal(modelResult, {
-      keyboard: false,
-      backdrop: "static",
-    });
-    myModal2.show();
-
-    return new Promise((resolve, reject) => {
-      document.body.addEventListener("click", response);
-
-      var myTimeout = setTimeout(() => {
-        document.body.removeEventListener("click", response);
-        document.body.querySelector(".modal-backdrop").remove();
-        modelResult.remove();
-        resolve(true);
-        window.location.href = pathreturn;
-      }, 5000);
-
-      function response(e) {
-        let bool = false;
-        let timeOut = false;
-
-        if (e.target.id == "contBtn") {
-          bool = true;
-          clearTimeout(myTimeout);
-        } else return;
-
-        document.body.removeEventListener("click", response);
-        document.body.querySelector(".modal-backdrop").remove();
-        resolve(bool);
-        window.location.href = pathreturn;
-      }
-    });
-  }
 }
 
 /* Rate Checking */
