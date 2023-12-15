@@ -248,14 +248,10 @@ function getData($search_val, $val, $tbl, $conn)
 
 	$result = $conn->query($query);
 
-
-		if (empty($result) && $result->num_rows == 0)
-			return false;
-		else
-			return $result;
-	} catch (Exception $e) {
+	if (empty($result) && $result->num_rows == 0)
 		return false;
-	}
+	else
+		return $result;
 }
 
 function generateDBData($tblname, $conn)
@@ -279,8 +275,8 @@ function audit_log($data = array())
 	if (count($data) > 0) {
 		extract($data);
 
-		switch ($log_act) {
-			case 'view':
+		switch (strtolower($log_act)) {
+			case 'view': 
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 			case 'edit':
@@ -319,7 +315,7 @@ function getCountry($param, $connect)
 	$result = getData('*', '', 'countries', $connect);
 
 	if ($result) {
-		while($row = $result->fetch_assoc()){
+		while ($row = $result->fetch_assoc()) {
 			$all_country[$row['code']] = $row['name'];
 		}
 	}
@@ -354,7 +350,6 @@ function getCountryTelCode($param, $connect)
 		}
 	} else {
 		return 'Query failed';
-
 	}
 }
 

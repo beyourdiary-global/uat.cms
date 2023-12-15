@@ -138,6 +138,7 @@ if (post('actionBtn')) {
             if (isset($parcel_no) && isset($awb)) {
                 try {
                     if ($courier_id) {
+
                         // check courier id
                         $rstcourierchk = $connect->query("SELECT * FROM " . COURIER . " WHERE id='$courier_id'");
 
@@ -147,28 +148,24 @@ if (post('actionBtn')) {
 
                             $courierNewvalarr = array();
 
-                            if ($courier_id != '')
+                            if ($courier_id)
                                 array_push($courierNewvalarr, $courier_id);
 
-                            if ($courier_name != '')
+                            if ($courier_name)
                                 array_push($courierNewvalarr, $courier_name);
-
-                            $courierNewval = implode(",", $courierNewvalarr);
 
                             $log = array();
                             $log['log_act'] = 'add';
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
                             $log['uid'] = $log['cby'] = USER_ID;
-                            $log['act_msg'] = USER_NAME . " added $courier_name into ".COURIER." Table.";
+                            $log['act_msg'] = USER_NAME . " added $courier_name into " . COURIER . " Table.";
                             $log['query_rec'] = $insertCourierQry;
                             $log['query_table'] = COURIER;
                             $log['page'] = $pageTitle;
-                            $log['newval'] = $courierNewval;
+                            $log['newval'] = implodeWithComma($courierNewvalarr);
                             $log['connect'] = $connect;
                             audit_log($log);
-    
-
                         }
 
                         // insert customer
@@ -177,46 +174,36 @@ if (post('actionBtn')) {
                         $cust_id = mysqli_insert_id($connect);
 
                         // audit log
-                        $newvalarr = array();
+                        $custNewvalarr = array();
 
-                        if ($dataMO['send_name'] != '')
-                            array_push($newvalarr, $dataMO['send_name']);
+                        $custVariables = [
+                            'send_name',
+                            'send_company',
+                            'send_addr1',
+                            'send_addr2',
+                            'send_code',
+                            'send_contact',
+                            'send_mobile',
+                            'send_email',
+                            'send_country',
+                        ];
 
-                        if ($dataMO['send_company'] != '')
-                            array_push($newvalarr, $dataMO['send_company']);
+                        foreach ($custVariables as $field) {
+                            if ($dataMO[$field]) {
+                                array_push($custNewvalarr, $dataMO[$field]);
+                            }
+                        }
 
-                        if ($dataMO['send_addr1'] != '')
-                            array_push($newvalarr, $dataMO['send_addr1']);
-
-                        if ($dataMO['send_addr2'] != '')
-                            array_push($newvalarr, $dataMO['send_addr2']);
-
-                        if ($dataMO['send_code'] != '')
-                            array_push($newvalarr, $dataMO['send_code']);
-
-                        if ($dataMO['send_contact'] != '')
-                            array_push($newvalarr, $dataMO['send_contact']);
-
-                        if ($dataMO['send_mobile'] != '')
-                            array_push($newvalarr, $dataMO['send_mobile']);
-
-                        if ($dataMO['send_email'] != '')
-                            array_push($newvalarr, $dataMO['send_email']);
-
-                        if ($dataMO['send_country'] != '')
-                            array_push($newvalarr, $dataMO['send_country']);
-
-                        $newval = implode(",", $newvalarr);
                         $log = array();
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " . $dataMO['send_name'] . " into ".CUST." Table.";
+                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " . $dataMO['send_name'] . " into " . CUST . " Table.";
                         $log['query_rec'] = $insertCust;
                         $log['query_table'] = CUST;
                         $log['page'] = $pageTitle;
-                        $log['newval'] = $newval;
+                        $log['newval'] = implodeWithComma($custNewvalarr);
                         $log['connect'] = $connect;
                         audit_log($log);
 
@@ -226,55 +213,39 @@ if (post('actionBtn')) {
                         $shipreq_id = mysqli_insert_id($connect);
 
                         // audit log
-                        $newvalarr = array();
+                        $shipNewvalarr = array();
 
-                        if ($dataMOP['order_number'] != '')
-                            array_push($newvalarr, $dataMOP['order_number']);
+                        $shipVariables = [
+                            $dataMOP['order_number'],
+                            $cust_id,
+                            $courier_id,
+                            $awb,
+                            $dataMOP['price'],
+                            $currency_unit_id,
+                            $service_detail,
+                            $dataMO['content'],
+                            $dataMO['value'],
+                            $weight,
+                            $dataMOP['collect_date'],
+                            $pickup_time,
+                        ];
 
-                        if ($cust_id != '')
-                            array_push($newvalarr, $cust_id);
+                        foreach ($shipVariables as $value) {
+                            if ($value) {
+                                array_push($shipNewvalarr, $value);
+                            }
+                        }
 
-                        if ($courier_id != '')
-                            array_push($newvalarr, $courier_id);
-
-                        if ($awb != '')
-                            array_push($newvalarr, $awb);
-
-                        if ($dataMOP['price'] != '')
-                            array_push($newvalarr, $dataMOP['price']);
-
-                        if ($currency_unit_id != '')
-                            array_push($newvalarr, $currency_unit_id);
-
-                        if ($service_detail != '')
-                            array_push($newvalarr, $service_detail);
-
-                        if ($dataMO['content'] != '')
-                            array_push($newvalarr, $dataMO['content']);
-
-                        if ($dataMO['value'] != '')
-                            array_push($newvalarr, $dataMO['value']);
-
-                        if ($weight != '')
-                            array_push($newvalarr, $weight);
-
-                        if ($dataMOP['collect_date'] != '')
-                            array_push($newvalarr, $dataMOP['collect_date']);
-
-                        if ($pickup_time != '')
-                            array_push($newvalarr, $pickup_time);
-
-                        $newval = implode(",", $newvalarr);
                         $log = array();
                         $log['log_act'] = 'add';
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " . $dataMOP['order_number'] . " into ".SHIPREQ." Table.";
+                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " . $dataMOP['order_number'] . " into " . SHIPREQ . " Table.";
                         $log['query_rec'] = $insertShipReq;
                         $log['query_table'] = SHIPREQ;
                         $log['page'] = $pageTitle;
-                        $log['newval'] = $newval;
+                        $log['newval'] = implodeWithComma($shipNewvalarr);
                         $log['connect'] = $connect;
                         audit_log($log);
 
@@ -293,7 +264,8 @@ if (post('actionBtn')) {
 
 if (isset($_SESSION['tempValConfirmBox'])) {
     unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","' . $dataMOP['order_number'] . '","' . $pageTitle . '","","' . $redirect_page . '","MO");</script>';
+    echo '<script>localStorage.clear();</script>';
+    echo '<script>confirmationDialog("","Shipping Request For Order Number [' . $dataMOP['order_number'] . ']","' . $pageTitle . '","","' . $redirect_page . '","MO");</script>';
 }
 ?>
 
@@ -804,13 +776,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <!-- Courier Detail -->
     </form>
     </div>
-
-    <?php
-    if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo '<script>confirmationDialog("","","Shipping Request","",' . $SITEURL . '"/rate_checking.php?country=' . $from . '","I");</script>';
-    }
-    ?>
 </body>
 
 <script>
