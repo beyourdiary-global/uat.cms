@@ -234,7 +234,7 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 
 function getData($search_val, $val, $tbl, $conn)
 {
-  try {
+
 	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
 	//Checking a status is available in data field or not then check a val is exist or not
