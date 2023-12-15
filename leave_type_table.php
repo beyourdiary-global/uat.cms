@@ -50,8 +50,6 @@ if (post('l_status_option')) {
         $log['changes'] = $chgval;
         $log['connect'] = $connect;
         audit_log($log);
-
-        echo '<script>location.reload();</script>';
     }
 }
 ?>
@@ -215,6 +213,9 @@ if (post('l_status_option')) {
             data: {
                 l_type_id: id,
                 l_status_option: status,
+            },
+            success: function(response) {
+                window.location.href = '<?php echo $SITEURL ?>/leave_type_table.php';
             },
         })
     }
