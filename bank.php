@@ -63,6 +63,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
         'page'    => $pageTitle,
         'connect' => $connect,
     ];
+    
     audit_log($log);
 }
 
@@ -98,7 +99,6 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName . "(name,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$dataRemark','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
-                    
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                 }
@@ -134,7 +134,7 @@ if (post('actionBtn')) {
 
             // audit log
             if (isset($query)) {
-                
+
                 $log = [
                     'log_act'      => $pageAction,
                     'cdate'        => $cdate,
@@ -148,18 +148,18 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
+
                     $log['newval'] = implodeWithComma($newvalarr);
 
                     if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    } else {
                         $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
                     }
-                    
                 } else if ($pageAction == 'Edit') {
                     $log['oldval'] = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($errorMsg) ? $errorMsg : ''));
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
                 }
 
                 audit_log($log);

@@ -278,17 +278,17 @@ function audit_log($data = array())
 	if (count($data) > 0) {
 		extract($data);
 
-		switch ($log_act) {
-			case 'View':
+		switch (strtolower($log_act)) {
+			case 'view':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
-			case 'Edit':
+			case 'edit':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, old_value, changes, user_id, action_message, create_date, create_time, create_by) VALUES ('2', '$page', \"$query_rec\", '$query_table', '$oldval', '$changes', '$uid', \"$act_msg\", '$cdate', '$ctime', '$cby')";
 				break;
 			case 'delete':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('3', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
-			case 'Add':
+			case 'add':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, new_value, user_id, action_message, create_date, create_time, create_by) VALUES ('4', '$page', \"$query_rec\", '$query_table', '$newval', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 			case 'import':
