@@ -300,7 +300,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                 if (isset($dataExisted) && isset($row['name']) && !isset($merchant_name)){
                                     echo $row['name'];
-                                }else if (isset($dataExisted) && isset($row['name']) && isset($merchant_name)) {
+                                }else if (isset($merchant_name)) {
                                     echo $merchant_name;
                                 } else {
                                     echo '';
@@ -320,7 +320,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                 if (isset($dataExisted) && isset($row['business_no']) && !isset($mrcht_business_no)){
                                     echo $row['business_no'];
-                                }else if (isset($dataExisted) && isset($row['business_no']) && isset($mrcht_business_no)) {
+                                }else if (isset($mrcht_business_no)) {
                                     echo $mrcht_business_no;
                                 } else {
                                     echo '';
@@ -339,7 +339,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                 if (isset($dataExisted) && isset($row['contact']) && !isset($mrcht_contact)){
                                     echo $row['contact'];
-                                }else if (isset($dataExisted) && isset($row['contact']) && isset($mrcht_contact)) {
+                                }else if (isset($mrcht_contact)) {
                                     echo $mrcht_contact;
                                 } else {
                                     echo '';
@@ -353,7 +353,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                 if (isset($dataExisted) && isset($row['email']) && !isset($mrcht_email)){
                                     echo $row['email'];
-                                } else if (isset($dataExisted) && isset($row['email']) && isset($mrcht_email)) {
+                                } else if (isset($mrcht_email)) {
                                     echo $mrcht_email;
                                 } else {
                                     echo '';
@@ -376,7 +376,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                         value="<?php 
                         if (isset($dataExisted) && isset($row['address']) && !isset($mrcht_address)){
                             echo $row['address'];
-                        }else if (isset($dataExisted) && isset($row['address']) && isset($mrcht_address)) {
+                        }else if (isset($mrcht_address)) {
                             echo $mrcht_address;
                         } else {
                             echo '';
@@ -393,7 +393,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                     if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)){
                                         echo $row['person_in_charges'];
-                                    }else if (isset($dataExisted) && isset($row['person_in_charges']) && isset($mrcht_pic)) {
+                                    }else if (isset($mrcht_pic)) {
                                         echo $mrcht_pic;
                                     } else {
                                         echo '';
@@ -409,7 +409,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 value="<?php 
                                     if (isset($dataExisted) && isset($row['person_in_charges_contact']) && !isset($mrcht_pic_contact)){
                                         echo $row['person_in_charges_contact'];
-                                    }else if (isset($dataExisted) && isset($row['person_in_charges_contact']) && isset($mrcht_pic_contact)) {
+                                    }else if (isset($mrcht_pic_contact)) {
                                         echo $mrcht_pic_contact;
                                     } else {
                                         echo '';
@@ -427,7 +427,7 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                         <?php if ($act == '') echo 'readonly' ?>><?php 
                                     if (isset($dataExisted) && isset($row['remark']) && !isset($merchant_remark)){
                                         echo $row['remark'];
-                                    } else if (isset($dataExisted) && isset($row['remark']) && isset($merchant_remark)) {
+                                    } else if (isset($merchant_remark)) {
                                         echo $merchant_remark;
                                     } else {
                                         echo '';
