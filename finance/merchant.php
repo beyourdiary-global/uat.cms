@@ -58,7 +58,7 @@ if (post('actionBtn')) {
                 break;
             } else if ($action == 'addMerchant') {
                 try {
-                    $query = "INSERT INTO " . MERCHANT . "(name,business_no,contact,email,address,person_in_charges,person_in_charges_contact,remark,create_by,create_date,create_time) VALUES ('$merchant_name','$mrcht_business_no','$mrcht_contact','$mrcht_email','$mrcht_address','$mrcht_pic','$mrcht_pic_contact','$mrcht_business_no','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . MERCHANT . "(name,business_no,contact,email,address,person_in_charges,person_in_charges_contact,remark,create_by,create_date,create_time) VALUES ('$merchant_name','$mrcht_business_no','$mrcht_contact','$mrcht_email','$mrcht_address','$mrcht_pic','$mrcht_pic_contact','$merchant_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $queryResult = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
