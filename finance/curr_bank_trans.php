@@ -6,6 +6,12 @@ include '../menuHeader.php';
 $row_id = input('id');
 $act = input('act');
 $redirect_page = $SITEURL . '/finance/curr_bank_trans_table.php';
+$allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
+
+$img_path = '../' . img_server . 'finance/current_bank_account/';
+if (!file_exists($img_path)) {
+    mkdir($img_path, 0777, true);
+}
 
 // to display data to input
 if ($row_id) { //edit/remove
@@ -79,20 +85,51 @@ if ($bank_list_result != false) {
 }
 
 if (post('actionBtn')) {
+    $cba_type = postSpaceFilter("cba_type");
+    $cba_date = postSpaceFilter("cba_date");
+    $cba_bank = postSpaceFilter('cba_bank');
+    $cba_curr = postSpaceFilter('cba_currency');
+    $cba_amt = postSpaceFilter('cba_amt');
+    $cba_attach = $_FILES["cba_attach"]["size"] != 0 ? $_FILES["cba_attach"]["name"] : $_POST['existing_attachment'];
+    $cba_prev_amt = 0;
+    $cba_final_amt = 0;
+    $cba_remark = postSpaceFilter('cba_remark');
     $action = post('actionBtn');
 
     switch ($action) {
         case 'addTransaction':
         case 'updTransaction':
-            $cba_type = postSpaceFilter("cba_type");
-            $cba_date = postSpaceFilter("cba_date");
-            $cba_bank = postSpaceFilter('cba_bank');
-            $cba_curr = postSpaceFilter('cba_currency');
-            $cba_amt = postSpaceFilter('cba_amt');
-            $cba_attach = '';
-            $cba_prev_amt = 0;
-            $cba_final_amt = 0;
-            $cba_remark = postSpaceFilter('cba_remark');
+            if ($_FILES["cba_attach"]["size"] != 0) {
+                // move file
+                $cba_file_name = $_FILES["cba_attach"]["name"];
+                $cba_file_tmp_name = $_FILES["cba_attach"]["tmp_name"];
+                $img_ext = pathinfo($cba_file_name, PATHINFO_EXTENSION);
+                $img_ext_lc = strtolower($img_ext);
+
+                if (in_array($img_ext_lc, $allowed_ext)) {
+                    $highestNumber = 0;
+                    $files = glob($img_path . $trans_id . '_*.' . $img_ext);
+                    foreach ($files as $file) {
+                        $filename = basename($file);
+                        if (preg_match('/' . preg_quote($trans_id, '/') . '_(\d+)\.' . preg_quote($img_ext, '/') . '$/', $filename, $matches)) {
+                            $number = (int)$matches[1];
+                            $highestNumber = max($highestNumber, $number);
+                        }
+                    }
+
+                    $unique_id = $highestNumber + 1;
+                    $new_file_name = $trans_id . '_' . $unique_id . '.' . $img_ext_lc;
+
+                    // Move the uploaded file
+                    if (move_uploaded_file($cba_file_tmp_name, $img_path . $new_file_name)) {
+                        $cba_attach = $new_file_name; // Update $cba_attach with the new filename
+                    } else {
+                        $err2 = "Failed to upload the file.";
+                    }
+                } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
+            } else {
+                $cba_attach = $_POST['existing_attachment'];
+            }
 
             if (!$cba_type && $cba_type < 1) {
                 $type_err = "Please specify the type of transaction.";
@@ -145,7 +182,7 @@ if (post('actionBtn')) {
                     } else if ($cba_type == 'Deduct') {
                         $cba_final_amt = number_format($cba_prev_amt - $cba_amt, 2, '.', '');
                     }
-                    $query = "INSERT INTO " . CURR_BANK_TRANS . "(transactionID,type,date,bank,currency,amount,prev_amt,final_amt,attachment,remark) VALUES ('$trans_id','$cba_type','$cba_date','$cba_bank','$cba_curr','$cba_amt','$cba_prev_amt','$cba_final_amt','helo','$cba_remark')";
+                    $query = "INSERT INTO " . CURR_BANK_TRANS . "(transactionID,type,date,bank,currency,amount,prev_amt,final_amt,attachment,remark,create_by,create_date,create_time) VALUES ('$trans_id','$cba_type','$cba_date','$cba_bank','$cba_curr','$cba_amt','$cba_prev_amt','$cba_final_amt','$cba_attach','$cba_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $queryResult = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -237,7 +274,13 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['final_amt']);
                         array_push($chgvalarr, $cba_final_amt);
                     }
-                    if ($row['attachment'] != $cba_attach) {
+                    // if ($row['attachment'] != $cba_attach) {
+                    //     array_push($oldvalarr, $row['attachment']);
+                    //     array_push($chgvalarr, $cba_attach);
+                    // }
+
+                    $cba_attach = isset($cba_attach) ? $cba_attach : '';
+                    if (($row['attachment'] != $cba_attach) && ($cba_attach != '')) {
                         array_push($oldvalarr, $row['attachment']);
                         array_push($chgvalarr, $cba_attach);
                     }
@@ -299,7 +342,7 @@ if (post('actionBtn')) {
                             $cba_final_amt = number_format($cba_prev_amt - $cba_amt, 2, '.', '');
                         }
 
-                        $query = "UPDATE " . CURR_BANK_TRANS . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='helo', remark ='$cba_remark' WHERE id = '$row_id'";
+                        $query = "UPDATE " . CURR_BANK_TRANS . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $update_result = mysqli_query($finance_connect, $query);
 
                         if ($update_result) {
@@ -399,10 +442,9 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
 
     </div>
 
-
     <div id="merchantFormContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="merchantForm" method="post" action="">
+            <form id="merchantForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
@@ -448,7 +490,7 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                                     ?>>
                                     Deduct</option>
                             </select>
-                            <?php if (isset($bank_err)) {?>
+                            <?php if (isset($type_err)) {?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $type_err; ?></span>
                             </div>
@@ -495,7 +537,7 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                                             }else if (isset($cba_bank)) {
                                             $selected = $cba_bank == $row3['id'] ? " selected" : "";
                                             }
-                                            echo "<option value=\"" . $row3['id'] . ":" . $row3['name'] . "\"$selected>" . $row3['name'] . "</option>";
+                                            echo "<option value=\"" . $row3['id'] . "\"$selected>" . $row3['name'] . "</option>";
                                         }
                                     } else {
                                         echo "<option value=\"0\">None</option>";
@@ -521,17 +563,18 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                                     while ($row2 = $cur_list_result->fetch_assoc()) {
                                         $selected = "";
                                         if (isset($dataExisted,$row['currency']) && (!isset($cba_curr))) {
-                                            $selected = $row['currency'] == $row2['id'] ? " selected" : "";
+                                            $selected = $row['currency'] == $row2['id'] ? "selected" : "";
                                         }else if (isset($cba_curr)) {
-                                            $selected = $cba_curr == $row2['id'] ? " selected" : "";
+                                            list($cba_curr_id, $cba_curr_unit) = explode(':', $cba_curr);
+                                            $selected = $cba_curr == $row2['id'] ? "selected" : "";
                                         }
-                                        echo "<option value=\"" . $row2['id'] . ":" . $row2['unit'] . "\"$selected>" . $row2['unit'] . "</option>";
+                                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
                                         
                                     }
                                 } else {
                                     echo "<option value=\"0\">None</option>";
                                 }
-                            ?>
+                                ?>
                             </select>
 
                             <?php if (isset($curr_err)) {?>
@@ -544,8 +587,7 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                         <div class="col-md-4">
                             <label class="form-label form_lbl" id="cba_amt_lbl" for="cba_amt">Amount<span
                                     class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="cba_amt" id="cba_amt"
-                                value="<?php 
+                            <input class="form-control" type="text" name="cba_amt" id="cba_amt" value="<?php 
                                 if (isset($dataExisted) && isset($row['amount']) && !isset($cba_amt)){
                                     echo $row['amount'];
                                 }else if (isset($cba_amt)) {
@@ -553,8 +595,7 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                                 }else{
                                     echo '';
                                 }
-                                ?>"
-                                <?php if ($act == '') echo 'readonly' ?>>
+                                ?>" <?php if ($act == '') echo 'readonly' ?>>
                             <?php if (isset($amt_err)) {?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $amt_err; ?></span>
@@ -564,25 +605,41 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
                     </div>
                 </div>
 
-                <!-- <div class="form-group mb-3">
+                <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
                             <label class="form-label form_lbl" id="cba_attach_lbl" for="cba_attach">Attachment</label>
-                            <input class="form-control" type="file" name="cba_attach" id="cba_attach"
-                                value="<?php if (isset($dataExisted) && isset($row['amount'])) echo $row['amount'] ?>"
+                            <input class="form-control" type="file" name="cba_attach" id="cba_attach" value=""
                                 <?php if ($act == '') echo 'readonly' ?>>
-                            
+                            <?php if (isset($err2)) {?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $err2; ?></span>
+                            </div>
+                            <?php } ?>
+                            <?php if (isset($row['attachment']) && $row['attachment']) {?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                            </div>
+                            <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                            <?php } ?>
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                <?php
+                                if (isset($row['attachment'])) {
+                                    $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
+                                } else {
+                                    $attachmentSrc = '';
+                                }
+                                ?>
                                 <img id="cba_attach_preview" name="cba_attach_preview"
-                                    src="<?php echo ($row['attachment'] == '' || $row['attachment'] == NULL) ? '../images_server/finance/current_bank_account/' : $img_path . $row['attachment']; ?>"
-                                    class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="cba_attachmentValue" value="<?= $row['attachment'] ?>">
+                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                <input type="hidden" name="cba_attachmentValue"
+                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="cba_remark_lbl" for="cba_remark">Transaction Remark</label>
@@ -620,6 +677,11 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
     }
     ?>
     <script>
+    $('#cba_attach').on('change', function() {
+        previewImage(this, 'cba_attach_preview')
+    })
+
+    //jQuery form validation
     $("#cba_type").on("input", function() {
         $(".cba-type-err").remove();
     });
@@ -644,11 +706,11 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
     $('.submitBtn').on('click', () => {
         $(".error-message").remove();
         //event.preventDefault();
-        var type_chk = 1;
-        var date_chk = 1;
-        var bank_chk = 1;
-        var currency_chk = 1;
-        var amt_chk = 1;
+        var type_chk = 0;
+        var date_chk = 0;
+        var bank_chk = 0;
+        var currency_chk = 0;
+        var amt_chk = 0;
 
         if ($('#cba_type').val() === '' || $('#cba_type').val() === null || $('#cba_type')
             .val() === undefined) {
@@ -690,14 +752,14 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
             currency_chk = 1;
         }
 
-        if (($('#cba_amt').val() === '' || $('#cba_amt').val() === null || $('#cba_amt')
+        if (($('#cba_amt').val() == '' || $('#cba_amt').val() === null || $('#cba_amt')
                 .val() === undefined)) {
-            amount_chk = 0;
+            amt_chk = 0;
             $("#cba_amt").after(
                 '<span class="error-message cba-amt-err">Amount is required!</span>');
         } else {
             $(".cba-amt-err").remove();
-            amount_chk = 1;
+            amt_chk = 1;
         }
 
         if (type_chk == 1 && date_chk == 1 && bank_chk == 1 && currency_chk == 1 && amt_chk == 1)

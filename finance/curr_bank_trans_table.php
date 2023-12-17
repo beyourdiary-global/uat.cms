@@ -13,11 +13,6 @@ $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/curr_bank_trans.php';
 $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
-
-echo "Contents of 'myVariable' session variable:<br>";
-    echo "<pre>";
-    print_r($_SESSION['delChk']); // Use print_r to display the contents
-    echo "</pre>";
 ?>
 
 <!DOCTYPE html>
