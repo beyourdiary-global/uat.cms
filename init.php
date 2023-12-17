@@ -106,6 +106,7 @@ define('EMPINFO','employee_info');
 define('EMPPERSONALINFO','employee_personal_info');
 define('TAG','tag');
 define('MERCHANT', 'merchant');
+define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
