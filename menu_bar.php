@@ -61,6 +61,16 @@ $menuList = array(
                 ),
                 'pin' => array('36'),
             ),
+            array(
+                'Assets and Liabilities List',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37')
+                ),
+                'pin' => array('36'),
+            ),
         ),
         'pin' => array('36')
     ),
