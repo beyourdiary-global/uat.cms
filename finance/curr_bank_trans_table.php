@@ -61,8 +61,8 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Bank</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Previous Amount Recorded</th>
-                        <th scope="col">Final Amount Recorded</th>
+                        <th scope="col">Previous Amount Record</th>
+                        <th scope="col">Final Amount Record</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
@@ -125,8 +125,8 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Bank</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Previous Amount Recorded</th>
-                        <th scope="col">Final Amount Recorded</th>
+                        <th scope="col">Previous Amount Record</th>
+                        <th scope="col">Final Amount Record</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
