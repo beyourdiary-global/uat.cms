@@ -297,7 +297,15 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <label class="form-label form_lbl" id="merchant_name_lbl" for="merchant_name">Merchant
                                 Name</label>
                             <input class="form-control" type="text" name="merchant_name" id="merchant_name"
-                                value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>"
+                                value="<?php 
+                                if (isset($dataExisted) && isset($row['name']) && !isset($merchant_name)){
+                                    echo $row['name'];
+                                }else if (isset($merchant_name)) {
+                                    echo $merchant_name;
+                                } else {
+                                    echo '';
+                                }
+                                ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                             <?php if (isset($name_err)) {?>
                             <div id="err_msg">
@@ -309,7 +317,14 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <label class="form-label form_lbl" id="mrcht_business_no_lbl"
                                 for="mrcht_business_no">Merchant Business No</label>
                             <input class="form-control" type="text" name="mrcht_business_no" id="mrcht_business_no"
-                                value="<?php if (isset($dataExisted) && isset($row['business_no'])) echo $row['business_no'] ?>"
+                                value="<?php 
+                                if (isset($dataExisted) && isset($row['business_no']) && !isset($mrcht_business_no)){
+                                    echo $row['business_no'];
+                                }else if (isset($mrcht_business_no)) {
+                                    echo $mrcht_business_no;
+                                } else {
+                                    echo '';
+                                } ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                         </div>
                     </div>
@@ -321,14 +336,29 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact">Merchant
                                 Contact</label>
                             <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact"
-                                value="<?php if (isset($dataExisted) && isset($row['contact'])) echo $row['contact'] ?>"
+                                value="<?php 
+                                if (isset($dataExisted) && isset($row['contact']) && !isset($mrcht_contact)){
+                                    echo $row['contact'];
+                                }else if (isset($mrcht_contact)) {
+                                    echo $mrcht_contact;
+                                } else {
+                                    echo '';
+                                }?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email">Merchant
                                 Email</label>
                             <input class="form-control" type="text" name="mrcht_email" id="mrcht_email"
-                                value="<?php if (isset($dataExisted) && isset($row['email'])) echo $row['email'] ?>"
+                                value="<?php 
+                                if (isset($dataExisted) && isset($row['email']) && !isset($mrcht_email)){
+                                    echo $row['email'];
+                                } else if (isset($mrcht_email)) {
+                                    echo $mrcht_email;
+                                } else {
+                                    echo '';
+                                }
+                                 ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                             <?php if (isset($email_err)) {?>
                             <div id="err_msg">
@@ -343,7 +373,14 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                     <label class="form-label form_lbl" id="mrcht_address_lbl" for="mrcht_address">Merchant
                         Address</label>
                     <input class="form-control" type="text" name="mrcht_address" id="mrcht_address"
-                        value="<?php if (isset($dataExisted) && isset($row['address'])) echo $row['address'] ?>"
+                        value="<?php 
+                        if (isset($dataExisted) && isset($row['address']) && !isset($mrcht_address)){
+                            echo $row['address'];
+                        }else if (isset($mrcht_address)) {
+                            echo $mrcht_address;
+                        } else {
+                            echo '';
+                        } ?>"
                         <?php if ($act == '') echo 'readonly' ?>>
                 </div>
 
@@ -353,7 +390,15 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                             <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In
                                 Charge</label>
                             <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic"
-                                value="<?php if (isset($dataExisted) && isset($row['person_in_charges'])) echo $row['person_in_charges'] ?>"
+                                value="<?php 
+                                    if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)){
+                                        echo $row['person_in_charges'];
+                                    }else if (isset($mrcht_pic)) {
+                                        echo $mrcht_pic;
+                                    } else {
+                                        echo '';
+                                    }
+                                ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                         </div>
                         <div class="col-md-6">
@@ -361,7 +406,15 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                                 In Charge Contact</label>
                             <input class="form-control" type="number" step="any" name="mrcht_pic_contact"
                                 id="mrcht_pic_contact"
-                                value="<?php if (isset($dataExisted) && isset($row['person_in_charges_contact'])) echo $row['person_in_charges_contact'] ?>"
+                                value="<?php 
+                                    if (isset($dataExisted) && isset($row['person_in_charges_contact']) && !isset($mrcht_pic_contact)){
+                                        echo $row['person_in_charges_contact'];
+                                    }else if (isset($mrcht_pic_contact)) {
+                                        echo $mrcht_pic_contact;
+                                    } else {
+                                        echo '';
+                                    }
+                                ?>"
                                 <?php if ($act == '') echo 'readonly' ?>>
                         </div>
                     </div>
@@ -371,7 +424,14 @@ if (!($merchant_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1)
                     <label class="form-label form_lbl" id="merchant_remark_lbl" for="merchant_remark">Merchant
                         Remark</label>
                     <textarea class="form-control" name="merchant_remark" id="merchant_remark" rows="3"
-                        <?php if ($act == '') echo 'readonly' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                        <?php if ($act == '') echo 'readonly' ?>><?php 
+                                    if (isset($dataExisted) && isset($row['remark']) && !isset($merchant_remark)){
+                                        echo $row['remark'];
+                                    } else if (isset($merchant_remark)) {
+                                        echo $merchant_remark;
+                                    } else {
+                                        echo '';
+                                    } ?></textarea>
                 </div>
 
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">

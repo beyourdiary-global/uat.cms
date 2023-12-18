@@ -1,0 +1,95 @@
+.requireRed {
+    color: red;
+}
+
+.form-select:disabled {
+    background-color: #fff;
+}
+
+#employeeDetailsForm .form-header {
+    gap: 5px;
+    text-align: center;
+    font-size: .9em;
+}
+
+#employeeDetailsForm .form-header .stepIndicator {
+    position: relative;
+    flex: 1;
+    padding-bottom: 30px;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.active {
+    font-weight: 600;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.finish {
+    font-weight: 600;
+    color: #009688;
+}
+
+#employeeDetailsForm .form-header .stepIndicator::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 9;
+    width: 20px;
+    height: 20px;
+    background-color: #d5efed;
+    border-radius: 50%;
+    border: 3px solid #ecf5f4;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.active::before {
+    background-color: #a7ede8;
+    border: 3px solid #d5f9f6;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.finish::before {
+    background-color: #009688;
+    border: 3px solid #b7e1dd;
+}
+
+#employeeDetailsForm .form-header .stepIndicator::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 8px;
+    width: 100%;
+    height: 3px;
+    background-color: #f3f3f3;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.active::after {
+    background-color: #a7ede8;
+}
+
+#employeeDetailsForm .form-header .stepIndicator.finish::after {
+    background-color: #009688;
+}
+
+#employeeDetailsForm .form-header .stepIndicator:last-child:after {
+    display: none;
+}
+
+#employeeDetailsForm .step {
+    display: none;
+}
+
+@media (max-width: 576px) {
+    .button-bottom {
+        width: 100%;
+        /* Change the column width to 100% for small screens */
+    }
+
+    .button-bottom button {
+        width: 100%;
+    }
+}
+
+
+#employeeDetailsForm .form-footer {
+    overflow: auto;
+    gap: 20px;
+}

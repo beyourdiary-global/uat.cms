@@ -3,12 +3,12 @@
 
 <head>
     <?php
-    include_once "header.php";
     include_once "include/connection.php";
     include_once "include/common.php";
     include_once "include/common_variable.php";
-
-    $img_path = img_server . 'themes/';
+    include_once "header.php";
+  
+    $img_path = $SITEURL.'/'.img_server . 'themes/';
     $rst = getData('*', "id = '1'", 'projects', $connect);
 
     if ($rst != false) {
@@ -17,7 +17,7 @@
     }
     ?>
     <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
 </head>
 
 <!-- Navbar -->
@@ -38,7 +38,7 @@
                     if ($dataExisted)
                         echo $img_path  . $row['logo'];
                     else
-                        echo img . byd_logo;
+                        echo $SITEURL.'/'.img . byd_logo;
                     ?>">
                 </a>
             </div>
@@ -119,7 +119,7 @@
                         <!-- Avatar -->
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img id="accpfp" src="<?php echo img . defaultpfp ?>" class="rounded-circle">
+                                <img id="accpfp" src="<?php echo $SITEURL.'/'.img . defaultpfp ?>" class="rounded-circle">
                                 Admin
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right mt-3" aria-labelledby="navbarDropdownMenuAvatar">
@@ -177,10 +177,14 @@
     }
 
     setThemesColor();
-    
-    <?php include ROOT.'/cmsThemes.php'; ?>
 
+    function setButtonColor() {
+        var buttons = document.querySelectorAll('#actionBtn, #addBtn');
+
+        buttons.forEach(function(button) {
+            button.style.backgroundColor = '<?php echo ($dataExisted ? $row['buttonColor'] : ''); ?>';
+        });
+    }
 </script>
-
 
 </html>

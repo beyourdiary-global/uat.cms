@@ -2,6 +2,8 @@
 
 function employeeLeaveCheckColumn($connect, $empID)
 {
+    $tblName = EMPLEAVE;
+
     try {
         $empLeaveResult = getData('*', '', L_TYPE, $connect);
 
@@ -10,12 +12,9 @@ function employeeLeaveCheckColumn($connect, $empID)
 
         $employeeLeaveDays = array();
 
-        $employeeID = '';
-
         while ($empLeaveRow = $empLeaveResult->fetch_assoc()) {
             if ($empLeaveRow['auto_assign'] == 'yes' && $empLeaveRow['leave_status'] == 'Active') {
                 $columnName = "leaveType_" . $empLeaveRow['id'];
-                $employeeID = $empLeaveRow['id'];
                 $query = "SHOW COLUMNS FROM employee_leave LIKE '$columnName'";
                 $result = mysqli_query($connect, $query);
 
@@ -33,14 +32,14 @@ function employeeLeaveCheckColumn($connect, $empID)
 
         // Insert into employee_leave table if new columns were added
         if (strpos($empLeaveFields, ',') !== false) {
-            $query = "INSERT INTO employee_leave($empLeaveFields,create_by,create_date,create_time) VALUES ($empLeaveValues,'" . USER_ID . "',curdate(),curtime())";
+            $query = "INSERT INTO ".$tblName."($empLeaveFields,create_by,create_date,create_time) VALUES ($empLeaveValues,'" . USER_ID . "',curdate(),curtime())";
             mysqli_query($connect, $query);
 
             $newvalarr = array();
 
             // check value
-            if ($employeeID != '')
-                array_push($newvalarr, $employeeID);
+            if ($empID != '')
+                array_push($newvalarr, $empID);
 
             $newval = implode(",", $newvalarr);
 
@@ -52,11 +51,11 @@ function employeeLeaveCheckColumn($connect, $empID)
             $log['cdate'] = date("Y-m-d");
             $log['ctime'] = date("H:i:s");
             $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " added <b> " . $employeeID . "</b> into <b><i>Employee Leave Table</i></b>.";
+            $log['act_msg'] = USER_NAME . " added <b> [Employee ID =" . $empID . "] </b> into <b><i> $tblName Table</i></b>.";
             $log['query_rec'] = $query;
-            $log['query_table'] = 'employee_leave';
+            $log['query_table'] =  $tblName;
             $log['page'] = 'employee leave';
-            $log['newval'] = $newval .  $employeeLeaveDays;
+            $log['newval'] = $newval . "," . $employeeLeaveDays;
             $log['connect'] = $connect;
             audit_log($log);
         }

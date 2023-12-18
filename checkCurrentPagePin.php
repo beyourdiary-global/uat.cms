@@ -85,10 +85,15 @@ function checkCurrentPin($connect, $currentPage)
     }
 }
 
-
 function isActionAllowed($action, $allowedActions)
 {
     return in_array($action, $allowedActions);
+}
+
+function getPageAction($act)
+{
+    $validActions = ['I' => 'Add', 'E' => 'Edit', 'D' => 'Delete'];
+    return $validActions[$act] ?? 'View';
 }
 
 ?>
