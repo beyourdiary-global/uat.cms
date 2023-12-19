@@ -1,187 +1,187 @@
 <?php
 $pageTitle = "Bank";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-$bank_id = input('id');
-$act = input('act');
+$tblName = BANK;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/bank_table.php';
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-// to display data to input
-if ($bank_id) {
-    $rst = getData('*', "id = '$bank_id'", BANK, $connect);
-
-    if ($rst != false) {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
-}
-
-$validActions = ['I' => 'Add', 'E' => 'Edit', 'D' => 'Delete'];
-$act = isset($act) ? $act : post('act');
-$pageAction = $validActions[$act] ?? 'View';
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-if (!($bank_id) && !($act) || !isActionAllowed($pageAction, $pinAccess))
-    echo ("<script>location.href = '$redirect_page';</script>");
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
 
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
+}
+
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
+
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
+
+    $_SESSION['viewChk'] = 1;
+
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+    
+    audit_log($log);
+}
+
+//Edit And Add Data
 if (post('actionBtn')) {
+
     $action = post('actionBtn');
 
     switch ($action) {
-        case 'addBank':
-        case 'updBank':
-            $bank_name = postSpaceFilter('bank_name');
-            $bank_remark = postSpaceFilter('bank_remark');
+        case 'addData':
+        case 'updData':
 
-            if (!$bank_name) {
-                $err = "Bank name cannot be empty.";
+            $currentDataName = postSpaceFilter('currentDataName');
+            $dataRemark = postSpaceFilter('currentDataRemark');
+
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+            if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
+                $err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
-            } else if (isDuplicateRecord("name", $bank_name, BANK, $connect, $bank_id)) {
-                $err = "Duplicate record found for Bank name.";
-                break;
-            } else if ($action == 'addBank') {
+            }
+
+            if ($action == 'addData') {
                 try {
-                    $query = "INSERT INTO " . BANK . "(name,remark,create_by,create_date,create_time) VALUES ('$bank_name','$bank_remark','" . USER_ID . "',curdate(),curtime())";
-                    mysqli_query($connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    $newvalarr = array();
+                    if ($currentDataName)
+                        array_push($newvalarr, $currentDataName);
 
-                    // check value
-                    if ($bank_name != '')
-                        array_push($newvalarr, $bank_name);
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
 
-                    if ($bank_remark != '')
-                        array_push($newvalarr, $bank_remark);
+                    $query = "INSERT INTO " . $tblName . "(name,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$dataRemark','" . USER_ID . "',curdate(),curtime())";
 
-                    $newval = implode(",", $newvalarr);
-
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$bank_name</b> into <b><i>Bank Table</i></b>.";
-                    $log['query_rec'] = $query;
-                    $log['query_table'] = BANK;
-                    $log['page'] = 'Bank';
-                    $log['newval'] = $newval;
-                    $log['connect'] = $connect;
-                    audit_log($log);
+                    $returnData = mysqli_query($connect, $query);
                 } catch (Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
+                    $errorMsg = $e->getMessage();
                 }
             } else {
                 try {
-                    // take old value
-                    $rst = getData('*', "id = '$bank_id'", BANK, $connect);
-                    $row = $rst->fetch_assoc();
-                    $oldvalarr = $chgvalarr = array();
-
-                    // check value
-                    if ($row['name'] != $bank_name) {
+                    if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $bank_name);
+                        array_push($chgvalarr, $currentDataName);
                     }
 
-                    if ($row['remark'] != $bank_remark) {
-                        if ($row['remark'] == '')
-                            $old_remark = 'Empty_Value';
-                        else $old_remark = $row['remark'];
-
-                        array_push($oldvalarr, $old_remark);
-
-                        if ($bank_remark == '')
-                            $new_remark = 'Empty_Value';
-                        else $new_remark = $bank_remark;
-
-                        array_push($chgvalarr, $new_remark);
+                    if ($row['remark'] != $dataRemark) {
+                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
+                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
                     }
-
-                    // convert into string
-                    $oldval = implode(",", $oldvalarr);
-                    $chgval = implode(",", $chgvalarr);
 
                     $_SESSION['tempValConfirmBox'] = true;
-                    if ($oldval != '' && $chgval != '') {
-                        // edit
-                        $query = "UPDATE " . BANK . " SET name ='$bank_name', remark ='$bank_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$bank_id'";
-                        mysqli_query($connect, $query);
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-
-                        $log['act_msg'] = USER_NAME . " edited the data";
-                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                            if ($i == 0)
-                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                        }
-                        $log['act_msg'] .= " from <b><i>Bank Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = BANK;
-                        $log['page'] = 'Bank';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    } else $act = 'NC';
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
                 } catch (Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
+                    $errorMsg = $e->getMessage();
                 }
             }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
             break;
+
         case 'back':
-            echo ("<script>location.href = '$redirect_page';</script>");
+            echo $clearLocalStorage . ' ' . $redirectLink;
             break;
     }
 }
 
-if (post('act') == 'D') {
-    $id = post('id');
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
 
-    if ($id) {
-        try {
-            // take name
-            $rst = getData('*', "id = '$id'", BANK, $connect);
-            $row = $rst->fetch_assoc();
-
-            $bank_id = $row['id'];
-            $bank_name = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord(BANK, $id, $bank_name, $connect, $cdate, $ctime, $pageTitle);
-
-            $_SESSION['delChk'] = 1;
-        } catch (Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
 }
 
-if (($bank_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
-    $bank_name = isset($dataExisted) ? $row['name'] : '';
-    $_SESSION['viewChk'] = 1;
-
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$bank_name</b> from <b><i>Bank Table</i></b>.";
-    $log['page'] = 'Bank';
-    $log['connect'] = $connect;
-    audit_log($log);
-}
 ?>
 
 <!DOCTYPE html>
@@ -194,70 +194,48 @@ if (($bank_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk']
 <body>
 
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">Bank</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageAction . " " . $pageTitle  ?>
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
         </p>
     </div>
 
-    <div id="bankFormContainer" class="container d-flex justify-content-center">
+    <div id="formContainer" class="container d-flex justify-content-center">
         <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="bankForm" method="post" action="">
+            <form id="form" method="post" novalidate>
                 <div class="form-group mb-5">
                     <h2>
-                        <?php echo $pageAction . " " . $pageTitle  ?>
+                        <?php echo $pageActionTitle ?>
                     </h2>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" id="bank_name_lbl" for="bank_name">Bank Name</label>
-                    <input class="form-control" type="text" name="bank_name" id="bank_name" value="<?php if (isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                     <div id="err_msg">
-                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
                     </div>
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" id="bank_remark_lbl" for="bank_remark">Bank Remark</label>
-                    <textarea class="form-control" name="bank_remark" id="bank_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
-                    switch ($act) {
-                        case 'I':
-                            echo '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addBank">Add Bank</button>';
-                            break;
-                        case 'E':
-                            echo '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updBank">Edit Bank</button>';
-                            break;
-                    }
-                    ?>
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
                     <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
     </div>
-    <?php
-    /*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
-    if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo '<script>confirmationDialog("","","Bank","","' . $redirect_page . '","' . $act . '");</script>';
-    }
-    ?>
+
     <script>
-        /**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
-        centerAlignment("bankFormContainer");
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
     </script>
+
 </body>
 
 </html>

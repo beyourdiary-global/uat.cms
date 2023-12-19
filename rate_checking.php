@@ -16,13 +16,11 @@
     $showActive_d = "show active";
     $showActive_i = "";
 
-
     if ($country) {
         $dispCountrySel = "style=\"display: none;\"";
         $dispDeliverOpt = "";
-        $country2 = getCountry($country);
+        $country2 = getCountry($country,$connect);
         $domestic = "<option value=\"$country|$country2\" selected style=\"display:none;\">$country2</option>";
-        $area = getCountryArea($country);
     } else {
         $dispCountrySel = "";
         $dispDeliverOpt = "style=\"display: none;\"";
@@ -75,6 +73,16 @@
 
                 if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
                     $rstRateCheck = rate_checking($data);
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'view';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
+                    $log['page'] = $pageTitle;
+                    $log['connect'] = $connect;
+                    audit_log($log);
                 } else {
                     if (!($data['postcode_from']))
                         $err = "Postcode is required.";
@@ -86,6 +94,7 @@
                         $err5 = "Parcel weight is required.";
                 }
                 break;
+
             case 'chkRate_i':
                 $active_i = "active";
                 $active_d = "";
@@ -118,6 +127,17 @@
 
                 if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
                     $rstRateCheck = rate_checking($data);
+
+                    // audit log
+                    $log = array();
+                    $log['log_act'] = 'view';
+                    $log['cdate'] = $cdate;
+                    $log['ctime'] = $ctime;
+                    $log['uid'] = $log['cby'] = USER_ID;
+                    $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
+                    $log['page'] = $pageTitle;
+                    $log['connect'] = $connect;
+                    audit_log($log);
                 } else {
                     if (!($data['postcode_from']))
                         $err6 = "Postcode is required.";
@@ -134,7 +154,6 @@
     }
     ?>
     <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/form.css">
 </head>
 
 <script>
@@ -228,14 +247,7 @@
                                             </div>
 
                                             <div class="col-6 col-md-6">
-                                                <input class="form-control h-75" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php
-                                                                                                                                                                                                if (post('postcode_from')) {
-                                                                                                                                                                                                    echo htmlspecialchars(post('postcode_from'));
-                                                                                                                                                                                                } else if (isset($_GET['postcodefrom'])) {
-                                                                                                                                                                                                    echo htmlspecialchars($_GET['postcodefrom']);
-                                                                                                                                                                                                } else {
-                                                                                                                                                                                                    echo '';
-                                                                                                                                                                                                } ?>">
+                                                <input class="form-control h-75" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php echo isset($_POST['postcode_from']) ? htmlspecialchars($_POST['postcode_from']) : (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : ''); ?>">
                                                 <div id="errMsg">
                                                     <span style="color:#ff0000;"><?= isset($err) ? $err : ''; ?></span>
                                                 </div>
@@ -253,14 +265,7 @@
                                             </div>
 
                                             <div class="col-6 col-md-6">
-                                                <input class="form-control h-75" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?php
-                                                                                                                                                                                            if (post('postcode_to')) {
-                                                                                                                                                                                                echo htmlspecialchars(post('postcode_to'));
-                                                                                                                                                                                            } else  if (isset($_GET['postcodeto'])) {
-                                                                                                                                                                                                echo htmlspecialchars($_GET['postcodeto']);
-                                                                                                                                                                                            } else {
-                                                                                                                                                                                                echo '';
-                                                                                                                                                                                            } ?>">
+                                                <input class="form-control h-75" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?php echo isset($_POST['postcode_to']) ? htmlspecialchars($_POST['postcode_to']) : (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : ''); ?>">
                                                 <div id="errMsg">
                                                     <span style="color:#ff0000;"><?= isset($err2) ? $err2 : ''; ?></span>
                                                 </div>
@@ -298,14 +303,7 @@
                                             </div>
 
                                             <div class="col-6 col-md-6">
-                                                <input class="form-control h-75" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php
-                                                                                                                                                                                                if (post('postcode_from')) {
-                                                                                                                                                                                                    echo htmlspecialchars(post('postcode_from'));
-                                                                                                                                                                                                } else if (isset($_GET['postcodefrom'])) {
-                                                                                                                                                                                                    echo htmlspecialchars($_GET['postcodefrom']);
-                                                                                                                                                                                                } else {
-                                                                                                                                                                                                    echo '';
-                                                                                                                                                                                                } ?>">
+                                                <input class="form-control h-75" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php echo post('postcode_from') ? htmlspecialchars(post('postcode_from')) : (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : ''); ?>">
                                                 <div id="errMsg">
                                                     <span style="color:#ff0000;"><?= isset($err6) ? $err6 : ''; ?></span>
                                                 </div>
@@ -319,7 +317,7 @@
                                             <div class="col-6 col-md-6">
                                                 <select class="form-select mb-3 h-75" id="to" name="to">
                                                     <?php
-                                                    $all_country = getCountry('all');
+                                                    $all_country = getCountry('all',$connect);
                                                     foreach ($all_country as $key => $val) {
 
                                                         if (strcasecmp($key, $country) == 0)
@@ -342,14 +340,7 @@
                                             </div>
 
                                             <div class="col-6 col-md-6">
-                                                <input class="form-control h-75" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?php
-                                                                                                                                                                                            if (post('postcode_to')) {
-                                                                                                                                                                                                echo htmlspecialchars(post('postcode_to'));
-                                                                                                                                                                                            } else  if (isset($_GET['postcodeto'])) {
-                                                                                                                                                                                                echo htmlspecialchars($_GET['postcodeto']);
-                                                                                                                                                                                            } else {
-                                                                                                                                                                                                echo '';
-                                                                                                                                                                                            } ?>">
+                                                <input class="form-control h-75" type="text" id="postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?php echo post('postcode_to') ? htmlspecialchars(post('postcode_to')) : (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : ''); ?>">
                                                 <div id="errMsg">
                                                     <span style="color:#ff0000;"><?= isset($err7) ? $err7 : ''; ?></span>
                                                 </div>
@@ -407,6 +398,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                     <?php
                                     $num = 1;
                                     foreach ($rstRateCheck['result'] as $result => $a) {
