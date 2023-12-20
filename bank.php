@@ -159,7 +159,7 @@ if (post('actionBtn')) {
                 } else if ($pageAction == 'Edit') {
                     $log['oldval'] = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($tblName, (isset($returnData) ? '' : $errorMsg), $oldvalarr, $chgvalarr);
                 }
 
                 audit_log($log);

@@ -254,6 +254,28 @@ function getData($search_val, $val, $tbl, $conn)
 		return $result;
 }
 
+function getSingleData($search_val, $val, $tbl, $conn)
+{
+
+	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
+
+	//Checking a status is available in data field or not then check a val is exist or not
+	if ($statusAvailable) {
+		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+	} else {
+		$chk_val = $val == '' ? "" : "WHERE $val";
+	}
+	//combine together to process a query
+	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc LIMIT 1";
+
+	$result = $conn->query($query);
+
+	if (empty($result) && $result->num_rows == 0)
+		return false;
+	else
+		return $result;
+}
+
 function generateDBData($tblname, $conn)
 {
 	$rst = getData('*', '', $tblname, $conn);
@@ -628,7 +650,7 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
+function actMsgLog($tblName, $errorMsg, $oldvalarr = array(), $chgvalarr = array())
 {
 	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
 

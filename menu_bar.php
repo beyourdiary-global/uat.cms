@@ -69,10 +69,10 @@ $menuList = array(
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37')
                 ),
-                'pin' => array('36'),
+                'pin' => array('37'),
             ),
         ),
-        'pin' => array('36')
+        'pin' => array('36','37')
     ),
     array(
         'Other',
