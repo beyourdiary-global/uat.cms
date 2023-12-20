@@ -279,6 +279,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
+
                             <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
                             <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                             <?php if (isset($name_err)) { ?>
@@ -304,6 +305,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
+
                             <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact"><?php echo $pageTitle ?> Contact</label>
                             <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact" value="<?php
                                                                                                                                 if (isset($dataExisted) && isset($row['contact']) && !isset($mrcht_contact)) {

@@ -647,3 +647,52 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorM
 
 	return $actMsg;
 }
+
+// Function to update previous and final amounts for transactions
+function updateTransactionAmounts($finance_connect, $table_name) {
+    // Initialize an associative array to store previous amounts for each bank and currency combination
+    $prevAmounts = array();
+
+    // Select all transactions ordered by id
+    $query = "SELECT id, `type`, amount, bank, currency, `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+    $result = mysqli_query($finance_connect, $query);
+
+    if (!$result) {
+        die("Error reading records: " . mysqli_error($finance_connect));
+    }
+
+    // Loop through each transaction
+    while ($row = mysqli_fetch_assoc($result)) {
+        $id = $row['id'];
+        $type = $row['type'];
+        $amount = $row['amount'];
+        $currency = $row['currency'];
+        $bank = $row['bank'];
+
+        $key = $bank . '_' . $currency;
+
+        if (!isset($prevAmounts[$key])) {
+            $prevAmounts[$key] = 0;
+        }
+        $prevFinalAmt = $prevAmounts[$key];
+
+        // Calculate final_amt based on transaction type
+        if ($type === 'Add') {
+            $finalAmt = $prevFinalAmt + $amount;
+        } else if ($type === 'Deduct') {
+            $finalAmt = $prevFinalAmt - $amount;
+        }
+
+        // Update the row in the database
+        $updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
+        $updateResult = mysqli_query($finance_connect, $updateQuery);
+
+        if (!$updateResult) {
+            die("Update failed: " . mysqli_error($finance_connect));
+        }
+
+        $prevAmounts[$key] = $finalAmt;
+    }
+	return true;
+}
+?>
