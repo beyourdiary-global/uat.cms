@@ -8,7 +8,7 @@ $redirect_page = $SITEURL . '/cus_segmentation_table.php';
 
 // to display data to input
 if ($cur_segmentation_id) {
-    $rst = getData('*', "id = '$cur_segmentation_id'", CUR_SEGMENTATION, $connect);
+    $rst = getData('*', "id = '$cur_segmentation_id'", '', CUR_SEGMENTATION, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -80,7 +80,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$cur_segmentation_id'", CUR_SEGMENTATION, $connect);
+                    $rst = getData('*', "id = '$cur_segmentation_id'", '', CUR_SEGMENTATION, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -161,7 +161,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", CUR_SEGMENTATION, $connect);
+            $rst = getData('*', "id = '$id'", '', CUR_SEGMENTATION, $connect);
             $row = $rst->fetch_assoc();
 
             $cur_segmentation_id = $row['id'];

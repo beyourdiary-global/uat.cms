@@ -8,7 +8,7 @@ $redirect_page = $SITEURL . '/holiday_table.php';
 
 // to display data to input
 if ($holiday_id) {
-    $rst = getData('*', "id = '$holiday_id'", HOLIDAY, $connect);
+    $rst = getData('*', "id = '$holiday_id'", '', HOLIDAY, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -77,7 +77,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$holiday_id'", HOLIDAY, $connect);
+                    $rst = getData('*', "id = '$holiday_id'", '', HOLIDAY, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -144,7 +144,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", HOLIDAY, $connect);
+            $rst = getData('*', "id = '$id'", '', HOLIDAY, $connect);
             $row = $rst->fetch_assoc();
 
             $holiday_id = $row['id'];

@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/race_table.php';
 // to display data to input
 if($race_id)
 {
-    $rst = getData('*',"id = '$race_id'",RACE,$connect);
+    $rst = getData('*',"id = '$race_id'", '',RACE,$connect);
 
     if($rst != false)
     {
@@ -75,7 +75,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$race_id'",RACE,$connect);
+                    $rst = getData('*',"id = '$race_id'",'',RACE,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -143,7 +143,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",RACE,$connect);
+            $rst = getData('*',"id = '$id'",'',RACE,$connect);
             $row = $rst->fetch_assoc();
 
             $race_id = $row['id'];

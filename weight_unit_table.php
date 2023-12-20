@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/weight_unit.php';
-$result = getData('*', '', WGT_UNIT, $connect);
+$result = getData('*', '', '', WGT_UNIT, $connect);
 ?>
 
 <!DOCTYPE html>

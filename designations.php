@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/designations_table.php';
 // to display data to input
 if($desig_id)
 {
-    $rst = getData('*',"id = '$desig_id'",DESIG,$connect);
+    $rst = getData('*',"id = '$desig_id'",'',DESIG,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$desig_id'",DESIG,$connect);
+                    $rst = getData('*',"id = '$desig_id'",'',DESIG,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -162,7 +162,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",DESIG,$connect);
+            $rst = getData('*',"id = '$id'",'',DESIG,$connect);
             $row = $rst->fetch_assoc();
 
             $desig_id = $row['id'];

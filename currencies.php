@@ -8,7 +8,7 @@ $redirect_page = $SITEURL . '/currencies_table.php';
 
 // to display data to input
 if ($currencies_id) {
-    $rst = getData('*', "id = '$currencies_id'", CURRENCIES, $connect);
+    $rst = getData('*', "id = '$currencies_id'", '', CURRENCIES, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -20,7 +20,7 @@ if (!($currencies_id) && !($act))
     echo ("<script>location.href = '$redirect_page';</script>");
 
 // to list out the currency unit for selection 
-$cur_list_result = getData('*', '', CUR_UNIT, $connect);
+$cur_list_result = getData('*', '', '', CUR_UNIT, $connect);
 
 // currency unit
 $cur_unit_arr = array();
@@ -95,7 +95,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$currencies_id'", CURRENCIES, $connect);
+                    $rst = getData('*', "id = '$currencies_id'", '', CURRENCIES, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -180,7 +180,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", CURRENCIES, $connect);
+            $rst = getData('*', "id = '$id'", '', CURRENCIES, $connect);
             $row = $rst->fetch_assoc();
 
             $currencies_id = $row['id'];

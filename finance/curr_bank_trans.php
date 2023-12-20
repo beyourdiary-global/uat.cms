@@ -22,7 +22,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($row_id) { //edit/remove/view
-    $rst = getSingleData('*', "id = '$row_id'", CURR_BANK_TRANS, $finance_connect);
+    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', CURR_BANK_TRANS, $finance_connect);
     
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -61,10 +61,10 @@ if (!($row_id) && !($act)) {
 }
 
 //dropdown list for currency
-$cur_list_result = getData('*', '', CUR_UNIT, $connect);
+$cur_list_result = getData('*', '', '', CUR_UNIT, $connect);
 
 //dropdown list for bank
-$bank_list_result = getData('*', '', BANK, $connect);
+$bank_list_result = getData('*', '', '', BANK, $connect);
 
 if (post('actionBtn')) {
     $cba_type = postSpaceFilter("cba_type");
@@ -211,7 +211,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getSingleData('*', "id = '$row_id'", CURR_BANK_TRANS, $finance_connect);
+                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1',CURR_BANK_TRANS, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -372,20 +372,20 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getSingleData('*', "id = '$id'", CURR_BANK_TRANS, $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', CURR_BANK_TRANS, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $row_id = $row['id'];
             $trans_id = $row['transactionID'];
-
+            $_SESSION['delChk'] = 1;
             //SET the record status to 'D'
             deleteRecord(CURR_BANK_TRANS, $row_id, $trans_id, $finance_connect, $cdate, $ctime, $pageTitle);
-            $_SESSION['delChk'] = 1;
-            
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
+        //update rows after deletion
         updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
+        
     }
 }
 

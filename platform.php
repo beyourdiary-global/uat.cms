@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/platform_table.php';
 // to display data to input
 if($pltf_id)
 {
-    $rst = getData('*',"id = '$pltf_id'",PLTF,$connect);
+    $rst = getData('*',"id = '$pltf_id'",'',PLTF,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$pltf_id'",PLTF,$connect);
+                    $rst = getData('*',"id = '$pltf_id'",'',PLTF,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -163,7 +163,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PLTF,$connect);
+            $rst = getData('*',"id = '$id'",'',PLTF,$connect);
             $row = $rst->fetch_assoc();
 
             $pltf_id = $row['id'];

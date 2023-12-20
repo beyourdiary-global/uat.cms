@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/department.php';
-$result = getData('*', '', DEPT, $connect);
+$result = getData('*', '', '', DEPT, $connect);
 ?>
 
 <!DOCTYPE html>

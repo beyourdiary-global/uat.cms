@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/employeeDetails.php';
-$result = getData('*', '', EMPPERSONALINFO, $connect);
+$result = getData('*', '', '', EMPPERSONALINFO, $connect);
 
 ?>
 
@@ -93,7 +93,7 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['name'] ?></td>
 
                             <?php
-                            $resultIDType = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
+                            $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
 
                             while ($rowIDType = $resultIDType->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
@@ -106,7 +106,7 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['date_of_birth'] ?></td>
 
                             <?php
-                            $resultRace = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
+                            $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
 
                             while ($rowRace = $resultRace->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowRace['name'] . "</td>";
@@ -116,7 +116,7 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                             <td scope="row"><?= $row['residence_status'] ?></td>
 
                             <?php
-                            $resultNationality = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
+                            $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
 
                             while ($rowNationality = $resultNationality->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowNationality['name'] . "</td>";
@@ -133,7 +133,7 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
 
                             <?php
 
-                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
+                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
 
                             while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
                                 echo "<td scope='row'>" . $rowMrtSts['name'] . "</td>";

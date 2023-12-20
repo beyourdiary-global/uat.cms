@@ -10,7 +10,7 @@ $tblname = WGT_UNIT;
 // to display data to input
 if($wgt_unit_id)
 {
-    $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
+    $rst = getData('*',"id = '$wgt_unit_id'",'',$tblname,$connect);
 
     if($rst != false)
     {
@@ -82,7 +82,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$wgt_unit_id'",$tblname,$connect);
+                    $rst = getData('*',"id = '$wgt_unit_id'",'',$tblname,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -166,7 +166,7 @@ if(post('act') == 'D')
         try
         {
             // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
+            $rst = getData('*',"id = '$id'",'',$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $wgt_unit_id = $row['id'];

@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/leave_status_table.php';
 // to display data to input
 if($leave_status_id)
 {
-    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+    $rst = getData('*',"id = '$leave_status_id'",'',L_STS,$connect);
 
     if($rst != false)
     {
@@ -80,7 +80,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$leave_status_id'",L_STS,$connect);
+                    $rst = getData('*',"id = '$leave_status_id'",'',L_STS,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -163,7 +163,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",L_STS,$connect);
+            $rst = getData('*',"id = '$id'",'',L_STS,$connect);
             $row = $rst->fetch_assoc();
 
             $leave_status_id = $row['id'];

@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/tag.php';
-$result = getData('*', '', TAG, $connect);
+$result = getData('*', '', '', TAG, $connect);
 
 ?>
 

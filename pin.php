@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/pin_table.php';
 // to display data to input
 if($pin_id)
 {
-    $rst = getData('*',"id = '$pin_id'",PIN,$connect);
+    $rst = getData('*',"id = '$pin_id'",'',PIN,$connect);
 
     if($rst != false)
     {
@@ -80,7 +80,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$pin_id'",PIN,$connect);
+                    $rst = getData('*',"id = '$pin_id'",'',PIN,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -163,7 +163,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PIN,$connect);
+            $rst = getData('*',"id = '$id'",'',PIN,$connect);
             $row = $rst->fetch_assoc();
 
             $pin_id = $row['id'];

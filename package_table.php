@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/package.php';
-$result = getData('*', '', PKG, $connect);
+$result = getData('*', '', '', PKG, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +78,7 @@ $result = getData('*', '', PKG, $connect);
                             <td scope="row">
                                 <?php
                                 $cur_unit_id = $row['currency_unit'];
-                                $rst2 = getData('unit', "id = '$cur_unit_id'", CUR_UNIT, $connect);
+                                $rst2 = getData('unit', "id = '$cur_unit_id'", '', CUR_UNIT, $connect);
                                 $row2 = $rst2->fetch_assoc();
                                 echo $row2['unit'] . ' ' . $row['price'];
                                 ?>

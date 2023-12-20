@@ -10,7 +10,7 @@ $tblname = PROD;
 // to display data to input
 if($prod_id)
 {
-    $rst = getData('*',"id = '$prod_id'",$tblname,$connect);
+    $rst = getData('*',"id = '$prod_id'",'',$tblname,$connect);
 
     if($rst != false)
     {
@@ -162,7 +162,7 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$prod_id'",$tblname,$connect);
+                        $rst = getData('*',"id = '$prod_id'",'',$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -286,7 +286,7 @@ if(post('act') == 'D')
         try
         {
             // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
+            $rst = getData('*',"id = '$id'",'',$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $prod_id = $row['id'];
@@ -396,7 +396,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $brand_rst = getData('name',"id = '$echoVal'",BRAND,$connect);
+                                    $brand_rst = getData('name',"id = '$echoVal'",'',BRAND,$connect);
                                     $brand_row = $brand_rst->fetch_assoc();
                                     echo $brand_row['name'];
                                 }
@@ -432,7 +432,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $weight_rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
+                                    $weight_rst = getData('unit',"id = '$echoVal'",'',WGT_UNIT,$connect);
                                     $weight_row = $weight_rst->fetch_assoc();
                                     echo $weight_row['unit'];
                                 }
@@ -480,7 +480,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal))
                                 {
-                                    $currency_unit_rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
+                                    $currency_unit_rst = getData('unit',"id = '$echoVal'",'',CUR_UNIT,$connect);
                                     $currency_unit_row = $currency_unit_rst->fetch_assoc();
                                     echo $currency_unit_row['unit'];
                                 }
@@ -573,7 +573,7 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
 
                                 if(isset($echoVal) && $echoVal != '')
                                 {
-                                    $product_rst = getData('name',"id = '$echoVal'",PROD,$connect);
+                                    $product_rst = getData('name',"id = '$echoVal'",'',PROD,$connect);
                                     $product_row = $product_rst->fetch_assoc();
                                     echo $product_row['name'];
                                 }

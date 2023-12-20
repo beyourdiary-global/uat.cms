@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/identityType.php';
-$result = getData('*', '', ID_TYPE, $connect);
+$result = getData('*', '', '', ID_TYPE, $connect);
 
 ?>
 

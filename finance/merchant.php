@@ -10,7 +10,7 @@ $redirect_page = $SITEURL . '/finance/merchant_table.php';
 // to display data to input
 if ($merchant_id) {
     
-    $rst = getData('*', "id = '$merchant_id'", MERCHANT, $finance_connect);
+    $rst = getData('*', "id = '$merchant_id'", '', MERCHANT, $finance_connect);
     //$rst = false; //testing script
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -116,7 +116,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$merchant_id'", MERCHANT, $finance_connect);
+                    $rst = getData('*', "id = '$merchant_id'", '', MERCHANT, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -225,7 +225,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", MERCHANT, $finance_connect);
+            $rst = getData('*', "id = '$id'", '', MERCHANT, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $merchant_id = $row['id'];

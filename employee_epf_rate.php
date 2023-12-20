@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/employee_epf_rate_table.php';
 // to display data to input
 if($employee_epf_rate_id)
 {
-    $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
+    $rst = getData('*',"id = '$employee_epf_rate_id'",'',EMPLOYEE_EPF,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$employee_epf_rate_id'",EMPLOYEE_EPF,$connect);
+                    $rst = getData('*',"id = '$employee_epf_rate_id'",'',EMPLOYEE_EPF,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -162,7 +162,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",EMPLOYEE_EPF,$connect);
+            $rst = getData('*',"id = '$id'",'',EMPLOYEE_EPF,$connect);
             $row = $rst->fetch_assoc();
 
             $employee_epf_rate_id = $row['id'];

@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/pin.php';
-$result = getData('*', '', PIN, $connect);
+$result = getData('*', '', '', PIN, $connect);
 ?>
 
 <!DOCTYPE html>

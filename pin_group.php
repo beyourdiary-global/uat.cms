@@ -6,11 +6,11 @@ $pin_grp_id = input('id');
 $act = input('act');
 
 $redirect_page = $SITEURL . '/pin_group_table.php';
-$pin_result = getData('*','',PIN,$connect);
+$pin_result = getData('*','','',PIN,$connect);
 
 if($pin_grp_id)
 {
-    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
+    $rst = getData('*',"id = '$pin_grp_id'",'',PIN_GRP,$connect);
 
     if($rst != false)
     {
@@ -86,7 +86,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
+                    $rst = getData('*',"id = '$pin_grp_id'",'',PIN_GRP,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -175,7 +175,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PIN_GRP,$connect);
+            $rst = getData('*',"id = '$id'",'',PIN_GRP,$connect);
             $row = $rst->fetch_assoc();
 
             $pin_grp_id = $row['id'];

@@ -10,7 +10,7 @@ $tblname = USR_USER;
 // to display data to input
 if($user_id)
 {
-    $rst = getData('*',"id = '$user_id'",$tblname,$connect);
+    $rst = getData('*',"id = '$user_id'",'',$tblname,$connect);
 
     if($rst != false)
     {
@@ -120,7 +120,7 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$user_id'",$tblname,$connect);
+                        $rst = getData('*',"id = '$user_id'",'',$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -208,7 +208,7 @@ if(post('act') == 'D')
         try
         {
             // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
+            $rst = getData('*',"id = '$id'",'',$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $user_id = $row['id'];
@@ -340,7 +340,7 @@ if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                             <select class="form-select" id="user_group" name="user_group" <?php if($act == '') echo "disabled"?>>
                             <option value="" disabled selected style="display:none;">Select User Group</option>
                             <?php
-                                $user_grp_list = getData('id,name','',USR_GRP,$connect);
+                                $user_grp_list = getData('id,name','','',USR_GRP,$connect);
                                 if($user_grp_list)
                                 {
                                     while($row2 = $user_grp_list->fetch_assoc())

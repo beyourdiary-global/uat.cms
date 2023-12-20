@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/payment_method_table.php';
 // to display data to input
 if($payment_method_id)
 {
-    $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
+    $rst = getData('*',"id = '$payment_method_id'",'',PAY_METH,$connect);
 
     if($rst != false)
     {
@@ -88,7 +88,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$payment_method_id'",PAY_METH,$connect);
+                    $rst = getData('*',"id = '$payment_method_id'",'',PAY_METH,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -185,7 +185,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PAY_METH,$connect);
+            $rst = getData('*',"id = '$id'",'',PAY_METH,$connect);
             $row = $rst->fetch_assoc();
 
             $payment_method_id = $row['id'];

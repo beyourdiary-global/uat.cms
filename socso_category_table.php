@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/socso_category.php';
-$result = getData('*', '', SOCSO_CATH, $connect);
+$result = getData('*', '', '', SOCSO_CATH, $connect);
 
 ?>
 

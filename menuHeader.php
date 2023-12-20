@@ -9,7 +9,7 @@
     include_once "header.php";
   
     $img_path = $SITEURL.'/'.img_server . 'themes/';
-    $rst = getData('*', "id = '1'", 'projects', $connect);
+    $rst = getData('*', "id = '1'", '', 'projects', $connect);
 
     if ($rst != false) {
         $dataExisted = 1;

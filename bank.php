@@ -27,7 +27,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {

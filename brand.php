@@ -10,7 +10,7 @@ $tblname = BRAND;
 
 // to display data to input
 if ($brand_id) {
-    $rst = getData('*', "id = '$brand_id'", $tblname, $connect);
+    $rst = getData('*', "id = '$brand_id'", '', $tblname, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -78,7 +78,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$brand_id'", $tblname, $connect);
+                    $rst = getData('*', "id = '$brand_id'", '', $tblname, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -154,7 +154,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", $tblname, $connect);
+            $rst = getData('*', "id = '$id'", '', $tblname, $connect);
             $row = $rst->fetch_assoc();
 
             $brand_id = $row['id'];

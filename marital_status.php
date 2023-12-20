@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/marital_status_table.php';
 // to display data to input
 if($mrtl_id)
 {
-    $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
+    $rst = getData('*',"id = '$mrtl_id'",'',MRTL_STATUS,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$mrtl_id'",MRTL_STATUS,$connect);
+                    $rst = getData('*',"id = '$mrtl_id'",'',MRTL_STATUS,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -162,7 +162,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",MRTL_STATUS,$connect);
+            $rst = getData('*',"id = '$id'",'',MRTL_STATUS,$connect);
             $row = $rst->fetch_assoc();
 
             $mrtl_id = $row['id'];

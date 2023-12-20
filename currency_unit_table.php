@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/currency_unit.php';
-$result = getData('*', '', CUR_UNIT, $connect);
+$result = getData('*', '', '', CUR_UNIT, $connect);
 ?>
 
 <!DOCTYPE html>

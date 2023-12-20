@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/em_type_status_table.php';
 // to display data to input
 if($em_type_status_id)
 {
-    $rst = getData('*',"id = '$em_type_status_id'",EM_TYPE_STATUS,$connect);
+    $rst = getData('*',"id = '$em_type_status_id'",'',EM_TYPE_STATUS,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$em_type_status_id'",EM_TYPE_STATUS,$connect);;
+                    $rst = getData('*',"id = '$em_type_status_id'",'',EM_TYPE_STATUS,$connect);;
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -162,7 +162,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",EM_TYPE_STATUS,$connect);
+            $rst = getData('*',"id = '$id'",'',EM_TYPE_STATUS,$connect);
             $row = $rst->fetch_assoc();
 
             $em_type_status_id = $row['id'];

@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/employer_epf_rate.php';
-$result = getData('*', '', EMPLOYER_EPF, $connect);
+$result = getData('*', '', '', EMPLOYER_EPF, $connect);
 ?>
 
 <!DOCTYPE html>

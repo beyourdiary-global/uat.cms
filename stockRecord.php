@@ -7,7 +7,7 @@ $pkg_id = input('pkgid');
 $whse_id = input('whseid');
 
 // checking
-$rst_stock = getData('*',"barcode = $barcode",STK_REC,$connect);
+$rst_stock = getData('*',"barcode = $barcode",'',STK_REC,$connect);
 
 if($rst_stock && $rst_stock != 0)
     $redirect = "stockIn.php?barcode=$barcode&pkg_id=$pkg_id&whse_id=$whse_id";

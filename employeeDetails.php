@@ -12,8 +12,8 @@ $tblnameTwo = EMPINFO;
 
 // to display data to input
 if ($empDetailsID) {
-    $rstOne = getData('*', "id = $empDetailsID", $tblnameOne, $connect);
-    $rstTwo = getData('*', "employee_id = $empDetailsID", $tblnameTwo, $connect);
+    $rstOne = getData('*', "id = $empDetailsID", '',$tblnameOne, $connect);
+    $rstTwo = getData('*', "employee_id = $empDetailsID", '', $tblnameTwo, $connect);
 
     if ($rstOne != false && $rstTwo != false) {
         $dataExisted = 1;
@@ -473,7 +473,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", $tblnameOne, $connect);
+            $rst = getData('*', "id = '$id'", '', $tblnameOne, $connect);
             $row = $rst->fetch_assoc();
 
             $employeeName = $row['name'];
@@ -482,7 +482,7 @@ if (post('act') == 'D') {
             deleteRecord($tblnameOne, $id, $employeeName, $connect, $cdate, $ctime, $pageTitle);
 
             // take name
-            $rst = getData('*', "employee_id = '$id'", $tblnameTwo, $connect);
+            $rst = getData('*', "employee_id = '$id'", '', $tblnameTwo, $connect);
             $row = $rst->fetch_assoc();
 
             //SET the record status to 'D'
@@ -586,7 +586,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="identityTypeLbl" for="identityType">Identity type </label>
                                     <select class="form-select" aria-label="Default select example" name="identityType" id="identityType" required>
                                         <?php
-                                        $result = getData('*', '', ID_TYPE, $connect);
+                                        $result = getData('*', '', '', ID_TYPE, $connect);
 
                                         echo "<option disabled selected>Select identity type</option>";
 
@@ -643,7 +643,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="raceLbl" for="employeeRace">Race</label>
                                     <select class="form-select" aria-label="Default select example" name="employeeRace" id="employeeRace">
                                         <?php
-                                        $result = getData('*', '', RACE, $connect);
+                                        $result = getData('*', '', '', RACE, $connect);
 
                                         echo "<option disabled selected>Select employee race</option>";
 
@@ -668,7 +668,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="nationalityLbl" for="employeeNationality">Nationality <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="employeeNationality" id="employeeNationality" required>
                                         <?php
-                                        $result = getData('*', '', 'countries', $connect);
+                                        $result = getData('*', '', '', 'countries', $connect);
 
                                         echo "<option disabled selected>Select employee nationality</option>";
 
@@ -751,7 +751,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="maritalStatusLbl" for="maritalStatus">Marital status <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="maritalStatus" id="maritalStatus" required>
                                         <?php
-                                        $result = getData('*', '', MRTL_STATUS, $connect);
+                                        $result = getData('*', '', '',MRTL_STATUS, $connect);
 
                                         echo "<option disabled selected>Select employee race</option>";
 
@@ -818,7 +818,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="paymentMethodLbl" for="paymentMethod">Payment Method <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="paymentMethod" id="paymentMethod" required>
                                         <?php
-                                        $result = getData('*', '', PAY_METH, $connect);
+                                        $result = getData('*', '', '', PAY_METH, $connect);
                                         echo "<option disabled selected>Select employee preferred payment method</option>";
 
                                         while ($rowPayMeth = $result->fetch_assoc()) {
@@ -833,7 +833,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="bankLbl" for="bankName">BANK<span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="bankName" id="bankName" required>
                                         <?php
-                                        $result = getData('*', '', BANK, $connect);
+                                        $result = getData('*', '', '', BANK, $connect);
                                         echo "<option disabled selected>Select preferred bank</option>";
 
                                         while ($rowPayMeth = $result->fetch_assoc()) {
@@ -880,7 +880,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="departmentLbl" for="department">Department <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="department" id="department" required>
                                         <?php
-                                        $result = getData('*', '', DEPT, $connect);
+                                        $result = getData('*', '', '', DEPT, $connect);
 
                                         echo "<option  disabled selected>Select employee department</option>";
 
@@ -905,7 +905,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="employmentStatusLbl" for="employmentStatus">Employment Status <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="employmentStatus" id="employmentStatus" required>
                                         <?php
-                                        $result = getData('*', '', EM_TYPE_STATUS, $connect);
+                                        $result = getData('*', '', '', EM_TYPE_STATUS, $connect);
 
                                         echo "<option disabled selected>Select employee status</option>";
 
@@ -921,7 +921,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="managerAprroveLeaveLbl" for="managerAprroveLeave">Manager Approval For Leave <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="managerAprroveLeave" id="managerAprroveLeave" required>
                                         <?php
-                                        $result = getData('*', '', USR_USER, $connect);
+                                        $result = getData('*', '', '', USR_USER, $connect);
 
                                         echo "<option  disabled selected>Select manager in charge</option>";
 
@@ -963,7 +963,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="currencyUnitLbl" for="currencyUnit">Currency Unit <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="currencyUnit" id="currencyUnit" required>
                                         <?php
-                                        $result = getData('*', '', CUR_UNIT, $connect);
+                                        $result = getData('*', '', '', CUR_UNIT, $connect);
 
                                         echo "<option  disabled selected>Select currency unit</option>";
 
@@ -1024,7 +1024,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="employeeEpfRateLbl" for="employeeEpfRate">Employee EPF Rate</label>
                                     <select class="form-select" aria-label="Default select example" name="employeeEpfRate" id="employeeEpfRate">
                                         <?php
-                                        $result = getData('*', '', EMPLOYEE_EPF, $connect);
+                                        $result = getData('*', '', '', EMPLOYEE_EPF, $connect);
 
                                         echo "<option disabled selected>Select employee epf rate</option>";
 
@@ -1040,7 +1040,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="employerEpfRateLbl" for="employerEpfRate">Employer EPF Rate</label>
                                     <select class="form-select" aria-label="Default select example" name="employerEpfRate" id="employerEpfRate">
                                         <?php
-                                        $result = getData('*', '', EMPLOYER_EPF, $connect);
+                                        $result = getData('*', '', '', EMPLOYER_EPF, $connect);
 
                                         echo "<option disabled selected>Select employer epf rate</option>";
 
@@ -1066,7 +1066,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
                                     <label class="form-label" id="socsoCtrLbl" for="socsoCtr">SOCSO Category<span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="socsoCtr" id="socsoCtr" required>
                                         <?php
-                                        $result = getData('*', '', SOCSO_CATH, $connect);
+                                        $result = getData('*', '', '', SOCSO_CATH, $connect);
 
                                         echo "<option disabled selected>Select employee socso category</option>";;
 

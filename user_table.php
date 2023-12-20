@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/user.php';
-$result = getData('*', '', USR_USER, $connect);
+$result = getData('*', '', '', USR_USER, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -77,7 +77,7 @@ $result = getData('*', '', USR_USER, $connect);
                             <td scope="row">
                                 <?php
                                 $access_id = $row['access_id'];
-                                $rst2 = getData('name', "id = '$access_id'", USR_GRP, $connect);
+                                $rst2 = getData('name', "id = '$access_id'", '', USR_GRP, $connect);
                                 $row2 = $rst2->fetch_assoc();
                                 echo $row2['name'];
                                 ?>

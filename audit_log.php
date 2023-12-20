@@ -63,7 +63,7 @@ $result = mysqli_query($connect, $query);
                         <?php
                         if (mysqli_num_rows($result) >= 1) {
                             // get username
-                            $rst = getData('id, username', '', USR_USER, $connect);
+                            $rst = getData('id, username', '', '', USR_USER, $connect);
                             $username_arr = array();
                             if ($rst != false) {
                                 while ($row2 = $rst->fetch_assoc()) {

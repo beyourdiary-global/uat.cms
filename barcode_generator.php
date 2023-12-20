@@ -18,7 +18,7 @@ if(!file_exists($PNG_TEMP_DIR))
 // to display data to input
 if($product_id)
 {
-    $rst = getData('*',"id = '$product_id'",$tblname,$connect);
+    $rst = getData('*',"id = '$product_id'", '', $tblname,$connect);
 
     if($rst != false)
     {
@@ -57,7 +57,7 @@ if(post('actionBtn'))
 
             if(($product && $product != '') && ($page_no || ($page_no != '0')) && ($warehouse != 'noValue'))
             {
-                $rst_projInfo = getData("barcode_prefix,barcode_next_number","id='1'",PROJ,$connect);
+                $rst_projInfo = getData("barcode_prefix,barcode_next_number","id='1'",'',PROJ,$connect);
                 $projInfo = $rst_projInfo->fetch_assoc();
 
                 if($projInfo)
@@ -146,7 +146,7 @@ if(post('actionBtn'))
 
                                 if(isset($echoVal))
                                 {
-                                    $rst = getData('name',"id = '$echoVal'",$tblname,$connect);
+                                    $rst = getData('name',"id = '$echoVal'",'',$tblname,$connect);
                                     $row = $rst->fetch_assoc();
                                     if(isset($row['name'])) echo $row['name'];
                                 }
@@ -188,7 +188,7 @@ if(post('actionBtn'))
                             <select class="form-select" name="warehouse" id="warehouse">
                             <option value="noValue" <?php if(!isset($warehouse)) echo 'selected' ?>>--Please Choose--</option>
                             <?php
-                                $rst_warehouse_list = getData("id,name",'',WHSE,$connect);
+                                $rst_warehouse_list = getData("id,name",'','',WHSE,$connect);
                                 while($warehouse_list = $rst_warehouse_list->fetch_assoc())
                                 {
                                     $whse_id = $warehouse_list['id'];

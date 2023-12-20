@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/marital_status.php';
-$result = getData('*', '', MRTL_STATUS, $connect);
+$result = getData('*', '', '', MRTL_STATUS, $connect);
 ?>
 
 <!DOCTYPE html>

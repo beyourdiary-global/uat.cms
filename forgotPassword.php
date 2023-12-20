@@ -6,7 +6,7 @@ include "include/connection.php";
 
 
 $img_path = img_server . 'themes/';
-$rst = getData('*', "id = '1'", PROJ, $connect);
+$rst = getData('*', "id = '1'", '', PROJ, $connect);
 
 if ($rst != false) {
     $dataExisted = 1;

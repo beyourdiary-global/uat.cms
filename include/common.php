@@ -232,9 +232,8 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
-function getData($search_val, $val, $tbl, $conn)
+function getData($search_val, $val, $val2, $tbl, $conn)
 {
-
 	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
 	//Checking a status is available in data field or not then check a val is exist or not
@@ -243,30 +242,9 @@ function getData($search_val, $val, $tbl, $conn)
 	} else {
 		$chk_val = $val == '' ? "" : "WHERE $val";
 	}
+
 	//combine together to process a query
-	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc";
-
-	$result = $conn->query($query);
-
-	if (empty($result) && $result->num_rows == 0)
-		return false;
-	else
-		return $result;
-}
-
-function getSingleData($search_val, $val, $tbl, $conn)
-{
-
-	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
-
-	//Checking a status is available in data field or not then check a val is exist or not
-	if ($statusAvailable) {
-		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
-	} else {
-		$chk_val = $val == '' ? "" : "WHERE $val";
-	}
-	//combine together to process a query
-	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc LIMIT 1";
+	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
 
 	$result = $conn->query($query);
 
@@ -278,7 +256,7 @@ function getSingleData($search_val, $val, $tbl, $conn)
 
 function generateDBData($tblname, $conn)
 {
-	$rst = getData('*', '', $tblname, $conn);
+	$rst = getData('*', '', '', $tblname, $conn);
 	$data = array();
 	while ($row = $rst->fetch_assoc()) {
 		$data[] = $row;
@@ -333,7 +311,7 @@ function getCountry($param, $connect)
 {
 	$all_country = array();
 
-	$result = getData('*', '', 'countries', $connect);
+	$result = getData('*', '', '', 'countries', $connect);
 
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
@@ -359,7 +337,7 @@ function getCountry($param, $connect)
 
 function getCountryTelCode($param, $connect)
 {
-	$result = getData('*', 'code = "' . $param . '"', 'countries', $connect);
+	$result = getData('*', 'code = "' . $param . '"', '', 'countries', $connect);
 
 	if ($result) {
 		$row = $result->fetch_assoc();
@@ -712,6 +690,5 @@ function updateTransactionAmounts($finance_connect, $table_name) {
 
         $prevAmounts[$key] = $finalAmt;
     }
-	return true;
 }
 ?>

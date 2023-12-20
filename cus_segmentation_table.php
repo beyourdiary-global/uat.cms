@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/cus_segmentation.php';
-$result = getData('*', '', CUR_SEGMENTATION, $connect);
+$result = getData('*', '', '', CUR_SEGMENTATION, $connect);
 ?>
 
 <!DOCTYPE html>

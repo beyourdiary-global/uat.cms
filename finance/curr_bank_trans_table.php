@@ -5,14 +5,13 @@ include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/curr_bank_trans.php';
-$result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
+$result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -70,10 +69,10 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { 
-                        $curr_unit = getData('unit', "id='" . $row['currency'] . "'", CUR_UNIT, $connect);
+                        $curr_unit = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                         $row2 = $curr_unit->fetch_assoc();
 
-                        $bank = getData('name', "id='" . $row['bank'] . "'", BANK, $connect);
+                        $bank = getData('name', "id='" . $row['bank'] . "'", '', BANK, $connect);
                         $row3 = $bank->fetch_assoc();
                         ?>
                         

@@ -16,7 +16,7 @@ if (!file_exists($img_path)) {
 }
 
 // to display data to input
-$rst = getData('*', "", $tblname, $connect);
+$rst = getData('*', "",'', $tblname, $connect);
 
 if ($rst != false) {
     $dataExisted = 1;
@@ -115,7 +115,7 @@ if (post('actionBtn')) {
             $chgval = implode(",", $chgvalarr);
 
             // retake view data after edit
-            $rst = getData('*', "id = '1'", $tblname, $connect);
+            $rst = getData('*', "id = '1'", '', $tblname, $connect);
 
             $act = 'E';
 

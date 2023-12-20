@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/user_group.php';
-$result = getData('*', '', USR_GRP, $connect);
+$result = getData('*', '', '', USR_GRP, $connect);
 ?>
 
 <!DOCTYPE html>

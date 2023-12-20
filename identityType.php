@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/identityTypeTable.php';
 // to display data to input
 if ($identity_type_id) {
     
-    $rst = getData('*', "id = '$identity_type_id'", ID_TYPE, $connect);
+    $rst = getData('*', "id = '$identity_type_id'", '', ID_TYPE, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -75,7 +75,7 @@ if (post('actionBtn')) {
             } else {
                 try {
 
-                    $rst = getData('*', "id = '$identity_type_id'", ID_TYPE, $connect);
+                    $rst = getData('*', "id = '$identity_type_id'", '', ID_TYPE, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -155,7 +155,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", ID_TYPE, $connect);
+            $rst = getData('*', "id = '$id'", '', ID_TYPE, $connect);
             $row = $rst->fetch_assoc();
 
             $identity_type_id = $row['id'];

@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/em_type_status.php';
-$result = getData('*', '', EM_TYPE_STATUS, $connect);
+$result = getData('*', '', '', EM_TYPE_STATUS, $connect);
 ?>
 
 <!DOCTYPE html>

@@ -9,7 +9,7 @@ $tblname = L_TYPE;
 
 // to display data to input
 if ($leave_type_id) {
-    $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
+    $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -83,7 +83,7 @@ if (post('actionBtn')) {
                 } else {
                     try {
                         // take old value
-                        $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
+                        $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -157,7 +157,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take unit
-            $rst = getData('*', "id = '$id'", $tblname, $connect);
+            $rst = getData('*', "id = '$id'", '', $tblname, $connect);
             $row = $rst->fetch_assoc();
 
             $leave_type_id = $row['id'];

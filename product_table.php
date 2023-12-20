@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/product.php';
-$result = getData('*', '', PROD, $connect);
+$result = getData('*', '', '', PROD, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +79,7 @@ $result = getData('*', '', PROD, $connect);
                             <td scope="row">
                                 <?php
                                 $cur_unit_id = $row['currency_unit'];
-                                $rst2 = getData('unit', "id = '$cur_unit_id'", CUR_UNIT, $connect);
+                                $rst2 = getData('unit', "id = '$cur_unit_id'", '', CUR_UNIT, $connect);
                                 $row2 = $rst2->fetch_assoc();
                                 echo $row2['unit'] . ' ' . $row['cost'];
                                 ?>
@@ -87,7 +87,7 @@ $result = getData('*', '', PROD, $connect);
                             <td scope="row">
                                 <?php
                                 $wgt_unit_id = $row['weight_unit'];
-                                $rst2 = getData('unit', "id = '$wgt_unit_id'", WGT_UNIT, $connect);
+                                $rst2 = getData('unit', "id = '$wgt_unit_id'", '', WGT_UNIT, $connect);
                                 $row2 = $rst2->fetch_assoc();
                                 echo $row['weight'] . ' ' . $row2['unit'];
                                 ?>
@@ -96,7 +96,7 @@ $result = getData('*', '', PROD, $connect);
                                 <?php
                                 if ($row['parent_product'] != '') {
                                     $product_prod = $row['parent_product'];
-                                    $rst2 = getData('name', "id = '$product_prod'", PROD, $connect);
+                                    $rst2 = getData('name', "id = '$product_prod'", '', PROD, $connect);
                                     $row2 = $rst2->fetch_assoc();
                                     echo $row2['name'];
                                 }

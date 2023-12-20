@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/leave_status.php';
-$result = getData('*', '', L_STS, $connect);
+$result = getData('*', '', '', L_STS, $connect);
 ?>
 
 <!DOCTYPE html>

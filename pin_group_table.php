@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/pin_group.php';
-$result = getData('*', '', PIN_GRP, $connect);
+$result = getData('*', '', '', PIN_GRP, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +83,7 @@ $result = getData('*', '', PIN_GRP, $connect);
                                 $pin_arr = explode(",", $row['pins']);
                                 $pinname_arr = array();
                                 foreach ($pin_arr as $val) {
-                                    $pinname_result = getData('name', "id='$val'", PIN, $connect);
+                                    $pinname_result = getData('name', "id='$val'", '', PIN, $connect);
                                     $pinname_row = $pinname_result->fetch_assoc();
                                     array_push($pinname_arr, $pinname_row['name']);
                                 }

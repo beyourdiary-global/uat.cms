@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/prod_status_table.php';
 // to display data to input
 if($prod_status_id)
 {
-    $rst = getData('*',"id = '$prod_status_id'",PROD_STATUS,$connect);
+    $rst = getData('*',"id = '$prod_status_id'",'',PROD_STATUS,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$prod_status_id'",PROD_STATUS,$connect);
+                    $rst = getData('*',"id = '$prod_status_id'",'',PROD_STATUS,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -162,7 +162,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",PROD_STATUS,$connect);
+            $rst = getData('*',"id = '$id'",'',PROD_STATUS,$connect);
             $row = $rst->fetch_assoc();
 
             $prod_status_id = $row['id'];

@@ -9,7 +9,7 @@ $tblname = CUR_UNIT;
 
 // to display data to input
 if ($cur_unit_id) {
-    $rst = getData('*', "id = '$cur_unit_id'", $tblname, $connect);
+    $rst = getData('*', "id = '$cur_unit_id'", '', $tblname, $connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -72,7 +72,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old 
-                    $rst = getData('*', "id = '$cur_unit_id'", $tblname, $connect);
+                    $rst = getData('*', "id = '$cur_unit_id'", '', $tblname, $connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -148,7 +148,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", $tblname, $connect);
+            $rst = getData('*', "id = '$id'", '', $tblname, $connect);
             $row = $rst->fetch_assoc();
 
             $cur_unit_id = $row['id'];

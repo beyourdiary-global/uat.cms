@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/payment_method.php';
-$result = getData('*', '', PAY_METH, $connect);
+$result = getData('*', '', '',PAY_METH, $connect);
 ?>
 
 <!DOCTYPE html>

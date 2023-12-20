@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/currencies.php';
-$result = getData('*', '', CURRENCIES, $connect);
+$result = getData('*', '', '', CURRENCIES, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -72,9 +72,9 @@ $result = getData('*', '', CURRENCIES, $connect);
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        $cur_unit_name = getData('unit', "id='" . $row['default_currency_unit'] . "'", CUR_UNIT, $connect);
+                        $cur_unit_name = getData('unit', "id='" . $row['default_currency_unit'] . "'", '', CUR_UNIT, $connect);
                         $row2 = $cur_unit_name->fetch_assoc();
-                        $cur_unit_name = getData('unit', "id='" . $row['exchange_currency_unit'] . "'", CUR_UNIT, $connect);
+                        $cur_unit_name = getData('unit', "id='" . $row['exchange_currency_unit'] . "'", '', CUR_UNIT, $connect);
                         $row3 = $cur_unit_name->fetch_assoc();
                     ?>
                         <tr>

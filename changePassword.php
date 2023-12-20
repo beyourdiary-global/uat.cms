@@ -33,7 +33,7 @@ if($pageMode == 'userChgPassword')
         {
             if($new_password == $confirm_password)
             {
-                $rst = getData('*',"id = '$id'",USR_USER,$connect);
+                $rst = getData('*',"id = '$id'",'',USR_USER,$connect);
                 $row = $rst->fetch_assoc();
 
                 if(mysqli_num_rows($rst) == 1)
@@ -73,7 +73,7 @@ else if ($pageMode == 'emailRstPassword')
         {
             if($new_password == $confirm_password)
             {
-                $rst = getData('*',"email = '$email'",USR_USER,$connect);
+                $rst = getData('*',"email = '$email'",'',USR_USER,$connect);
                 $row = $rst->fetch_assoc();
 
                 if(mysqli_num_rows($rst) == 1)

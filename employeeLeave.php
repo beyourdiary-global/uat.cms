@@ -5,7 +5,7 @@ function employeeLeaveCheckColumn($connect, $empID)
     $tblName = EMPLEAVE;
 
     try {
-        $empLeaveResult = getData('*', '', L_TYPE, $connect);
+        $empLeaveResult = getData('*', '', '', L_TYPE, $connect);
 
         $empLeaveFields = "employeeID";
         $empLeaveValues = $empID;

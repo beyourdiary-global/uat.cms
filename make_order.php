@@ -79,7 +79,7 @@ if (post('actionBtn')) {
 
             // get unit
             $currency_unit = getCurrencyUnit($from);
-            $currency_unit_id = getData('*', "unit='$currency_unit'", CUR_UNIT, $connect);
+            $currency_unit_id = getData('*', "unit='$currency_unit'", '', CUR_UNIT, $connect);
             $currency_unit_id = $currency_unit_id->fetch_assoc();
             $currency_unit_id = $currency_unit_id['id'];
 
@@ -665,7 +665,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         <div class="input-group">
                                             <select class="form-select" aria-label="Default select example" name="curUnit" id="curUnit" style="border-radius:3px;height: 40px;" required data-toggle="tooltip" data-placement="right" title="Currency Unit">
                                                 <?php
-                                                $result = getData('*', '', CUR_UNIT, $connect);
+                                                $result = getData('*', '', '', CUR_UNIT, $connect);
 
                                                 while ($rowCurUnit = $result->fetch_assoc()) {
                                                     $selected = isset($price) && $currency == $rowCurUnit['unit'] ? "selected" : "";

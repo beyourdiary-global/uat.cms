@@ -14,7 +14,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/merchant.php';
-$result = getData('*', '', MERCHANT, $finance_connect);
+$result = getData('*', '', '', MERCHANT, $finance_connect);
 ?>
 
 <!DOCTYPE html>

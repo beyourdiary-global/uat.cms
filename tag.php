@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/tagTable.php';
 // to display data to input
 if($tagID)
 {
-    $rst = getData('*',"id = '$tagID'",TAG,$connect);
+    $rst = getData('*',"id = '$tagID'",'',TAG,$connect);
 
     if($rst != false)
     {
@@ -80,7 +80,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$tagID'",TAG,$connect);
+                    $rst = getData('*',"id = '$tagID'",'',TAG,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -163,7 +163,7 @@ if(post('act') == 'D')
         try
         {
             // take name
-            $rst = getData('*',"id = '$id'",TAG,$connect);
+            $rst = getData('*',"id = '$id'",'',TAG,$connect);
             $row = $rst->fetch_assoc();
 
             $tagID = $row['id'];

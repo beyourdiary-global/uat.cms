@@ -9,7 +9,7 @@ $redirect_page = $SITEURL . '/warehouse_table.php';
 // to display data to input
 if($warehouse_id)
 {
-    $rst = getData('*',"id = '$warehouse_id'",WHSE,$connect);
+    $rst = getData('*',"id = '$warehouse_id'", '', WHSE,$connect);
 
     if($rst != false)
     {
@@ -79,7 +79,7 @@ if(post('actionBtn'))
                 try
                 {
                     // take old value
-                    $rst = getData('*',"id = '$warehouse_id'",WHSE,$connect);
+                    $rst = getData('*',"id = '$warehouse_id'", '', WHSE,$connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 

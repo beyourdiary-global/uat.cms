@@ -10,7 +10,7 @@ $tblname = PKG;
 // to display data to input
 if($pkg_id)
 {
-    $rst = getData('*',"id = '$pkg_id'",$tblname,$connect);
+    $rst = getData('*',"id = '$pkg_id'",'',$tblname,$connect);
 
     if($rst != false)
     {
@@ -121,7 +121,7 @@ if(post('actionBtn'))
                     try
                     {
                         // take old value
-                        $rst = getData('*',"id = '$pkg_id'",$tblname,$connect);
+                        $rst = getData('*',"id = '$pkg_id'",'',$tblname,$connect);
                         $row = $rst->fetch_assoc();
                         $oldvalarr = $chgvalarr = array();
 
@@ -230,7 +230,7 @@ if(post('act') == 'D')
         try
         {
             // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
+            $rst = getData('*',"id = '$id'",'',$tblname,$connect);
             $row = $rst->fetch_assoc();
 
             $pkg_id = $row['id'];
@@ -368,7 +368,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
 
                             if(isset($echoVal))
                             {
-                                $product_info_result = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
+                                $product_info_result = getData('unit',"id = '$echoVal'",'',CUR_UNIT,$connect);
                                 $product_info_row = $product_info_result->fetch_assoc();
                                 echo $product_info_row['unit'];
                             }
@@ -424,7 +424,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                     foreach($echoVal as $prod_id)
                                     {
                                         // product info
-                                        $product_info_result = getData('*',"id = '$prod_id'",PROD,$connect);
+                                        $product_info_result = getData('*',"id = '$prod_id'",'',PROD,$connect);
                                         $product_info_row = $product_info_result->fetch_assoc();
 
                                         $pid = $product_info_row['id'];
@@ -435,7 +435,7 @@ if(($pkg_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] !
                                         $pslot = $product_info_row['barcode_slot'];
 
                                         // weight unit info
-                                        $product_info_result = getData('unit',"id = '$pwu'",WGT_UNIT,$connect);
+                                        $product_info_result = getData('unit',"id = '$pwu'",'',WGT_UNIT,$connect);
                                         $product_info_row = $product_info_result->fetch_assoc();
 
                                         $pwun = $product_info_row['unit'];

@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/warehouse.php';
-$result = getData('*', '', WHSE, $connect);
+$result = getData('*', '', '', WHSE, $connect);
 ?>
 
 <!DOCTYPE html>
