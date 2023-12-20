@@ -1,6 +1,14 @@
 <?php
 $pageTitle = "Make Order";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+$pageAction = 'add';
+
+if (!isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
 
 if (post('bookBtn')) {
     $courier_info = json_decode(unserialize(base64_decode(post('bookBtn'))), true);
@@ -136,8 +144,8 @@ if (post('actionBtn')) {
             }
 
             if (isset($parcel_no) && isset($awb)) {
-                try {
-                    if ($courier_id) {
+                if ($courier_id) {
+                    try {
 
                         // check courier id
                         $rstcourierchk = $connect->query("SELECT * FROM " . COURIER . " WHERE id='$courier_id'");
@@ -155,7 +163,7 @@ if (post('actionBtn')) {
                                 array_push($courierNewvalarr, $courier_name);
 
                             $log = array();
-                            $log['log_act'] = 'add';
+                            $log['log_act'] = $pageAction;
                             $log['cdate'] = $cdate;
                             $log['ctime'] = $ctime;
                             $log['uid'] = $log['cby'] = USER_ID;
@@ -195,7 +203,7 @@ if (post('actionBtn')) {
                         }
 
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = $pageAction;
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
@@ -237,7 +245,7 @@ if (post('actionBtn')) {
                         }
 
                         $log = array();
-                        $log['log_act'] = 'add';
+                        $log['log_act'] = $pageAction;
                         $log['cdate'] = $cdate;
                         $log['ctime'] = $ctime;
                         $log['uid'] = $log['cby'] = USER_ID;
@@ -250,9 +258,28 @@ if (post('actionBtn')) {
                         audit_log($log);
 
                         $_SESSION['tempValConfirmBox'] = true;
+
+                        $act = "MO";
+                    } catch (Exception $e) {
+                        $errorMsg = $e->getMessage();
+                        $errorMsg = str_replace('\'', '', $errorMsg);
+
+                        $act = "F";
+                        $_SESSION['tempValConfirmBox'] = true;
+
+                        $log = array();
+                        $log['log_act'] = $pageAction;
+                        $log['cdate'] = $cdate;
+                        $log['ctime'] = $ctime;
+                        $log['uid'] = $log['cby'] = USER_ID;
+                        $log['act_msg'] = USER_NAME . " fail to complete order [" . $dataMOP['order_number'] . "] due to (" . $errorMsg . ")";
+                        $log['query_rec'] = '';
+                        $log['query_table'] = '';
+                        $log['page'] = $pageTitle;
+                        $log['newval'] = '';
+                        $log['connect'] = $connect;
+                        audit_log($log);
                     }
-                } catch (Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
                 }
             }
             break;
@@ -265,7 +292,7 @@ if (post('actionBtn')) {
 if (isset($_SESSION['tempValConfirmBox'])) {
     unset($_SESSION['tempValConfirmBox']);
     echo '<script>localStorage.clear();</script>';
-    echo '<script>confirmationDialog("","Shipping Request For Order Number [' . $dataMOP['order_number'] . ']","' . $pageTitle . '","","' . $redirect_page . '","MO");</script>';
+    echo '<script>confirmationDialog("","Shipping Request For Order Number [' . $dataMOP['order_number'] . ']","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
 }
 ?>
 
@@ -779,6 +806,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </body>
 
 <script>
+    setButtonColor();
+
     document.addEventListener("DOMContentLoaded", function() {
 
         const hasValidationElements = document.querySelectorAll('.has-validation');

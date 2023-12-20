@@ -7,6 +7,11 @@ function employeeLeaveCheckColumn($connect, $empID)
     try {
         $empLeaveResult = getData('*', '', L_TYPE, $connect);
 
+        if (!$empLeaveResult) {
+            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+            echo "<script>location.href ='dashboard.php';</script>";
+        }
+
         $empLeaveFields = "employeeID";
         $empLeaveValues = $empID;
 
@@ -32,31 +37,31 @@ function employeeLeaveCheckColumn($connect, $empID)
 
         // Insert into employee_leave table if new columns were added
         if (strpos($empLeaveFields, ',') !== false) {
-            $query = "INSERT INTO ".$tblName."($empLeaveFields,create_by,create_date,create_time) VALUES ($empLeaveValues,'" . USER_ID . "',curdate(),curtime())";
+            $query = "INSERT INTO " . $tblName . "($empLeaveFields,create_by,create_date,create_time) VALUES ($empLeaveValues,'" . USER_ID . "',curdate(),curtime())";
             mysqli_query($connect, $query);
 
             $newvalarr = array();
 
-            // check value
             if ($empID != '')
                 array_push($newvalarr, $empID);
 
             $newval = implode(",", $newvalarr);
-
             $employeeLeaveDays = implode(",", $employeeLeaveDays);
 
-            // audit log
-            $log = array();
-            $log['log_act'] = 'add';
-            $log['cdate'] = date("Y-m-d");
-            $log['ctime'] = date("H:i:s");
-            $log['uid'] = $log['cby'] = USER_ID;
-            $log['act_msg'] = USER_NAME . " added <b> [Employee ID =" . $empID . "] </b> into <b><i> $tblName Table</i></b>.";
-            $log['query_rec'] = $query;
-            $log['query_table'] =  $tblName;
-            $log['page'] = 'employee leave';
-            $log['newval'] = $newval . "," . $employeeLeaveDays;
-            $log['connect'] = $connect;
+            $log = [
+                'log_act' => 'add',
+                'cdate' => date("Y-m-d"),
+                'ctime' => date("H:i:s"),
+                'uid' =>  USER_ID,
+                'cby' => USER_ID,
+                'act_msg' => USER_NAME . " added <b> [Employee ID =$empID] </b> into <b><i> $tblName Table</i></b>.",
+                'query_rec' => $query,
+                'query_table' => $tblName,
+                'page' => 'employee leave',
+                'newval' => "$newval,$employeeLeaveDays",
+                'connect' => $connect,
+            ];
+
             audit_log($log);
         }
     } catch (Exception $e) {

@@ -2,7 +2,7 @@
 include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";
-
+ 
 $searchText = mysqli_real_escape_string($connect,post('searchText'));
 $searchType = post('searchType');
 $tblname = postSpaceFilter('tblname');

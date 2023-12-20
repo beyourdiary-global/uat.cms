@@ -1,8 +1,10 @@
 <?php
 $pageTitle = "Employee Details";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+$tblName = EMPPERSONALINFO;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -11,27 +13,25 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/employeeDetails.php';
-$result = getData('*', '', EMPPERSONALINFO, $connect);
+$deleteRedirectPage = $SITEURL . '/employeeDetailsTable.php';
 
+$result = getData('*', '', $tblName, $connect);
+
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
-
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
-
 <script>
     $(document).ready(() => {
-        /**
-         oufei 20231014
-         common.fun.js
-         function(id)
-         create DataTable (sortable table)
-        */
-        createSortingTable('employeeDetailsTable');
+        createSortingTable('table');
     });
 </script>
 
@@ -58,7 +58,7 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                 </div>
             </div>
 
-            <table class="table table-striped" id="employeeDetailsTable">
+            <table class="table table-striped" id="table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
@@ -84,90 +84,103 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { ?>
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num;
-                                            $num++ ?></th>
-                            <td scope="row"><?= $row['name'] ?></td>
+                    <?php
+                    while ($row = $result->fetch_assoc()) {
+                        if (!empty($row['name'])) { ?>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++ ?></th>
+                                <td scope="row"><?= $row['name'] ?></td>
 
-                            <?php
-                            $resultIDType = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
-
-                            while ($rowIDType = $resultIDType->fetch_assoc()) {
+                                <?php
+                                $resultIDType = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
+                                if (!$resultIDType) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowIDType = $resultIDType->fetch_assoc();
                                 echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
-                            }
-                            ?>
+                                ?>
 
-                            <td scope="row"><?= $row['id_number'] ?></td>
-                            <td scope="row"><?= $row['email'] ?></td>
-                            <td scope="row"><?= $row['gender'] ?></td>
-                            <td scope="row"><?= $row['date_of_birth'] ?></td>
+                                <td scope="row"><?= $row['id_number'] ?></td>
+                                <td scope="row"><?= $row['email'] ?></td>
+                                <td scope="row"><?= $row['gender'] ?></td>
+                                <td scope="row"><?= $row['date_of_birth'] ?></td>
 
-                            <?php
-                            $resultRace = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
-
-                            while ($rowRace = $resultRace->fetch_assoc()) {
+                                <?php
+                                $resultRace = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
+                                if (!$resultRace) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowRace = $resultRace->fetch_assoc();
                                 echo "<td scope='row'>" . $rowRace['name'] . "</td>";
-                            }
-                            ?>
+                                ?>
 
-                            <td scope="row"><?= $row['residence_status'] ?></td>
+                                <td scope="row"><?= $row['residence_status'] ?></td>
 
-                            <?php
-                            $resultNationality = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
-
-                            while ($rowNationality = $resultNationality->fetch_assoc()) {
+                                <?php
+                                $resultNationality = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
+                                if (!$resultNationality) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowNationality = $resultNationality->fetch_assoc();
                                 echo "<td scope='row'>" . $rowNationality['name'] . "</td>";
-                            }
-                            ?>
+                                ?>
 
-                            <td scope="row"><?= $row['phone_number'] ?></td>
-                            <td scope="row"><?= $row['phone_number'] ?></td>
-                            <td scope="row"><?= $row['address_line_1'] ?></td>
-                            <td scope="row"><?= $row['address_line_2'] ?></td>
-                            <td scope="row"><?= $row['city'] ?></td>
-                            <td scope="row"><?= $row['state'] ?></td>
-                            <td scope="row"><?= $row['postcode'] ?></td>
+                                <td scope="row"><?= $row['phone_number'] ?></td>
+                                <td scope="row"><?= $row['phone_number'] ?></td>
+                                <td scope="row"><?= $row['address_line_1'] ?></td>
+                                <td scope="row"><?= $row['address_line_2'] ?></td>
+                                <td scope="row"><?= $row['city'] ?></td>
+                                <td scope="row"><?= $row['state'] ?></td>
+                                <td scope="row"><?= $row['postcode'] ?></td>
 
-                            <?php
-
-                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
-
-                            while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
+                                <?php
+                                $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
+                                if (!$resultMrtSts) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowMrtSts = $resultMrtSts->fetch_assoc();
                                 echo "<td scope='row'>" . $rowMrtSts['name'] . "</td>";
-                            }
-                            ?>
+                                ?>
 
-                            <td scope="row"><?= $row['no_of_children'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                                <td scope="row"><?= $row['no_of_children'] ?></td>
+                                <td scope="row">
+                                    <div class="dropdown" style="text-align:center">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                            <li>
+                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                <?php endif; ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php
+                        }
+                    }
+                    ?>
                 </tbody>
+
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
@@ -195,26 +208,15 @@ $result = getData('*', '', EMPPERSONALINFO, $connect);
                 </tfoot>
             </table>
         </div>
-
     </div>
 
+    <script>
+        //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+        dropdownMenuDispFix();
+        //to resize table with bootstrap 5 classes
+        datatableAlignment('table');
+        setButtonColor();
+    </script>
 </body>
-<script>
-    /**
-  oufei 20231014
-  common.fun.js
-  function(void)
-  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-*/
-    dropdownMenuDispFix();
-
-    /**
-      oufei 20231014
-      common.fun.js
-      function(id)
-      to resize table with bootstrap 5 classes
-    */
-    datatableAlignment('employeeDetailsTable');
-</script>
 
 </html>
