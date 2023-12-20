@@ -650,7 +650,7 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($tblName, $errorMsg, $oldvalarr = array(), $chgvalarr = array())
+function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMsg)
 {
 	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
 

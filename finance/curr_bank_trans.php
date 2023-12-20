@@ -351,7 +351,7 @@ if (post('actionBtn')) {
                 } else if ($pageAction == 'Edit') {
                     $log['oldval'] = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog(CURR_BANK_TRANS, (isset($returnData) ? '' : $errorMsg),$oldvalarr, $chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, CURR_BANK_TRANS, (isset($returnData) ? '' : $errorMsg));
                 }
 
                 audit_log($log);
