@@ -662,15 +662,6 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
     <script>
     <?php include "../js/curr_bank_trans.js" ?>
-
-    // Get all keys from localStorage
-var keys = Object.keys(localStorage);
-
-// Loop through keys and print out key-value pairs to the console
-keys.forEach(function(key) {
-    var value = localStorage.getItem(key);
-    console.log(key + ': ' + value);
-});
     </script>
     
 </body>
