@@ -276,7 +276,7 @@ function audit_log($data = array())
 		extract($data);
 
 		switch (strtolower($log_act)) {
-			case 'view': 
+			case 'view':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 			case 'edit':
