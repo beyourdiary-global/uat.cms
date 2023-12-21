@@ -62,8 +62,8 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
+                        <th scope="col">Remark</th>                        
                         <th scope="col">Attachment</th>
-                        <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
@@ -86,8 +86,8 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                             <td scope="row"><?= $row['amount'] ?></td>
                             <td scope="row"><?= $row['prev_amt'] ?></td>
                             <td scope="row"><?= $row['final_amt'] ?></td>
-                            <td scope="row"><?= $row['attachment'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
+                            <td scope="row"><?= $row['attachment'] ?></td>
                             <td scope="row">
                                 <div class="dropdown" style="text-align:center">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -126,8 +126,8 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
-                        <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
+                        <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
