@@ -373,7 +373,7 @@ if (post('actionBtn')) {
                         }else{
                             $act = 'F';
                         }
-                        updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
+                        updateTransAmt($finance_connect, CURR_BANK_TRANS, ['bank', 'currency'], ['bank', 'currency']);
                     } else $act = 'NC';
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -405,8 +405,8 @@ if (post('act') == 'D') {
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
-        updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
     }
+    updateTransAmt($finance_connect, CURR_BANK_TRANS, ['bank', 'currency'], ['bank', 'currency']);   
 }
 
 if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {

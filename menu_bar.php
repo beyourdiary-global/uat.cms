@@ -67,12 +67,13 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37')
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '38')
                 ),
-                'pin' => array('36'),
+                'pin' => array('37','38'),
             ),
         ),
-        'pin' => array('36')
+        'pin' => array('36', '37','38')
     ),
     array(
         'Other',
@@ -178,7 +179,7 @@ $menuList = array(
     array(
         'Audit Log',
         'mdi mdi-text-box-search-outline',
-        'audit_log.php',
+        $SITEURL . '/audit_log.php',
         'n',
         'expand' => array(),
         'pin' => array('18')
