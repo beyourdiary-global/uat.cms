@@ -430,9 +430,9 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     </div>
 
-    <div id="merchantFormContainer" class="container d-flex justify-content-center">
+    <div id="CBAFormContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="merchantForm" method="post" action="" enctype="multipart/form-data">
+            <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
