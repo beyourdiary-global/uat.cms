@@ -110,6 +110,7 @@ define('EMPLEAVE','employee_leave');
 //finance
 define('MERCHANT', 'merchant');
 define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
+define('INVTR_TRANS', 'asset_inventories_transaction');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

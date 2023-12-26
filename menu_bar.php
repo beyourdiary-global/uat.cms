@@ -69,7 +69,7 @@ $menuList = array(
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
                     array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '38'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '39'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '39'),
                 ),
                 'pin' => array('37','38','39'),
             ),
@@ -180,7 +180,7 @@ $menuList = array(
     array(
         'Audit Log',
         'mdi mdi-text-box-search-outline',
-        'audit_log.php',
+        $SITEURL . '/audit_log.php',
         'n',
         'expand' => array(),
         'pin' => array('18')
