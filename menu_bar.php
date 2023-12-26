@@ -67,12 +67,14 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37')
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '38'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '39'),
                 ),
-                'pin' => array('36'),
+                'pin' => array('37','38','39'),
             ),
         ),
-        'pin' => array('36')
+        'pin' => array('36', '37','38','39')
     ),
     array(
         'Other',
