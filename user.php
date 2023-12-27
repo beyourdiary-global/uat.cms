@@ -1,419 +1,332 @@
 <?php
 $pageTitle = "User";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-$user_id = input('id');
-$act = input('act');
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
+$tblName = USR_USER;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/user_table.php';
-$tblname = USR_USER;
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-// to display data to input
-if($user_id)
-{
-    $rst = getData('*',"id = '$user_id'",$tblname,$connect);
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
-    if($rst != false)
-    {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
 }
 
-/* if(!($user_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>"); */
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
 
-if(post('actionBtn'))
-{
-    $user_username = postSpaceFilter('user_username');
-    $user_name = postSpaceFilter('user_name');
-    $user_email = postSpaceFilter('user_email');
-    $user_password = md5($user_username);
-    $user_group = postSpaceFilter('user_group');
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
+
+    $_SESSION['viewChk'] = 1;
+
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+
+    audit_log($log);
+}
+
+//Edit And Add Data
+if (post('actionBtn')) {
 
     $action = post('actionBtn');
 
-    switch($action)
-    {
-        case 'addUser': case 'updUser':
-            if($user_username == '')
-            {
-                $err = "Username cannot be empty.";
+    switch ($action) {
+        case 'addData':
+        case 'updData':
+
+            $currentDataName = postSpaceFilter('currentDataName');
+            $dataUsername = postSpaceFilter('dataUsername');
+            $userGroup = postSpaceFilter('userGroup');
+            $userEmail = postSpaceFilter('currentUserEmail');
+            $userPassword = md5($dataUsername);
+
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+
+            if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
+                $err = "Duplicate record found for username.";
+                $errCount = 1;
             }
 
-            if($user_name == '')
-            {
-                $err2 = "User Name cannot be empty.";
-            }
-
-            if($user_email == '')
-            {
-                $err3 = "User Email cannot be empty.";
-            }
-
-            if($user_group == '')
-            {
-                $err5 = "User Group cannot be empty.";
-            }
-            
-            if(isDuplicateRecord("username", $user_username, $tblname, $connect, $user_id)){
-                $err = "Duplicate record found for username name.";
-                break;
-            }
-            else if(isDuplicateRecord("name", $user_name, $tblname, $connect, $user_id)){
+            if (isDuplicateRecord("username", $dataUsername, $tblName, $connect, $dataID)) {
                 $err2 = "Duplicate record found for user name.";
-                break;
+                $errCount = 1;
             }
-            else if(isDuplicateRecord("email", $user_email, $tblname, $connect, $user_id)){
+
+            if (isDuplicateRecord("email", $userEmail, $tblName, $connect, $dataID)) {
                 $err3 = "Duplicate record found for user email.";
+                $errCount = 1;
+            }
+
+            if (isset($errCount)) {
                 break;
             }
-            else if($user_username != '' && $user_name != '' && $user_email != '' && $user_group != 'noneVal')
-            {
-                if($action == 'addUser')
-                {
-                    try
-                    {
-                        $query = "INSERT INTO ".$tblname."(name,username,password_alt,email,access_id,status,create_date,create_time,create_by,fail_count) VALUES ('$user_name','$user_username','$user_password','$user_email','$user_group','A',curdate(),curtime(),'".USER_ID."','0')";
-                        mysqli_query($connect, $query);
-                        generateDBData($tblname, $connect);
-                        $_SESSION['tempValConfirmBox'] = true;
 
-                        $newvalarr = array();
+            if ($action == 'addData') {
+                try {
+                    $_SESSION['tempValConfirmBox'] = true;
 
-                        // check value
-                        if($user_username != '')
-                            array_push($newvalarr, $user_username);
+                    if ($currentDataName)
+                        array_push($newvalarr, $currentDataName);
 
-                        if($user_name != '')
-                            array_push($newvalarr, $user_name);
+                    if ($dataUsername)
+                        array_push($newvalarr, $dataUsername);
 
-                        if($user_email != '')
-                            array_push($newvalarr, $user_email);
+                    if ($userEmail)
+                        array_push($newvalarr, $userEmail);
 
-                        if($user_password != '')
-                            array_push($newvalarr, $user_password);
-                        
-                        if($user_group != '')
-                            array_push($newvalarr, $user_group);
+                    if ($userPassword)
+                        array_push($newvalarr, $userPassword);
 
-                        $newval = implode(",",$newvalarr);
+                    if ($userGroup)
+                        array_push($newvalarr, $userGroup);
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'add';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$user_username</b> into <b><i>User Table</i></b>.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = $tblname;
-                        $log['page'] = 'User';
-                        $log['newval'] = $newval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    $query = "INSERT INTO " . $tblName . "(name,username,password_alt,email,access_id,create_by,create_date,create_time) VALUES ('$currentDataName','$dataUsername','$userPassword','$userEmail','$userGroup','" . USER_ID . "',curdate(),curtime())";
+
+                    $returnData = mysqli_query($connect, $query);
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
                 }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$user_id'",$tblname,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['username'] != $user_username)
-                        {
-                            array_push($oldvalarr, $row['username']);
-                            array_push($chgvalarr, $user_username);
-                        }
-
-                        if($row['name'] != $user_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $user_name);
-                        }
-
-                        if($row['email'] != $user_email)
-                        {
-                            array_push($oldvalarr, $row['email']);
-                            array_push($chgvalarr, $user_email);
-                        }
-
-                        if($row['access_id'] != $user_group)
-                        {
-                            array_push($oldvalarr, $row['access_id']);
-                            array_push($chgvalarr, $user_group);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr); 
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                            // edit
-                            $query = "UPDATE ".$tblname." SET name ='$user_name', username ='$user_username', email ='$user_email', access_id ='$user_group', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$user_id'";
-                            mysqli_query($connect, $query);
-                            generateDBData($tblname, $connect);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>User Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = $tblname;
-                            $log['page'] = 'User';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
+            } else {
+                try {
+                    if ($row['name'] != $currentDataName) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $currentDataName);
                     }
+
+                    if ($row['username'] != $dataUsername) {
+                        array_push($oldvalarr, $row['username']);
+                        array_push($chgvalarr, $dataUsername);
+                    }
+
+                    if ($row['email'] != $userEmail) {
+                        array_push($oldvalarr, $row['email']);
+                        array_push($chgvalarr, $userEmail);
+                    }
+
+                    if ($row['access_id'] != $userGroup) {
+                        array_push($oldvalarr, $row['access_id']);
+                        array_push($chgvalarr, $userGroup);
+                    }
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', username ='$dataUsername',email ='$userEmail', access_id ='$userGroup', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
                 }
             }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
             break;
+
         case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
+            echo $clearLocalStorage . ' ' . $redirectLink;
             break;
     }
 }
 
-if(post('act') == 'D')
-{
-    $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
-            // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
-            $row = $rst->fetch_assoc();
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
 
-            $user_id = $row['id'];
-            $user_username = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord($tblname,$id,$user_username,$connect,$cdate,$ctime,$pageTitle);
-            
-            generateDBData($tblname, $connect);
-
-
-            $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
 }
 
-if(($user_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
-    $user_username = isset($dataExisted) ? $row['name'] : '';
-    $_SESSION['viewChk'] = 1;
-
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$user_username</b> from <b><i>User Table</i></b>.";
-    $log['page'] = 'User';
-    $log['connect'] = $connect;
-    audit_log($log);
-}
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">User</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add User'; break;
-        case 'E': echo 'Edit User'; break;
-        default: echo 'View User';
-    }
-    ?></p>
-</div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
+    </div>
 
-<div id="userFormContainer" class="container d-flex justify-content-center mt-2">
+    <div id="formContainer" class="container d-flex justify-content-center">
         <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="userForm" method="post" action="">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group mb-5">
-                            <h2>
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
+                </div>
+
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="currentDataName">Name</label>
+                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                            <div id="err_msg">
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err1)) echo $err1; ?></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="dataUsername">Username</label>
+                            <input class="form-control" type="text" name="dataUsername" id="dataUsername" value="<?php if (isset($row['username'])) echo $row['username'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                            <div id="err_msg">
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err2)) echo $err2; ?></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="currentUserEmail">Email</label>
+                            <input class="form-control" type="text" name="currentUserEmail" id="currentUserEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                            <div id="err_msg">
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err3)) echo $err3; ?></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" for="currentUsername">User Group</label>
+                            <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
+                                <option value="" disabled selected style="display:none;">Select User Group</option>
                                 <?php
-                                switch($act)
-                                {
-                                    case 'I': echo 'Add User'; break;
-                                    case 'E': echo 'Edit User'; break;
-                                    default: echo 'View User';
-                                }
-                                ?>
-                            </h2>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="user_name_lbl" for="user_name">Name</label>
-                            <input class="form-control" type="text" name="user_name" id="user_name" value=
-                            "<?php
-                                if(isset($user_name))
-                                    echo $user_name;
-                                else if(isset($dataExisted) && isset($row['name'])) 
-                                    echo $row['name'];
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="user_username_lbl" for="user_username">Username</label>
-                            <input class="form-control" type="text" name="user_username" id="user_username" value=
-                            "<?php
-                                if(isset($user_username))
-                                    echo $user_username;
-                                else if(isset($dataExisted) && isset($row['username'])) 
-                                    echo $row['username'];
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="user_email_lbl" for="user_email">Email</label>
-                            <input class="form-control" type="text" name="user_email" id="user_email" value=
-                            "<?php
-                                if(isset($user_email))
-                                    echo $user_email;
-                                else if(isset($dataExisted) && isset($row['email'])) 
-                                    echo $row['email'];
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="user_group_lbl" for="user_group">User Group</label>
-                            <select class="form-select" id="user_group" name="user_group" <?php if($act == '') echo "disabled"?>>
-                            <option value="" disabled selected style="display:none;">Select User Group</option>
-                            <?php
-                                $user_grp_list = getData('id,name','',USR_GRP,$connect);
-                                if($user_grp_list)
-                                {
-                                    while($row2 = $user_grp_list->fetch_assoc())
-                                    {
+                                $user_grp_list = getData('id,name', '', USR_GRP, $connect);
+                                if ($user_grp_list) {
+                                    while ($row2 = $user_grp_list->fetch_assoc()) {
                                         $selected = '';
                                         $id = $row2['id'];
                                         $grpname = $row2['name'];
 
-                                        if(isset($user_group))
-                                        {
-                                            if($user_group == $id)
+                                        if (isset($userGroup)) {
+                                            if ($userGroup == $id)
                                                 $selected = ' selected';
-                                        }
-                                        else if(isset($dataExisted))
-                                        {
-                                            if($row['access_id'] == $id)
+                                        } else if (isset($dataExisted)) {
+                                            if ($row['access_id'] == $id)
                                                 $selected = ' selected';
                                         }
 
                                         echo "<option value=\"$id\" $selected>$grpname</option>";
                                     }
+                                } else {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                            ?>
+                                ?>
                             </select>
                             <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err5)) echo $err5; ?></span>
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err4)) echo $err4; ?></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
-                        <?php
-                            switch($act)
-                            {
-                                case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addUser">Add User</button>';
-                                    break;
-                                case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updUser">Edit User</button>';
-                                    break;
-                            }
-                        ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                        </div>
-                    </div>
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
-</div>
-<?php
-/*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","User","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
+    </div>
+
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+    </script>
+
 </body>
-<script>
-/**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
-centerAlignment("userFormContainer");
-</script>
+
 </html>

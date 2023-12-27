@@ -10,6 +10,6 @@ $fileContentFinance = file_get_contents($filePathFinance);
 // Display the content
 echo nl2br($fileContent);
 echo nl2br($fileContentFinance);
-
+ 
 
 ?>

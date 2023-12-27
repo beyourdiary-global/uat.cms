@@ -17,6 +17,12 @@ $rst_pkg_info = getData('*',"id='$pkg_id'",PKG,$connect);
 $rst_whse_info = getData('name',"id='$whse_id'",WHSE,$connect);
 $rst_usr = getData('*',"status='A'",USR_USER,$connect);
 
+
+if (!$rst_pkg_info || $rst_whse_info || $rst_us) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
+
 if($rst_whse_info)
 {
     $whse_name = $rst_whse_info->fetch_assoc();
