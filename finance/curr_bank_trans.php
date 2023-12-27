@@ -310,7 +310,7 @@ if (post('actionBtn')) {
                         $query = "UPDATE " . CURR_BANK_TRANS . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                        updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
+                        updateTransAmt($finance_connect, CURR_BANK_TRANS,['bank', 'currency'],['bank', 'currency']);
                     } else {
                         $act = 'NC';
                     }
@@ -384,7 +384,7 @@ if (post('act') == 'D') {
             echo 'Message: ' . $e->getMessage();
         }
         //update rows after deletion
-        updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
+        updateTransAmt($finance_connect, CURR_BANK_TRANS,['bank', 'currency'],['bank', 'currency']);
         
     }
 }
