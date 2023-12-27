@@ -68,13 +68,13 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '38'),
-                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '39'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
                 ),
-                'pin' => array('37','38','39'),
+                'pin' => array('37','40','41'),
             ),
         ),
-        'pin' => array('36', '37','38','39')
+        'pin' => array('36', '37','40','41')
     ),
     array(
         'Other',
