@@ -649,7 +649,6 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMs
 }
 
 // Function to update previous and final amounts for transactions
-// Function to update previous and final amounts for transactions
 function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey) {
     // Initialize an associative array to store previous amounts
     $prevAmounts = array();
@@ -696,4 +695,16 @@ function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey) {
         $prevAmounts[$key] = $finalAmt;
     }
 }
+
+
+function insertNewMerchant($merchantName, $userId, $financeConnect) {
+    $query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
+    $queryResult = mysqli_query($financeConnect, $query);
+    if ($queryResult) {
+        return mysqli_insert_id($financeConnect);
+    }
+    return false;
+}
+
+
 ?>
