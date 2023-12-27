@@ -399,7 +399,7 @@ if (post('act') == 'D') {
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord(CURR_BANK_TRANS, $row_id, $trans_id, $finance_connect, $cdate, $ctime, $pageTitle);
+            deleteRecord(CURR_BANK_TRANS, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
             
         } catch (Exception $e) {
