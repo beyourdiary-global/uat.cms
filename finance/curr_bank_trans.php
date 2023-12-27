@@ -115,8 +115,6 @@ if (post('actionBtn')) {
                         $err2 = "Failed to upload the file.";
                     }
                 } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
-            } else {
-                $cba_attach = $_POST['existing_attachment'];
             }
 
             if (!$cba_type && $cba_type < 1) {
