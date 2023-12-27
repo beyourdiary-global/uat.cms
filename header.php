@@ -7,7 +7,7 @@
 
 <!-- Website -->
 <title><?= $pageTitle ?></title>
-
+ 
 <!-- Fonts -->
 <link href="<?= $SITEURL ?>/header/font/OpenSans.css" rel="stylesheet">
 

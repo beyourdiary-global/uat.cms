@@ -1,6 +1,6 @@
 <?php
 
-function deleteRecord($tbl, $id, $name, $connect, $cdate, $ctime, $tblname)
+function deleteRecord($tbl, $id, $name, $connect, $cdate, $ctime, $pageTitle)
 {
     try {
         $query =  "UPDATE $tbl SET status = 'D' WHERE id = " . $id;
@@ -20,10 +20,10 @@ function deleteRecord($tbl, $id, $name, $connect, $cdate, $ctime, $tblname)
         'ctime'         => $ctime,
         'uid'           => USER_ID,
         'cby'           => USER_ID,
-        'act_msg'       => (isset($errorMsg)) ? USER_NAME . " failed to delete the data <b>$name</b> from <b><i>$tblname Table</i></b>. ( $errorMsg )" : USER_NAME . " deleted the data <b>$name</b> from <b><i>$tblname Table</i></b>.",
+        'act_msg'       => (isset($errorMsg)) ? USER_NAME . " failed to delete the data <b>$name</b> from <b><i>$tbl Table</i></b>. ( $errorMsg )" : USER_NAME . " deleted the data <b>$name</b> from <b><i>$tbl Table</i></b>.",
         'query_rec'     => $query,
         'query_table'   => $tbl,
-        'page'          => $tblname,
+        'page'          => $pageTitle,
         'connect'       => $connect,
     ];
 
