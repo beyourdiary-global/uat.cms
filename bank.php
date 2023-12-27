@@ -4,6 +4,8 @@ $pageTitle = "Bank";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
 $tblName = BANK;
 
 //Current Page Action And Data ID
@@ -63,7 +65,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
         'page'    => $pageTitle,
         'connect' => $connect,
     ];
-    
+
     audit_log($log);
 }
 
@@ -188,7 +190,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>

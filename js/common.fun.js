@@ -908,6 +908,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       var title2 = "Are you sure want to delete?";
       var btn = "Delete";
       break;
+    case "F":
+      var title = "Error Occurred,Please Try Again Later";
+      break;
     case "MO":
       var title = msg + " Successful Place";
       break;
@@ -920,6 +923,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     default:
       var title = "Error";
   }
+
+  localStorage.clear();
 
   var message = "";
   if (msg.length >= 1) {
@@ -1035,7 +1040,14 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     } else console.log("Operation Cancelled.");
   }
 
-  if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC") {
+  if (
+    act == "I" ||
+    act == "E" ||
+    act == "MO" ||
+    act == "NC" ||
+    act == "PC" ||
+    act == "F"
+  ) {
     const myModal2 = new bootstrap.Modal(modelResult, {
       keyboard: false,
       backdrop: "static",
@@ -1339,5 +1351,14 @@ function setCookie(cname, cvalue, exMins) {
   d.setTime(d.getTime() + (exMins * 60 * 1000));
   var expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function checkCurrentPage(page) {
+  var previouspage = localStorage.getItem("page");
+  localStorage.setItem("page", page);
+  if (previouspage != page) {
+    localStorage.clear();
+    localStorage.setItem("page", page);
+  }
 }
 
