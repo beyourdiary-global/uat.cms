@@ -1,7 +1,7 @@
 <?php
 // define path
-define('img', './image/');
-define('img_server', './images_server/');
+define('img', '/image/');
+define('img_server', '/images_server/');
 
 // social website
 define('FB_LINK', 'https://www.facebook.com/beyourdiary/');

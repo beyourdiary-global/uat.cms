@@ -1,287 +1,243 @@
 <?php
 $pageTitle = "Employee EPF Rate";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-$employee_epf_rate_id = input('id');
-$act = input('act');
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
+$tblName = EMPLOYEE_EPF;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/employee_epf_rate_table.php';
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-// to display data to input
-if($employee_epf_rate_id)
-{
-    $rst = getData('*',"id = '$employee_epf_rate_id'",'',EMPLOYEE_EPF,$connect);
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
-    if($rst != false)
-    {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    } 
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
 }
 
-if(!($employee_epf_rate_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
-
-if(post('actionBtn'))
-{
-    $action = post('actionBtn');
-
-    switch($action)
-    {
-        case 'addemployee_rate_epf': case 'updemployee_rate_epf':
-            $employee_epf_rate = postSpaceFilter('employee_epf_rate');
-            $employee_epf_rate_remark = postSpaceFilter('employee_epf_rate_remark');
-
-            if (!$employee_epf_rate){
-                $err = "Employee epf rate cannot be empty.";
-                break;
-            }
-            else if(isDuplicateRecord("epf_rate", $employee_epf_rate, EMPLOYEE_EPF, $connect, $employee_epf_rate_id)){
-                $err = "Duplicate record found for employee epf rate.";
-                break;
-            }
-            else if($action == 'addemployee_rate_epf'){
-                try
-                {
-                    $query = "INSERT INTO ".EMPLOYEE_EPF."(epf_rate,remark,create_by,create_date,create_time) VALUES ('$employee_epf_rate','$employee_epf_rate_remark','".USER_ID."',curdate(),curtime())";
-                    mysqli_query($connect, $query);
-                    $_SESSION['tempValConfirmBox'] = true;
-
-                    $newvalarr = array();
-
-                    // check value
-                    if($employee_epf_rate != '')
-                        array_push($newvalarr, $employee_epf_rate);
-
-                    if($employee_epf_rate_remark != '')
-                        array_push($newvalarr, $employee_epf_rate_remark);
-
-                    $newval = implode(",",$newvalarr);
-
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$employee_epf_rate</b> into <b><i>$pageTitle Table</i></b>.";
-                    $log['query_rec'] = $query;
-                    $log['query_table'] = EMPLOYEE_EPF;
-                    $log['page'] = $pageTitle;
-                    $log['newval'] = $newval;
-                    $log['connect'] = $connect;
-                    audit_log($log);
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }
-            else
-            {
-                try
-                {
-                    // take old value
-                    $rst = getData('*',"id = '$employee_epf_rate_id'",'',EMPLOYEE_EPF,$connect);
-                    $row = $rst->fetch_assoc();
-                    $oldvalarr = $chgvalarr = array();
-
-                    // check value
-                    if($row['epf_rate'] != $employee_epf_rate)
-                    {
-                        array_push($oldvalarr, $row['epf_rate']);
-                        array_push($chgvalarr, $employee_epf_rate);
-                    }
-
-                    if($row['remark'] != $employee_epf_rate_remark)
-                    {
-                        if($row['remark'] == '')
-                            $old_remark = 'Empty_Value';
-                        else $old_remark = $row['remark'];
-
-                        array_push($oldvalarr, $old_remark);
-
-                        if($employee_epf_rate_remark == '')
-                            $new_remark = 'Empty_Value';
-                        else $new_remark = $employee_epf_rate_remark;
-                        
-                        array_push($chgvalarr, $new_remark);
-                    }
-
-                    // convert into string
-                    $oldval = implode(",",$oldvalarr);
-                    $chgval = implode(",",$chgvalarr);
-
-                    $_SESSION['tempValConfirmBox'] = true;
-                    if($oldval != '' && $chgval != '')
-                    {   
-                        // edit
-                        $query = "UPDATE ".EMPLOYEE_EPF." SET epf_rate ='$employee_epf_rate', remark ='$employee_epf_rate_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$employee_epf_rate_id'";
-                        mysqli_query($connect, $query);
-
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-
-                        $log['act_msg'] = USER_NAME . " edited the data";
-                        for($i=0; $i<sizeof($oldvalarr); $i++)
-                        {
-                            if($i==0)
-                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                        }
-                        $log['act_msg'] .= " from <b><i>$pageTitle Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = EMPLOYEE_EPF;
-                        $log['page'] = $pageTitle;
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    }
-                    else $act = 'NC';
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }         
-            break;
-        case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
-            break;
-    }
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
 }
 
-if(post('act') == 'D')
-{
-    $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
-            // take name
-            $rst = getData('*',"id = '$id'",'',EMPLOYEE_EPF,$connect);
-            $row = $rst->fetch_assoc();
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
 
-            $employee_epf_rate_id = $row['id'];
-            $employee_epf_rate = $row['epf_rate'];
-
-            //SET the record status to 'D'
-            deleteRecord(EMPLOYEE_EPF,$id,$employee_epf_rate,$connect,$cdate,$ctime,$pageTitle);
-
-            $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
-}
-
-if(($employee_epf_rate_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
-    $employee_epf_rate = isset($dataExisted) ? $row['epf_rate'] : '';
     $_SESSION['viewChk'] = 1;
 
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$employee_epf_rate</b> from <b><i>$pageTitle Table</i></b>.";
-    $log['page'] = $pageTitle;
-    $log['connect'] = $connect;
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['epf_rate'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+
     audit_log($log);
 }
+
+//Edit And Add Data
+if (post('actionBtn')) {
+
+    $action = post('actionBtn');
+
+    switch ($action) {
+        case 'addData':
+        case 'updData':
+
+            $currentDataEpfRate = postSpaceFilter('currentDataEpfRate');
+            $dataRemark = postSpaceFilter('currentDataRemark');
+
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+            if (isDuplicateRecord("epf_rate", $currentDataEpfRate, $tblName, $connect, $dataID)) {
+                $err = "Duplicate record found for " . $pageTitle . " (%)";
+                break;
+            }
+
+            if ($action == 'addData') {
+                try {
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($currentDataEpfRate)
+                        array_push($newvalarr, $currentDataEpfRate);
+
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                    $query = "INSERT INTO " . $tblName . "(epf_rate,remark,create_by,create_date,create_time) VALUES ('$currentDataEpfRate','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+
+                    $returnData = mysqli_query($connect, $query);
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            } else {
+                try {
+                    if ($row['epf_rate'] != $currentDataEpfRate) {
+                        array_push($oldvalarr, $row['epf_rate']);
+                        array_push($chgvalarr, $currentDataEpfRate);
+                    }
+
+                    if ($row['remark'] != $dataRemark) {
+                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
+                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                    }
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET epf_rate ='$currentDataEpfRate', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$currentDataEpfRate</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataEpfRate</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
+            break;
+
+        case 'back':
+            echo $clearLocalStorage . ' ' . $redirectLink;
+            break;
+    }
+}
+
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
+
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+}
+
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add '.$pageTitle ; break;
-        case 'E': echo 'Edit '.$pageTitle ; break;
-        default: echo 'View '.$pageTitle ;
-    }
-    ?></p>
-</div>
-
-<div id="employee_epf_rate_FormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="employee_epf_rate_Form" method="post" action="">
-            <div class="form-group mb-5">
-                <h2>
-                    <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add '.$pageTitle ; break;
-                        case 'E': echo 'Edit '.$pageTitle ; break;
-                        default: echo 'View '.$pageTitle ;
-                    }
-                    ?>
-                </h2>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="employee_epf_rate_name_lbl" for="employee_epf_rate"><?php echo $pageTitle ?> (%)</label>
-                <input class="form-control" type="number" step="any" name="employee_epf_rate" id="employee_epf_rate" value="<?php if(isset($dataExisted) && isset($row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="employee_epf_rate_remark_lbl" for="employee_epf_rate_remark"><?php echo $pageTitle ?> Remark</label>
-                <textarea class="form-control" name="employee_epf_rate_remark" id="employee_epf_rate_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-            </div>
-
-            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-            <?php
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addemployee_rate_epf">Add '.$pageTitle.' </button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updemployee_rate_epf">Edit '.$pageTitle.' </button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-            </div>
-        </form>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
     </div>
-</div>
-<?php
-/*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","'.$pageTitle.'","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
-<script>
-/**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
-centerAlignment("employee_epf_rate_FormContainer");
-</script>
+
+    <div id="formContainer" class="container d-flex justify-content-center">
+        <div class="col-8 col-md-6 formWidthAdjust">
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataEpfRate"><?php echo $pageTitle ?> (%)</label>
+                    <input class="form-control" type="text" name="currentDataEpfRate" id="currentDataEpfRate" value="<?php if (isset($row['epf_rate'])) echo $row['epf_rate'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    <div id="err_msg">
+                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+    </script>
+
 </body>
+
 </html>

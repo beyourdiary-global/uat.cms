@@ -5,20 +5,27 @@ include "include/connection.php";
 if(isset($_SESSION['userid']))
 {
     // audit log
-    $log = array();
-    $log['log_act'] = 'logout';
-    $log['uid'] = $_SESSION['userid'];
 
     $query = "SELECT name FROM ".USR_USER." WHERE id ='".$_SESSION['userid']."'";
     $result = mysqli_query($connect, $query);
+
+    if (!$result) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/index.php';</script>";
+    }
+
     $row = $result->fetch_assoc();
 
-    $log['act_msg'] = $row['name'] . " has logout the system.";
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['cby'] = $_SESSION['userid'];
-    $log['connect'] = $connect;
-
+    $log = [
+        'log_act' => 'logout',
+        'act_msg' => "{$row['name']} has logged out of the system.",
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => $_SESSION['userid'],
+        'cby'     => $_SESSION['userid'],
+        'connect' => $connect,
+    ];
+    
     audit_log($log);
 
     setcookie(session_name(), '', 100);

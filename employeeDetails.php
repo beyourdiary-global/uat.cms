@@ -1,35 +1,87 @@
 <?php
 $pageTitle = "Employee Details";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 include 'employeeLeave.php';
 
-$empDetailsID = input('id');
-$act = input('act');
-$redirect_page = $SITEURL . '/employeeDetailsTable.php';
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
 
 $tblnameOne = EMPPERSONALINFO;
 $tblnameTwo = EMPINFO;
 
-// to display data to input
-if ($empDetailsID) {
-    $rstOne = getData('*', "id = $empDetailsID", '',$tblnameOne, $connect);
-    $rstTwo = getData('*', "employee_id = $empDetailsID", '', $tblnameTwo, $connect);
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addEmpDetails' : 'updEmpDetails';
 
-    if ($rstOne != false && $rstTwo != false) {
-        $dataExisted = 1;
-        $row = $rstOne->fetch_assoc();
-        $row2 = $rstTwo->fetch_assoc();
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
+$redirect_page = $SITEURL . '/employeeDetailsTable.php';
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+if ($dataID) {
+    $rstOne = getData('*', "id = $dataID", '', $tblnameOne, $connect);
+    $rstTwo = getData('*', "employee_id = $dataID", '', $tblnameTwo, $connect);
+
+    if (!$rstOne || !$rstTwo) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
     }
+
+    $row = $rstOne->fetch_assoc();
+    $row2 = $rstTwo->fetch_assoc();
 }
 
-if (!($empDetailsID) && !($act))
-    echo ("<script>location.href = '$redirect_page';</script>");
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblnameOne, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblnameTwo, $dataID, $row2['name'], $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
 
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
+
+    $_SESSION['viewChk'] = 1;
+
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+
+    audit_log($log);
+}
+
+//Edit And Add Data
 if (post('actionBtn')) {
+
     $action = post('actionBtn');
 
     switch ($action) {
-
         case 'addEmpDetails':
         case 'updEmpDetails':
 
@@ -43,7 +95,7 @@ if (post('actionBtn')) {
             $residenceStatus = postSpaceFilter('employeeResidenceStatus');
             $nationality = postSpaceFilter('employeeNationality');
             $maritalStatus = postSpaceFilter('maritalStatus');
-            $noOfChildren = postSpaceFilter('noOfChild');
+            $noOfChildren = (postSpaceFilter('noOfChild')) ? postSpaceFilter('noOfChild') : '0';
             $race = postSpaceFilter('employeeRace');
             $addressLine1 = postSpaceFilter('employeeAddress1');
             $addressLine2 = postSpaceFilter('employeeAddress2');
@@ -73,138 +125,22 @@ if (post('actionBtn')) {
             $remark = postSpaceFilter('remark');
             $contributingEpf = postSpaceFilter('epfOption');
             $contributingEpfNo = postSpaceFilter('epfNo');
-            $employeeEpf = postSpaceFilter('employeeEpfRate');
-            $employerEpf = postSpaceFilter('employerEpfRate');
+            $employeeEpf = (postSpaceFilter('employeeEpfRate')) ? postSpaceFilter('employeeEpfRate') : '0';
+            $employerEpf = (postSpaceFilter('employerEpfRate')) ? postSpaceFilter('employerEpfRate') : '0';
             $employeeTaxNum = postSpaceFilter('empTaxNum');
             $socsoCategory = postSpaceFilter('socsoCtr');
             $eis = postSpaceFilter('eis');
 
-            if (isDuplicateRecord("id_number", $idNumber, $tblnameOne, $connect, $empDetailsID)) {
-                $err = "Duplicate Identity Number found for This Employee Record";
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+            if (isDuplicateRecord("id_number", $idNumber, $tblnameOne, $connect, $dataID) && isDuplicateRecord("name", $employeeName, $tblnameOne, $connect, $dataID)) {
+                $err = "Duplicate Identity Number And Name found for This Employee Record";
                 break;
-            } else if ($action == 'addEmpDetails') {
+            }
+
+            if ($action == 'addEmpDetails') {
                 try {
-                    $queryOne =
-                        "INSERT INTO $tblnameOne (
-                        name, 
-                        email, 
-                        id_type, 
-                        id_number, 
-                        gender, 
-                        date_of_birth, 
-                        residence_status, 
-                        nationality, 
-                        marital_status, 
-                        no_of_children, 
-                        race_id, 
-                        address_line_1, 
-                        address_line_2, 
-                        city, 
-                        state, 
-                        postcode, 
-                        phone_number, 
-                        alternate_phone_number, 
-                        emergency_contact_name, 
-                        emergency_contact_phone, 
-                        emergency_relationship, 
-                        preferred_payment_method, 
-                        bank_id, 
-                        account_holders_name, 
-                        account_number,
-                        create_by,
-                        create_date,
-                        create_time
-                    ) VALUES (
-                        '$employeeName', 
-                        '$employeeEmail', 
-                        '$idType', 
-                        '$idNumber', 
-                        '$gender', 
-                        '$dateOfBirth', 
-                        '$residenceStatus', 
-                        '$nationality', 
-                        '$maritalStatus', 
-                        '$noOfChildren', 
-                        '$race', 
-                        '$addressLine1', 
-                        '$addressLine2', 
-                        '$city', 
-                        '$state', 
-                        '$postcode', 
-                        '$phoneNum', 
-                        '$alternatePhoneNum', 
-                        '$emergName', 
-                        '$emeryPhone', 
-                        '$emeryRelationship', 
-                        '$paymentMeth', 
-                        '$bank', 
-                        '$accName', 
-                        '$accNum',
-                        '" . USER_ID . "',
-                        curdate(),
-                        curtime()
-                    );";
-
-                    if (mysqli_query($connect, $queryOne)) {
-
-                        $empIDQuery = "SELECT id FROM $tblnameOne WHERE id_number = '$idNumber'";
-                        $empIDResult =  mysqli_query($connect, $empIDQuery);
-                        $empIDRow = mysqli_fetch_assoc($empIDResult);
-
-                        $queryTwo = "INSERT INTO $tblnameTwo(
-                            employee_id,
-                            join_date,
-                            position,
-                            employment_status_id,
-                            department_id,
-                            salary_frequency,
-                            salary,
-                            currency_unit_id,
-                            allowance,
-                            managers_for_leave_approval,
-                            remark,
-                            contributing_epf,
-                            contributing_epf_no,
-                            employee_epf_rate_id,
-                            employer_epf_rate_id,
-                            employee_tax_number,
-                            socso_category_id,
-                            eis,
-                            create_by,
-                            create_date,
-                            create_time
-                            ) VALUES (
-                            '{$empIDRow['id']}',
-                            '$joinDate',
-                            '$position', 
-                            '$employeeStatus', 
-                            '$department', 
-                            '$salaryFrequency', 
-                            '$salary', 
-                            '$currencyUnit', 
-                            '$allowance', 
-                            '$manager', 
-                            '$remark', 
-                            '$contributingEpf', 
-                            '$contributingEpfNo', 
-                            '$employeeEpf', 
-                            '$employerEpf',
-                            '$employeeTaxNum',
-                            '$socsoCategory', 
-                            '$eis',
-                            '" . USER_ID . "',
-                            curdate(),
-                            curtime()
-                            );";
-                        mysqli_query($connect, $queryTwo);
-
-                        //Assign Leave Days To New Employee
-                        employeeLeaveCheckColumn($connect, $empIDRow['id']);
-                    }
-
                     $_SESSION['tempValConfirmBox'] = true;
-
-                    $newvalarr = array();
 
                     $variables = [
                         'employeeName' => 'employeeName',
@@ -251,10 +187,8 @@ if (post('actionBtn')) {
                         'eis' => 'eis',
                     ];
 
-                    // Array to store valid values
                     $newvalarr = [];
 
-                    // Iterate over variables
                     foreach ($variables as $variable => $fieldName) {
                         // Get the value from the form field
                         $value = postSpaceFilter($fieldName);
@@ -265,34 +199,32 @@ if (post('actionBtn')) {
                         }
                     }
 
-                    $newval = implode(",", $newvalarr);
+                    $query = "INSERT INTO $tblnameOne (name,email,id_type,id_number,gender,date_of_birth,residence_status,nationality,marital_status,no_of_children,race_id,address_line_1,address_line_2,city,state,postcode,phone_number,alternate_phone_number,emergency_contact_name,emergency_contact_phone,emergency_relationship,preferred_payment_method,bank_id,account_holders_name,account_number,create_by,create_date,create_time) VALUES ('$employeeName','$employeeEmail','$idType','$idNumber','$gender','$dateOfBirth','$residenceStatus','$nationality','$maritalStatus','$noOfChildren','$race','$addressLine1','$addressLine2','$city','$state','$postcode','$phoneNum','$alternatePhoneNum','$emergName','$emeryPhone','$emeryRelationship','$paymentMeth','$bank','$accName','$accNum','" . USER_ID . "',curdate(),curtime());";
+                    $returnData = mysqli_query($connect, $query);
 
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$employeeName</b> into <b><i>$tblnameOne & $tblnameTwo Table</i></b>.";
-                    $log['query_rec'] = $queryOne . "&" . $queryTwo;
-                    $log['query_table'] = $tblnameOne  . "&" . $tblnameTwo;
-                    $log['page'] = $pageTitle;
-                    $log['newval'] = $newval;
-                    $log['connect'] = $connect;
-                    audit_log($log);
+                    if ($returnData) {
+                        $empIDQuery = "SELECT id FROM $tblnameOne WHERE id_number = '$idNumber'";
+                        $empIDResult =  mysqli_query($connect, $empIDQuery);
 
-                    $newval = implode(",", $newvalarr);
+                        if (!$empIDResult) {
+                            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                            echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                        }
 
-                    echo '<script>';
-                    echo 'localStorage.clear();';
-                    echo '</script>';
+                        $empIDRow = mysqli_fetch_assoc($empIDResult);
+
+                        $query = "INSERT INTO $tblnameTwo(employee_id, join_date, position, employment_status_id, department_id, salary_frequency, salary, currency_unit_id, allowance, managers_for_leave_approval, remark, contributing_epf, contributing_epf_no, employee_epf_rate_id, employer_epf_rate_id, employee_tax_number, socso_category_id, eis, create_by, create_date, create_time) VALUES ('{$empIDRow['id']}', '$joinDate', '$position', '$employeeStatus', '$department', '$salaryFrequency', '$salary', '$currencyUnit', '$allowance', '$manager', '$remark', '$contributingEpf', '$contributingEpfNo', '$employeeEpf', '$employerEpf', '$employeeTaxNum', '$socsoCategory', '$eis', '" . USER_ID . "', curdate(), curtime());";
+
+                        $returnData = mysqli_query($connect, $query);
+
+                        //Assign Leave Days To New Employee
+                        employeeLeaveCheckColumn($connect, $empIDRow['id']);
+                    }
                 } catch (Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
+                    $errorMsg = $e->getMessage();
                 }
             } else {
                 try {
-
-                    $oldvalarr = $chgvalarr = array();
 
                     $fieldsOne = array(
                         'name' => $employeeName,
@@ -358,157 +290,74 @@ if (post('actionBtn')) {
                         }
                     }
 
-                    // convert into string
-                    $oldval = implode(",", $oldvalarr);
-                    $chgval = implode(",", $chgvalarr);
-
                     $_SESSION['tempValConfirmBox'] = true;
-                    // Update query for the first table
 
-                    if ($oldval != '' && $chgval != '') {
-
-                        $query = "UPDATE $tblnameOne SET
-                                name = '$employeeName',
-                                email = '$employeeEmail',
-                                id_type = '$idType',
-                                id_number = '$idNumber',
-                                gender = '$gender',
-                                date_of_birth = '$dateOfBirth',
-                                residence_status = '$residenceStatus',
-                                nationality = '$nationality',
-                                marital_status = '$maritalStatus',
-                                no_of_children = '$noOfChildren',
-                                race_id = '$race',
-                                address_line_1 = '$addressLine1',
-                                address_line_2 = '$addressLine2',
-                                city = '$city',
-                                state = '$state',
-                                postcode = '$postcode',
-                                phone_number = '$phoneNum',
-                                alternate_phone_number = '$alternatePhoneNum',
-                                emergency_contact_name = '$emergName',
-                                emergency_contact_phone = '$emeryPhone',
-                                emergency_relationship = '$emeryRelationship',
-                                preferred_payment_method = '$paymentMeth',
-                                bank_id = '$bank',
-                                account_holders_name = '$accName',
-                                account_number = '$accNum',
-                                update_date = curdate(), 
-                                update_time = curtime(), 
-                                update_by ='" . USER_ID . "'
-                                WHERE id = '$empDetailsID';";
-
-                        mysqli_query($connect, $query);
-
-                        $query = "UPDATE $tblnameTwo SET
-                                join_date = '$joinDate',
-                                position = '$position',
-                                employment_status_id = '$employeeStatus',
-                                department_id = '$department',
-                                salary_frequency = '$salaryFrequency',
-                                salary = '$salary',
-                                currency_unit_id = '$currencyUnit',
-                                allowance = '$allowance',
-                                managers_for_leave_approval = '$manager',
-                                remark = '$remark',
-                                contributing_epf = '$contributingEpf',
-                                contributing_epf_no = '$contributingEpfNo',
-                                employee_epf_rate_id = '$employeeEpf',
-                                employer_epf_rate_id = '$employerEpf',
-                                employee_tax_number = '$employeeTaxNum',
-                                socso_category_id = '$socsoCategory',
-                                eis = '$eis',
-                                update_date = curdate(), 
-                                update_time = curtime(), 
-                                update_by ='" . USER_ID . "'
-                            WHERE employee_id = '$empDetailsID';";
-
-                        error_log("Residence Status: " . postSpaceFilter('employeeResidenceStatus'));
-                        error_log("Nationality: " . $_POST['employeeNationality']);
-
-                        mysqli_query($connect, $query);
-
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-
-                        $log['act_msg'] = USER_NAME . " edited the data";
-
-                        for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                            if ($i == 0)
-                                $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                        }
-
-                        $log['act_msg'] .= " from <b><i>$tblnameOne & $tblnameTwo Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = $tblnameOne . "&" . $tblnameTwo;
-                        $log['page'] = $pageTitle;
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    } else $act = 'NC';
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE $tblnameOne SET name='$employeeName', email='$employeeEmail', id_type='$idType', id_number='$idNumber', gender='$gender', date_of_birth='$dateOfBirth', residence_status='$residenceStatus', nationality='$nationality', marital_status='$maritalStatus', no_of_children='$noOfChildren', race_id='$race', address_line_1='$addressLine1', address_line_2='$addressLine2', city='$city', state='$state', postcode='$postcode', phone_number='$phoneNum', alternate_phone_number='$alternatePhoneNum', emergency_contact_name='$emergName', emergency_contact_phone='$emeryPhone', emergency_relationship='$emeryRelationship', preferred_payment_method='$paymentMeth', bank_id='$bank', account_holders_name='$accName', account_number='$accNum', update_date=CURDATE(), update_time=CURTIME(), update_by='" . USER_ID . "' WHERE id='$dataID';";
+                        $returnData = mysqli_query($connect, $query);
+                        $query = "UPDATE $tblnameTwo SET join_date='$joinDate', position='$position', employment_status_id='$employeeStatus', department_id='$department', salary_frequency='$salaryFrequency', salary='$salary', currency_unit_id='$currencyUnit', allowance='$allowance', managers_for_leave_approval='$manager', remark='$remark', contributing_epf='$contributingEpf', contributing_epf_no='$contributingEpfNo', employee_epf_rate_id='$employeeEpf', employer_epf_rate_id='$employerEpf', employee_tax_number='$employeeTaxNum', socso_category_id='$socsoCategory', eis='$eis', update_date=CURDATE(), update_time=CURTIME(), update_by='" . USER_ID . "' WHERE employee_id='$dataID';";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
                 } catch (Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
+                    $errorMsg = $e->getMessage();
                 }
             }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblnameOne . " & " . $tblnameTwo,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$employeeName</b> into <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$employeeName</b> into <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblnameOne . " & " . $tblnameTwo, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
             break;
 
         case 'back':
-            echo ("<script>location.href = '$redirect_page';</script>");
+            echo $clearLocalStorage . ' ' . $redirectLink;
             break;
     }
 }
 
-if (post('act') == 'D') {
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
 
-    $id = post('id');
-
-    if ($id) {
-        try {
-            // take name
-            $rst = getData('*', "id = '$id'", '', $tblnameOne, $connect);
-            $row = $rst->fetch_assoc();
-
-            $employeeName = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord($tblnameOne, $id, $employeeName, $connect, $cdate, $ctime, $pageTitle);
-
-            // take name
-            $rst = getData('*', "employee_id = '$id'", '', $tblnameTwo, $connect);
-            $row = $rst->fetch_assoc();
-
-            //SET the record status to 'D'
-            deleteRecord($tblnameTwo, $id, $employeeName, $connect, $cdate, $ctime, $pageTitle);
-
-            $_SESSION['delChk'] = 1;
-        } catch (Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
-}
-
-if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
-    $emp_name = isset($dataExisted) ? $row['name'] : '';
-    $_SESSION['viewChk'] = 1;
-
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$emp_name</b>  employee profile from <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b>.";
-    $log['page'] = $pageTitle;
-    $log['connect'] = $connect;
-    audit_log($log);
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
 }
 
 ?>
@@ -524,42 +373,19 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 <body>
 
     <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?php echo $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php
-            switch ($act) {
-                case 'I':
-                    echo 'Add ' . $pageTitle;
-                    break;
-                case 'E':
-                    echo 'Edit ' . $pageTitle;
-                    break;
-                default:
-                    echo 'View ' . $pageTitle;
-            }
-            ?></p>
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
     </div>
 
-    <div id="employeeDetailsFormContainer" class="container-fluid d-flex justify-content-center overflow-auto" style="padding: 25px 5%;">
-        <div class="col-sm-12">
-            <form id="employeeDetailsForm" method="POST" action="">
-
-                <div class="form-group mb-4">
+    <div id="employeeDetailsFormContainer" class="container d-flex justify-content-center">
+        <div class="col-8 col-md-6 formWidthAdjust">
+            <form id="employeeDetailsForm" method="post" novalidate>
+                <div class="form-group mb-5">
                     <h2>
-                        <?php
-                        switch ($act) {
-                            case 'I':
-                                echo 'Add ' . $pageTitle;
-                                break;
-                            case 'E':
-                                echo 'Edit ' . $pageTitle;
-                                break;
-                            default:
-                                echo 'View ' . $pageTitle;
-                        }
-                        ?>
+                        <?php echo $pageActionTitle ?>
                     </h2>
                 </div>
-
                 <!-- start step indicators -->
                 <div class="form-header d-flex mb-4">
                     <span class="stepIndicator">Personal Information</span>
@@ -1080,7 +906,7 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
 
                                 <div class="col-sm-4 ">
                                     <label class="form-label" id="eisLbl" for="eis">EIS <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="eis" id="eis">
+                                    <select class="form-select" aria-label="Default select example" name="eis" id="eis" required>
                                         <option value='' disabled selected>Select employee eis status</option>
                                         <option value="Yes" <?php echo isset($dataExisted, $row2['eis']) && $row2['eis'] == 'Yes' ? "selected" : ""; ?>>Yes</option>
                                         <option value="No" <?php echo isset($dataExisted, $row2['eis']) && $row2['eis'] == 'No'   ? "selected" : ""; ?>>No</option>
@@ -1108,44 +934,43 @@ if (($empDetailsID != '') && ($act == '') && (USER_ID != '') && ($_SESSION['view
             </form>
         </div>
     </div>
+
+    <?php
+    switch ($act) {
+        case 'I':
+            $buttonText = 'Add ' . $pageTitle;
+            $buttonValue = 'addEmpDetails';
+            break;
+        case 'E':
+            $buttonText = 'Edit ' . $pageTitle;
+            $buttonValue = 'updEmpDetails';
+            break;
+        case '':
+            $buttonText = 'View ' . $pageTitle;
+            $buttonValue = ' ';
+            break;
+    }
+    ?>
+
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+
+        <?php include "./js/employeeDetails.js" ?>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var editButton = document.querySelector('[name="actionBtn"][value="updEmpDetails"]');
+
+            <?php
+            if ($act !== 'E') {
+                echo 'editButton.style.display = "none";';
+            }
+            ?>
+        });
+    </script>
+
 </body>
-
-<?php
-if (isset($_SESSION['tempValConfirmBox'])) {
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
-}
-?>
-
-<?php
-switch ($act) {
-    case 'I':
-        $buttonText = 'Add ' . $pageTitle;
-        $buttonValue = 'addEmpDetails';
-        break;
-    case 'E':
-        $buttonText = 'Edit ' . $pageTitle;
-        $buttonValue = 'updEmpDetails';
-        break;
-    case '':
-        $buttonText = 'View ' . $pageTitle;
-        $buttonValue = ' ';
-        break;
-}
-?>
-
-<script>
-    <?php include "./js/employeeDetails.js" ?>
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var editButton = document.querySelector('[name="actionBtn"][value="updEmpDetails"]');
-
-        <?php
-        if ($act !== 'E') {
-            echo 'editButton.style.display = "none";';
-        }
-        ?>
-    });
-</script>
 
 </html>

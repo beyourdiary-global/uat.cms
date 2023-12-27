@@ -7,11 +7,14 @@
     include_once "include/common.php";
     include_once "include/common_variable.php";
     include_once "header.php";
-  
-    $img_path = $SITEURL.'/'.img_server . 'themes/';
+
+    $img_path = $SITEURL . '/' . img_server . 'themes/';
     $rst = getData('*', "id = '1'", '', 'projects', $connect);
 
-    if ($rst != false) {
+    if (!$rst) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/index.php';</script>";
+    } else {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
     }
@@ -38,7 +41,7 @@
                     if ($dataExisted)
                         echo $img_path  . $row['logo'];
                     else
-                        echo $SITEURL.'/'.img . byd_logo;
+                        echo $SITEURL . '/' . img . byd_logo;
                     ?>">
                 </a>
             </div>
@@ -119,7 +122,7 @@
                         <!-- Avatar -->
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img id="accpfp" src="<?php echo $SITEURL.'/'.img . defaultpfp ?>" class="rounded-circle">
+                                <img id="accpfp" src="<?php echo $SITEURL . '/' . img . defaultpfp ?>" class="rounded-circle">
                                 Admin
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right mt-3" aria-labelledby="navbarDropdownMenuAvatar">
@@ -166,7 +169,7 @@
         <!-- Container wrapper -->
     </nav>
     <!-- Navbar -->
-    <?php include ROOT."/menu_bar.php"; ?>
+    <?php include ROOT . "/menu_bar.php"; ?>
 </div>
 
 <!-- Move the script block to the end of the body -->

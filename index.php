@@ -1,26 +1,31 @@
+<?php
+$pageTitle = "Login";
+
+include "./include/common.php";
+include "./include/common_variable.php";
+include "init.php";
+include "header.php";
+
+$img_path = $SITEURL . '/' . img_server . 'themes/';
+
+$tblName = PROJ;
+$result =  getData('*', "id = '1'", '', $tblName, $connect);
+
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/index.php';</script>";
+}
+
+$row = $result->fetch_assoc();
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php
-    $pageTitle = "Login";
-    include "./include/common.php";
-    include "./include/common_variable.php";
-    include "init.php";
-    include "header.php";
-
-    $img_path = $SITEURL.'/'.img_server . 'themes/';
-    $rst = getData('*', "id = '1'", '', PROJ, $connect);
-
-    if ($rst != false) {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
-
-    ?>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/login.css">
-    <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
+    <link rel="icon" type="image" href="<?php echo (isset($row['meta_logo'])) ? $img_path . $row['meta_logo'] : $SITEURL . '/image/logo2.png'; ?>">
 </head>
 
 <body>
@@ -30,13 +35,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-center my-4" id="logo_element">
-                        <img id="logo" style="min-height:100px; max-height : 150px; width : auto;" src="
-                    <?php
-                    if ($dataExisted)
-                        echo $img_path  . $row['logo'];
-                    else
-                        echo img . byd_logo;
-                    ?>">
+                        <img id="logo" style="min-height:100px; max-height : 150px; width : auto;" src="<?php echo (isset($row['logo'])) ? $img_path . $row['logo'] : $SITEURL . '/image/logo2.png'; ?>">
                     </div>
                 </div>
             </div>
@@ -82,7 +81,7 @@
 
                         <div class="col-10">
                             <div class="form-group mb-3">
-                                <button class="btn btn-block btn-primary" name="login_btn" id="login_btn" style="background-color: <?php echo ($dataExisted) ? $row['themesColor'] : ''; ?>">Login</button>
+                                <button class="btn btn-block btn-primary" name="login_btn" id="login_btn" style="background-color: <?php echo (isset($row['themesColor'])) ? $row['themesColor'] : ''; ?>">Login</button>
                             </div>
 
                             <div id="err_msg" class="d-flex justify-content-center mb-3">
@@ -101,7 +100,7 @@
                                                 echo "Account is been blocked. Please reset your password.";
                                                 break;
                                             case '4':
-                                                echo "<p class='text-center'>You Don't Have Permission Access To ".$row['project_title']."</p>";
+                                                echo "<p class='text-center'>You Don't Have Permission Access To " . $row['project_title'] . "</p>";
                                                 break;
                                             default:
                                                 echo "";

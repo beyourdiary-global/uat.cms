@@ -1,6 +1,5 @@
 
 <?php
-
 function getUserPinGroup($connect)
 {
     if (isset($_SESSION['userid'])) {
@@ -87,6 +86,11 @@ function checkCurrentPin($connect, $currentPage)
 
 function isActionAllowed($action, $allowedActions)
 {
+    $action = strtolower($action);
+
+    foreach ($allowedActions as &$value)
+        $value = strtolower($value);
+
     return in_array($action, $allowedActions);
 }
 

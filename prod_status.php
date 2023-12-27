@@ -1,287 +1,243 @@
 <?php
 $pageTitle = "Product Status";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-$prod_status_id = input('id');
-$act = input('act');
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
+$tblName = PROD_STATUS;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/prod_status_table.php';
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-// to display data to input
-if($prod_status_id)
-{
-    $rst = getData('*',"id = '$prod_status_id'",'',PROD_STATUS,$connect);
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
-    if($rst != false)
-    {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
 }
 
-if(!($prod_status_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
-
-if(post('actionBtn'))
-{
-    $action = post('actionBtn');
-
-    switch($action)
-    {
-        case 'addProdStatus': case 'updProdStatus':
-            $prod_status_name = postSpaceFilter('prod_status_name');
-            $prod_status_remark = postSpaceFilter('prod_status_remark');
-
-            if (!$prod_status_name){
-                $err = "Product status name cannot be empty.";
-                break;
-            }
-            else if(isDuplicateRecord("name", $prod_status_name, PROD_STATUS, $connect, $prod_status_id)){
-                $err = "Duplicate record found for product status name.";
-                break;
-            }
-            else if($action == 'addProdStatus') {
-                try
-                {
-                    $query = "INSERT INTO ".PROD_STATUS."(name,remark,create_by,create_date,create_time) VALUES ('$prod_status_name','$prod_status_remark','".USER_ID."',curdate(),curtime())";
-                    mysqli_query($connect, $query);
-                    $_SESSION['tempValConfirmBox'] = true;
-
-                    $newvalarr = array();
-
-                    // check value
-                    if($prod_status_name != '')
-                        array_push($newvalarr, $prod_status_name);
-
-                    if($prod_status_remark != '')
-                        array_push($newvalarr, $prod_status_remark);
-
-                    $newval = implode(",",$newvalarr);
-
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$prod_status_name</b> into <b><i>Product Status Table</i></b>.";
-                    $log['query_rec'] = $query;
-                    $log['query_table'] = PROD_STATUS;
-                    $log['page'] = 'Product Status';
-                    $log['newval'] = $newval;
-                    $log['connect'] = $connect;
-                    audit_log($log);
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }
-            else
-            {
-                try
-                {
-                    // take old value
-                    $rst = getData('*',"id = '$prod_status_id'",'',PROD_STATUS,$connect);
-                    $row = $rst->fetch_assoc();
-                    $oldvalarr = $chgvalarr = array();
-
-                    // check value
-                    if($row['name'] != $prod_status_name)
-                    {
-                        array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $prod_status_name);
-                    }
-
-                    if($row['remark'] != $prod_status_remark)
-                    {
-                        if($row['remark'] == '')
-                            $old_remark = 'Empty_Value';
-                        else $old_remark = $row['remark'];
-
-                        array_push($oldvalarr, $old_remark);
-
-                        if($prod_status_remark == '')
-                            $new_remark = 'Empty_Value';
-                        else $new_remark = $prod_status_remark;
-                        
-                        array_push($chgvalarr, $new_remark);
-                    }
-
-                    // convert into string
-                    $oldval = implode(",",$oldvalarr);
-                    $chgval = implode(",",$chgvalarr);
-
-                    $_SESSION['tempValConfirmBox'] = true;
-                    if($oldval != '' && $chgval != '')
-                    {
-                        // edit
-                        $query = "UPDATE ".PROD_STATUS." SET name ='$prod_status_name', remark ='$prod_status_remark', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '".$prod_status_id."'";
-                        mysqli_query($connect, $query);
-
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-
-                        $log['act_msg'] = USER_NAME . " edited the data";
-                        for($i=0; $i<sizeof($oldvalarr); $i++)
-                        {
-                            if($i==0)
-                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                        }
-                        $log['act_msg'] .= " from <b><i>Product Status Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = PROD_STATUS;
-                        $log['page'] = 'Product Status';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    }
-                    else $act = 'NC';
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }
-            break;
-        case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
-            break;
-    }
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
 }
+ 
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
 
-if(post('act') == 'D')
-{
-    $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
-            // take name
-            $rst = getData('*',"id = '$id'",'',PROD_STATUS,$connect);
-            $row = $rst->fetch_assoc();
-
-            $prod_status_id = $row['id'];
-            $prod_status_name = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord(PROD_STATUS,$id,$prod_status_name,$connect,$cdate,$ctime,$pageTitle);
-
-            $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
-}
-
-if(($prod_status_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
-    $prod_status_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$prod_status_name</b> from <b><i>Product Status Table</i></b>.";
-    $log['page'] = 'Product Status';
-    $log['connect'] = $connect;
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+    
     audit_log($log);
 }
+
+//Edit And Add Data
+if (post('actionBtn')) {
+
+    $action = post('actionBtn');
+
+    switch ($action) {
+        case 'addData':
+        case 'updData':
+
+            $currentDataName = postSpaceFilter('currentDataName');
+            $dataRemark = postSpaceFilter('currentDataRemark');
+
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+            if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
+                $err = "Duplicate record found for " . $pageTitle . " name.";
+                break;
+            }
+
+            if ($action == 'addData') {
+                try {
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($currentDataName)
+                        array_push($newvalarr, $currentDataName);
+
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                    $query = "INSERT INTO " . $tblName . "(name,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+
+                    $returnData = mysqli_query($connect, $query);
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            } else {
+                try {
+                    if ($row['name'] != $currentDataName) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $currentDataName);
+                    }
+
+                    if ($row['remark'] != $dataRemark) {
+                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
+                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                    }
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
+            break;
+
+        case 'back':
+            echo $clearLocalStorage . ' ' . $redirectLink;
+            break;
+    }
+}
+
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
+
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+}
+
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+<link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Product Status</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add Product Status'; break;
-        case 'E': echo 'Edit Product Status'; break;
-        default: echo 'View Product Status';
-    }
-    ?></p>
-</div>
-
-<div id="prodstatusFormContainer" class="container d-flex justify-content-center">
-    <div class="col-6 col-md-6 formWidthAdjust">
-        <form id="prodstatusForm" method="post" action="">
-            <div class="form-group mb-5">
-                <h2>
-                    <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Product Status'; break;
-                        case 'E': echo 'Edit Product Status'; break;
-                        default: echo 'View Product Status';
-                    }
-                    ?>
-                </h2>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="prod_status_name_lbl" for="prod_status_name">Product Status Name</label>
-                <input class="form-control" type="text" name="prod_status_name" id="prod_status_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="prod_status_remark_lbl" for="prod_status_remark">Product Status Remark</label>
-                <textarea class="form-control" name="prod_status_remark" id="prod_status_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-            </div>
-
-            <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-            <?php
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addProdStatus">Add Product Status</button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updProdStatus">Edit Product Status</button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-            </div>
-        </form>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
     </div>
-</div>
-<?php
-/*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product Status","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
-<script>
-/**
-  oufei 20231014
-  common.fun.js
-  function(id)
-  to resize form with "centered" class
-*/
-centerAlignment("prodstatusFormContainer");
-</script>
+
+    <div id="formContainer" class="container d-flex justify-content-center">
+        <div class="col-8 col-md-6 formWidthAdjust">
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    <div id="err_msg">
+                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+    </script>
+
 </body>
+
 </html>
