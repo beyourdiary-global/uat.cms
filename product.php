@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -40,7 +40,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -314,7 +314,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 $echoVal = $row['brand'];
 
                             if (isset($echoVal)) {
-                                $brand_rst = getData('name', "id = '$echoVal'", BRAND, $connect);
+                                $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
                                 if (!$brand_rst) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -343,7 +343,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 $echoVal = $row['weight_unit'];
 
                             if (isset($echoVal)) {
-                                $weight_rst = getData('unit', "id = '$echoVal'", WGT_UNIT, $connect);
+                                $weight_rst = getData('unit', "id = '$echoVal'", '', WGT_UNIT, $connect);
                                 if (!$weight_rst) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -375,7 +375,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 $echoVal = $row['currency_unit'];
 
                             if (!empty($echoVal)) {
-                                $currency_unit_rst = getData('unit', "id = '$echoVal'", CUR_UNIT, $connect);
+                                $currency_unit_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
                                 if (!$currency_unit_rst) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -429,7 +429,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 $echoVal = $row['parent_product'];
 
                             if (!empty($echoVal)) {
-                                $product_rst = getData('name', "id = '$echoVal'", PROD, $connect);
+                                $product_rst = getData('name', "id = '$echoVal'", '', PROD, $connect);
                                 if (!$product_rst) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";

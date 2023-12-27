@@ -15,7 +15,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/pin.php';
 $deleteRedirectPage = $SITEURL . '/pin_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

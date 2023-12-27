@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -39,8 +39,8 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 }
 
 //Get Pin and Pin Group Data
-$pinResult = getData('*', '', PIN, $connect);
-$pinGrpResult = getData('*', '', PIN_GRP, $connect);
+$pinResult = getData('*', '', '', PIN, $connect);
+$pinGrpResult = getData('*', '', '', PIN_GRP, $connect);
 
 if (!$pinResult || !$pinGrpResult) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -50,7 +50,7 @@ if (!$pinResult || !$pinGrpResult) {
 $pin_arr = array();
 
 if ($dataID) {
-    $userGroupResult = getData('*', "id = '$dataID'", USR_GRP, $connect);
+    $userGroupResult = getData('*', "id = '$dataID'", '', USR_GRP, $connect);
 
     if ($userGroupResult) {
         $row = $userGroupResult->fetch_assoc();
@@ -81,7 +81,7 @@ if ($dataID) {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 

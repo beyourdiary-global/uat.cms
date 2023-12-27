@@ -15,7 +15,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/customerInfo.php';
 $deleteRedirectPage = $SITEURL . '/customerInfoTable.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -82,7 +82,7 @@ if (!$result) {
                                 <td scope="row"><?= $row['name'] ." ". $row['last_name'] ?></td>
                                 <td scope="row"><?= $row['email'] ?></td>
                                 <?php
-                                $resultPhoneCode = getData('*', 'id="'.$row['phone_country'].'"', 'countries', $connect);
+                                $resultPhoneCode = getData('*', 'id="'.$row['phone_country'].'"', '', 'countries', $connect);
 
                                 if (!$resultPhoneCode) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

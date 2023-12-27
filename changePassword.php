@@ -27,7 +27,7 @@ if ($pageMode == 'userChgPassword') {
 
         if ($id && $old_password && $new_password && $confirm_password) {
             if ($new_password == $confirm_password) {
-                $rst = getData('*', "id = '$id'", USR_USER, $connect);
+                $rst = getData('*', "id = '$id'", '', USR_USER, $connect);
                 if (!$rst) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -59,7 +59,7 @@ if ($pageMode == 'userChgPassword') {
 
         if ($email && $token && $new_password && $confirm_password) {
             if ($new_password == $confirm_password) {
-                $rst = getData('*', "email = '$email'", USR_USER, $connect);
+                $rst = getData('*', "email = '$email'", '', USR_USER, $connect);
                 if (!$rst) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";

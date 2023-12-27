@@ -16,7 +16,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/user.php';
 $deleteRedirectPage = $SITEURL . '/user_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -75,7 +75,7 @@ if (!$result) {
                     while ($row = $result->fetch_assoc()) {
                         if (!empty($row['name'])) {
 
-                            $resultAccessGroup = getData('name', "id='" . $row['access_id'] . "'", USR_GRP, $connect);
+                            $resultAccessGroup = getData('name', "id='" . $row['access_id'] . "'", '', USR_GRP, $connect);
                             if (!$resultAccessGroup) {
                                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";

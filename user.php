@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -40,7 +40,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -282,7 +282,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
                                 <option value="" disabled selected style="display:none;">Select User Group</option>
                                 <?php
-                                $user_grp_list = getData('id,name', '', USR_GRP, $connect);
+                                $user_grp_list = getData('id,name', '', '', USR_GRP, $connect);
                                 if ($user_grp_list) {
                                     while ($row2 = $user_grp_list->fetch_assoc()) {
                                         $selected = '';

@@ -15,7 +15,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/pin_group.php';
 $deleteRedirectPage = $SITEURL . '/pin_group_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -83,7 +83,7 @@ if (!$result) {
                                     $pin_arr = explode(",", $row['pins']);
                                     $pinname_arr = array();
                                     foreach ($pin_arr as $val) {
-                                        $pinname_result = getData('name', "id='$val'", PIN, $connect);
+                                        $pinname_result = getData('name', "id='$val'", '', PIN, $connect);
                                         if (!$pinname_result) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                             echo "<script>location.href ='$SITEURL/dashboard.php';</script>";

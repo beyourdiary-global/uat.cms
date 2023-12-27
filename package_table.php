@@ -16,7 +16,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/package.php';
 $deleteRedirectPage = $SITEURL . '/package_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -81,7 +81,7 @@ if (!$result) {
                                 <td scope="row"><?= $row['name'] ?></td>
                                 <td scope="row">
                                     <?php
-                                    $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", CUR_UNIT, $connect);
+                                    $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
                                     if (!$resultCurUnit) {
                                         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
