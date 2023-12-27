@@ -4,15 +4,16 @@ include "include/common.php";
 include "include/common_variable.php";
 include "include/connection.php";
 
-
-$img_path = img_server . 'themes/';
+$img_path = $SITEURL . img_server . 'themes/';
 $rst = getData('*', "id = '1'", PROJ, $connect);
 
 if ($rst != false) {
     $dataExisted = 1;
     $rowProj = $rst->fetch_assoc();
+} else {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/index.php';</script>";
 }
-
 
 $resetpass_btn = post('resetpass_btn');
 
@@ -24,6 +25,11 @@ if ($resetpass_btn == 1) {
     if ($email) {
         $query = "SELECT * FROM " . USR_USER . " WHERE email = '" . $email . "'";
         $result = mysqli_query($connect, $query);
+        $result = getData('*', '', $tblName, $connect);
+        if (!$result) {
+            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+            echo "<script>location.href ='$SITEURL/index.php';</script>";
+        }
         $row = $result->fetch_assoc();
 
         if (mysqli_num_rows($result) == 1) {
@@ -169,7 +175,7 @@ if ($resetpass_btn == 1) {
                     <div class="row d-flex justify-content-center">
                         <div class="col-10">
                             <div class="form-group mb-3">
-                                <button class="btn btn-block btn-primary mb-3"  style="background-color: <?php echo ($dataExisted) ? $rowProj['themesColor'] : ''; ?>" name="resetpass_btn" id="resetpass_btn">Reset password</button>
+                                <button class="btn btn-block btn-primary mb-3" style="background-color: <?php echo ($dataExisted) ? $rowProj['themesColor'] : ''; ?>" name="resetpass_btn" id="resetpass_btn">Reset password</button>
                                 <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='<?= $SITEURL ?>/index.php'" value="back">
                             </div>
                         </div>

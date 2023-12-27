@@ -51,16 +51,17 @@ if ($email && $password) {
                     $permission_grp_keys = array_keys($permission_grp);
                     $_SESSION['usr_pin'] = $permission_grp_keys;
 
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'login';
-                    $log['uid'] = $log['cby'] = $loginrows['id'];
-                    $log['act_msg'] = $loginrows['name'] . " has login to the system.";
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['connect'] = $connect;
-
-                    audit_log($log);
+                    $log = [
+                         'log_act' => 'login',
+                         'act_msg' => $loginrows['name'] . " has login to the system.",
+                         'cdate' => $cdate,
+                         'ctime' => $ctime,
+                         'uid' => $loginrows['id'],
+                         'cby' => $loginrows['id'],
+                         'connect' => $connect,
+                     ];
+                     
+                     audit_log($log);
 
                     // json file
                     generateDBData(BRAND, $connect);
