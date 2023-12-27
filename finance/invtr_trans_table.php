@@ -70,9 +70,9 @@ $result = getData('*', '', INVTR_TRANS, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { 
-                        $merchant = getData('name', "id='" . $row['merchant'] . "'", MERCHANT, $finance_connect);
+                        $merchant = getData('name', "id='" . $row['merchantID'] . "'", MERCHANT, $finance_connect);
                         $row2 = $merchant->fetch_assoc();
-                        $item = getData('name', "id='" . $row['item'] . "'", MERCHANT, $finance_connect);
+                        $item = getData('name', "id='" . $row['itemID'] . "'", PROD, $connect);
                         $row3 = $item->fetch_assoc();
 
                         ?>
@@ -81,11 +81,11 @@ $result = getData('*', '', INVTR_TRANS, $finance_connect);
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
-                            <td scope="row"><?= $row['merchantID'] ?></td>
-                            <td scope="row"><?= $row['itemID'] ?></td>
+                            <td scope="row"><?= $row2['name'] ?></td>
+                            <td scope="row"><?= $row3['name'] ?></td>
                             <td scope="row"><?= $row['unit_price'] ?></td>
                             <td scope="row"><?= $row['bal_qty'] ?></td>
-                            <td scope="row"><?= $row2['amount'] ?></td>
+                            <td scope="row"><?= $row['amount'] ?></td>
                             <td scope="row"><?= $row['attachment'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
                             <td scope="row">
@@ -106,7 +106,7 @@ $result = getData('*', '', INVTR_TRANS, $finance_connect);
                                         </li>
                                         <li>
                                             <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remarks'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/investment_trans_table.php','D')">Delete</a>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/invtr_trans_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>
                                     </ul>

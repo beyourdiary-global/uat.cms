@@ -373,7 +373,7 @@ if (post('actionBtn')) {
                         }else{
                             $act = 'F';
                         }
-                        updateTransactionAmounts($finance_connect, CURR_BANK_TRANS);
+                        updateTransAmt($finance_connect, CURR_BANK_TRANS,'[', '');
                     } else $act = 'NC';
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
@@ -444,7 +444,7 @@ if (!($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && (
 
     <div id="merchantFormContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="merchantForm" method="post" action="" enctype="multipart/form-data">
+            <form id="cbaForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
