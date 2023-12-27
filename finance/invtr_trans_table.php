@@ -12,7 +12,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/invtr_trans.php';
-$result = getData('*', '', INVTR_TRANS, $finance_connect);
+$result = getData('*', '', '', INVTR_TRANS, $finance_connect);
 
 ?>
 
@@ -70,9 +70,9 @@ $result = getData('*', '', INVTR_TRANS, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { 
-                        $merchant = getData('name', "id='" . $row['merchantID'] . "'", MERCHANT, $finance_connect);
+                        $merchant = getData('name', "id='" . $row['merchantID'] . "'",'', MERCHANT, $finance_connect);
                         $row2 = $merchant->fetch_assoc();
-                        $item = getData('name', "id='" . $row['itemID'] . "'", PROD, $connect);
+                        $item = getData('name', "id='" . $row['itemID'] . "'", '', PROD, $connect);
                         $row3 = $item->fetch_assoc();
 
                         ?>

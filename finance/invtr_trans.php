@@ -27,7 +27,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", $tblName, $finance_connect);
+    $rst = getData('*', "id = '$dataID'", '', $tblName, $finance_connect);
     
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -66,8 +66,8 @@ if (!($dataID) && !($act)) {
 }
 
 //dropdown list for merchant
-$mrcht_list_result = getData('*', '', MERCHANT, $finance_connect);
-$item_list_result = getData('*', '', PROD, $connect);
+$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
+$item_list_result = getData('*', '', '', PROD, $connect);
 
 
 if (post('actionBtn')) {
@@ -197,8 +197,7 @@ if (post('actionBtn')) {
                         }                     
                     }
                     // take old value
-                    //$rst = getData('*', "id = '$dataID'", 'LIMIT 1',$tblName, $finance_connect);
-                    $rst = getData('*', "id = '$dataID'",$tblName, $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -316,7 +315,7 @@ if (post('actionBtn')) {
 
 if ($act == 'D') {
     //SET the record status to 'D'
-    deleteRecord($tblName, $dataID, $row['transactionID'], $finance_connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['transactionID'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -417,8 +416,8 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                                         $mrcht_list_result->data_seek(0);
                                         while ($row2 = $mrcht_list_result->fetch_assoc()) {
                                             $selected = "";
-                                            if (isset($dataExisted,$row['merchant']) && !isset($invtr_mrcht)) {
-                                                $selected = $row['merchant'] == $row2['id'] ? " selected" : "";
+                                            if (isset($dataExisted,$row['merchantID']) && !isset($invtr_mrcht)) {
+                                                $selected = $row['merchantID'] == $row2['id'] ? " selected" : "";
                                             }else if (isset($invtr_mrcht) && ($invtr_mrcht != 'other')) {
                                             $selected = $invtr_mrcht == $row2['id'] ? " selected" : "";
                                             }
@@ -429,7 +428,6 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                                     }
                                     ?>
                             </select>
-
                             <?php if (isset($mrcht_err)) {?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $mrcht_err; ?></span>
@@ -515,7 +513,8 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="invtr_qty_lbl" for="invtr_qty">Balance Quantity</label>
+                            <label class="form-label form_lbl" id="invtr_qty_lbl" for="invtr_qty">Balance
+                                Quantity</label>
                             <input class="form-control" type="text" name="invtr_qty" id="invtr_qty" value="<?php 
                                 if (isset($dataExisted) && isset($row['bal_qty']) && !isset($invtr_qty)){
                                     echo $row['bal_qty'];
