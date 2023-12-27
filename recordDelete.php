@@ -1,6 +1,6 @@
 <?php
 
-function deleteRecord($tbl, $id, $name, $connect, $cdate, $ctime, $pageTitle)
+function deleteRecord($tbl, $id, $name, $connect, $audit_connect, $cdate, $ctime, $pageTitle)
 {
     try {
         $query =  "UPDATE $tbl SET status = 'D' WHERE id = " . $id;
@@ -24,7 +24,7 @@ function deleteRecord($tbl, $id, $name, $connect, $cdate, $ctime, $pageTitle)
         'query_rec'     => $query,
         'query_table'   => $tbl,
         'page'          => $pageTitle,
-        'connect'       => $connect,
+        'connect'       => $audit_connect,
     ];
 
     audit_log($log);
