@@ -13,13 +13,13 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/leave_type.php';
-$result = getData('*', '', $tblname, $connect);
+$result = getData('*', '', '', $tblname, $connect);
 
 if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
-    $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
+    $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
 
     if (!$rst) {
         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

@@ -5,7 +5,7 @@ include "include/common_variable.php";
 include "include/connection.php";
 
 $img_path = $SITEURL . img_server . 'themes/';
-$rst = getData('*', "id = '1'", PROJ, $connect);
+$rst = getData('*', "id = '1'", '', PROJ, $connect);
 
 if ($rst != false) {
     $dataExisted = 1;
@@ -25,7 +25,7 @@ if ($resetpass_btn == 1) {
     if ($email) {
         $query = "SELECT * FROM " . USR_USER . " WHERE email = '" . $email . "'";
         $result = mysqli_query($connect, $query);
-        $result = getData('*', '', $tblName, $connect);
+        $result = getData('*', '', '', $tblName, $connect);
         if (!$result) {
             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
             echo "<script>location.href ='$SITEURL/index.php';</script>";

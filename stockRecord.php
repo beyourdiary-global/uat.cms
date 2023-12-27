@@ -7,7 +7,7 @@ $pkg_id = input('pkgid');
 $whse_id = input('whseid');
 
 // checking
-$rst_stock = getData('*',"barcode = $barcode",STK_REC,$connect);
+$rst_stock = getData('*',"barcode = $barcode",'',STK_REC,$connect);
 
 if (!$rst_stock) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

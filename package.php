@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -40,7 +40,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -283,7 +283,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 $echoVal = $row['currency_unit'];
 
                             if (isset($echoVal)) {
-                                $product_info_result = getData('unit', "id = '$echoVal'", CUR_UNIT, $connect);
+                                $product_info_result = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
 
                                 $product_info_row = $product_info_result->fetch_assoc();
                             }
@@ -332,7 +332,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     $echoVal = explode(',', $echoVal);
                                     foreach ($echoVal as $prod_id) {
                                         // product info
-                                        $product_info_result = getData('*', "id = '$prod_id'", PROD, $connect);
+                                        $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
                                         $product_info_row = $product_info_result->fetch_assoc();
 
                                         $pid = $product_info_row['id'];
@@ -343,7 +343,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         $pslot = $product_info_row['barcode_slot'];
 
                                         // weight unit info
-                                        $product_info_result = getData('unit', "id = '$pwu'", WGT_UNIT, $connect);
+                                        $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
                                         $product_info_row = $product_info_result->fetch_assoc();
 
                                         $pwun = $product_info_row['unit'];

@@ -13,9 +13,9 @@ $tblname = STK_REC;
 $barcode_input = "";
 $usr_btn = "";
 
-$rst_pkg_info = getData('*',"id='$pkg_id'",PKG,$connect);
-$rst_whse_info = getData('name',"id='$whse_id'",WHSE,$connect);
-$rst_usr = getData('*',"status='A'",USR_USER,$connect);
+$rst_pkg_info = getData('*',"id='$pkg_id'",'',PKG,$connect);
+$rst_whse_info = getData('name',"id='$whse_id'",'',WHSE,$connect);
+$rst_usr = getData('*',"status='A'",'',USR_USER,$connect);
 
 
 if (!$rst_pkg_info || $rst_whse_info || $rst_us) {

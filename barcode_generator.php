@@ -21,8 +21,8 @@ if (!file_exists($PNG_TEMP_DIR)) {
 }
 
 // to display data to input
-if ($product_id) {
-    $rst = getData('*', "id = '$product_id'", $tblname, $connect);
+if($product_id) {
+    $rst = getData('*',"id = '$product_id'", '', $tblname,$connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -60,7 +60,7 @@ if (post('actionBtn')) {
                 $err3 = 'Please select the warehouse to generate barcode';
 
             if (($product && $product) && ($page_no || ($page_no != '0')) && ($warehouse != 'noValue')) {
-                $rst_projInfo = getData("barcode_prefix,barcode_next_number", "id='1'", PROJ, $connect);
+                $rst_projInfo = getData("barcode_prefix,barcode_next_number", "id='1'", '', PROJ, $connect);
                 if (!$rst_projInfo) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -150,7 +150,7 @@ if (post('actionBtn')) {
                                                                                                             $echoVal = $row['id'];
 
                                                                                                         if (isset($echoVal)) {
-                                                                                                            $rst = getData('name', "id = '$echoVal'", $tblname, $connect);
+                                                                                                            $rst = getData('name',"id = '$echoVal'",'',$tblname,$connect);
                                                                                                             if (!$rst) {
                                                                                                                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                                                                                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -194,7 +194,7 @@ if (post('actionBtn')) {
                             <select class="form-select" name="warehouse" id="warehouse">
                                 <option value="noValue" <?php if (!isset($warehouse)) echo 'selected' ?>>--Please Choose--</option>
                                 <?php
-                                $rst_warehouse_list = getData("id,name", '', WHSE, $connect);
+                                $rst_warehouse_list = getData("id,name",'','',WHSE,$connect);
                                 if (!$rst_warehouse_list) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
