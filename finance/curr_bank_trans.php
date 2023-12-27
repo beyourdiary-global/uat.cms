@@ -115,8 +115,6 @@ if (post('actionBtn')) {
                         $err2 = "Failed to upload the file.";
                     }
                 } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
-            } else {
-                $cba_attach = $_POST['existing_attachment'];
             }
 
             if (!$cba_type && $cba_type < 1) {
@@ -310,36 +308,10 @@ if (post('actionBtn')) {
                         $query = "UPDATE " . CURR_BANK_TRANS . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                        if ($update_result) {
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-                                if ($i == 0)
-                                    $log['act_msg'] .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-                            }
-                            $log['act_msg'] .= "  from <b><i>Merchant Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = CURR_BANK_TRANS;
-                            $log['page'] = $pageTitle;
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                            
-                        }else{
-                            $act = 'F';
-                        }
-                        updateTransAmt($finance_connect, CURR_BANK_TRANS, ['bank', 'currency'], ['bank', 'currency']);
-                    } else $act = 'NC';
+                        updateTransAmt($finance_connect, CURR_BANK_TRANS,['bank', 'currency'],['bank', 'currency']);
+                    } else {
+                        $act = 'NC';
+                    }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                 }
