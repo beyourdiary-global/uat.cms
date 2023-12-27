@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -53,8 +53,8 @@ if ($cur_list_result != false) {
 
 //Get Specific Currencies Unit Data
 if ($pageAction != 'Add') {
-    $resultDeUnit = getData('unit', "id='" . $row['default_currency_unit'] . "'", CUR_UNIT, $connect);
-    $resultExUnit = getData('unit', "id='" . $row['exchange_currency_unit'] . "'", CUR_UNIT, $connect);
+    $resultDeUnit = getData('unit', "id='" . $row['default_currency_unit'] . "'", '', CUR_UNIT, $connect);
+    $resultExUnit = getData('unit', "id='" . $row['exchange_currency_unit'] . "'", '', CUR_UNIT, $connect);
 
     if (!$resultDeUnit || !$resultExUnit) {
         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -182,8 +182,8 @@ if (post('actionBtn')) {
                 $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
-            $resultDeUnit = getData('unit', "id='" . $dflt_cur_unit[0] . "'", CUR_UNIT, $connect);
-            $resultExUnit = getData('unit', "id='" . $exchg_cur_unit[0] . "'", CUR_UNIT, $connect);
+            $resultDeUnit = getData('unit', "id='" . $dflt_cur_unit[0] . "'", '', CUR_UNIT, $connect);
+            $resultExUnit = getData('unit', "id='" . $exchg_cur_unit[0] . "'", '', CUR_UNIT, $connect);
 
             if (!$resultDeUnit || !$resultExUnit) {
                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
