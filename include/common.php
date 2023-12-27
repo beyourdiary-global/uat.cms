@@ -694,6 +694,7 @@ function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey) {
         }
         $prevAmounts[$key] = $finalAmt;
     }
+    return true;
 }
 
 

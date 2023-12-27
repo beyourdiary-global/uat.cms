@@ -77,12 +77,13 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40')
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
                 ),
-                'pin' => array('37','40'),
+                'pin' => array('37','40','41'),
             ),
         ),
-        'pin' => array('36', '37','40')
+        'pin' => array('36', '37','40','41')
     ),
     array(
         'Other',
@@ -185,7 +186,7 @@ $menuList = array(
                 'pin' => array('33'),
             ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41')
     ),
     array(
         'Audit Log',
