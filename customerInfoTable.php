@@ -1,19 +1,19 @@
 <?php
-$pageTitle = "User Group";
+$pageTitle = "Customer Info";
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-$tblName = USR_GRP;
+$tblName = CUS_INFO;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-$_SESSION['act'] = ''; 
+$_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/user_group.php';
-$deleteRedirectPage = $SITEURL . '/user_group_table.php';
+$redirect_page = $SITEURL . '/customerInfo.php';
+$deleteRedirectPage = $SITEURL . '/customerInfoTable.php';
 
 $result = getData('*', '', $tblName, $connect);
 
@@ -64,7 +64,10 @@ if (!$result) {
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Remark</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Birthday</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
@@ -76,8 +79,20 @@ if (!$result) {
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?= $row['name'] ?></td>
-                                <td scope="row"><?= $row['remark'] ?></td>
+                                <td scope="row"><?= $row['name'] ." ". $row['last_name'] ?></td>
+                                <td scope="row"><?= $row['email'] ?></td>
+                                <?php
+                                $resultPhoneCode = getData('*', 'id="'.$row['phone_country'].'"', 'countries', $connect);
+
+                                if (!$resultPhoneCode) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowPhoneCode = $resultPhoneCode->fetch_assoc()
+                                ?>
+                                <td scope="row"><?= $rowPhoneCode['phonecode'] . $row['phone_number'] ?></td>
+                                <td scope="row"><?= $row['gender'] ?></td>
+                                <td scope="row"><?= $row['birthday'] ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -96,7 +111,7 @@ if (!$result) {
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] . $row['last_name'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -114,7 +129,10 @@ if (!$result) {
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Remark</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Birthday</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>

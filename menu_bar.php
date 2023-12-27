@@ -27,12 +27,21 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Designations', '
-            ', $SITEURL . '/designations_table.php', '4'),
+            array('Designations', '', $SITEURL . '/designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', $SITEURL . '/department_table.php', '5'),
             array('Employee Details', 'mdi mdi-information-outline', $SITEURL . '/employeeDetailsTable.php', '34'),
         ),
         'pin' => array('4', '5', '34')
+    ),
+    array(
+        'Customer',
+        'mdi mdi-account-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Customer Info', 'mdi mdi-information-outline', $SITEURL . '/customerInfoTable.php', '38'),
+        ),
+        'pin' => array('38')
     ),
     array(
         'Product',
@@ -148,7 +157,7 @@ $menuList = array(
                     array('Race', 'mdi mdi-account-star-outline', $SITEURL . '/race_table.php', '28'),
                     array('Socso Category', 'mdi mdi-google-fit', $SITEURL . '/socso_category_table.php', '30'),
                     array('Employer EPF Rate', 'mdi mdi-account-star-outline', $SITEURL . '/employer_epf_rate_table.php', '32'),
-                    array('Employee Epf Rate', 'mdi mdi-account-supervisor', $SITEURL . '/employee_epf_rate_table.php', '31'),
+                    array('Employee EPF Rate', 'mdi mdi-account-supervisor', $SITEURL . '/employee_epf_rate_table.php', '31'),
 
                 ),
                 'pin' => array('12', '13', '6', '24', '26', '27', '28', '30', '31', '32'),
@@ -175,7 +184,7 @@ $menuList = array(
                 'pin' => array('33'),
             ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '39')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39')
     ),
     array(
         'Audit Log',

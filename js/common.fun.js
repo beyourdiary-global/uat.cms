@@ -908,6 +908,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       var title2 = "Are you sure want to delete?";
       var btn = "Delete";
       break;
+    case "F":
+      var title = "Error Occurred,Please Try Again Later";
+      break;
     case "MO":
       var title = msg + " Successful Place";
       break;
@@ -920,6 +923,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     default:
       var title = "Error";
   }
+
+  localStorage.clear();
 
   var message = "";
   if (msg.length >= 1) {
@@ -1035,7 +1040,14 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     } else console.log("Operation Cancelled.");
   }
 
-  if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC") {
+  if (
+    act == "I" ||
+    act == "E" ||
+    act == "MO" ||
+    act == "NC" ||
+    act == "PC" ||
+    act == "F"
+  ) {
     const myModal2 = new bootstrap.Modal(modelResult, {
       keyboard: false,
       backdrop: "static",
@@ -1226,7 +1238,7 @@ document.addEventListener("DOMContentLoaded", function () {
   retrieveDataFromLocalStorage();
 
   // Attach input event listener to each input field
-  var inputFields = document.querySelectorAll("input, textarea");
+  var inputFields = document.querySelectorAll("input, textarea ,select");
   inputFields.forEach(function (input) {
     if (!input.readOnly) {
       input.addEventListener("input", function () {
@@ -1247,7 +1259,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function retrieveDataFromLocalStorage() {
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea ,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has stored data
       if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
@@ -1257,7 +1269,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function saveFormDataToLocalStorage() {
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea ,select");
 
     inputFields.forEach(function (input) {
       if (!input.readOnly && input.id) {
@@ -1268,7 +1280,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function displayPreviousData() {
     // Loop through input fields and restore previous data
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has previous data
       if (!input.readOnly && localStorage.getItem(input.id)) {
@@ -1289,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function checkRequiredInputs() {
-    var requiredInputs = document.querySelectorAll("input[required]");
+    var requiredInputs = document.querySelectorAll("input[required], select[required]");
 
     requiredInputs.forEach(function (input) {
       if (input.value.trim() === "") {
@@ -1333,3 +1345,20 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initial toggle to set the initial state
   toggleErrorMessage();
 });
+
+function setCookie(cname, cvalue, exMins) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exMins * 60 * 1000));
+  var expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function checkCurrentPage(page) {
+  var previouspage = localStorage.getItem("page");
+  localStorage.setItem("page", page);
+  if (previouspage != page) {
+    localStorage.clear();
+    localStorage.setItem("page", page);
+  }
+}
+
