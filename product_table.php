@@ -15,7 +15,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/product.php';
 $deleteRedirectPage = $SITEURL . '/product_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -82,7 +82,7 @@ if (!$result) {
                                 <td scope="row">
                                     <?php
 
-                                    $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", CUR_UNIT, $connect);
+                                    $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
                                     if (!$resultCurUnit) {
                                         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -95,7 +95,7 @@ if (!$result) {
                                 </td>
                                 <td scope="row">
                                     <?php
-                                    $resultWeightUnit = getData('unit', "id='" . $row['weight_unit'] . "'", WGT_UNIT, $connect);
+                                    $resultWeightUnit = getData('unit', "id='" . $row['weight_unit'] . "'", '', WGT_UNIT, $connect);
 
                                     if (!$resultWeightUnit) {
                                         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -109,7 +109,7 @@ if (!$result) {
                                 <td scope="row">
                                     <?php
                                     if ($row['parent_product']) {
-                                        $resultParentPrd = getData('name', "id='" . $row['parent_product'] . "'", $tblName, $connect);
+                                        $resultParentPrd = getData('name', "id='" . $row['parent_product'] . "'", '', $tblName, $connect);
 
                                         if (!$resultParentPrd) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

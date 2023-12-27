@@ -69,7 +69,7 @@ if (!$result) {
                     if (mysqli_num_rows($result) >= 1) {
 
                         while ($row = $result->fetch_assoc()) {
-                            $resultUser = getData('username', "id='" . $row['user_id'] . "'", USR_USER, $connect);
+                            $resultUser = getData('username', "id='" . $row['user_id'] . "'", '', USR_USER, $connect);
                             if (!$resultUser) {
                                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";

@@ -9,7 +9,7 @@ include "header.php";
 $img_path = $SITEURL . '/' . img_server . 'themes/';
 
 $tblName = PROJ;
-$result =  getData('*', "id = '1'", $tblName, $connect);
+$result =  getData('*', "id = '1'", '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

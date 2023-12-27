@@ -5,7 +5,7 @@ function employeeLeaveCheckColumn($connect, $empID)
     $tblName = EMPLEAVE;
 
     try {
-        $empLeaveResult = getData('*', '', L_TYPE, $connect);
+        $empLeaveResult = getData('*', '', '', L_TYPE, $connect);
 
         if (!$empLeaveResult) {
             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

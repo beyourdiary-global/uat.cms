@@ -29,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -40,7 +40,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'] . $row['last_name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'] . $row['last_name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -313,7 +313,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" for="cusPhoneCode">Phone Code </label>
                                     <select class="form-select" aria-label="Default select example" name="cusPhoneCode" id="cusPhoneCode" required <?php if ($act == '') echo 'disabled' ?>>
                                         <?php
-                                        $resultPhoneCode = getData('*', '', 'countries', $connect);
+                                        $resultPhoneCode = getData('*', '', '', 'countries', $connect);
 
                                         if (!$resultPhoneCode) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -391,7 +391,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" for="country">Country/Region</label>
                                     <select class="form-select" aria-label="Default select example" name="country" id="country" <?php if ($act == '') echo 'disabled' ?>>
                                         <?php
-                                        $resultCountry = getData('*', '', 'countries', $connect);
+                                        $resultCountry = getData('*', '', '', 'countries', $connect);
 
                                         if (!$resultCountry) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -435,7 +435,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" for="curSegmentation">Customer Segmentation </label>
                                     <select class="form-select" aria-label="Default select example" name="curSegmentation" id="curSegmentation" <?php if ($act == '') echo 'disabled' ?>>
                                         <?php
-                                        $resultCusSegmentation = getData('*', '', CUR_SEGMENTATION, $connect);
+                                        $resultCusSegmentation = getData('*', '', '', CUR_SEGMENTATION, $connect);
 
                                         if (!$resultCusSegmentation) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -456,7 +456,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" for="tag">Tags </label>
                                     <select class="form-select" aria-label="Default select example" name="tag" id="tag" <?php if ($act == '') echo 'disabled' ?>>
                                         <?php
-                                        $resultTag = getData('*', '', TAG, $connect);
+                                        $resultTag = getData('*', '', '', TAG, $connect);
 
                                         if (!$resultTag) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -477,7 +477,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" for="personIncharges">Person in charges </label>
                                     <select class="form-select" aria-label="Default select example" name="personIncharges" id="personIncharges" required <?php if ($act == '') echo 'disabled' ?>>
                                         <?php
-                                        $resultUser = getData('*', '', USR_USER, $connect);
+                                        $resultUser = getData('*', '', '', USR_USER, $connect);
 
                                         if (!$resultUser) {
                                             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";

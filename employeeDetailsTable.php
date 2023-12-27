@@ -11,7 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/employeeDetails.php';
-$result = getData('*', '', EMPPERSONALINFO, $connect);
+$result = getData('*', '', '', EMPPERSONALINFO, $connect);
 
 if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSelect'])) {
 
@@ -34,8 +34,8 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                 $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
 
-                $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', L_TYPE, $connect);
-                $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', EMPLEAVE, $connect);
+                $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
+                $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
 
                 if (!$resultLeaveType || !$resultCurrentEmp) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -163,7 +163,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                 echo "<h4>Employee Selected</h4>";
 
                                                 for ($i = 0; $i < sizeof($employeeArr); $i++) {
-                                                    $resultEmp = getData('*', "id=$employeeArr[$i]", EMPPERSONALINFO, $connect);
+                                                    $resultEmp = getData('*', "id=$employeeArr[$i]", '', EMPPERSONALINFO, $connect);
 
                                                     if ($resultEmp) {
                                                         $empName = $resultEmp->fetch_assoc();
@@ -204,7 +204,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                                             if (!empty($autoAsignType)) {
                                                 $leaveAvailable = true;
-                                                $resultLeave = getData('*', "auto_assign = 'yes' AND leave_status = 'Active'", L_TYPE, $connect);
+                                                $resultLeave = getData('*', "auto_assign = 'yes' AND leave_status = 'Active'", '', L_TYPE, $connect);
 
                                                 if ($resultLeave->num_rows != 0) {
 
@@ -322,7 +322,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         <td scope="row"><?= $row['name'] ?></td>
 
                         <?php
-                        $resultIDType = getData('*', 'id = ' . $row['id_type'], ID_TYPE, $connect);
+                        $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
 
                         while ($rowIDType = $resultIDType->fetch_assoc()) {
                             echo "<td scope='row'>" . $rowIDType['name'] . "</td>";
@@ -335,7 +335,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         <td scope="row"><?= $row['date_of_birth'] ?></td>
 
                         <?php
-                        $resultRace = getData('*', 'id = ' . $row['race_id'], RACE, $connect);
+                        $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
 
                         while ($rowRace = $resultRace->fetch_assoc()) {
                             echo "<td scope='row'>" . $rowRace['name'] . "</td>";
@@ -345,7 +345,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         <td scope="row"><?= $row['residence_status'] ?></td>
 
                         <?php
-                        $resultNationality = getData('*', 'id = ' . $row['nationality'], 'countries', $connect);
+                        $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
 
                         while ($rowNationality = $resultNationality->fetch_assoc()) {
                             echo "<td scope='row'>" . $rowNationality['name'] . "</td>";
@@ -362,7 +362,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                         <?php
 
-                        $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], MRTL_STATUS, $connect);
+                        $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
 
                         while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
                             echo "<td scope='row'>" . $rowMrtSts['name'] . "</td>";

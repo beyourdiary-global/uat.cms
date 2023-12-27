@@ -15,7 +15,7 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/bank.php';
 $deleteRedirectPage = $SITEURL . '/bank_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
