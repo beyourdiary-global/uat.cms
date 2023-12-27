@@ -706,4 +706,16 @@ function insertNewMerchant($merchantName, $userId, $financeConnect) {
     }
     return false;
 }
+
+
+function insertNewMerchant($merchantName, $userId, $financeConnect) {
+    $query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
+    $queryResult = mysqli_query($financeConnect, $query);
+    if ($queryResult) {
+        return mysqli_insert_id($financeConnect);
+    }
+    return false;
+}
+
+
 ?>
