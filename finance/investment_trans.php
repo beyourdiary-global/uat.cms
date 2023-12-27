@@ -22,7 +22,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($row_id) { //edit/remove/view
-    $rst = getData('*', "id = '$row_id'", INV_TRANS, $finance_connect);
+    $rst = getData('*', "id = '$row_id'", '', INV_TRANS, $finance_connect);
     
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -61,7 +61,7 @@ if (!($row_id) && !($act)) {
 }
 
 //dropdown list for merchant
-$mrcht_list_result = getData('*', '', MERCHANT, $finance_connect);
+$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
 
 
 if (post('actionBtn')) {
@@ -225,7 +225,7 @@ if (post('actionBtn')) {
                     }
                     // take old value
                     //$rst = getData('*', "id = '$row_id'", 'LIMIT 1',INV_TRANS, $finance_connect);
-                    $rst = getData('*', "id = '$row_id'",INV_TRANS, $finance_connect);
+                    $rst = getData('*', "id = '$row_id'", '', INV_TRANS, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -382,14 +382,14 @@ if (post('act') == 'D') {
         try {
             // take name
             //$rst = getData('*', "id = '$id'", 'LIMIT 1', INV_TRANS, $finance_connect);
-            $rst = getData('*', "id = '$id'", INV_TRANS, $finance_connect);
+            $rst = getData('*', "id = '$id'", '', INV_TRANS, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $row_id = $row['id'];
             $trans_id = $row['transactionID'];
             $_SESSION['delChk'] = 1;
             //SET the record status to 'D'
-            deleteRecord(INV_TRANS, $row_id, $trans_id, $finance_connect, $cdate, $ctime, $pageTitle);
+            deleteRecord(INV_TRANS, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
