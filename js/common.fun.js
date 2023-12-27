@@ -1238,7 +1238,7 @@ document.addEventListener("DOMContentLoaded", function () {
   retrieveDataFromLocalStorage();
 
   // Attach input event listener to each input field
-  var inputFields = document.querySelectorAll("input, textarea");
+  var inputFields = document.querySelectorAll("input, textarea ,select");
   inputFields.forEach(function (input) {
     if (!input.readOnly) {
       input.addEventListener("input", function () {
@@ -1259,7 +1259,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function retrieveDataFromLocalStorage() {
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea ,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has stored data
       if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
@@ -1269,7 +1269,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function saveFormDataToLocalStorage() {
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea ,select");
 
     inputFields.forEach(function (input) {
       if (!input.readOnly && input.id) {
@@ -1280,7 +1280,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function displayPreviousData() {
     // Loop through input fields and restore previous data
-    var inputFields = document.querySelectorAll("input, textarea");
+    var inputFields = document.querySelectorAll("input, textarea,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has previous data
       if (!input.readOnly && localStorage.getItem(input.id)) {
@@ -1301,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function checkRequiredInputs() {
-    var requiredInputs = document.querySelectorAll("input[required]");
+    var requiredInputs = document.querySelectorAll("input[required], select[required]");
 
     requiredInputs.forEach(function (input) {
       if (input.value.trim() === "") {
