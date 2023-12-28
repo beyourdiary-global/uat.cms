@@ -19,6 +19,28 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
     $employeeID = $_COOKIE['employeeID'];
     $leaveTypeSelect = $_COOKIE['leaveTypeSelect'];
 
+    //Find All Exist Leave Type In Employee Leave Page
+    $existEmpLeave = array();
+
+    $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
+    $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
+
+    $columns = $resultEmpLeave_1->fetch_all(MYSQLI_ASSOC);
+
+    if (!$resultEmpLeave_1) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+    }
+
+    foreach ($columns as $column) {
+        if (preg_match('/leaveType_(\d+)/', $column['Field'], $matches)) {
+            $extractNumber = $matches[1];
+            array_push($existEmpLeave, $extractNumber);
+        }
+    }
+
+    $allEmpLeaveTypeColumn = getData('*', '', '', EMPLEAVE, $connect);
+
     if (!empty($employeeID) && !empty($leaveTypeSelect)) {
 
         $leaveTypeArr = explode(',', $leaveTypeSelect);
@@ -32,30 +54,40 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
             for ($x = 0; $x < sizeof($leaveTypeArr); $x++) {
 
-                $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
+                if (in_array($leaveTypeArr[$x], $existEmpLeave)) {
 
-                $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
-                $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
+                    $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
 
-                if (!$resultLeaveType || !$resultCurrentEmp) {
-                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                }
+                    $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
+                    $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
 
-                $rowLeaveType = $resultLeaveType->fetch_assoc();
-                $rowCurrentEmp = $resultCurrentEmp->fetch_assoc();
+                    if (!$resultLeaveType || !$resultCurrentEmp) {
+                        echo "
+                    <script>            
+                    setCookie('leaveTypeSelect', '', 0);
+                    setCookie('employeeID', '', 0);
+                    setCookie('assignType', '', 0);
+                    </script>";
 
-                if ($assignType == 'assign') {
-                    $assignDay = $rowLeaveType['num_of_days'];
-                } else if ($assignType == 'unassign') {
-                    $assignDay = 0;
-                }
+                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                    }
 
-                $query .= "$empLeaveAssignColumn='" . $assignDay . "', ";
+                    $rowLeaveType = $resultLeaveType->fetch_assoc();
+                    $rowCurrentEmp = $resultCurrentEmp->fetch_assoc();
 
-                if ($rowCurrentEmp[$empLeaveAssignColumn] != $assignDay) {
-                    array_push($oldvalarr, $rowCurrentEmp[$empLeaveAssignColumn]);
-                    array_push($chgvalarr,  $assignDay);
+                    if ($assignType == 'assign') {
+                        $assignDay = $rowLeaveType['num_of_days'];
+                    } else if ($assignType == 'unassign') {
+                        $assignDay = 0;
+                    }
+
+                    $query .= "$empLeaveAssignColumn='" . $assignDay . "', ";
+
+                    if ($rowCurrentEmp[$empLeaveAssignColumn] != $assignDay) {
+                        array_push($oldvalarr, $rowCurrentEmp[$empLeaveAssignColumn]);
+                        array_push($chgvalarr,  $assignDay);
+                    }
                 }
             }
 
