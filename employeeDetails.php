@@ -93,7 +93,7 @@ if (post('actionBtn')) {
             $gender = postSpaceFilter('employeeGender');
             $dateOfBirth = postSpaceFilter('employeeBirthday');
             $residenceStatus = postSpaceFilter('employeeResidenceStatus');
-            $nationality = postSpaceFilter('employeeNationality');
+            $nationality = postSpaceFilter('nationality');
             $maritalStatus = postSpaceFilter('maritalStatus');
             $noOfChildren = (postSpaceFilter('noOfChild')) ? postSpaceFilter('noOfChild') : '0';
             $race = postSpaceFilter('employeeRace');
@@ -121,7 +121,7 @@ if (post('actionBtn')) {
             $salary = postSpaceFilter('salary');
             $currencyUnit = postSpaceFilter('currencyUnit');
             $allowance = postSpaceFilter('allowance');
-            $manager = postSpaceFilter('managerAprroveLeave');
+            $manager = implode(',', postSpaceFilter('managerAprroveLeave'));
             $remark = postSpaceFilter('remark');
             $contributingEpf = postSpaceFilter('epfOption');
             $contributingEpfNo = postSpaceFilter('epfNo');
@@ -192,6 +192,10 @@ if (post('actionBtn')) {
                     foreach ($variables as $variable => $fieldName) {
                         // Get the value from the form field
                         $value = postSpaceFilter($fieldName);
+
+                        if (is_array($value)) {
+                            $value = implodeWithComma($value);
+                        }
 
                         // Check if the value is not empty before pushing it to the array
                         if ($value !== null) {
@@ -505,6 +509,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         }
                                         ?>
                                     </select>
+                                    <input class="form-control" type="hidden" name="nationality" id="nationality" value="">
                                 </div>
                             </div>
                         </div>
@@ -515,7 +520,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number<span class="requireRed">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
-                                        <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>">
+                                        <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($dataExisted, $row['phone_number'])) echo $row['phone_number'] ?>"><br>
                                     </div>
                                 </div>
 
@@ -548,7 +553,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             </div>
                         </div>
 
-
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm-5">
@@ -577,7 +581,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <label class="form-label" id="maritalStatusLbl" for="maritalStatus">Marital status <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="maritalStatus" id="maritalStatus" required>
                                         <?php
-                                        $result = getData('*', '', '',MRTL_STATUS, $connect);
+                                        $result = getData('*', '', '', MRTL_STATUS, $connect);
 
                                         echo "<option disabled selected>Select employee race</option>";
 
@@ -722,12 +726,12 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         <div class="form-group mb-3">
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <label class="form-label" id="positionLbl" for="position">Position </label>
                                     <input class="form-control" type="text" name="position" id="position" value="<?php if (isset($dataExisted, $row2['position'])) echo $row2['position'] ?>">
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <label class="form-label" id="employmentStatusLbl" for="employmentStatus">Employment Status <span class="requireRed">*</span></label>
                                     <select class="form-select" aria-label="Default select example" name="employmentStatus" id="employmentStatus" required>
                                         <?php
@@ -742,17 +746,22 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         ?>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="managerAprroveLeaveLbl" for="managerAprroveLeave">Manager Approval For Leave <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="managerAprroveLeave" id="managerAprroveLeave" required>
+                        <div class="form-group mb-3">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label class="form-label" id="managerAprroveLeaveLbl" for="managerAprroveLeave">Manager Approval For Leave <span class="requireRed">*</span></label><br>
+                                    <select class="multiple_select form-control" name="managerAprroveLeave[]" id="managerAprroveLeave" multiple style="width: 100%;" onchange="checkSelectRequired()">
                                         <?php
                                         $result = getData('*', '', '', USR_USER, $connect);
 
-                                        echo "<option  disabled selected>Select manager in charge</option>";
-
                                         while ($rowUser = $result->fetch_assoc()) {
-                                            $selected = isset($dataExisted, $row2['managers_for_leave_approval']) && $rowUser['id'] == $row2['managers_for_leave_approval'] ? "selected" : "";
+                                            if (isset($row2['managers_for_leave_approval'])) {
+                                                $manageAssign = explode(',', $row2['managers_for_leave_approval']);
+                                                $selected = isset($manageAssign) && in_array($rowUser['id'], $manageAssign) ? "selected" : "";
+                                            }
                                             echo "<option value='{$rowUser['id']}' $selected>{$rowUser['name']}</option>";
                                         }
                                         ?>
@@ -923,7 +932,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="col-sm-4 text-center button-bottom">
-                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="window.location.href='employeeDetailsTable.php';" style="font-size: 15px;">Back</button>
+                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="clearLocalStorageAndRedirect();" style="font-size: 15px;">Back</button>
                         <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
                     </div>
 
@@ -953,12 +962,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     ?>
 
     <script>
+        <?php include "./js/employeeDetails.js" ?>
+
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        if (!action) {
+            $('.multiple_select').select2({
+                disabled: true
+            });
+        }
+
         centerAlignment("formContainer");
         setButtonColor();
         setAutofocus(action);
 
-        <?php include "./js/employeeDetails.js" ?>
+        $(".multiple_select").select2({
+
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             var editButton = document.querySelector('[name="actionBtn"][value="updEmpDetails"]');
