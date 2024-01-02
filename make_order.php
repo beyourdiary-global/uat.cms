@@ -381,9 +381,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                                 </div>
-                                                <input class="form-control" type="text" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
+                                                <input class="form-control" type="email" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
                                             </div>
-
+                                            <span id="emailMsg1"></span>
                                             <div class="invalid-msg">
                                                 Please enter the sender email.
                                             </div>
@@ -525,9 +525,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                             </div>
-                                            <input class="form-control" type="text" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
+                                            <input class="form-control" type="email" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
                                         </div>
-
+                                        <span id="emailMsg2"></span>
                                         <div class="invalid-msg">
                                             Please enter the receiver email.
                                         </div>
@@ -843,6 +843,42 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             });
         });
     });
+
+    $(document).ready(function() {
+        $("#sender_email").on("input", function() {
+            if (!validateEmail('#sender_email')) {
+                $("#emailMsg1").html("<p class='text-danger'>Invalid Email Format</p>");
+            } else {
+                $("#emailMsg1").html("");
+            }
+        });
+
+        $("#receiver_email").on("input", function() {
+            if (!validateEmail('#receiver_email')) {
+                $("#emailMsg2").html("<p class='text-danger'>Invalid Email Format</p>");
+            } else {
+                $("#emailMsg2").html("");
+            }
+        });
+
+        $("#actionBtn").on("click", function(event) {
+            if (!validateEmail('#sender_email') || !validateEmail('#receiver_email')) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    function validateEmail(inputID) {
+        // get value of input email
+        var email = $(inputID).val();
+        // use reular expression
+        var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+        if (reg.test(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>
 
 </html>
