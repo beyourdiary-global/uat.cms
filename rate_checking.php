@@ -225,7 +225,7 @@ if (post('actionBtn')) {
                                 </select>
                             </div>
                             <div class="col-12 col-md-3 d-flex justify-content-center">
-                                <button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="submit">Confirm></button>
+                                <button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="submit">Confirm</button>
                             </div>
                         </div>
                     </form>
@@ -327,8 +327,10 @@ if (post('actionBtn')) {
                                         <div class="row">
                                             <div class="col-6 col-md-6">
                                                 <select class="form-select mb-3 h-75" id="to" name="to">
+                                                    <option selected></option>
                                                     <?php
                                                     $all_country = getCountry('all', $connect);
+                                                    asort($all_country);
                                                     foreach ($all_country as $key => $val) {
 
                                                         if (strcasecmp($key, $country) == 0)
