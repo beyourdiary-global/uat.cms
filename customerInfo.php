@@ -516,8 +516,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             $("#cusEmail").on("input", function() {
                 if (!validateEmail()) {
                     $("#emailMsg").html("<p class='text-danger'>Invalid Email Format</p>");
-                    $("#actionBtn").event.preventDefault();
-
                 } else {
                     $("#emailMsg").html("");
                 }
