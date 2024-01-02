@@ -294,7 +294,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                 <div class="col-sm-5">
                                     <label class="form-label" for="cusEmail">Email </label>
-                                    <input class="form-control " type="text" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                    <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                    <span id="emailMsg"></span>
                                 </div>
 
                                 <div class="col-sm-4">
@@ -499,7 +500,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2 backBtn" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </div>
             </form>
@@ -510,6 +511,34 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         setButtonColor();
         setAutofocus(action);
+
+        $(document).ready(function() {
+            $("#cusEmail").on("input", function() {
+                if (!validateEmail()) {
+                    $("#emailMsg").html("<p class='text-danger'>Invalid Email Format</p>");
+                } else {
+                    $("#emailMsg").html("");
+                }
+            });
+
+            $("#actionBtn").on("click", function(event) {
+                if (!validateEmail()) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        function validateEmail() {
+            // get value of input email
+            var email = $("#cusEmail").val();
+            // use reular expression
+            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+            if (reg.test(email)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     </script>
 
 </body>
