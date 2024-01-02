@@ -294,7 +294,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                 <div class="col-sm-5">
                                     <label class="form-label" for="cusEmail">Email </label>
-                                    <input class="form-control " type="text" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                    <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                    <span id="emailMsg"></span>
                                 </div>
 
                                 <div class="col-sm-4">
@@ -510,6 +511,31 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         setButtonColor();
         setAutofocus(action);
+
+        $(document).ready(function() {
+            $("#actionBtn").prop("disabled", true);
+            $("#cusEmail").on("input", function() {
+                if (!validateEmail()) {
+                    $("#emailMsg").html("<p class='text-danger'>Invalid Email Format</p>");
+                    $("#actionBtn").prop("disabled", true);
+                } else {
+                    $("#emailMsg").html("");
+                    $("#actionBtn").prop("disabled", false);
+                }
+            });
+        });
+
+        function validateEmail() {
+            // get value of input email
+            var email = $("#cusEmail").val();
+            // use reular expression
+            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+            if (reg.test(email)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     </script>
 
 </body>
