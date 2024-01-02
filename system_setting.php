@@ -156,7 +156,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         <div class="col-sm">
                             <label class="form-label" for="meta">Meta</label>
-                            <input class="form-control" type="number" step="any" name="meta" id="meta" value="<?php if (isset($row['meta'])) echo $row['meta'] ?>" <?= $viewOnly ?>>
+                            <input class="form-control" type="text" name="meta" id="meta" value="<?php if (isset($row['meta'])) echo $row['meta'] ?>" <?= $viewOnly ?>>
                         </div>
 
                         <div class="col-sm">
