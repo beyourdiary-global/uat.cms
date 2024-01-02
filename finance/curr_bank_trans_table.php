@@ -5,14 +5,13 @@ include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/curr_bank_trans.php';
-$result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
+$result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -63,17 +62,17 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
+                        <th scope="col">Remark</th>                        
                         <th scope="col">Attachment</th>
-                        <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { 
-                        $curr_unit = getData('unit', "id='" . $row['currency'] . "'", CUR_UNIT, $connect);
+                        $curr_unit = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                         $row2 = $curr_unit->fetch_assoc();
 
-                        $bank = getData('name', "id='" . $row['bank'] . "'", BANK, $connect);
+                        $bank = getData('name', "id='" . $row['bank'] . "'", '', BANK, $connect);
                         $row3 = $bank->fetch_assoc();
                         ?>
                         
@@ -87,8 +86,8 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                             <td scope="row"><?= $row['amount'] ?></td>
                             <td scope="row"><?= $row['prev_amt'] ?></td>
                             <td scope="row"><?= $row['final_amt'] ?></td>
-                            <td scope="row"><?= $row['attachment'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
+                            <td scope="row"><?= $row['attachment'] ?></td>
                             <td scope="row">
                                 <div class="dropdown" style="text-align:center">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -127,8 +126,8 @@ $result = getData('*', '', CURR_BANK_TRANS, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
-                        <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
+                        <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>

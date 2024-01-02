@@ -27,12 +27,21 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Designations', '
-            ', $SITEURL . '/designations_table.php', '4'),
+            array('Designations', '', $SITEURL . '/designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', $SITEURL . '/department_table.php', '5'),
             array('Employee Details', 'mdi mdi-information-outline', $SITEURL . '/employeeDetailsTable.php', '34'),
         ),
         'pin' => array('4', '5', '34')
+    ),
+    array(
+        'Customer',
+        'mdi mdi-account-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Customer Info', 'mdi mdi-information-outline', $SITEURL . '/customerInfoTable.php', '38'),
+        ),
+        'pin' => array('38')
     ),
     array(
         'Product',
@@ -67,12 +76,14 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37')
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
                 ),
-                'pin' => array('36'),
+                'pin' => array('37','40','41'),
             ),
         ),
-        'pin' => array('36')
+        'pin' => array('36', '37','40','41')
     ),
     array(
         'Other',
@@ -83,8 +94,10 @@ $menuList = array(
             array('Barcode Generator', 'mdi mdi-barcode', $SITEURL . '/barcode_generator.php', '22'),
             array('Rate Checking', 'mdi mdi-package-variant', $SITEURL . '/rate_checking.php', '17'),
             array('Theme Setting', 'mdi mdi-brush-variant', $SITEURL . '/theme_setting.php', '23'),
+            array('System Setting', 'mdi mdi-brush-variant', $SITEURL . '/system_setting.php', '39'),
+
         ),
-        'pin' => array('22', '17', '23')
+        'pin' => array('22', '17', '23', '39')
     ),
     array(
         'Settings',
@@ -146,7 +159,7 @@ $menuList = array(
                     array('Race', 'mdi mdi-account-star-outline', $SITEURL . '/race_table.php', '28'),
                     array('Socso Category', 'mdi mdi-google-fit', $SITEURL . '/socso_category_table.php', '30'),
                     array('Employer EPF Rate', 'mdi mdi-account-star-outline', $SITEURL . '/employer_epf_rate_table.php', '32'),
-                    array('Employee Epf Rate', 'mdi mdi-account-supervisor', $SITEURL . '/employee_epf_rate_table.php', '31'),
+                    array('Employee EPF Rate', 'mdi mdi-account-supervisor', $SITEURL . '/employee_epf_rate_table.php', '31'),
 
                 ),
                 'pin' => array('12', '13', '6', '24', '26', '27', '28', '30', '31', '32'),
@@ -173,12 +186,12 @@ $menuList = array(
                 'pin' => array('33'),
             ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41')
     ),
     array(
         'Audit Log',
         'mdi mdi-text-box-search-outline',
-        'audit_log.php',
+        $SITEURL . '/audit_log.php',
         'n',
         'expand' => array(),
         'pin' => array('18')

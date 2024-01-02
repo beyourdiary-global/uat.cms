@@ -1,318 +1,277 @@
 <?php
 $pageTitle = "Pin Group";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-$pin_grp_id = input('id');
-$act = input('act');
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
 
+$tblName = PIN_GRP;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/pin_group_table.php';
-$pin_result = getData('*','',PIN,$connect);
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-if($pin_grp_id)
-{
-    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
-    if($rst != false)
-    {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
 }
 
-if(!($pin_grp_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
+//Get pin data
+$pinResult = getData('*', '', '', PIN, $connect);
 
-if(post('actionBtn'))
-{
-    $action = post('actionBtn');
-
-    switch($action)
-    {
-        case 'addPinGrp': case 'updPinGrp':
-
-            $pin_grp_name = postSpaceFilter('pin_grp_name');
-            $pin_grp_remark = postSpaceFilter('pin_grp_remark');
-            $pin_grp_pin_arr = post('pin_grp_pin');
-            $pin_grp_pin = implode(",", $pin_grp_pin_arr);
-
-            if (!$pin_grp_name){
-                $err = "Pin group name cannot be empty.";
-                break;
-            }
-            else if(isDuplicateRecord("name", $pin_grp_name, PIN_GRP, $connect, $pin_grp_id)){
-                $err = "Duplicate record found for pin group name.";
-                break;
-            }
-            else if($action == 'addPinGrp') {
-                try
-                {
-                    $query = "INSERT INTO ".PIN_GRP."(name,pins,remark,create_by,create_date,create_time) VALUES ('$pin_grp_name','$pin_grp_pin','$pin_grp_remark','".USER_ID."',curdate(),curtime())";
-                    mysqli_query($connect, $query);
-                    $_SESSION['tempValConfirmBox'] = true;
-
-                    $newvalarr = array();
-
-                    // check value
-                    if($pin_grp_name != '')
-                        array_push($newvalarr, $pin_grp_name);
-
-                    if($pin_grp_remark != '')
-                        array_push($newvalarr, $pin_grp_remark);
-
-                    if($pin_grp_pin != '')
-                        array_push($newvalarr, $pin_grp_pin);
-
-                    $newval = implode(",",$newvalarr);
-
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'add';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " added <b>$pin_grp_name</b> into <b><i>Pin Group Table</i></b>.";
-                    $log['query_rec'] = $query;
-                    $log['query_table'] = PIN_GRP;
-                    $log['page'] = 'Pin Group';
-                    $log['newval'] = $newval;
-                    $log['connect'] = $connect;
-                    audit_log($log);
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }
-            else
-            {
-                try
-                {
-                    // take old value
-                    $rst = getData('*',"id = '$pin_grp_id'",PIN_GRP,$connect);
-                    $row = $rst->fetch_assoc();
-                    $oldvalarr = $chgvalarr = array();
-
-                    // check value
-                    if($row['name'] != $pin_grp_name)
-                    {
-                        array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $pin_grp_name);
-                    }
-
-                    if($row['remark'] != $pin_grp_remark)
-                    {
-                        if($row['remark'] == '')
-                            $old_remark = 'Empty_Value';
-                        else $old_remark = $row['remark'];
-
-                        array_push($oldvalarr, $old_remark);
-
-                        if($pin_grp_remark == '')
-                            $new_remark = 'Empty_Value';
-                        else $new_remark = $pin_grp_remark;
-                        
-                        array_push($chgvalarr, $new_remark);
-                    }
-
-                    if($row['pins'] != $pin_grp_pin)
-                    {
-                        array_push($oldvalarr, $row['pins']);
-                        array_push($chgvalarr, $pin_grp_pin);
-                    }
-
-                    // convert into string
-                    $oldval = implode(",",$oldvalarr);
-                    $chgval = implode(",",$chgvalarr);
-
-                    $_SESSION['tempValConfirmBox'] = true;
-                    if($oldval != '' && $chgval != '')
-                    {
-                         // edit
-                        $query = "UPDATE ".PIN_GRP." SET name = '$pin_grp_name', pins = '$pin_grp_pin', remark = '$pin_grp_remark' WHERE id = '$pin_grp_id'";
-                        mysqli_query($connect, $query);
-                        
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'edit';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-
-                        $log['act_msg'] = USER_NAME . " edited the data";
-                        for($i=0; $i<sizeof($oldvalarr); $i++)
-                        {
-                            if($i==0)
-                                $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            else
-                                $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                        }
-                        $log['act_msg'] .= " from <b><i>Pin Group Table</i></b>.";
-
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = PIN_GRP;
-                        $log['page'] = 'Pin Group';
-                        $log['oldval'] = $oldval;
-                        $log['changes'] = $chgval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    }
-                    else $act = 'NC';
-                } catch(Exception $e) {
-                    echo 'Message: ' . $e->getMessage();
-                }
-            }
-            break;
-        case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
-            break;
-    }
+if (!$pinResult) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo $redirectLink;
 }
 
-if(post('act') == 'D')
-{
-    $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
-            // take name
-            $rst = getData('*',"id = '$id'",PIN_GRP,$connect);
-            $row = $rst->fetch_assoc();
-
-            $pin_grp_id = $row['id'];
-            $pin_grp_name = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord(PIN_GRP,$id,$pin_grp_name,$connect,$cdate,$ctime,$pageTitle);
-
-            $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
 }
 
-if(($pin_grp_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
-    $pin_grp_name = isset($dataExisted) ? $row['name'] : '';
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
+
     $_SESSION['viewChk'] = 1;
 
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$pin_grp_name</b> from <b><i>Pin Group Table</i></b>.";
-    $log['page'] = 'Pin Group';
-    $log['connect'] = $connect;
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+
     audit_log($log);
 }
+
+//Edit And Add Data
+if (post('actionBtn')) {
+
+    $action = post('actionBtn');
+
+    switch ($action) {
+        case 'addData':
+        case 'updData':
+
+            $currentDataName = postSpaceFilter('currentDataName');
+            $dataRemark = postSpaceFilter('currentDataRemark');
+            if (post('pins')) {
+                $pinArr = implodeWithComma(post('pins'));
+            }else{
+                $pinArr = '';
+            }
+            $oldvalarr = $chgvalarr = $newvalarr = array();
+
+            if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
+                $err = "Duplicate record found for " . $pageTitle . " name.";
+                break;
+            }
+
+            if ($action == 'addData') {
+                try {
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($currentDataName)
+                        array_push($newvalarr, $currentDataName);
+
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                    if ($pinArr)
+                        array_push($newvalarr, $pinArr);
+
+                    $query = "INSERT INTO " . $tblName . "(name,pins,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$pinArr','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+
+                    $returnData = mysqli_query($connect, $query);
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            } else {
+                try {
+                    if ($row['name'] != $currentDataName) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $currentDataName);
+                    }
+
+                    if ($row['pins'] != $pinArr) {
+                        array_push($oldvalarr, $row['pins']);
+                        array_push($chgvalarr, $pinArr);
+                    }
+
+                    if ($row['remark'] != $dataRemark) {
+                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
+                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                    }
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName',pins = '$pinArr', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                }
+            }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
+            break;
+
+        case 'back':
+            echo $clearLocalStorage . ' ' . $redirectLink;
+            break;
+    }
+}
+
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
+
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+}
+
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
-<link rel="stylesheet" href="./css/pin.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Pin Group</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add Pin Group'; break;
-        case 'E': echo 'Edit Pin Group'; break;
-        default: echo 'View Pin Group';
-    }
-    ?></p>
-</div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
+    </div>
 
-<div id="pinFormContainer" class="container d-flex justify-content-center">
-    <div class="col-8 col-md-6 formWidthAdjust">
-        <form id="pinForm" method="post" action="">
-            <div class="form-group my-3">
-                <h2>
+    <div id="formContainer" class="container d-flex justify-content-center">
+        <div class="col-8 col-md-6 formWidthAdjust">
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    <div id="err_msg">
+                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="mb-3" id="pin_lbl" for="">Pin</label>
                     <?php
-                    switch($act)
-                    {
-                        case 'I': echo 'Add Pin Group'; break;
-                        case 'E': echo 'Edit Pin Group'; break;
-                        default: echo 'View Pin Group';
+                    while ($rowPin = $pinResult->fetch_assoc()) {
+                    ?>
+                        <div class="form-check">
+                            <label class="form-label" for="pin_name"><?php echo $rowPin['name'] ?></label>
+                            <input class="form-check-input" name="pins[]" type="checkbox" value="<?php echo $rowPin['id'] ?>" id="pins[]" <?= (isset($row['pins']) && preg_match("/{$rowPin['id']}/i", $row['pins'])) ? 'checked ' : '' ?><?= ($act == '') ? 'disabled' : '' ?>>
+                        </div>
+                    <?php
                     }
                     ?>
-                </h2>
-            </div>
-
-            <div class="form-group mb-3">
-                <label class="form-label" id="pin_grp_name_lbl" for="pin_grp_name">Pin Group Name</label>
-                <input class="form-control" type="text" name="pin_grp_name" id="pin_grp_name" value="<?php if(isset($dataExisted) && isset($row['name'])) echo $row['name'] ?>" <?php if($act == '') echo 'readonly' ?>>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                 </div>
-            </div>
 
-            <div class="form-group mb-3">
-                <label class="form-label" id="pin_grp_remark_lbl" for="pin_grp_remark">Pin Group Remark</label>
-                <textarea class="form-control" name="pin_grp_remark" id="pin_grp_remark" rows="3" <?php if($act == '') echo 'readonly' ?>><?php if(isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-            </div>
-            
-            <div class="form-group mb-3">
-            <label class="mb-3" id="pin_lbl" for="">Pin</label>
-            <?php
-            while($pin_row = $pin_result->fetch_assoc())
-            {
-            ?>
-            <div class="form-check">
-                <label class="form-label" id="pin_name_lbl" for="pin_name"><?php echo $pin_row['name'] ?></label>
-                <input class="form-check-input" name="pin_grp_pin[]" type="checkbox" value="<?php echo $pin_row['id']?>" id="pin_grp_pin[]" <?php
-                if(isset($dataExisted) && isset($row['pins']))
-                {
-                    $pins = $row['pins'];
-                    $curr_pin = $pin_row['id'];
-                    if(preg_match("/$curr_pin/i", $pins))
-                        echo "checked ";
-
-                    if($act == '') 
-                        echo 'disabled';
-                }
-                ?>>
-            </div>
-            <?php
-            }
-            ?>
-            </div>
-
-            <div class="form-group d-flex justify-content-center flex-md-row flex-column">
-            <?php            
-                switch($act)
-                {
-                    case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addPinGrp">Add Pin Group</button>';
-                        break;
-                    case 'E':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updPinGrp">Edit Pin Group</button>';
-                        break;
-                }
-            ?>
-                <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-            </div>
-        </form>
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<?php
-/*
-  oufei 20231014
-  common.fun.js
-  function(title, subtitle, page name, ajax url path, redirect path, action)
-  to show action dialog after finish certain action (eg. edit)
-*/
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Pin Group","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
+
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+    </script>
+
 </body>
+
 </html>

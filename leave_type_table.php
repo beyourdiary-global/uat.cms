@@ -13,18 +13,20 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/leave_type.php';
-$result = getData('*', '', $tblname, $connect);
+$result = getData('*', '', '', $tblname, $connect);
 
 if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
-    $rst = getData('*', "id = '$leave_type_id'", $tblname, $connect);
+    $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
 
-    if ($rst != false) {
-        $dataExisted = 1;
-        $rowLeaveType = $rst->fetch_assoc();
+    if (!$rst) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
     }
+
+    $rowLeaveType = $rst->fetch_assoc();
 
     if ($rowLeaveType['leave_status'] !== $leave_type_status) {
         $oldval = $rowLeaveType['leave_status'];
@@ -32,9 +34,13 @@ if (post('l_status_option')) {
     }
 
     if ($oldval && $chgval) {
-        $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
-        mysqli_query($connect, $query);
-        generateDBData($tblname, $connect);
+        try {
+            $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
+            mysqli_query($connect, $query);
+            generateDBData($tblname, $connect);
+        } catch (Exception $e) {
+            $errorMsg = $e->getMessage();
+        }
 
         // audit log
         $log = array();
@@ -42,7 +48,11 @@ if (post('l_status_option')) {
         $log['cdate'] = $cdate;
         $log['ctime'] = $ctime;
         $log['uid'] = $log['cby'] = USER_ID;
-        $log['act_msg'] = USER_NAME . " edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>.";
+        if (isset($errorMsg)) {
+            $log['act_msg'] = USER_NAME . " fail to edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>. (".$errorMsg.")";
+        } else {
+            $log['act_msg'] = USER_NAME . " edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>.";
+        }
         $log['query_rec'] = $query;
         $log['query_table'] = $tblname;
         $log['page'] = $pageTitle;
@@ -58,8 +68,7 @@ if (post('l_status_option')) {
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
-
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <script>
@@ -194,7 +203,7 @@ if (post('l_status_option')) {
   to show action dialog after finish certain action (eg. edit)
 */
     dropdownMenuDispFix();
-
+    setButtonColor();
     /**
       oufei 20231014
       common.fun.js
@@ -214,8 +223,9 @@ if (post('l_status_option')) {
                 l_type_id: id,
                 l_status_option: status,
             },
-            success: function(response) {
-                window.location.href = '<?php echo $SITEURL ?>/leave_type_table.php';
+            success: function(data) {
+                // Reload the page on success
+                location.reload();
             },
         })
     }

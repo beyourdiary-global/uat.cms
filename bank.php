@@ -4,6 +4,8 @@ $pageTitle = "Bank";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
 $tblName = BANK;
 
 //Current Page Action And Data ID
@@ -27,7 +29,7 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
 
 //Get The Data From Database
-$rst = getData('*', "id = '$dataID'", $tblName, $connect);
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
 
 //Checking Data Error When Retrieved From Database
 if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
@@ -38,7 +40,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -63,7 +65,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
         'page'    => $pageTitle,
         'connect' => $connect,
     ];
-    
+
     audit_log($log);
 }
 
@@ -188,7 +190,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>

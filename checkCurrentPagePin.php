@@ -1,15 +1,14 @@
 
 <?php
-
 function getUserPinGroup($connect)
 {
     if (isset($_SESSION['userid'])) {
-        $resultUser = getData('*', "id = '" . $_SESSION['userid'] . "'", 'user', $connect);
+        $resultUser = getData('*', "id = '" . $_SESSION['userid'] . "'",'', 'user', $connect);
 
         if ($resultUser != false) {
             $rowUser = $resultUser->fetch_assoc();
 
-            $pinResult = getData('pins', "id = '" . $rowUser['access_id'] . "'", 'user_group', $connect);
+            $pinResult = getData('pins', "id = '" . $rowUser['access_id'] . "'", '', 'user_group', $connect);
 
             if ($pinResult !== false) {
                 $pinArray = $pinResult->fetch_assoc();
@@ -47,7 +46,7 @@ function getValuesByPinAssocIndex($data, $pin)
 
 function getPin($connect)
 {
-    $result = getData('*', "", PIN, $connect);
+    $result = getData('*', "", '',PIN, $connect);
     $actionMapping = [];
 
     while ($resultPin = $result->fetch_assoc()) {
@@ -60,7 +59,7 @@ function getPin($connect)
 function checkCurrentPin($connect, $currentPage)
 {
 
-    $result = getData('*', "name = '$currentPage'", PIN_GRP, $connect);
+    $result = getData('*', "name = '$currentPage'", '', PIN_GRP, $connect);
 
     if ($result && $result->num_rows > 0) {
         $resultPin = $result->fetch_assoc();
@@ -87,6 +86,11 @@ function checkCurrentPin($connect, $currentPage)
 
 function isActionAllowed($action, $allowedActions)
 {
+    $action = strtolower($action);
+
+    foreach ($allowedActions as &$value)
+        $value = strtolower($value);
+
     return in_array($action, $allowedActions);
 }
 

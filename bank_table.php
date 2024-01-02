@@ -6,17 +6,18 @@ include 'checkCurrentPagePin.php';
 
 $tblName = BANK;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
-$_SESSION['act'] = '';
+ 
+$_SESSION['act'] = ''; 
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/bank.php';
+$deleteRedirectPage = $SITEURL . '/bank_table.php';
 
-$result = getData('*', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $connect);
 
-if(!$result){
+if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
 }
@@ -26,7 +27,7 @@ if(!$result){
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 <script>
     $(document).ready(() => {
@@ -95,7 +96,7 @@ if(!$result){
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/bank_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>

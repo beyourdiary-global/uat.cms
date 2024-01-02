@@ -1,513 +1,396 @@
 <?php
 $pageTitle = "Product";
+
 include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-$prod_id = input('id');
-$act = input('act');
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
+$tblName = PROD;
+
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/product_table.php';
-$tblname = PROD;
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
-// to display data to input
-if($prod_id)
-{
-    $rst = getData('*',"id = '$prod_id'",$tblname,$connect);
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
-    if($rst != false)
-    {
-        $dataExisted = 1;
-        $row = $rst->fetch_assoc();
-    }
+//Checking The Page ID , Action , Pin Access Exist Or Not
+if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
+    echo $redirectLink;
+
+//Get The Data From Database
+$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
+
+//Checking Data Error When Retrieved From Database
+if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
+    $errorExist = 1;
+    $_SESSION['tempValConfirmBox'] = true;
+    $act = "F";
 }
 
-if(!($prod_id) && !($act))
-    echo("<script>location.href = '$redirect_page';</script>");
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
 
-if(post('actionBtn'))
-{
-    $prod_name = postSpaceFilter('prod_name');
-    $prod_brand = postSpaceFilter('prod_brand_hidden');
-    $prod_wgt = postSpaceFilter('prod_wgt');
-    $prod_wgt_unit = postSpaceFilter('prod_wgt_unit_hidden');
-    $prod_cost = postSpaceFilter('prod_cost');
-    $prod_cur_unit = postSpaceFilter('prod_cur_unit_hidden');
-    $prod_barcode_status = postSpaceFilter('prod_barcode_status') == 'Yes' ? 'Yes' : 'No';
-    $prod_barcode_slot = $prod_barcode_status == 'Yes' ? postSpaceFilter('prod_barcode_slot') : '';
-    $prod_expire_date = postSpaceFilter('prod_expire_date');
-    $parent_prod = postSpaceFilter('parent_prod_hidden');
+//View Data
+if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
+
+    $_SESSION['viewChk'] = 1;
+
+    if (isset($errorExist)) {
+        $viewActMsg = USER_NAME . " fail to viewed the data ";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+    }
+
+    $log = [
+        'log_act' => $pageAction,
+        'cdate'   => $cdate,
+        'ctime'   => $ctime,
+        'uid'     => USER_ID,
+        'cby'     => USER_ID,
+        'act_msg' => $viewActMsg,
+        'page'    => $pageTitle,
+        'connect' => $connect,
+    ];
+
+    audit_log($log);
+}
+
+//Edit And Add Data
+if (post('actionBtn')) {
 
     $action = post('actionBtn');
 
-    switch($action)
-    {
-        case 'addProd': case 'updProd':
-             if($prod_name == '')
-            {
-                $err = "Product Name cannot be empty.";
-            }
+    switch ($action) {
+        case 'addData':
+        case 'updData':
 
-            if($prod_brand == '')
-            {
-                $err2 = "Product Brand cannot be empty.";
-            }
+            $prod_name = postSpaceFilter('prod_name');
+            $prod_brand = postSpaceFilter('prod_brand_hidden');
+            $prod_wgt = postSpaceFilter('prod_wgt');
+            $prod_wgt_unit = postSpaceFilter('prod_wgt_unit_hidden');
+            $prod_cost = postSpaceFilter('prod_cost');
+            $prod_cur_unit = postSpaceFilter('prod_cur_unit_hidden');
+            $prod_barcode_status = postSpaceFilter('prod_barcode_status') == 'Yes' ? 'Yes' : 'No';
+            $prod_barcode_slot = $prod_barcode_status == 'Yes' ? postSpaceFilter('prod_barcode_slot') : '';
+            $prod_expire_date = postSpaceFilter('prod_expire_date');
+            $parent_prod = postSpaceFilter('parent_prod_hidden');
 
-            if($prod_wgt == '')
-            {
-                $err3 = "Product Weight cannot be empty.";
-            }
+            $oldvalarr = $chgvalarr = $newvalarr = array();
 
-            if($prod_wgt_unit == '')
-            {
-                $err4 = "Weight Unit cannot be empty.";
-            }
+            $check_duplicate_record = isDuplicateRecord("name", $prod_name, $tblName, $connect, $dataID)
+                && isDuplicateRecord("brand", $prod_brand, $tblName, $connect, $dataID)
+                && isDuplicateRecord("weight", $prod_wgt, $tblName, $connect, $dataID)
+                && isDuplicateRecord("weight_unit", $prod_wgt_unit, $tblName, $connect, $dataID)
+                && isDuplicateRecord("cost", $prod_cost, $tblName, $connect, $dataID)
+                && isDuplicateRecord("currency_unit", $prod_cur_unit, $tblName, $connect, $dataID)
+                && isDuplicateRecord("barcode_status", $prod_barcode_status, $tblName, $connect, $dataID)
+                && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblName, $connect, $dataID);
 
-            if($prod_cost == '')
-            {
-                $err5 = "Product Cost cannot be empty.";
-            }
-
-            if($prod_cur_unit == '')
-            {
-                $err6 = "Currency Unit cannot be empty.";
-            }
-
-            if($prod_barcode_status == 'Yes' &&  $prod_barcode_slot == '')
-            {
-                $err7 = "Product Barcode Slot cannot be empty.";
-            }
-
-            if($prod_expire_date == '')
-            {
-                $err8 = "Product Expire Date cannot be empty.";
-            }
-
-            $check_duplicate_record = isDuplicateRecord("name", $prod_name, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("brand", $prod_brand, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("weight", $prod_wgt, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("weight_unit", $prod_wgt_unit, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("cost", $prod_cost, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("currency_unit", $prod_cur_unit, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("barcode_status", $prod_barcode_status, $tblname, $connect, $prod_id)
-            && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblname, $connect, $prod_id);
-
-
-            if($check_duplicate_record){
-                $err9 = "Duplicate record found for this product.";
+            if ($check_duplicate_record) {
+                $err = "Duplicate record found for current " . $pageTitle;
                 break;
             }
-            else if($prod_name != '' && $prod_brand != '' && $prod_wgt != '' && $prod_wgt_unit != '' && $prod_cost != '' && $prod_cur_unit != '' && $prod_barcode_status != '' && $prod_expire_date != '')
-            {
-                if($action == 'addProd')
-                {
-                    try
-                    {
-                        $query = "INSERT INTO ".$tblname."(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,expire_date,parent_product,create_date,create_time,create_by) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_expire_date','$parent_prod',curdate(),curtime(),'".USER_ID."')";
-                        mysqli_query($connect, $query);
-                        generateDBData($tblname, $connect);
-                        $_SESSION['tempValConfirmBox'] = true;
 
-                        $newvalarr = array();
+            if ($action == 'addData') {
+                try {
+                    $_SESSION['tempValConfirmBox'] = true;
 
-                        // check value
-                        if($prod_name != '')
-                            array_push($newvalarr, $prod_name);
+                    if ($prod_name)
+                        array_push($newvalarr, $prod_name);
 
-                        if($prod_brand != '')
-                            array_push($newvalarr, $prod_brand);
+                    if ($prod_brand)
+                        array_push($newvalarr, $prod_brand);
 
-                        if($prod_wgt != '')
-                            array_push($newvalarr, $prod_wgt);
+                    if ($prod_wgt)
+                        array_push($newvalarr, $prod_wgt);
 
-                        if($prod_wgt_unit != '')
-                            array_push($newvalarr, $prod_wgt_unit);
-                        
-                        if($prod_cost != '')
-                            array_push($newvalarr, $prod_cost);
-                        
-                        if($prod_cur_unit != '')
-                            array_push($newvalarr, $prod_cur_unit);
-                        
-                        if($prod_barcode_status != '')
-                            array_push($newvalarr, $prod_barcode_status);
-                        
-                        if($prod_barcode_slot != '')
-                            array_push($newvalarr, $prod_barcode_slot);
-                        
-                        if($prod_expire_date != '')
-                            array_push($newvalarr, $prod_expire_date);
-                        
-                        if($parent_prod != '')
-                            array_push($newvalarr, $parent_prod);
+                    if ($prod_wgt_unit)
+                        array_push($newvalarr, $prod_wgt_unit);
 
-                        $newval = implode(",",$newvalarr);
+                    if ($prod_cost)
+                        array_push($newvalarr, $prod_cost);
 
-                        // audit log
-                        $log = array();
-                        $log['log_act'] = 'add';
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added <b>$prod_name</b> into <b><i>Product Table</i></b>.";
-                        $log['query_rec'] = $query;
-                        $log['query_table'] = $tblname;
-                        $log['page'] = 'Product';
-                        $log['newval'] = $newval;
-                        $log['connect'] = $connect;
-                        audit_log($log);
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
-                    }
+                    if ($prod_cur_unit)
+                        array_push($newvalarr, $prod_cur_unit);
+
+                    if ($prod_barcode_status)
+                        array_push($newvalarr, $prod_barcode_status);
+
+                    if ($prod_barcode_slot)
+                        array_push($newvalarr, $prod_barcode_slot);
+
+                    if ($prod_expire_date)
+                        array_push($newvalarr, $prod_expire_date);
+
+                    if ($parent_prod)
+                        array_push($newvalarr, $parent_prod);
+
+                    $query = "INSERT INTO " . $tblName . "(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,expire_date,parent_product,create_by,create_date,create_time) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_expire_date','$parent_prod','" . USER_ID . "',curdate(),curtime())";
+
+                    $returnData = mysqli_query($connect, $query);
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
                 }
-                else
-                {
-                    try
-                    {
-                        // take old value
-                        $rst = getData('*',"id = '$prod_id'",$tblname,$connect);
-                        $row = $rst->fetch_assoc();
-                        $oldvalarr = $chgvalarr = array();
-
-                        // check value
-                        if($row['name'] != $prod_name)
-                        {
-                            array_push($oldvalarr, $row['name']);
-                            array_push($chgvalarr, $prod_name);
-                        }
-
-                        if($row['brand'] != $prod_brand)
-                        {
-                            array_push($oldvalarr, $row['brand']);
-                            array_push($chgvalarr, $prod_brand);
-                        }
-
-                        if($row['weight'] != $prod_wgt)
-                        {
-                            array_push($oldvalarr, $row['weight']);
-                            array_push($chgvalarr, $prod_wgt);
-                        }
-
-                        if($row['weight_unit'] != $prod_wgt_unit)
-                        {
-                            array_push($oldvalarr, $row['weight_unit']);
-                            array_push($chgvalarr, $prod_wgt_unit);
-                        }
-
-                        if($row['cost'] != $prod_cost)
-                        {
-                            array_push($oldvalarr, $row['cost']);
-                            array_push($chgvalarr, $prod_cost);
-                        }
-
-                        if($row['currency_unit'] != $prod_cur_unit)
-                        {
-                            array_push($oldvalarr, $row['currency_unit']);
-                            array_push($chgvalarr, $prod_cur_unit);
-                        }
-
-                        if($row['barcode_status'] != $prod_barcode_status)
-                        {
-                            array_push($oldvalarr, $row['barcode_status']);
-                            array_push($chgvalarr, $prod_barcode_status);
-                        }
-
-                        if($row['barcode_slot'] != $prod_barcode_slot)
-                        {
-                            array_push($oldvalarr, $row['barcode_slot']);
-                            array_push($chgvalarr, $prod_barcode_slot);
-                        }
-
-                        if($row['expire_date'] != $prod_expire_date)
-                        {
-                            array_push($oldvalarr, $row['expire_date']);
-                            array_push($chgvalarr, $prod_expire_date);
-                        }
-
-                        if($row['parent_product'] != $parent_prod)
-                        {
-                            array_push($oldvalarr, $row['parent_product']);
-                            array_push($chgvalarr, $parent_prod);
-                        }
-
-                        // convert into string
-                        $oldval = implode(",",$oldvalarr);
-                        $chgval = implode(",",$chgvalarr);
-
-                        $_SESSION['tempValConfirmBox'] = true;
-                        if($oldval != '' && $chgval != '')
-                        {
-                            // edit
-                            $query = "UPDATE ".$tblname." SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='".USER_ID."' WHERE id = '$prod_id'";
-                            mysqli_query($connect, $query);
-                            generateDBData($tblname, $connect);
-
-                            // audit log
-                            $log = array();
-                            $log['log_act'] = 'edit';
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-
-                            $log['act_msg'] = USER_NAME . " edited the data";
-                            for($i=0; $i<sizeof($oldvalarr); $i++)
-                            {
-                                if($i==0)
-                                    $log['act_msg'] .= " from <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                                else
-                                    $log['act_msg'] .= ", <b>\'".$oldvalarr[$i]."\'</b> to <b>\'".$chgvalarr[$i]."\'</b>";
-                            }
-                            $log['act_msg'] .= " from <b><i>Product Table</i></b>.";
-
-                            $log['query_rec'] = $query;
-                            $log['query_table'] = $tblname;
-                            $log['page'] = 'Product';
-                            $log['oldval'] = $oldval;
-                            $log['changes'] = $chgval;
-                            $log['connect'] = $connect;
-                            audit_log($log);
-                        }
-                        else $act = 'NC';
-                    } catch(Exception $e) {
-                        echo 'Message: ' . $e->getMessage();
+            } else {
+                try {
+                    if ($row['name'] != $prod_name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $prod_name);
                     }
+
+                    if ($row['brand'] != $prod_brand) {
+                        array_push($oldvalarr, $row['brand']);
+                        array_push($chgvalarr, $prod_brand);
+                    }
+
+                    if ($row['weight'] != $prod_wgt) {
+                        array_push($oldvalarr, $row['weight']);
+                        array_push($chgvalarr, $prod_wgt);
+                    }
+
+                    if ($row['weight_unit'] != $prod_wgt_unit) {
+                        array_push($oldvalarr, $row['weight_unit']);
+                        array_push($chgvalarr, $prod_wgt_unit);
+                    }
+
+                    if ($row['cost'] != $prod_cost) {
+                        array_push($oldvalarr, $row['cost']);
+                        array_push($chgvalarr, $prod_cost);
+                    }
+
+                    if ($row['currency_unit'] != $prod_cur_unit) {
+                        array_push($oldvalarr, $row['currency_unit']);
+                        array_push($chgvalarr, $prod_cur_unit);
+                    }
+
+                    if ($row['barcode_status'] != $prod_barcode_status) {
+                        array_push($oldvalarr, $row['barcode_status']);
+                        array_push($chgvalarr, $prod_barcode_status);
+                    }
+
+                    if ($row['barcode_slot'] != $prod_barcode_slot) {
+                        array_push($oldvalarr, $row['barcode_slot']);
+                        array_push($chgvalarr, $prod_barcode_slot);
+                    }
+
+                    if ($row['expire_date'] != $prod_expire_date) {
+                        array_push($oldvalarr, $row['expire_date']);
+                        array_push($chgvalarr, $prod_expire_date);
+                    }
+
+                    if ($row['parent_product'] != $parent_prod) {
+                        array_push($oldvalarr, $row['parent_product']);
+                        array_push($chgvalarr, $parent_prod);
+                    }
+
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if ($oldvalarr && $chgvalarr) {
+                        $query = "UPDATE " . $tblName . " SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($connect, $query);
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
                 }
             }
+
+            if (isset($errorMsg)) {
+                $act = "F";
+                $errorMsg = str_replace('\'', '', $errorMsg);
+            }
+
+            // audit log
+            if (isset($query)) {
+
+                $log = [
+                    'log_act'      => $pageAction,
+                    'cdate'        => $cdate,
+                    'ctime'        => $ctime,
+                    'uid'          => USER_ID,
+                    'cby'          => USER_ID,
+                    'query_rec'    => $query,
+                    'query_table'  => $tblName,
+                    'page'         => $pageTitle,
+                    'connect'      => $connect,
+                ];
+
+                if ($pageAction == 'Add') {
+
+                    $log['newval'] = implodeWithComma($newvalarr);
+
+                    if (isset($returnData)) {
+                        $log['act_msg'] = USER_NAME . " added <b>$prod_name</b> into <b><i>$tblName Table</i></b>.";
+                    } else {
+                        $log['act_msg'] = USER_NAME . " fail to insert <b>$prod_name</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
+                    }
+                } else if ($pageAction == 'Edit') {
+                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['changes'] = implodeWithComma($chgvalarr);
+                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                }
+
+                audit_log($log);
+            }
+
             break;
+
         case 'back':
-            echo("<script>location.href = '$redirect_page';</script>");
+            echo $clearLocalStorage . ' ' . $redirectLink;
             break;
     }
 }
 
-if(post('act') == 'D')
-{
-    $id = post('id');
-    
-    if($id)
-    {
-        try
-        {
-            // take unit
-            $rst = getData('*',"id = '$id'",$tblname,$connect);
-            $row = $rst->fetch_assoc();
+//Function(title, subtitle, page name, ajax url path, redirect path, action)
+//To show action dialog after finish certain action (eg. edit)
 
-            $prod_id = $row['id'];
-            $prod_name = $row['name'];
-
-            //SET the record status to 'D'
-            deleteRecord($tblname,$id,$prod_name,$connect,$cdate,$ctime,$pageTitle);
-            generateDBData($tblname, $connect);
-            
-            $_SESSION['delChk'] = 1;
-        } catch(Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
-    }
+if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
 }
 
-if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1))
-{
-    $prod_name = isset($dataExisted) ? $row['name'] : '';
-    $_SESSION['viewChk'] = 1;
-
-    // audit log
-    $log = array();
-    $log['log_act'] = 'view';
-    $log['cdate'] = $cdate;
-    $log['ctime'] = $ctime;
-    $log['uid'] = $log['cby'] = USER_ID;
-    $log['act_msg'] = USER_NAME . " viewed the data <b>$prod_name</b> from <b><i>Product Table</i></b>.";
-    $log['page'] = 'Product';
-    $log['connect'] = $connect;
-    audit_log($log);
-}
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
 
-<div class="d-flex flex-column my-3 ms-3">
-    <p><a href="<?= $redirect_page ?>">Product</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-    switch($act)
-    {
-        case 'I': echo 'Add Product'; break;
-        case 'E': echo 'Edit Product'; break;
-        default: echo 'View Product';
-    }
-    ?></p>
-</div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
+    </div>
 
-<div id="prodFormContainer" class="container d-flex justify-content-center mt-2">
+    <div id="formContainer" class="container d-flex justify-content-center">
         <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="prodForm" method="post" action="">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group mb-5">
-                            <h2>
-                                <?php
-                                switch($act)
-                                {
-                                    case 'I': echo 'Add Product'; break;
-                                    case 'E': echo 'Edit Product'; break;
-                                    default: echo 'View Product';
-                                }
-                                ?>
-                            </h2>
-                        </div>
-                    </div>
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
                 </div>
 
                 <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size : 21px"><?php if (isset($err9)) echo $err9; ?></span>
+                    <span class="mt-n2" style="font-size : 21px"><?php if (isset($err)) echo $err; ?></span>
                 </div>
 
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Product Name</label>
-                            <input class="form-control" type="text" name="prod_name" id="prod_name" value=
-                            "<?php
-                                if(isset($prod_name))
-                                    echo $prod_name;
-                                else if(isset($dataExisted) && isset($row['name'])) 
-                                   echo $row['name'];
-
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                            </div>
+                            <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php echo (isset($row['name'])) ? $row['name'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                         </div>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand</label>
-                            <input class="form-control" type="text" name="prod_brand" id="prod_brand" value="<?php
+                            <?php
 
-                                unset($echoVal);
-                                
-                                if(isset($prod_brand) && $prod_brand != '')
-                                    $echoVal = $prod_brand;
-                                else if(isset($dataExisted) && isset($row['brand']))
-                                    $echoVal = $row['brand'];
+                            unset($echoVal);
 
-                                if(isset($echoVal))
-                                {
-                                    $brand_rst = getData('name',"id = '$echoVal'",BRAND,$connect);
-                                    $brand_row = $brand_rst->fetch_assoc();
-                                    echo $brand_row['name'];
+                            if (isset($row['brand']))
+                                $echoVal = $row['brand'];
+
+                            if (isset($echoVal)) {
+                                $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                                if (!$brand_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            
-                            <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value=
-                            "<?php
-                                if(isset($prod_brand) && $prod_brand != '')
-                                    echo $prod_brand;
-                                else if(isset($dataExisted) && isset($row['brand']))
-                                    echo $row['brand'];
+                                $brand_row = $brand_rst->fetch_assoc();
+                                echo $brand_row['name'];
+                            }
+                            ?>
 
-                            ?>">
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                            </div>
+                            <input class="form-control" type="text" name="prod_brand" id="prod_brand" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : ''  ?>" required>
+
+                            <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
-                            <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" value="<?php
+                            <?php
 
-                                unset($echoVal);
+                            unset($echoVal);
 
-                                if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
-                                    $echoVal = $prod_wgt_unit;
-                                else if(isset($dataExisted) && isset($row['weight_unit']))
-                                    $echoVal = $row['weight_unit'];
+                            if (isset($row['weight_unit']))
+                                $echoVal = $row['weight_unit'];
 
-                                if(isset($echoVal))
-                                {
-                                    $weight_rst = getData('unit',"id = '$echoVal'",WGT_UNIT,$connect);
-                                    $weight_row = $weight_rst->fetch_assoc();
-                                    echo $weight_row['unit'];
+                            if (isset($echoVal)) {
+                                $weight_rst = getData('unit', "id = '$echoVal'", '', WGT_UNIT, $connect);
+                                if (!$weight_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
+                                $weight_row = $weight_rst->fetch_assoc();
+                            }
 
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value="<?php 
-                                if(isset($prod_wgt_unit) && $prod_wgt_unit != '')
-                                    echo $prod_wgt_unit;
-                                else if(isset($dataExisted) && isset($row['weight_unit'])) 
-                                    echo $row['weight_unit'];
-                            ?>">
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
-                            </div>
+                            ?>
+                            <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $weight_row['unit'] : ''  ?>" required>
+                            <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value="<?php echo (isset($row['weight_unit'])) ? $row['weight_unit'] : ''; ?>">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
-                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php
-                                unset($echoVal);
-                                if(isset($prod_wgt) && $prod_wgt != '')
-                                    echo $prod_wgt;
-                                else if(isset($dataExisted) && isset($row['weight'])) 
-                                    echo $row['weight'];
-
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
-                            </div>
+                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php echo (isset($row['weight'])) ? $row['weight'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
-                            <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" value="<?php
-                                unset($echoVal);
-                                if(isset($prod_cur_unit) && $prod_cur_unit != '')
-                                    $echoVal = $prod_cur_unit;
-                                else if(isset($dataExisted) && isset($row['currency_unit']))
-                                    $echoVal = $row['currency_unit'];
+                            <?php
+                            unset($echoVal);
 
-                                if(isset($echoVal))
-                                {
-                                    $currency_unit_rst = getData('unit',"id = '$echoVal'",CUR_UNIT,$connect);
-                                    $currency_unit_row = $currency_unit_rst->fetch_assoc();
-                                    echo $currency_unit_row['unit'];
+                            if (isset($row['currency_unit']))
+                                $echoVal = $row['currency_unit'];
+
+                            if (!empty($echoVal)) {
+                                $currency_unit_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                                if (!$currency_unit_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value="<?php
-                                if(isset($prod_cur_unit) && $prod_cur_unit != '')
-                                    echo $prod_cur_unit;
-                                else if(isset($dataExisted) && isset($row['currency_unit'])) 
-                                    echo $row['currency_unit'];
-                            ?>">
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err6)) echo $err6; ?></span>
-                            </div>
+                                $currency_unit_row = $currency_unit_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_unit_row['unit'] : ''  ?>" required>
+                            <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
-                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php 
-                                if(isset($prod_cost) && $prod_cost != '')
-                                    echo $prod_cost;
-                                else if(isset($dataExisted) && isset($row['cost'])) 
-                                    echo $row['cost'];
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err5)) echo $err5; ?></span>
-                            </div>
+                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                         </div>
                     </div>
                 </div>
@@ -516,30 +399,14 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6 d-flex align-items-center">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_barcode_status_lbl" for="prod_barcode_status">Record Barcode?</label>
-                            <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php
-                                if($act == '') 
-                                    echo 'disabled';
-
-                                if(isset($prod_barcode_status))
-                                    echo $prod_barcode_status != 'Yes' ?: ' checked';
-                                else if(isset($dataExisted) && isset($row['barcode_status'])) 
-                                    echo $row['barcode_status'] != 'Yes' ? '' : ' checked';
-                            ?>>
+                            <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php if ($act == '') echo 'disabled'; ?> <?php echo (isset($row['barcode_status']) && $row['barcode_status'] == 'Yes') ? 'checked' : ''; ?>>
                         </div>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
-                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php
-                                if(isset($prod_barcode_slot) && $prod_barcode_slot != '')
-                                    echo $prod_barcode_slot;
-                                else if(isset($dataExisted) && isset($row['barcode_slot'])) 
-                                    echo $row['barcode_slot'];
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err7)) echo $err7; ?></span>
-                            </div>
+                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php echo (isset($row['barcode_slot'])) ? $row['barcode_slot'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
                         </div>
                     </div>
                 </div>
@@ -548,175 +415,145 @@ if(($prod_id != '') && ($act == '') && (USER_ID != '') && ($_SESSION['viewChk'] 
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date</label>
-                            <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php 
-                                if(isset($prod_expire_date) && $prod_expire_date != '')
-                                    echo $prod_expire_date;
-                                else if(isset($dataExisted) && isset($row['expire_date'])) 
-                                    echo $row['expire_date'];
-
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err8)) echo $err8; ?></span>
-                            </div>
+                            <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php echo (isset($row['expire_date'])) ? $row['expire_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                         </div>
                     </div>
 
                     <div class="col-12 col-md-6">
                         <div class="form-group autocomplete mb-3">
                             <label class="form-label form_lbl" id="parent_prod_lbl" for="parent_prod">Parent Product</label>
-                            <input class="form-control" type="text" name="parent_prod" id="parent_prod" value="<?php
-                                unset($echoVal);
-                                if(isset($parent_prod) && $parent_prod != '')
-                                    $echoVal = $parent_prod;
-                                else if(isset($dataExisted) && isset($row['parent_product']))
-                                    $echoVal = $row['parent_product'];
+                            <?php
+                            unset($echoVal);
 
-                                if(isset($echoVal) && $echoVal != '')
-                                {
-                                    $product_rst = getData('name',"id = '$echoVal'",PROD,$connect);
-                                    $product_row = $product_rst->fetch_assoc();
-                                    echo $product_row['name'];
+                            if (isset($row['parent_product']))
+                                $echoVal = $row['parent_product'];
+
+                            if (!empty($echoVal)) {
+                                $product_rst = getData('name', "id = '$echoVal'", '', PROD, $connect);
+                                if (!$product_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                            ?>" <?php if($act == '') echo 'readonly' ?>>
-                            <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value=
-                            "<?php
-                            if(isset($parent_prod) && $parent_prod != '')
-                                echo $parent_prod;
-                            else if(isset($dataExisted) && isset($row['parent_product']) && $row['parent_product'] != '')
-                                echo $row['parent_product'];
-                            ?>">
+                                $product_row = $product_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="parent_prod" id="parent_prod" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_row['name'] : ''  ?>">
+                            <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value="<?php echo (isset($row['parent_product'])) ? $row['parent_product'] : ''; ?>">
                         </div>
                     </div>
                 </div>
 
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
-                        <?php
-                            switch($act)
-                            {
-                                case 'I':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="addProd">Add Product</button>';
-                                    break;
-                                case 'E':
-                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="updProd">Edit Product</button>';
-                                    break;
-                            }
-                        ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                        </div>
-                    </div>
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
-</div>
-<?php
-if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product","","'.$redirect_page.'","'.$act.'");</script>';
-}
-?>
-</body>
-<script>
-$(document).ready(function(){
-    var prodBarcodeStatus = $("#prod_barcode_status");
-    var prodBarcode = $("#prod_barcode_slot, #prod_barcode_slot_lbl");
-    var prodBarcodeSlot = $("#prod_barcode_slot");
-    
-    if(prodBarcodeStatus.prop('checked'))
-        prodBarcode.show();
-    else
-        prodBarcode.hide();
+    </div>
 
-    $(prodBarcodeStatus).on('change', () => {
-        if(prodBarcodeStatus.prop('checked'))
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        setAutofocus(action);
+    </script>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+        var prodBarcodeStatus = $("#prod_barcode_status");
+        var prodBarcode = $("#prod_barcode_slot, #prod_barcode_slot_lbl");
+        var prodBarcodeSlot = $("#prod_barcode_slot");
+
+        if (prodBarcodeStatus.prop('checked'))
             prodBarcode.show();
         else
-        {
             prodBarcode.hide();
-            prodBarcodeSlot.next().remove();
-        }
-    })
 
-    if(!($("#prod_brand").attr('readonly')))
-    {
-        $("#prod_brand").keyup(function(){
-            var param = {
-                search: $(this).val(),                              // search value
-                searchType: 'name',                                 // column of the table
-                elementID: $(this).attr('id'),                      // id of the input
-                hiddenElementID: $(this).attr('id') + '_hidden',    // hidden input for storing the value
-                dbTable: '<?= BRAND ?>'                             // json filename (generated when login)
+        $(prodBarcodeStatus).on('change', () => {
+            if (prodBarcodeStatus.prop('checked'))
+                prodBarcode.show();
+            else {
+                prodBarcode.hide();
+                prodBarcodeSlot.next().remove();
             }
-            var arr = searchInput(param);
-        });
-        $("#prod_brand").change(function(){
-            if($(this).val() == '')
-                $('#'+$(this).attr('id')+'_hidden').val('');
-        });
-
-        $("#prod_brand_hidden").change(function(){
-            if($("#prod_brand_hidden").val() != ''){
-                console.log(arr);
-            };
         })
-    }
 
-    if(!($("#prod_wgt_unit").attr('readonly')))
-    {
-        $("#prod_wgt_unit").keyup(function(){
-            var param = {
-                search: $(this).val(),
-                searchType: 'unit',
-                elementID: $(this).attr('id'),
-                hiddenElementID: $(this).attr('id') + '_hidden',
-                dbTable: '<?= WGT_UNIT ?>'
-            }
-            searchInput(param);
-        });
-        $("#prod_wgt_unit").change(function(){
-            if($(this).val() == '')
-                $('#'+$(this).attr('id')+'_hidden').val('');
-        });
-    }
+        if (!($("#prod_brand").attr('readonly'))) {
+            $("#prod_brand").keyup(function() {
+                var param = {
+                    search: $(this).val(), // search value
+                    searchType: 'name', // column of the table
+                    elementID: $(this).attr('id'), // id of the input
+                    hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                    dbTable: '<?= BRAND ?>' // json filename (generated when login)
+                }
+                var arr = searchInput(param);
+            });
+            $("#prod_brand").change(function() {
+                if ($(this).val() == '')
+                    $('#' + $(this).attr('id') + '_hidden').val('');
+            });
 
-    if(!($("#prod_cur_unit").attr('readonly')))
-    {
-        $("#prod_cur_unit").keyup(function(){
-            var param = {
-                search: $(this).val(),
-                searchType: 'unit',
-                elementID: $(this).attr('id'),
-                hiddenElementID: $(this).attr('id') + '_hidden',
-                dbTable: '<?= CUR_UNIT ?>'
-            }
-            searchInput(param);
-        });
-        $("#prod_cur_unit").change(function(){
-            if($(this).val() == '')
-                $('#'+$(this).attr('id')+'_hidden').val('');
-        });
-    }
+            $("#prod_brand_hidden").change(function() {
+                if ($("#prod_brand_hidden").val() != '') {
+                    console.log(arr);
+                };
+            })
+        }
 
-    if(!($("#parent_prod").attr('readonly')))
-    {
-        $("#parent_prod").keyup(function(){
-            var param = {
-                search: $(this).val(),
-                searchType: 'name',
-                elementID: $(this).attr('id'),
-                hiddenElementID: $(this).attr('id') + '_hidden',
-                dbTable: '<?= $tblname ?>'
-            }
-            searchInput(param);
-        });
-        $("#parent_prod").change(function(){
-            if($(this).val() == '')
-                $('#'+$(this).attr('id')+'_hidden').val('');
-        });
-    }
-});
+        if (!($("#prod_wgt_unit").attr('readonly'))) {
+            $("#prod_wgt_unit").keyup(function() {
+                var param = {
+                    search: $(this).val(),
+                    searchType: 'unit',
+                    elementID: $(this).attr('id'),
+                    hiddenElementID: $(this).attr('id') + '_hidden',
+                    dbTable: '<?= WGT_UNIT ?>'
+                }
+                searchInput(param);
+            });
+            $("#prod_wgt_unit").change(function() {
+                if ($(this).val() == '')
+                    $('#' + $(this).attr('id') + '_hidden').val('');
+            });
+        }
 
+        if (!($("#prod_cur_unit").attr('readonly'))) {
+            $("#prod_cur_unit").keyup(function() {
+                var param = {
+                    search: $(this).val(),
+                    searchType: 'unit',
+                    elementID: $(this).attr('id'),
+                    hiddenElementID: $(this).attr('id') + '_hidden',
+                    dbTable: '<?= CUR_UNIT ?>'
+                }
+                searchInput(param);
+            });
+            $("#prod_cur_unit").change(function() {
+                if ($(this).val() == '')
+                    $('#' + $(this).attr('id') + '_hidden').val('');
+            });
+        }
+
+        if (!($("#parent_prod").attr('readonly'))) {
+            $("#parent_prod").keyup(function() {
+                var param = {
+                    search: $(this).val(),
+                    searchType: 'name',
+                    elementID: $(this).attr('id'),
+                    hiddenElementID: $(this).attr('id') + '_hidden',
+                    dbTable: '<?= $tblName ?>'
+                }
+                searchInput(param);
+            });
+            $("#parent_prod").change(function() {
+                if ($(this).val() == '')
+                    $('#' + $(this).attr('id') + '_hidden').val('');
+            });
+        }
+    });
 </script>
+
 </html>

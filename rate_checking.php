@@ -1,158 +1,169 @@
+<?php
+$pageTitle = "Rate Checking";
+
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$redirect_page = $SITEURL . '/dashboard.php';
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+if (!isActionAllowed('check', $pinAccess))
+    echo $redirectLink;
+
+$country = input('country') ? input('country') : input('from');
+$dispCountrySel = "";
+$dispDeliverOpt = "";
+$active_d = "active";
+$active_i = "";
+$selected_d = "true";
+$selected_i = "false";
+$showActive_d = "show active";
+$showActive_i = "";
+
+if ($country) {
+    $dispCountrySel = "style=\"display: none;\"";
+    $dispDeliverOpt = "";
+    $country2 = getCountry($country, $connect);
+    $domestic = "<option value=\"$country|$country2\" selected style=\"display:none;\">$country2</option>";
+} else {
+    $dispCountrySel = "";
+    $dispDeliverOpt = "style=\"display: none;\"";
+}
+
+if (isset($_GET['to_full'], $_GET['from_full'])) {
+    if ($_GET['from_full'] != $_GET['to_full']) {
+        $active_d = "";
+        $active_i = "active";
+        $selected_d = 'false';
+        $selected_i = 'true';
+        $showActive_d = "";
+        $showActive_i = "show active";
+    }
+}
+
+if (post('actionBtn')) {
+    $act = post('actionBtn');
+    switch ($act) {
+        case 'chkRate_d':
+            $active_d = "active";
+            $active_i = "";
+            $selected_d = "true";
+            $selected_i = "false";
+            $showActive_d = "show active";
+            $showActive_i = "";
+
+            $data = array();
+            $data['country'] = input('country');
+
+            $from_arr = post('from');
+
+            if ($from_arr) {
+                $from_arr = explode('|', $from_arr);
+                $data['from'] = $from_arr[0] ? $from_arr[0] : '';
+                $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
+            }
+
+            $data['postcode_from'] = post('postcode_from');
+
+            $to_arr = post('to');
+            if ($to_arr) {
+                $to_arr = explode('|', $to_arr);
+                $data['to'] = $to_arr[0] ? $to_arr[0] : '';
+                $data['to_full'] = $to_arr[1] ? $to_arr[1] : '';
+            }
+
+            $data['postcode_to'] = post('postcode_to');
+            $data['weight'] = post('weight');
+
+            if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
+                $rstRateCheck = rate_checking($data);
+                // audit log
+                $log = array();
+                $log['log_act'] = 'check';
+                $log['cdate'] = $cdate;
+                $log['ctime'] = $ctime;
+                $log['uid'] = $log['cby'] = USER_ID;
+                $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
+                $log['page'] = $pageTitle;
+                $log['connect'] = $connect;
+                audit_log($log);
+            } else {
+                if (!($data['postcode_from']))
+                    $err = "Postcode is required.";
+
+                if (!($data['postcode_to']))
+                    $err2 = "Postcode is required.";
+
+                if (!($data['weight']))
+                    $err5 = "Parcel weight is required.";
+            }
+            break;
+
+        case 'chkRate_i':
+            $active_i = "active";
+            $active_d = "";
+            $selected_i = "true";
+            $selected_d = "false";
+            $showActive_i = "show active";
+            $showActive_d = "";
+
+            $data = array();
+            $data['country'] = input('country');
+
+            $from_arr = post('from');
+            if ($from_arr) {
+                $from_arr = explode('|', $from_arr);
+                $data['from'] = $from_arr[0] ? $from_arr[0] : '';
+                $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
+            }
+
+            $data['postcode_from'] = post('postcode_from');
+
+            $to_arr = post('to');
+            if ($to_arr) {
+                $to_arr = explode('|', $to_arr);
+                $data['to'] = $to_arr[0] ? $to_arr[0] : '';
+                $data['to_full'] = $to_arr[1] ? $to_arr[1] : '';
+            }
+
+            $data['postcode_to'] = post('postcode_to');
+            $data['weight'] = post('weight');
+
+            if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
+                $rstRateCheck = rate_checking($data);
+
+                // audit log
+                $log = array();
+                $log['log_act'] = 'check';
+                $log['cdate'] = $cdate;
+                $log['ctime'] = $ctime;
+                $log['uid'] = $log['cby'] = USER_ID;
+                $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
+                $log['page'] = $pageTitle;
+                $log['connect'] = $connect;
+                audit_log($log);
+            } else {
+                if (!($data['postcode_from']))
+                    $err6 = "Postcode is required.";
+
+                if (!($data['postcode_to']))
+                    $err7 = "Postcode is required.";
+
+                if (!($data['weight']))
+                    $err9 = "Parcel weight is required.";
+            }
+            break;
+        default:
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php
-    $pageTitle = "Rate Checking";
-    include 'menuHeader.php';
 
-    $country = input('country') ? input('country') : input('from');
-    $dispCountrySel = "";
-    $dispDeliverOpt = "";
-    $active_d = "active";
-    $active_i = "";
-    $selected_d = "true";
-    $selected_i = "false";
-    $showActive_d = "show active";
-    $showActive_i = "";
-
-    if ($country) {
-        $dispCountrySel = "style=\"display: none;\"";
-        $dispDeliverOpt = "";
-        $country2 = getCountry($country,$connect);
-        $domestic = "<option value=\"$country|$country2\" selected style=\"display:none;\">$country2</option>";
-    } else {
-        $dispCountrySel = "";
-        $dispDeliverOpt = "style=\"display: none;\"";
-    }
-
-    if (isset($_GET['to_full'], $_GET['from_full'])) {
-        if ($_GET['from_full'] != $_GET['to_full']) {
-            $active_d = "";
-            $active_i = "active";
-            $selected_d = 'false';
-            $selected_i = 'true';
-            $showActive_d = "";
-            $showActive_i = "show active";
-        }
-    }
-
-    if (post('actionBtn')) {
-        $act = post('actionBtn');
-        switch ($act) {
-            case 'chkRate_d':
-                $active_d = "active";
-                $active_i = "";
-                $selected_d = "true";
-                $selected_i = "false";
-                $showActive_d = "show active";
-                $showActive_i = "";
-
-                $data = array();
-                $data['country'] = input('country');
-
-                $from_arr = post('from');
-
-                if ($from_arr) {
-                    $from_arr = explode('|', $from_arr);
-                    $data['from'] = $from_arr[0] ? $from_arr[0] : '';
-                    $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
-                }
-
-                $data['postcode_from'] = post('postcode_from');
-
-                $to_arr = post('to');
-                if ($to_arr) {
-                    $to_arr = explode('|', $to_arr);
-                    $data['to'] = $to_arr[0] ? $to_arr[0] : '';
-                    $data['to_full'] = $to_arr[1] ? $to_arr[1] : '';
-                }
-
-                $data['postcode_to'] = post('postcode_to');
-                $data['weight'] = post('weight');
-
-                if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
-                    $rstRateCheck = rate_checking($data);
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'view';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
-                    $log['page'] = $pageTitle;
-                    $log['connect'] = $connect;
-                    audit_log($log);
-                } else {
-                    if (!($data['postcode_from']))
-                        $err = "Postcode is required.";
-
-                    if (!($data['postcode_to']))
-                        $err2 = "Postcode is required.";
-
-                    if (!($data['weight']))
-                        $err5 = "Parcel weight is required.";
-                }
-                break;
-
-            case 'chkRate_i':
-                $active_i = "active";
-                $active_d = "";
-                $selected_i = "true";
-                $selected_d = "false";
-                $showActive_i = "show active";
-                $showActive_d = "";
-
-                $data = array();
-                $data['country'] = input('country');
-
-                $from_arr = post('from');
-                if ($from_arr) {
-                    $from_arr = explode('|', $from_arr);
-                    $data['from'] = $from_arr[0] ? $from_arr[0] : '';
-                    $data['from_full'] = $from_arr[1] ? $from_arr[1] : '';
-                }
-
-                $data['postcode_from'] = post('postcode_from');
-
-                $to_arr = post('to');
-                if ($to_arr) {
-                    $to_arr = explode('|', $to_arr);
-                    $data['to'] = $to_arr[0] ? $to_arr[0] : '';
-                    $data['to_full'] = $to_arr[1] ? $to_arr[1] : '';
-                }
-
-                $data['postcode_to'] = post('postcode_to');
-                $data['weight'] = post('weight');
-
-                if ($data['postcode_from'] && $data['postcode_to'] && $data['weight']) {
-                    $rstRateCheck = rate_checking($data);
-
-                    // audit log
-                    $log = array();
-                    $log['log_act'] = 'view';
-                    $log['cdate'] = $cdate;
-                    $log['ctime'] = $ctime;
-                    $log['uid'] = $log['cby'] = USER_ID;
-                    $log['act_msg'] = USER_NAME . " checking the price <b>" . $data['from_full'] . " to " . $data['to_full'] . "</b> from <b><i>" . $pageTitle . "</i></b>.";
-                    $log['page'] = $pageTitle;
-                    $log['connect'] = $connect;
-                    audit_log($log);
-                } else {
-                    if (!($data['postcode_from']))
-                        $err6 = "Postcode is required.";
-
-                    if (!($data['postcode_to']))
-                        $err7 = "Postcode is required.";
-
-                    if (!($data['weight']))
-                        $err9 = "Parcel weight is required.";
-                }
-                break;
-            default:
-        }
-    }
-    ?>
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
@@ -214,7 +225,7 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-3 d-flex justify-content-center">
-                                <button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="submit">Confirm></button>
+                                <button class="btn btn-rounded btn-primary mx-auto my-auto" id="actionBtn" type="submit">Confirm</button>
                             </div>
                         </div>
                     </form>
@@ -316,8 +327,10 @@
                                         <div class="row">
                                             <div class="col-6 col-md-6">
                                                 <select class="form-select mb-3 h-75" id="to" name="to">
+                                                    <option selected></option>
                                                     <?php
-                                                    $all_country = getCountry('all',$connect);
+                                                    $all_country = getCountry('all', $connect);
+                                                    asort($all_country);
                                                     foreach ($all_country as $key => $val) {
 
                                                         if (strcasecmp($key, $country) == 0)
@@ -485,5 +498,9 @@
     </div>
 
 </body>
+
+<script>
+    setButtonColor();
+</script>
 
 </html>

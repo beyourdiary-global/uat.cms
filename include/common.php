@@ -9,7 +9,13 @@ function post($key)
 
 function postSpaceFilter($key)
 {
-	return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+	if (isset($_POST[$key])) {
+		if (is_string($_POST[$key])) {
+			return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+		} else  if (is_array($_POST[$key])) {
+			return array_map('trim', isset($_POST[$key]) ? $_POST[$key] : '');
+		}
+	}
 }
 
 function input($key)
@@ -232,9 +238,8 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
-function getData($search_val, $val, $tbl, $conn)
+function getData($search_val, $val, $val2, $tbl, $conn)
 {
-
 	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
 	//Checking a status is available in data field or not then check a val is exist or not
@@ -243,8 +248,9 @@ function getData($search_val, $val, $tbl, $conn)
 	} else {
 		$chk_val = $val == '' ? "" : "WHERE $val";
 	}
+
 	//combine together to process a query
-	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc";
+	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
 
 	$result = $conn->query($query);
 
@@ -256,7 +262,7 @@ function getData($search_val, $val, $tbl, $conn)
 
 function generateDBData($tblname, $conn)
 {
-	$rst = getData('*', '', $tblname, $conn);
+	$rst = getData('*', '', '', $tblname, $conn);
 	$data = array();
 	while ($row = $rst->fetch_assoc()) {
 		$data[] = $row;
@@ -276,7 +282,7 @@ function audit_log($data = array())
 		extract($data);
 
 		switch (strtolower($log_act)) {
-			case 'view': 
+			case 'view':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('1', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 			case 'edit':
@@ -300,6 +306,9 @@ function audit_log($data = array())
 			case 'logout':
 				$query = "INSERT INTO " . AUDIT_LOG . " (screen_type, log_action, user_id, action_message, create_date, create_time, create_by) VALUES ('Login Screen', '8', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
+			case 'check':
+				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('9', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
 		}
 
 		if (isset($query))
@@ -311,7 +320,7 @@ function getCountry($param, $connect)
 {
 	$all_country = array();
 
-	$result = getData('*', '', 'countries', $connect);
+	$result = getData('*', '', '', 'countries', $connect);
 
 	if ($result) {
 		while ($row = $result->fetch_assoc()) {
@@ -337,7 +346,7 @@ function getCountry($param, $connect)
 
 function getCountryTelCode($param, $connect)
 {
-	$result = getData('*', 'code = "' . $param . '"', 'countries', $connect);
+	$result = getData('*', 'code = "' . $param . '"', '', 'countries', $connect);
 
 	if ($result) {
 		$row = $result->fetch_assoc();
@@ -646,50 +655,62 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorM
 }
 
 // Function to update previous and final amounts for transactions
-function updateTransactionAmounts($finance_connect, $table_name) {
-    // Initialize an associative array to store previous amounts for each bank and currency combination
-    $prevAmounts = array();
+function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
+{
+	// Initialize an associative array to store previous amounts
+	$prevAmounts = array();
 
-    // Select all transactions ordered by id
-    $query = "SELECT id, `type`, amount, bank, currency, `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
-    $result = mysqli_query($finance_connect, $query);
+	// Construct the query
+	$query = "SELECT id, `type`, amount, " . implode(', ', $fields) . ", `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+	$result = mysqli_query($finance_connect, $query);
 
-    if (!$result) {
-        die("Error reading records: " . mysqli_error($finance_connect));
-    }
+	if (!$result) {
+		die("Error reading records: " . mysqli_error($finance_connect));
+	}
 
-    // Loop through each transaction
-    while ($row = mysqli_fetch_assoc($result)) {
-        $id = $row['id'];
-        $type = $row['type'];
-        $amount = $row['amount'];
-        $currency = $row['currency'];
-        $bank = $row['bank'];
+	// Loop through each transaction
+	while ($row = mysqli_fetch_assoc($result)) {
+		$id = $row['id'];
+		$type = $row['type'];
+		$amount = $row['amount'];
 
-        $key = $bank . '_' . $currency;
+		// Create the key for the $prevAmounts array
+		$keyParts = array_map(function ($field) use ($row) {
+			return $row[$field];
+		}, $uniqueKey);
+		$key = implode('_', $keyParts);
 
-        if (!isset($prevAmounts[$key])) {
-            $prevAmounts[$key] = 0;
-        }
-        $prevFinalAmt = $prevAmounts[$key];
+		if (!isset($prevAmounts[$key])) {
+			$prevAmounts[$key] = 0;
+		}
+		$prevFinalAmt = $prevAmounts[$key];
 
-        // Calculate final_amt based on transaction type
-        if ($type === 'Add') {
-            $finalAmt = $prevFinalAmt + $amount;
-        } else if ($type === 'Deduct') {
-            $finalAmt = $prevFinalAmt - $amount;
-        }
+		// Calculate final_amt based on transaction type
+		if ($type === 'Add') {
+			$finalAmt = $prevFinalAmt + $amount;
+		} else if ($type === 'Deduct') {
+			$finalAmt = $prevFinalAmt - $amount;
+		}
 
-        // Update the row in the database
-        $updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
-        $updateResult = mysqli_query($finance_connect, $updateQuery);
+		// Update the row in the database
+		$updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
+		$updateResult = mysqli_query($finance_connect, $updateQuery);
 
-        if (!$updateResult) {
-            die("Update failed: " . mysqli_error($finance_connect));
-        }
-
-        $prevAmounts[$key] = $finalAmt;
-    }
+		if (!$updateResult) {
+			die("Update failed: " . mysqli_error($finance_connect));
+		}
+		$prevAmounts[$key] = $finalAmt;
+	}
 	return true;
 }
-?>
+
+
+function insertNewMerchant($merchantName, $userId, $financeConnect)
+{
+	$query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
+	$queryResult = mysqli_query($financeConnect, $query);
+	if ($queryResult) {
+		return mysqli_insert_id($financeConnect);
+	}
+	return false;
+}

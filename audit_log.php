@@ -1,35 +1,32 @@
 <?php
 $pageTitle = "Audit Log";
-include 'menuHeader.php';
 
-$num = 1;  //for numbering
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$tblName = AUDIT_LOG;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+$num = 1;   // numbering
+
 $query = "SELECT *, concat(create_date,' ',create_time) as datetimes FROM " . AUDIT_LOG . " ORDER BY datetimes desc";
 $result = mysqli_query($connect, $query);
+
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
-
-<style>
-    h2,
-    a {
-        color: #000000;
-    }
-</style>
-
 <script>
     $(document).ready(() => {
-        /**
-         oufei 20231014
-         common.fun.js
-         function(id)
-         create DataTable (sortable table)
-        */
-        createSortingTable('audit_log_table');
+        createSortingTable('table');
     });
 </script>
 
@@ -39,95 +36,80 @@ $result = mysqli_query($connect, $query);
 
         <div class="col-12 col-md-8">
 
-            <div class="row">
-                <div class="d-flex flex-column flex-md-row mb-3">
-                    <div class="left">
-                        <h2>Audit Log</h2>
-                        <p><a href="dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> Audit Log</p>
+            <div class="d-flex flex-column mb-3">
+                <div class="row">
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between flex-wrap">
+                        <h2><?php echo $pageTitle ?></h2>
+                        <div class="mt-auto mb-auto">
+                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <table class="table table-striped" id="audit_log_table">
-                    <thead>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">#</th>
-                            <th scope="col">DateTime</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (mysqli_num_rows($result) >= 1) {
-                            // get username
-                            $rst = getData('id, username', '', USR_USER, $connect);
-                            $username_arr = array();
-                            if ($rst != false) {
-                                while ($row2 = $rst->fetch_assoc()) {
-                                    $username_arr[$row2['id']] = $row2['username'];
-                                }
-                            }
+            <table class="table table-striped" id="table">
+                <thead>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
 
+                <tbody>
+                    <?php
+                    if (mysqli_num_rows($result) >= 1) {
 
-                            while ($row = $result->fetch_assoc()) {
-                                $id = $row['user_id'];
-                        ?>
-                                <tr>
-                                    <th class="hideColumn" scope="row"><?php echo $row['id']; ?></th>
-                                    <th scope="row"><?php echo $num; ?></th>
-                                    <td scope="row"><?php echo $row['create_date'] . ', ' . $row['create_time'] ?></td>
-                                    <td scope="row"><?php echo $username_arr["$id"] ?></td>
-                                    <td scope="row"><?php echo $row['action_message'] ?></td>
-                                </tr>
-                            <?php
-                                $num++;
+                        while ($row = $result->fetch_assoc()) {
+                            $resultUser = getData('username', "id='" . $row['user_id'] . "'", '', USR_USER, $connect);
+                            if (!$resultUser) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                             }
-                        } else {
-                            ?>
+                            $rowUser = $resultUser->fetch_assoc();
+
+                            echo '
                             <tr>
-                                <th scope="row" colspan="4">No audit log record.</th>
-                                <td scope="row" style="display: none"></td>
-                                <td scope="row" style="display: none"></td>
-                                <td scope="row" style="display: none"></td>
+                                <th class="hideColumn" scope="row">' . $row['id'] . '</th>
+                                <th scope="row">' . $num++ . '</th>
+                                <td scope="row">' . $row['create_date'] . ', ' . $row['create_time'] . '</td>
+                                <td scope="row">' . $rowUser['username'] . '</td>
+                                <td scope="row">' . $row['action_message'] . '</td>
                             </tr>
-                        <?php
+                            ';
                         }
-                        ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">#</th>
-                            <th scope="col">DateTime</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    }
+                    ?>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
 
+    <script>
+        //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+        dropdownMenuDispFix();
+        //to resize table with bootstrap 5 classes
+        datatableAlignment('table');
+        setButtonColor();
+    </script>
 </body>
-<script>
-    /**
-  oufei 20231014
-  common.fun.js
-  function(void)
-  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-*/
-    dropdownMenuDispFix();
-
-    /**
-      oufei 20231014
-      common.fun.js
-      function(id)
-      to resize table with bootstrap 5 classes
-    */
-    datatableAlignment("audit_log_table");
-</script>
 
 </html>
