@@ -500,7 +500,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2 backBtn" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </div>
             </form>
@@ -513,14 +513,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         setAutofocus(action);
 
         $(document).ready(function() {
-            $("#actionBtn").prop("disabled", true);
             $("#cusEmail").on("input", function() {
                 if (!validateEmail()) {
                     $("#emailMsg").html("<p class='text-danger'>Invalid Email Format</p>");
-                    $("#actionBtn").prop("disabled", true);
+                    $("#actionBtn").event.preventDefault();
+
                 } else {
                     $("#emailMsg").html("");
-                    $("#actionBtn").prop("disabled", false);
+                }
+            });
+
+            $("#actionBtn").on("click", function(event) {
+                if (!validateEmail()) {
+                    event.preventDefault();
                 }
             });
         });
