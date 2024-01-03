@@ -113,7 +113,13 @@ if (post('actionBtn')) {
                     if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+                    if ($currentDataPriceFrom)
+                        array_push($newvalarr, $currentDataPriceFrom);
+
+                    if ($currentDataPriceTo)
+                        array_push($newvalarr, $currentDataPriceTo);
+
+                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,price_from,price_to,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                 } catch (Exception $e) {
