@@ -142,6 +142,16 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
                     }
 
+                    if ($row['price_from'] != $currentDataPriceFrom) {
+                        array_push($oldvalarr, $row['price_from']);
+                        array_push($chgvalarr, $currentDataPriceFrom);
+                    }
+
+                    if ($row['price_to'] != $currentDataPriceTo) {
+                        array_push($oldvalarr, $row['price_to']);
+                        array_push($chgvalarr, $currentDataPriceTo);
+                    }
+
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
