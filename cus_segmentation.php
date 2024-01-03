@@ -81,6 +81,8 @@ if (post('actionBtn')) {
             $currentDataName = postSpaceFilter('currentDataName');
             $colorSegmentation =  postSpaceFilter('segmentationColor');
             $dataRemark = postSpaceFilter('currentDataRemark');
+            $currentDataPriceFrom = postSpaceFilter('priceFrom');
+            $currentDataPriceTo = postSpaceFilter('priceTo');
 
             $oldvalarr = $chgvalarr = $newvalarr = array();
 
