@@ -270,6 +270,20 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </div>
 
                 <div class="form-group mb-3">
+                <div class="row">
+                    <div class="col-sm">
+                        <label class="form-label" for="priceFrom">Price From</label>
+                        <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label" for="priceTo">Price To</label>
+                        <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+
+                <div class="form-group mb-3">
                     <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
                     <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
