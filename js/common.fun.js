@@ -1231,12 +1231,21 @@ function setText(element, val, val2) {
 
 function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInputOrSelect = document.querySelector("input, select");
+    var firstInput = $("input:visible:enabled:first");
+    if (firstInput.length > 0) {
+      firstInput.focus();
+    
+      var inputValue = firstInput.val();
+      var lastSpaceIndex = inputValue.lastIndexOf(" ");
 
-    if (firstInputOrSelect) {
-      $(document).ready(function () {
-        $("input:visible:enabled:first").focus();
-      });
+      if (lastSpaceIndex !== -1) {
+        var input = firstInput.get(0);
+        var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
+        var cursorPosition = lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
+        input.setSelectionRange(cursorPosition, cursorPosition);
+      } else {
+        firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd = inputValue.length;
+      }
     }
   }
 }
@@ -1258,15 +1267,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  actionBtn.addEventListener("click", function (event) {
-    if (!validateForm()) {
-      event.preventDefault();
-      displayPreviousData();
-    } else {
-      // Save form data to localStorage when validation passes
-      saveFormDataToLocalStorage();
-    }
-  });
+  if (actionBtn) {
+    actionBtn.addEventListener("click", function (event) {
+      if (!validateForm()) {
+        event.preventDefault();
+        displayPreviousData();
+      } else {
+        // Save form data to localStorage when validation passes
+        saveFormDataToLocalStorage();
+      }
+    });
+  }
 
   function retrieveDataFromLocalStorage() {
     var inputFields = document.querySelectorAll("input, textarea ,select");
@@ -1311,7 +1322,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function checkRequiredInputs() {
-    var requiredInputs = document.querySelectorAll("input[required], select[required]");
+    var requiredInputs = document.querySelectorAll(
+      "input[required], select[required]"
+    );
 
     requiredInputs.forEach(function (input) {
       if (input.value.trim() === "") {
@@ -1339,26 +1352,28 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentDataNameInput = document.getElementById("currentDataName");
   var errorSpan = document.getElementById("errorSpan");
 
-  // Function to toggle error message visibility
-  function toggleErrorMessage() {
-    var inputValue = currentDataNameInput.value.trim();
-    errorSpan.style.display =
-      inputValue !== "" &&
-      inputValue !== localStorage.getItem("currentDataName")
-        ? "none"
-        : "block";
+  if (currentDataNameInput) {
+    // Function to toggle error message visibility
+    function toggleErrorMessage() {
+      var inputValue = currentDataNameInput.value.trim();
+      errorSpan.style.display =
+        inputValue !== "" &&
+        inputValue !== localStorage.getItem("currentDataName")
+          ? "none"
+          : "block";
+    }
+
+    // Attach an input event listener to the input field
+    currentDataNameInput.addEventListener("input", toggleErrorMessage);
+
+    // Initial toggle to set the initial state
+    toggleErrorMessage();
   }
-
-  // Attach an input event listener to the input field
-  currentDataNameInput.addEventListener("input", toggleErrorMessage);
-
-  // Initial toggle to set the initial state
-  toggleErrorMessage();
 });
 
 function setCookie(cname, cvalue, exMins) {
   var d = new Date();
-  d.setTime(d.getTime() + (exMins * 60 * 1000));
+  d.setTime(d.getTime() + exMins * 60 * 1000);
   var expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -1371,4 +1386,3 @@ function checkCurrentPage(page) {
     localStorage.setItem("page", page);
   }
 }
-

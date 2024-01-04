@@ -113,6 +113,14 @@ if (post('actionBtn')) {
             break;
     }
 }
+
+/* 
+if(isset($_SESSION['tempValConfirmBox']))
+{
+    unset($_SESSION['tempValConfirmBox']);
+    echo '<script>confirmationDialog("","","Product","","'.$redirect_page.'","'.$act.'");</script>';
+} 
+*/
 ?>
 
 <!DOCTYPE html>
@@ -229,15 +237,11 @@ if (post('actionBtn')) {
             </form>
         </div>
     </div>
-    <?php
-    /* if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product","","'.$redirect_page.'","'.$act.'");</script>';
-} */
-    ?>
+
 </body>
 <script>
+    setButtonColor();
+
     $(document).ready(function() {
         var packageName = $("#product");
 

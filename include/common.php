@@ -9,7 +9,13 @@ function post($key)
 
 function postSpaceFilter($key)
 {
-	return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+	if (isset($_POST[$key])) {
+		if (is_string($_POST[$key])) {
+			return trim(isset($_POST[$key]) ? $_POST[$key] : '');
+		} else  if (is_array($_POST[$key])) {
+			return array_map('trim', isset($_POST[$key]) ? $_POST[$key] : '');
+		}
+	}
 }
 
 function input($key)
@@ -631,7 +637,7 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMsg)
+function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
 {
 	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
 
@@ -649,63 +655,62 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMs
 }
 
 // Function to update previous and final amounts for transactions
-function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey) {
-    // Initialize an associative array to store previous amounts
-    $prevAmounts = array();
+function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
+{
+	// Initialize an associative array to store previous amounts
+	$prevAmounts = array();
 
-    // Construct the query
-    $query = "SELECT id, `type`, amount, " . implode(', ', $fields) . ", `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
-    $result = mysqli_query($finance_connect, $query);
+	// Construct the query
+	$query = "SELECT id, `type`, amount, " . implode(', ', $fields) . ", `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+	$result = mysqli_query($finance_connect, $query);
 
-    if (!$result) {
-        die("Error reading records: " . mysqli_error($finance_connect));
-    }
+	if (!$result) {
+		die("Error reading records: " . mysqli_error($finance_connect));
+	}
 
-    // Loop through each transaction
-    while ($row = mysqli_fetch_assoc($result)) {
-        $id = $row['id'];
-        $type = $row['type'];
-        $amount = $row['amount'];
+	// Loop through each transaction
+	while ($row = mysqli_fetch_assoc($result)) {
+		$id = $row['id'];
+		$type = $row['type'];
+		$amount = $row['amount'];
 
-        // Create the key for the $prevAmounts array
-        $keyParts = array_map(function($field) use ($row) {
-            return $row[$field];
-        }, $uniqueKey);
-        $key = implode('_', $keyParts);
+		// Create the key for the $prevAmounts array
+		$keyParts = array_map(function ($field) use ($row) {
+			return $row[$field];
+		}, $uniqueKey);
+		$key = implode('_', $keyParts);
 
-        if (!isset($prevAmounts[$key])) {
-            $prevAmounts[$key] = 0;
-        }
-        $prevFinalAmt = $prevAmounts[$key];
+		if (!isset($prevAmounts[$key])) {
+			$prevAmounts[$key] = 0;
+		}
+		$prevFinalAmt = $prevAmounts[$key];
 
-        // Calculate final_amt based on transaction type
-        if ($type === 'Add') {
-            $finalAmt = $prevFinalAmt + $amount;
-        } else if ($type === 'Deduct') {
-            $finalAmt = $prevFinalAmt - $amount;
-        }
+		// Calculate final_amt based on transaction type
+		if ($type === 'Add') {
+			$finalAmt = $prevFinalAmt + $amount;
+		} else if ($type === 'Deduct') {
+			$finalAmt = $prevFinalAmt - $amount;
+		}
 
-        // Update the row in the database
-        $updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
-        $updateResult = mysqli_query($finance_connect, $updateQuery);
+		// Update the row in the database
+		$updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
+		$updateResult = mysqli_query($finance_connect, $updateQuery);
 
-        if (!$updateResult) {
-            die("Update failed: " . mysqli_error($finance_connect));
-        }
-        $prevAmounts[$key] = $finalAmt;
-    }
-    return true;
+		if (!$updateResult) {
+			die("Update failed: " . mysqli_error($finance_connect));
+		}
+		$prevAmounts[$key] = $finalAmt;
+	}
+	return true;
 }
 
 
-function insertNewMerchant($merchantName, $userId, $financeConnect) {
-    $query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
-    $queryResult = mysqli_query($financeConnect, $query);
-    if ($queryResult) {
-        return mysqli_insert_id($financeConnect);
-    }
-    return false;
+function insertNewMerchant($merchantName, $userId, $financeConnect)
+{
+	$query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
+	$queryResult = mysqli_query($financeConnect, $query);
+	if ($queryResult) {
+		return mysqli_insert_id($financeConnect);
+	}
+	return false;
 }
-
-
-?>
