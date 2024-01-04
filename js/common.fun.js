@@ -857,7 +857,7 @@ function centerAlignment(elementID) {
   $(window).on("load resize", () => {
     var form = $("#" + elementID);
 
-    if (window.matchMedia("(max-height: 750px)").matches) {
+    if (window.matchMedia("(max-height: 950px)").matches) {
       if (form.hasClass("centered")) form.removeClass("centered");
 
       form.css("overflow", "auto");
