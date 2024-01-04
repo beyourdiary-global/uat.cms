@@ -49,9 +49,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -86,7 +86,7 @@ if (post('actionBtn')) {
             $mrcht_pic_contact = postSpaceFilter('mrcht_pic_contact');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if ($mrcht_email && !isEmail($mrcht_email)) {
                 $email_err = "Wrong email format!";
@@ -106,76 +106,101 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($mrcht_business_no)
+                    if ($mrcht_business_no) {
                         array_push($newvalarr, $mrcht_business_no);
+                        array_push($datafield, 'business_no');
+                    }
 
-                    if ($mrcht_email)
+                    if ($mrcht_email) {
                         array_push($newvalarr, $mrcht_email);
+                        array_push($datafield, 'email');
+                    }
 
-                    if ($mrcht_contact)
+                    if ($mrcht_contact) {
                         array_push($newvalarr, $mrcht_contact);
+                        array_push($datafield, 'contact');
+                    }
 
-                    if ($mrcht_address)
+                    if ($mrcht_address) {
                         array_push($newvalarr, $mrcht_address);
+                        array_push($datafield, 'address');
+                    }
 
-                    if ($mrcht_pic)
+                    if ($mrcht_pic) {
                         array_push($newvalarr, $mrcht_pic);
+                        array_push($datafield, 'person_in_charges');
+                    }
 
-                    if ($mrcht_pic_contact)
+                    if ($mrcht_pic_contact) {
                         array_push($newvalarr, $mrcht_pic_contact);
+                        array_push($datafield, 'person_in_charges_contact');
+                    }
 
-                    if ($dataRemark)
+                    if ($dataRemark) {
                         array_push($newvalarr, $dataRemark);
+                        array_push($datafield, 'remark');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,business_no,contact,email,address,person_in_charges,person_in_charges_contact,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$mrcht_business_no','$mrcht_contact','$mrcht_email','$mrcht_address','$mrcht_pic','$mrcht_pic_contact','$dataRemark','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['business_no'] != $mrcht_business_no) {
                         array_push($oldvalarr, $row['business_no']);
                         array_push($chgvalarr, $mrcht_business_no);
+                        array_push($datafield, 'business_no');
                     }
 
                     if ($row['contact'] != $mrcht_contact) {
                         array_push($oldvalarr, $row['contact']);
                         array_push($chgvalarr, $mrcht_contact);
+                        array_push($datafield, 'contact');
                     }
 
                     if ($row['email'] != $mrcht_email) {
                         array_push($oldvalarr, $row['email']);
                         array_push($chgvalarr, $mrcht_email);
+                        array_push($datafield, 'email');
                     }
 
                     if ($row['address'] != $mrcht_address) {
                         array_push($oldvalarr, $row['address']);
                         array_push($chgvalarr, $mrcht_address);
+                        array_push($datafield, 'address');
                     }
 
                     if ($row['person_in_charges'] != $mrcht_pic) {
                         array_push($oldvalarr, $row['person_in_charges']);
                         array_push($chgvalarr, $mrcht_pic);
+                        array_push($datafield, 'person_in_charges');
                     }
 
                     if ($row['person_in_charges_contact'] != $mrcht_pic_contact) {
                         array_push($oldvalarr, $row['person_in_charges_contact']);
                         array_push($chgvalarr, $mrcht_pic_contact);
+                        array_push($datafield, 'person_in_charges_contact');
                     }
 
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                        array_push($datafield, 'remark');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -188,12 +213,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -212,20 +233,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 

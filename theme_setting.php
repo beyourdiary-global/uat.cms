@@ -21,8 +21,8 @@ if (!file_exists($img_path)) {
 }
 
 // to display data to input
-$query = "SELECT * from " . $tblName . " WHERE id = 1 ";
-$result = mysqli_query($connect, $query);
+$query_display = "SELECT * from " . $tblName . " WHERE id = 1 ";
+$result = mysqli_query($connect, $query_display);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -38,104 +38,120 @@ if (post('actionBtn')) {
     $buttonColor = postSpaceFilter('buttonColor');
     $light_logo = post('light_logo');
     $favicon = post('favicon');
-
     $action = post('actionBtn');
+
+    $datafield = $oldvalarr = $chgvalarr  = array();
 
     switch ($action) {
         case 'save':
-            $query = "UPDATE " . $tblName . " SET ";
 
-            if ($website_name) {
-                $query .= "project_title = '$website_name' ";
-            } else {
-                $err = "Website Name cannot be empty.";
-                $errCount = 1;
-            }
+            try {
+                $query = "UPDATE " . $tblName . " SET ";
 
-            if ($themesColor) {
-                $query .= " ,themesColor = '$themesColor' ";
-            }
-
-            if ($buttonColor) {
-                $query .= " ,buttonColor = '$buttonColor' ";
-            }
-
-            // check image
-            if ($_FILES["light_logo"]["size"] != 0) {
-                // move file
-                $light_logo_name = $_FILES["light_logo"]["name"];
-                $light_logo_tmp_name = $_FILES["light_logo"]["tmp_name"];
-                $img_ext = pathinfo($light_logo_name, PATHINFO_EXTENSION);
-                $img_ext_lc = strtolower($img_ext);
-
-                if (in_array($img_ext_lc, $allowed_ext)) {
-                    move_uploaded_file($light_logo_tmp_name, $img_path . $light_logo_name);
-                    $query .= ", logo = '$light_logo_name'";
+                if ($website_name) {
+                    $query .= "project_title = '$website_name' ";
                 } else {
-                    $err2 = "Only allow PNG, JPG, JPEG or SVG file";
+                    $err = "Website Name cannot be empty.";
                     $errCount = 1;
                 }
-            }
 
-            // check image
-            if ($_FILES["favicon"]["size"] != 0) {
-                // move file
-                $favicon_name = $_FILES["favicon"]["name"];
-                $favicon_tmp_name = $_FILES["favicon"]["tmp_name"];
-                $img_ext = pathinfo($favicon_name, PATHINFO_EXTENSION);
-                $img_ext_lc = strtolower($img_ext);
-
-                if (in_array($img_ext_lc, $allowed_ext)) {
-                    move_uploaded_file($favicon_tmp_name, $img_path . $favicon_name);
-                    $query .= ", meta_logo = '$favicon_name'";
-                } else {
-                    $err3 = "Only allow PNG, JPG, JPEG or SVG file";
-                    $errCount = 1;
+                if ($themesColor) {
+                    $query .= " ,themesColor = '$themesColor' ";
                 }
+
+                if ($buttonColor) {
+                    $query .= " ,buttonColor = '$buttonColor' ";
+                }
+
+                // check image
+                if ($_FILES["light_logo"]["size"] != 0) {
+                    // move file
+                    $light_logo_name = $_FILES["light_logo"]["name"];
+                    $light_logo_tmp_name = $_FILES["light_logo"]["tmp_name"];
+                    $img_ext = pathinfo($light_logo_name, PATHINFO_EXTENSION);
+                    $img_ext_lc = strtolower($img_ext);
+
+                    if (in_array($img_ext_lc, $allowed_ext)) {
+                        move_uploaded_file($light_logo_tmp_name, $img_path . $light_logo_name);
+                        $query .= ", logo = '$light_logo_name'";
+                    } else {
+                        $err2 = "Only allow PNG, JPG, JPEG or SVG file";
+                        $errCount = 1;
+                    }
+                }
+
+                // check image
+                if ($_FILES["favicon"]["size"] != 0) {
+                    // move file
+                    $favicon_name = $_FILES["favicon"]["name"];
+                    $favicon_tmp_name = $_FILES["favicon"]["tmp_name"];
+                    $img_ext = pathinfo($favicon_name, PATHINFO_EXTENSION);
+                    $img_ext_lc = strtolower($img_ext);
+
+                    if (in_array($img_ext_lc, $allowed_ext)) {
+                        move_uploaded_file($favicon_tmp_name, $img_path . $favicon_name);
+                        $query .= ", meta_logo = '$favicon_name'";
+                    } else {
+                        $err3 = "Only allow PNG, JPG, JPEG or SVG file";
+                        $errCount = 1;
+                    }
+                }
+
+                if (isset($errCount)) {
+                    break;
+                }
+
+                $query .= " WHERE id = 1";
+
+                if ($row['project_title'] != $website_name) {
+                    array_push($oldvalarr, $row['project_title']);
+                    array_push($chgvalarr, $website_name);
+                    array_push($datafield, 'project_title');
+                }
+
+                if ($row['themesColor'] != $themesColor) {
+                    array_push($oldvalarr, $row['themesColor']);
+                    array_push($chgvalarr, $themesColor);
+                    array_push($datafield, 'themesColor');
+                }
+
+                if ($row['buttonColor'] != $buttonColor) {
+                    array_push($oldvalarr, $row['buttonColor']);
+                    array_push($chgvalarr, $buttonColor);
+                    array_push($datafield, 'buttonColor');
+                }
+
+                $light_logo_name = isset($light_logo_name) ? $light_logo_name : '';
+                if (($row['logo'] != $light_logo_name) && ($light_logo_name)) {
+                    array_push($oldvalarr, $row['logo']);
+                    array_push($chgvalarr, $light_logo_name);
+                    array_push($datafield, 'logo');
+                }
+
+                $favicon_name = isset($favicon_name) ? $favicon_name : '';
+                if (($row['meta_logo'] != $favicon_name) && ($favicon_name)) {
+                    array_push($oldvalarr, $row['meta_logo']);
+                    array_push($chgvalarr, $favicon_name);
+                    array_push($datafield, 'meta_logo');
+                }
+
+                $_SESSION['tempValConfirmBox'] = true;
+
+                if ($oldvalarr && $chgvalarr) {
+
+                    $returnData = mysqli_query($connect, $query);
+                    $act = 'E';
+                    generateDBData($tblName, $connect);
+
+                } else {
+                    $act = 'NC';
+                }
+            } catch (Exception $e) {
+                $errorMsg = $e->getMessage();
+                $act = "F";
             }
 
-            if (isset($errCount)) {
-                break;
-            }
-
-            $query .= " WHERE id = 1";
-
-            $oldvalarr = $chgvalarr = array();
-
-            if ($row['project_title'] != $website_name) {
-                array_push($oldvalarr, $row['project_title']);
-                array_push($chgvalarr, $website_name);
-            }
-
-            if ($row['themesColor'] != $themesColor) {
-                array_push($oldvalarr, $row['themesColor']);
-                array_push($chgvalarr, $themesColor);
-            }
-
-            if ($row['buttonColor'] != $buttonColor) {
-                array_push($oldvalarr, $row['buttonColor']);
-                array_push($chgvalarr, $buttonColor);
-            }
-
-            $light_logo_name = isset($light_logo_name) ? $light_logo_name : '';
-            if (($row['logo'] != $light_logo_name) && ($light_logo_name)) {
-                array_push($oldvalarr, $row['logo']);
-                array_push($chgvalarr, $light_logo_name);
-            }
-
-            $favicon_name = isset($favicon_name) ? $favicon_name : '';
-            if (($row['meta_logo'] != $favicon_name) && ($favicon_name)) {
-                array_push($oldvalarr, $row['meta_logo']);
-                array_push($chgvalarr, $favicon_name);
-            }
-
-            $_SESSION['tempValConfirmBox'] = true;
-
-            if ($oldvalarr && $chgvalarr) {
-                // edit
-                $returnData = mysqli_query($connect, $query);
-                $act = 'E';
-                generateDBData($tblName, $connect);
+            if ($act === 'E') {
 
                 $log = [
                     'log_act'      => 'edit',
@@ -145,16 +161,16 @@ if (post('actionBtn')) {
                     'cby'          => USER_ID,
                     'query_rec'    => $query,
                     'query_table'  => $tblName,
-                    'oldval'       => implodeWithComma($oldvalarr),
-                    'changes'      => implodeWithComma($chgvalarr),
-                    'act_msg'      => actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg)),
                     'page'         => $pageTitle,
                     'connect'      => $connect,
+                    'oldval'       => implodeWithComma($oldvalarr),
+                    'changes'      => implodeWithComma($chgvalarr),
+                    'act_msg'      => actMsgLog('1', $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg)),
                 ];
+
                 audit_log($log);
-            } else {
-                $act = 'NC';
             }
+
             break;
     }
 }

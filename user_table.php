@@ -7,7 +7,6 @@ include 'checkCurrentPagePin.php';
 $tblName = USR_USER;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
