@@ -65,6 +65,8 @@ if (!$result) {
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Color Segmentation</th>
+                        <th scope="col">Price From</th>
+                        <th scope="col">Price To</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -79,6 +81,8 @@ if (!$result) {
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= $row['name'] ?></td>
                                 <td scope="row"><input type="color" value="<?= $row['colorCode'] ?>" disabled></td>
+                                <td scope="row"><?= $row['price_from'] ?></td>
+                                <td scope="row"><?= $row['price_to'] ?></td>
                                 <td scope="row"><?= $row['remark'] ?></td>
 
                                 <td scope="row">
@@ -118,6 +122,8 @@ if (!$result) {
                         <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Color Segmentation</th>
+                        <th scope="col">Price From</th>
+                        <th scope="col">Price To</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
