@@ -531,7 +531,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 hiddenElementID: 'prod_val_' + id,
                 dbTable: '<?= PROD ?>'
             }
-            searchInput(param);
+            searchInput(param,'<?= $SITEURL ?>');
 
             if ($(element).val() == '') {
                 $('#prod_val_' + id).val('');
@@ -591,7 +591,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= CUR_UNIT ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#cur_unit").change(function() {
                 if ($(this).val() == '')

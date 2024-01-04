@@ -489,7 +489,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                     dbTable: '<?= BRAND ?>' // json filename (generated when login)
                 }
-                var arr = searchInput(param);
+                var arr = searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_brand").change(function() {
                 if ($(this).val() == '')
@@ -512,7 +512,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= WGT_UNIT ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_wgt_unit").change(function() {
                 if ($(this).val() == '')
@@ -529,7 +529,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= CUR_UNIT ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_cur_unit").change(function() {
                 if ($(this).val() == '')
@@ -546,7 +546,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= $tblName ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#parent_prod").change(function() {
                 if ($(this).val() == '')

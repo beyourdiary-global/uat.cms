@@ -249,7 +249,7 @@ if (post('actionBtn')) {
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= $tblname ?>' // json filename (generated when login)
             }
-            var arr = searchInput(param);
+            var arr = searchInput(param, '<?= $SITEURL ?>');
         });
         packageName.change(function() {
             if ($(this).val() == '')

@@ -263,7 +263,7 @@ function generateDBData($tblname, $conn)
 	}
 	$encode_rst = json_encode($data);
 
-	$path = "./data/" . "$tblname.json";
+	$path = ROOT . "/data/$tblname.json";
 
 	$f = fopen($path, 'w');
 	fwrite($f, $encode_rst);

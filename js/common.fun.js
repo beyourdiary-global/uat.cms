@@ -1116,16 +1116,19 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param) {
+function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
   var type = param["searchType"];
   var dbTable = param["dbTable"];
+  if (param["addSelection"]) {
+    var addSelection = param["addSelection"];
+  }
 
   if (search != "") {
     $.ajax({
-      url: "getSearch.php",
+      url: siteURL + "/getSearch.php",
       type: "post",
       data: {
         searchText: search,
@@ -1173,9 +1176,16 @@ function searchInput(param) {
           }
         }
 
+        if (addSelection) {
+          $("#searchResult_" + elementID).append(
+              "<li value='" + addSelection + "'>" + addSelection + "</li>"
+          );
+        }
+
         // binding click event to li
         $("#searchResult_" + elementID + " li").bind("click", function () {
           setText(this, "#" + elementID, "#" + hiddenElementID);
+          $("#" + elementID).change();
           $("#searchResult_" + elementID).empty();
           $("#searchResult_" + elementID).remove();
           $("#clear_" + elementID).remove();
