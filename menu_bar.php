@@ -1,4 +1,11 @@
 <?php
+
+$userID = USER_ID;
+
+if(empty($userID)){
+    echo "<script>window.location.href = '$SITEURL/index.php';</script>";
+}
+
 $pinArr = array();
 
 $pin_query = "SELECT id FROM " . PIN;
