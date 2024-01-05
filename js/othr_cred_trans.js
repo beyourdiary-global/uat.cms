@@ -13,7 +13,7 @@ window.onload = function() {
 
 //autocomplete
 $(document).ready(function() {
-    if (!($("#ocr_creditor").attr('readonly'))) {
+    if (!($("#ocr_creditor").attr('disabled'))) {
         var selectedValue = '';
         $("#ocr_creditor").keyup(function() {
             var param = {
