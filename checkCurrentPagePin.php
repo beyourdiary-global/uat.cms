@@ -1,6 +1,6 @@
 
 <?php
-function getUserPinGroup($connect)
+function getUserPinGroup($connect) //check if user pin is in pin group, if yes, return, if no, skip
 {
     if (isset($_SESSION['userid'])) {
         $resultUser = getData('*', "id = '" . $_SESSION['userid'] . "'",'', 'user', $connect);
@@ -65,21 +65,23 @@ function checkCurrentPin($connect, $currentPage)
         $resultPin = $result->fetch_assoc();
         $currentPin = $resultPin['id'];
 
-        $pinArray = getUserPinGroup($connect);
-        $result = getValuesByPinAssocIndex($pinArray, $currentPin);
+        $resultPinArray = explode(',', $resultPin['pins']);//$resultPin['pins'] --> returns correct pins (use this to filter user group pins) 
+        $pinArray = getUserPinGroup($connect); //get user pin group array (all allowed actions)
+        $userPinArray = getValuesByPinAssocIndex($pinArray, $currentPin);
+        $filteredResultArray = array_intersect($userPinArray, $resultPinArray); 
 
-        $actionMapping = getPin($connect);
-
+        $actionMapping = getPin($connect); //get all pins
+        
         $result = array_map(function ($permission) use ($actionMapping) {
             return $actionMapping[$permission];
-        }, $result);
+        }, $filteredResultArray);
 
         if (empty($result)) {
             echo '<script>';
             echo 'window.location.href = "dashboard.php";';
             echo '</script>';
         }
-
+        
         return $result;
     }
 }

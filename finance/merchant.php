@@ -94,7 +94,7 @@ if (post('actionBtn')) {
             }
 
             if (isDuplicateRecord("name", $currentDataName, $tblName,  $finance_connect, $dataID)) {
-                $err1 = "Duplicate record found for " . $pageTitle . " name.";
+                $name_err = "Duplicate record found for " . $pageTitle . " name.";
                 $error = 1;
             }
 
@@ -272,15 +272,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </h2>
                 </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
-
                 <div class="form-group mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
 
-                            <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                            <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name</label>
                             <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                             <?php if (isset($name_err)) { ?>
                                 <div id="err_msg">
@@ -304,7 +300,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                 <div class="form-group mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
 
                             <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact"><?php echo $pageTitle ?> Contact</label>
                             <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact" value="<?php
@@ -350,7 +346,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                 <div class="form-group mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge</label>
                             <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)) {
@@ -378,7 +374,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <label class="form-label form_lbl" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
                     <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
@@ -392,7 +388,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
-        centerAlignment("formContainer");
         setButtonColor();
         setAutofocus(action);
 
