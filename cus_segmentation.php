@@ -79,6 +79,8 @@ if (post('actionBtn')) {
 
             $currentDataName = postSpaceFilter('currentDataName');
             $colorSegmentation =  postSpaceFilter('segmentationColor');
+            $currentDataPriceFrom = postSpaceFilter('priceFrom');
+            $currentDataPriceTo = postSpaceFilter('priceTo');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -106,17 +108,20 @@ if (post('actionBtn')) {
                         array_push($datafield, 'name');
                     }
 
-                    if ($dataRemark) {
-                        array_push($newvalarr, $dataRemark);
-                        array_push($datafield, 'remark');
-                    }
-
-                    if ($colorSegmentation) {
+                    if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
-                        array_push($datafield, 'colorCode');
-                    }
+                    
+                    if ($currentDataPriceFrom)
+                        array_push($newvalarr, $currentDataPriceFrom);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+                    if ($currentDataPriceTo)
+                        array_push($newvalarr, $currentDataPriceTo);
+
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                        $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
+
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
@@ -137,6 +142,16 @@ if (post('actionBtn')) {
                         array_push($datafield, 'colorCode');
                     }
 
+                    if ($row['price_from'] != $currentDataPriceFrom) {
+                        array_push($oldvalarr, $row['priceFrom']);
+                        array_push($chgvalarr, $currentDataPriceFrom);
+                    }
+
+                    if ($row['price_to'] != $currentDataPriceTo) {
+                        array_push($oldvalarr, $row['priceTo']);
+                        array_push($chgvalarr, $currentDataPriceTo);
+                    }
+
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
@@ -146,7 +161,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , priceFrom='$currentDataPriceFrom', priceTo='$currentDataPriceTo', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -248,6 +263,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group mb-3">
+                <div class="row">
+                    <div class="col-sm">
+                        <label class="form-label" for="priceFrom">Price From</label>
+                        <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label" for="priceTo">Price To</label>
+                        <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                    </div>
+                </div>
+            </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
