@@ -66,7 +66,7 @@ if (!($dataID) && !($act)) {
 }
 
 //dropdown list for merchant
-$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
+//$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
 $item_list_result = getData('*', '', '', PROD, $connect);
 
 
@@ -74,7 +74,7 @@ if (post('actionBtn')) {
     $action = post('actionBtn');
 
     $invtr_date = postSpaceFilter("invtr_date");
-    $invtr_mrcht = postSpaceFilter('invtr_mrcht');
+    $invtr_mrcht = postSpaceFilter('invtr_mrcht_hidden');
     $mrcht_other = postSpaceFilter('mrcht_other');
     $invtr_item = postSpaceFilter('invtr_item');
     $invtr_unit_price = postSpaceFilter('invtr_unit_price');
@@ -126,10 +126,10 @@ if (post('actionBtn')) {
                 } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
             }
 
-            if (($invtr_mrcht == 'other') && !isset($mrcht_other)) {
-                $mrcht_other_err = "Merchant name is required!";
+            if (($invtr_mrcht == 'Create New Merchant') && !isset($mrcht_other)) {
+                $mrcht_other_err = "Merchant is required!";
                 break;
-            } else if (($invtr_mrcht == 'other') && isDuplicateRecord("name", $mrcht_other, MERCHANT, $finance_connect, '')) {
+            } else if(($invtr_mrcht == 'Create New Merchant') && isDuplicateRecord("name", $mrcht_other, MERCHANT, $finance_connect, '')) {
                 $mrcht_other_err = "Duplicate record found for Merchant name.";
                 $isDuplicateMerchant = true;
                 break;
@@ -149,10 +149,11 @@ if (post('actionBtn')) {
             } else if ($action == 'addTransaction') {
 
                 try {
-                    if (($invtr_mrcht == 'other') && !($isDuplicateMerchant)) {
+                    if (($invtr_mrcht == 'Create New Merchant') && !($isDuplicateMerchant)) {
                         try {
                             $invtr_mrcht = insertNewMerchant($mrcht_other, USER_ID, $finance_connect);
-                        } catch (Exception $e) {
+                            generateDBData(MERCHANT, $finance_connect);
+                        }catch (Exception $e) {
                             $errorMsg = $e->getMessage();
                         }
                     }
@@ -213,7 +214,7 @@ if (post('actionBtn')) {
                 }
             } else {
                 try {
-                    if (($invtr_mrcht == 'other') && !($isDuplicateMerchant)) {
+                    if (($invtr_mrcht == 'Create New Merchant') && !($isDuplicateMerchant)) {
                         try {
                             $invtr_mrcht = insertNewMerchant($mrcht_other, USER_ID, $finance_connect);
                         } catch (Exception $e) {
@@ -411,33 +412,35 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="invtr_mrcht_lbl" for="invtr_mrcht">Merchant<span class="requireRed">*</span></label>
-                            <select class="form-select" id="invtr_mrcht" name="invtr_mrcht" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Merchant</option>
-                                <option value="other" <?php if (isset($invtr_mrcht) && $invtr_mrcht == 'other') echo 'selected'; ?>>Create
-                                    New Merchant</option>
-                                <?php
-                                if ($mrcht_list_result->num_rows >= 1) {
-                                    $mrcht_list_result->data_seek(0);
-                                    while ($row2 = $mrcht_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['merchantID']) && !isset($invtr_mrcht)) {
-                                            $selected = $row['merchantID'] == $row2['id'] ? " selected" : "";
-                                        } else if (isset($invtr_mrcht) && ($invtr_mrcht != 'other')) {
-                                            $selected = $invtr_mrcht == $row2['id'] ? " selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
+                        <div class="col-md-4 autocomplete">
+                            <label class="form-label form_lbl" id="invtr_mrcht_lbl" for="invtr_mrcht">Merchant<span
+                                    class="requireRed">*</span></label>
+                            <?php
+                            unset($echoVal);
+
+                            if (isset($row['merchantID']))
+                                $echoVal = $row['merchantID'];
+
+                            if (isset($echoVal)) {
+                                $mrcht_rst = getData('name', "id = '$echoVal'", '', MERCHANT, $finance_connect);
+                                if (!$mrcht_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                                ?>
-                            </select>
-                            <?php if (isset($mrcht_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $mrcht_err; ?></span>
-                                </div>
+                                $mrcht_row = $mrcht_rst->fetch_assoc();
+                            }
+
+                            ?>
+                            <input class="form-control" type="text" name="invtr_mrcht" id="invtr_mrcht"
+                                <?php if ($act == '') echo 'readonly' ?>
+                                value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : ''  ?>" required>
+                            <input type="hidden" name="invtr_mrcht_hidden" id="invtr_mrcht_hidden"
+                                value="<?php echo (isset($row['merchantID'])) ? $row['merchantID'] : ''; ?>">
+
+                            <?php if (isset($mrcht_err)) {?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $mrcht_err; ?></span>
+                            </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -466,8 +469,10 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="invtr_mrcht_lbl" for="invtr_item">Item<span class="requireRed">*</span></label>
-                            <select class="form-select" id="invtr_item" name="invtr_item" <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="invtr_item_lbl" for="invtr_item">Item<span
+                                    class="requireRed">*</span></label>
+                            <select class="form-select" id="invtr_item" name="invtr_item"
+                                <?php if ($act == '') echo 'disabled' ?>>
                                 <option value="0" disabled selected>Select Item</option>
 
                                 <?php
