@@ -13,8 +13,8 @@ $viewOnly = (!isActionAllowed("Edit", $pinAccess)) ? 'readonly disabled' : '';
 $redirect_page = $SITEURL . '/dashboard.php';
 
 // to display data to input
-$query = "SELECT * from " . $tblName . " WHERE id = 1 ";
-$result = mysqli_query($connect, $query);
+$query_display= "SELECT * from " . $tblName . " WHERE id = 1 ";
+$result = mysqli_query($connect, $query_display);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -37,35 +37,41 @@ if ($action) {
     $invoice_prefix = postSpaceFilter('invoice_prefix');
     $invoice_next_number = postSpaceFilter('invoice_next_number');
 
+    $datafield = $oldvalarr = $chgvalarr  = array();
+
     switch ($action) {
         case 'save':
-            $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix='$invoice_prefix', invoice_next_number='$invoice_next_number' WHERE id = '1'";
 
-            if (isset($errCount)) {
-                break;
-            }
+            try {
+                $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
 
-            $oldvalarr = $chgvalarr = array();
+                foreach ($fields as $field) {
+                    $postValue = postSpaceFilter($field);
 
-            $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
-
-            foreach ($fields as $field) {
-
-                $postValue = postSpaceFilter($field);
-            
-                if ($row[$field] != $postValue) {
-                    array_push($oldvalarr, $row[$field]);
-                    array_push($chgvalarr, $postValue);
+                    if ($row[$field] != $postValue) {
+                        array_push($oldvalarr, $row[$field]);
+                        array_push($chgvalarr, $postValue);
+                        array_push($datafield, $field);
+                    }
                 }
+
+                $_SESSION['tempValConfirmBox'] = true;
+
+                if ($oldvalarr && $chgvalarr) {
+                    $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix='$invoice_prefix', invoice_next_number='$invoice_next_number' WHERE id = '1'";
+                    $returnData = mysqli_query($connect, $query);
+                    $act = 'E';
+                    generateDBData($tblName, $connect);
+                } else {
+                    $act = 'NC';
+                }
+            } catch (Exception $e) {
+                $errorMsg = $e->getMessage();
+                $act = "F";
             }
-            
-            $_SESSION['tempValConfirmBox'] = true;
 
-            if ($oldvalarr && $chgvalarr) {
-                $returnData = mysqli_query($connect, $query);
-                $act = 'E';
-                generateDBData($tblName, $connect);
-
+            // audit log
+            if (isset($query)) {
                 $log = [
                     'log_act'      => 'edit',
                     'cdate'        => $cdate,
@@ -74,16 +80,15 @@ if ($action) {
                     'cby'          => USER_ID,
                     'query_rec'    => $query,
                     'query_table'  => $tblName,
-                    'oldval'       => implodeWithComma($oldvalarr),
-                    'changes'      => implodeWithComma($chgvalarr),
-                    'act_msg'      => actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg)),
                     'page'         => $pageTitle,
                     'connect'      => $connect,
+                    'oldval'       => implodeWithComma($oldvalarr),
+                    'changes'      => implodeWithComma($chgvalarr),
+                    'act_msg'      => actMsgLog('1', $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg)),
                 ];
                 audit_log($log);
-            } else {
-                $act = 'NC';
             }
+
             break;
     }
 }
@@ -161,7 +166,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         <div class="col-sm">
                             <label class="form-label" for="barcode_prefix">Barcode Perfix</label>
-                            <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix" value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>" <?= $viewOnly ?>> 
+                            <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix" value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>" <?= $viewOnly ?>>
                         </div>
 
                         <div class="col-sm">

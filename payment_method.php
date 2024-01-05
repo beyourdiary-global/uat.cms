@@ -17,7 +17,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/payment_method_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -50,9 +49,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -83,7 +82,7 @@ if (post('actionBtn')) {
             $installmentPeriod = postSpaceFilter('installmentPeriod');
             $serviceRate = postSpaceFilter('serviceRate');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
@@ -94,46 +93,59 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($installmentPeriod)
+                    if ($installmentPeriod) {
                         array_push($newvalarr, $installmentPeriod);
+                        array_push($datafield, 'installment_period');
+                    }
 
-                    if ($serviceRate)
+                    if ($serviceRate) {
                         array_push($newvalarr, $serviceRate);
+                        array_push($datafield, 'service_rate');
+                    }
 
-                    if ($dataRemark)
+                    if ($dataRemark) {
                         array_push($newvalarr, $dataRemark);
+                        array_push($datafield, 'remark');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,installment_period,service_rate,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$installmentPeriod',$serviceRate,'$dataRemark','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['installment_period'] != $installmentPeriod) {
                         array_push($oldvalarr, $row['installment_period']);
                         array_push($chgvalarr, $installmentPeriod);
+                        array_push($datafield, 'installment_period');
                     }
 
 
                     if ($row['service_rate'] != $serviceRate) {
                         array_push($oldvalarr, $row['service_rate']);
                         array_push($chgvalarr, $serviceRate);
+                        array_push($datafield, 'service_rate');
                     }
 
 
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                        array_push($datafield, 'remark');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -146,12 +158,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -170,20 +178,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
@@ -240,16 +241,17 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                 <div class="form-group mb-3">
                     <div class="row">
+
                         <div class="col-sm">
                             <label class="form-label" for="installmentPeriod">Installment Period</label>
-                            <input class="form-control" type="number" name="installmentPeriod" id="installmentPeriod" step="any" value="<?php if (isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                            <input class="form-control" type="number" name="installmentPeriod" id="installmentPeriod" step="any" required value="<?php if (isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
                         </div>
+
                         <div class="col-sm">
-                            <label class=" form-label" for="serviceRate _rate">Service Rate</label><br>
-                            <div class="col d-flex justify-content-start align-items-center">
-                                <input type="number" name="serviceRate" id="serviceRate" step="any" <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control" style="height: 40px;">
-                            </div>
+                            <label class=" form-label" for="serviceRate">Service Rate</label><br>
+                            <input type="number" name="serviceRate" id="serviceRate" step="any" required <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control" style="height: 40px;">
                         </div>
+
                     </div>
                 </div>
 
