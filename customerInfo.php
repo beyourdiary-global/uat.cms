@@ -316,7 +316,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                         while ($rowPhoneCode = $resultPhoneCode->fetch_assoc()) {
                                             $selected = isset($row['phone_country']) && $rowPhoneCode['id'] == $row['phone_country'] ? "selected" : "";
-                                            echo "<option value='{$rowPhoneCode['id']}' $selected>{$rowPhoneCode['phonecode']}</option>";
+                                            echo "<option value='{$rowPhoneCode['id']}' $selected>+{$rowPhoneCode['phonecode']}</option>";
                                         }
                                         ?>
                                     </select>

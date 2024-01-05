@@ -364,6 +364,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/employeeDetails.css">
 </head>
 
+<style>
+    .form-header {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .stepIndicator {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+
 <body>
 
     <div class="d-flex flex-column my-3 ms-3">
@@ -381,7 +394,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </h2>
                 </div>
                 <!-- start step indicators -->
-                <div class="form-header d-flex mb-4">
+                <div class="form-header d-flex mb-4 py-4">
                     <span class="stepIndicator">Personal Information</span>
                     <span class="stepIndicator">Emergency Information</span>
                     <span class="stepIndicator">Bank Information</span>
