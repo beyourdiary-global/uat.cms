@@ -46,7 +46,7 @@ if ($dataID) {
 //Delete Data
 if ($act == 'D') {
     deleteRecord($tblnameOne, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
-    deleteRecord($tblnameTwo, $dataID, $row2['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblnameTwo, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -56,9 +56,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblnameOne & $tblnameTwo Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblnameOne & $tblnameTwo Table</i></b>.";
     }
 
     $log = [
@@ -130,7 +130,7 @@ if (post('actionBtn')) {
             $socsoCategory = postSpaceFilter('socsoCtr');
             $eis = postSpaceFilter('eis');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("id_number", $idNumber, $tblnameOne, $connect, $dataID) && isDuplicateRecord("name", $employeeName, $tblnameOne, $connect, $dataID)) {
                 $err = "Duplicate Identity Number And Name found for This Employee Record";
@@ -142,51 +142,49 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     $variables = [
-                        'employeeName' => 'employeeName',
-                        'employeeEmail' => 'employeeEmail',
-                        'identityType' => 'identityType',
-                        'identityNum' => 'identityNum',
-                        'employeeGender' => 'employeeGender',
-                        'employeeBirthday' => 'employeeBirthday',
-                        'employeeResidenceStatus' => 'employeeResidenceStatus',
-                        'employeeNationality' => 'employeeNationality',
-                        'maritalStatus' => 'maritalStatus',
-                        'noOfChild' => 'noOfChild',
-                        'employeeRace' => 'employeeRace',
-                        'employeeAddress1' => 'employeeAddress1',
-                        'employeeAddress2' => 'employeeAddress2',
-                        'employeeCity' => 'employeeCity',
-                        'employeeState' => 'employeeState',
-                        'employeePostcode' => 'employeePostcode',
-                        'employeePhone' => 'employeePhone',
-                        'employeeAlternatePhone' => 'employeeAlternatePhone',
-                        'emergencyContactName' => 'emergencyContactName',
-                        'emergencyContactNum' => 'emergencyContactNum',
-                        'emergencyRelationship' => 'emergencyRelationship',
-                        'paymentMethod' => 'paymentMethod',
-                        'bankName' => 'bankName',
-                        'accHolderName' => 'accHolderName',
-                        'accNum' => 'accNum',
-                        'joinDate' => 'joinDate',
+                        'name' => 'employeeName',
+                        'email' => 'employeeEmail',
+                        'id_type' => 'identityType',
+                        'id_number' => 'identityNum',
+                        'gender' => 'employeeGender',
+                        'date_of_birth' => 'employeeBirthday',
+                        'residence_status' => 'employeeResidenceStatus',
+                        'nationality' => 'employeeNationality',
+                        'marital_status' => 'maritalStatus',
+                        'no_of_children' => 'noOfChild',
+                        'race_id' => 'employeeRace',
+                        'address_line_1' => 'employeeAddress1',
+                        'address_line_2' => 'employeeAddress2',
+                        'city' => 'employeeCity',
+                        'state' => 'employeeState',
+                        'postcode' => 'employeePostcode',
+                        'phone_number' => 'employeePhone',
+                        'alternate_phone_number' => 'employeeAlternatePhone',
+                        'emergency_contact_name' => 'emergencyContactName',
+                        'emergency_contact_phone' => 'emergencyContactNum',
+                        'emergency_relationship' => 'emergencyRelationship',
+                        'preferred_payment_method' => 'paymentMethod',
+                        'bank_id' => 'bankName',
+                        'account_holders_name' => 'accHolderName',
+                        'account_number' => 'accNum',
+                        'join_date' => 'joinDate',
                         'position' => 'position',
-                        'employmentStatus' => 'employmentStatus',
-                        'department' => 'department',
-                        'salaryFrequency' => 'salaryFrequency',
+                        'employment_status_id' => 'employmentStatus',
+                        'department_id' => 'department',
+                        'salary_frequency' => 'salaryFrequency',
                         'salary' => 'salary',
-                        'currencyUnit' => 'currencyUnit',
+                        'currency_unit_id' => 'currencyUnit',
                         'allowance' => 'allowance',
-                        'managerAprroveLeave' => 'managerAprroveLeave',
+                        'managers_for_leave_approval' => 'managerAprroveLeave',
                         'remark' => 'remark',
-                        'epfOption' => 'epfOption',
-                        'epfNo' => 'epfNo',
-                        'employeeEpfRate' => 'employeeEpfRate',
-                        'employerEpfRate' => 'employerEpfRate',
-                        'empTaxNum' => 'empTaxNum',
-                        'socsoCtr' => 'socsoCtr',
+                        'contributing_epf' => 'epfOption',
+                        'contributing_epf_no' => 'epfNo',
+                        'employee_epf_rate_id' => 'employeeEpfRate',
+                        'employer_epf_rate_id' => 'employerEpfRate',
+                        'employee_tax_number' => 'empTaxNum',
+                        'socso_category_id' => 'socsoCtr',
                         'eis' => 'eis',
                     ];
-
-                    $newvalarr = [];
 
                     foreach ($variables as $variable => $fieldName) {
                         // Get the value from the form field
@@ -198,7 +196,8 @@ if (post('actionBtn')) {
 
                         // Check if the value is not empty before pushing it to the array
                         if ($value !== null) {
-                            $newvalarr[$variable] = $value;
+                            array_push($newvalarr, $value);
+                            array_push($datafield, $variable);
                         }
                     }
 
@@ -217,14 +216,15 @@ if (post('actionBtn')) {
                         $empIDRow = mysqli_fetch_assoc($empIDResult);
 
                         $query = "INSERT INTO $tblnameTwo(employee_id, join_date, position, employment_status_id, department_id, salary_frequency, salary, currency_unit_id, allowance, managers_for_leave_approval, remark, contributing_epf, contributing_epf_no, employee_epf_rate_id, employer_epf_rate_id, employee_tax_number, socso_category_id, eis, create_by, create_date, create_time) VALUES ('{$empIDRow['id']}', '$joinDate', '$position', '$employeeStatus', '$department', '$salaryFrequency', '$salary', '$currencyUnit', '$allowance', '$manager', '$remark', '$contributingEpf', '$contributingEpfNo', '$employeeEpf', '$employerEpf', '$employeeTaxNum', '$socsoCategory', '$eis', '" . USER_ID . "', curdate(), curtime());";
-
                         $returnData = mysqli_query($connect, $query);
+                        $dataID = $connect->insert_id;
 
                         //Assign Leave Days To New Employee
                         employeeLeaveCheckColumn($connect, $empIDRow['id']);
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
@@ -278,18 +278,20 @@ if (post('actionBtn')) {
                     );
 
                     // Check and push changed values into arrays
-                    foreach ($fieldsOne as $field => $value) {
-                        if ($row[$field] != $value) {
-                            array_push($oldvalarr, $row[$field]);
+                    foreach ($fieldsOne as $variable => $value) {
+                        if ($row[$variable] != $value) {
+                            array_push($oldvalarr, $row[$variable]);
                             array_push($chgvalarr, $value);
+                            array_push($datafield, $variable);
                         }
                     }
 
                     // Check and push changed values into arrays
-                    foreach ($fieldsTwo as $field => $value) {
-                        if ($row2[$field] != $value) {
-                            array_push($oldvalarr, $row2[$field]);
+                    foreach ($fieldsTwo as $variable => $value) {
+                        if ($row2[$variable] != $value) {
+                            array_push($oldvalarr, $row2[$variable]);
                             array_push($chgvalarr, $value);
+                            array_push($datafield, $variable);
                         }
                     }
 
@@ -305,12 +307,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -329,20 +327,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$employeeName</b> into <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$employeeName</b> into <b><i>" . $tblnameOne . " & " . $tblnameTwo . " Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblnameOne . " & " . $tblnameTwo, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblnameOne . " & " . $tblnameTwo, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblnameOne . " & " . $tblnameTwo, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
