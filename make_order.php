@@ -151,133 +151,147 @@ if (post('actionBtn')) {
                         $rstcourierchk = $connect->query("SELECT * FROM " . COURIER . " WHERE id='$courier_id'");
 
                         if ($rstcourierchk->num_rows == 0) {
+
                             $insertCourierQry = "INSERT INTO " . COURIER . " (id,name,create_date,create_time,create_by) VALUES ('$courier_id','$courier_name',curdate(),curtime(),'" . USER_ID . "')";
                             $connect->query($insertCourierQry);
 
-                            $courierNewvalarr = array();
+                            $log = $datafield = $courierNewvalarr = array();
 
-                            if ($courier_id)
-                                array_push($courierNewvalarr, $courier_id);
-
-                            if ($courier_name)
+                            if ($courier_name) {
                                 array_push($courierNewvalarr, $courier_name);
+                                array_push($datafield, 'name');
+                            }
 
-                            $log = array();
-                            $log['log_act'] = $pageAction;
-                            $log['cdate'] = $cdate;
-                            $log['ctime'] = $ctime;
-                            $log['uid'] = $log['cby'] = USER_ID;
-                            $log['act_msg'] = USER_NAME . " added $courier_name into " . COURIER . " Table.";
-                            $log['query_rec'] = $insertCourierQry;
-                            $log['query_table'] = COURIER;
-                            $log['page'] = $pageTitle;
-                            $log['newval'] = implodeWithComma($courierNewvalarr);
-                            $log['connect'] = $connect;
+                            $log = [
+                                'log_act'      => $pageAction,
+                                'cdate'        => $cdate,
+                                'ctime'        => $ctime,
+                                'uid'          => USER_ID,
+                                'cby'          => USER_ID,
+                                'query_rec'    => $insertCourierQry,
+                                'query_table'  => COURIER,
+                                'page'         => $pageTitle,
+                                'connect'      => $connect,
+                                'newval'       => implodeWithComma($courierNewvalarr),
+                                'act_msg'      => actMsgLog($courier_id, $datafield, $courierNewvalarr, '', '', COURIER, $pageAction, ''),
+                            ];
+
                             audit_log($log);
                         }
 
                         // insert customer
                         $insertCust = "INSERT INTO " . CUST . " (name,company_name,address_1,address_2,postcode,contact,alt_contact,email,country,create_date,create_time,create_by) VALUES ('" . $dataMO['send_name'] . "','" . $dataMO['send_company'] . "','" . $dataMO['send_addr1'] . "','" . $dataMO['send_addr2'] . "','" . $dataMO['send_code'] . "','" . $dataMO['send_contact'] . "','" . $dataMO['send_mobile'] . "','" . $dataMO['send_email'] . "','" . $dataMO['send_country'] . "',curdate(),curtime()," . USER_ID . ")";
                         $connect->query($insertCust);
-                        $cust_id = mysqli_insert_id($connect);
+                        $dataID = $connect->insert_id;
+                        $cust_id = $dataID;
 
                         // audit log
-                        $custNewvalarr = array();
+                        $log = $datafield = $custNewvalarr = array();
 
                         $custVariables = [
-                            'send_name',
-                            'send_company',
-                            'send_addr1',
-                            'send_addr2',
-                            'send_code',
-                            'send_contact',
-                            'send_mobile',
-                            'send_email',
-                            'send_country',
+                            'name' => 'send_name',
+                            'company_name' => 'send_company',
+                            'address_1' => 'send_addr1',
+                            'address_2' => 'send_addr2',
+                            'postcode' => 'send_code',
+                            'contact' => 'send_contact',
+                            'alt_contact' => 'send_mobile',
+                            'email' => 'send_email',
+                            'country' => 'send_country',
                         ];
 
-                        foreach ($custVariables as $field) {
-                            if ($dataMO[$field]) {
-                                array_push($custNewvalarr, $dataMO[$field]);
+                        foreach ($custVariables as $variable => $value) {
+                            if ($dataMO[$value]) {
+                                array_push($custNewvalarr, $dataMO[$value]);
+                                array_push($datafield, $variable);
                             }
                         }
 
-                        $log = array();
-                        $log['log_act'] = $pageAction;
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$cust_id] " . $dataMO['send_name'] . " into " . CUST . " Table.";
-                        $log['query_rec'] = $insertCust;
-                        $log['query_table'] = CUST;
-                        $log['page'] = $pageTitle;
-                        $log['newval'] = implodeWithComma($custNewvalarr);
-                        $log['connect'] = $connect;
+                        $log = [
+                            'log_act'      => $pageAction,
+                            'cdate'        => $cdate,
+                            'ctime'        => $ctime,
+                            'uid'          => USER_ID,
+                            'cby'          => USER_ID,
+                            'query_rec'    => $insertCust,
+                            'query_table'  => CUST,
+                            'page'         => $pageTitle,
+                            'connect'      => $connect,
+                            'newval'       => implodeWithComma($custNewvalarr),
+                            'act_msg'      => actMsgLog($dataID, $datafield, $custNewvalarr, '', '', CUST, $pageAction, ''),
+                        ];
+                        
                         audit_log($log);
 
                         // insert shipping request
                         $insertShipReq = "INSERT INTO " . SHIPREQ . " (order_no,customer_id,courier_id,awb,shipping_cost,currency_unit,shipping_type_id,parcel_content,parcel_value,weight,pickup_date,pickup_time,create_date,create_time,create_by) VALUES ('" . $dataMOP['order_number'] . "','$cust_id','$courier_id','$awb','" . $dataMOP['price'] . "','$currency_unit_id','$service_detail','" . $dataMO['content'] . "','" . $dataMO['value'] . "','$weight','" . $dataMOP['collect_date'] . "','$pickup_time',curdate(),curtime(),'" . USER_ID . "')";
                         $connect->query($insertShipReq);
-                        $shipreq_id = mysqli_insert_id($connect);
+                        $dataID = $connect->insert_id;
 
                         // audit log
-                        $shipNewvalarr = array();
+                        $log = $datafield = $shipNewvalarr = array();
 
                         $shipVariables = [
-                            $dataMOP['order_number'],
-                            $cust_id,
-                            $courier_id,
-                            $awb,
-                            $dataMOP['price'],
-                            $currency_unit_id,
-                            $service_detail,
-                            $dataMO['content'],
-                            $dataMO['value'],
-                            $weight,
-                            $dataMOP['collect_date'],
-                            $pickup_time,
+                            'order_no' => $dataMOP['order_number'],
+                            'customer_id' => $cust_id,
+                            'courier_id' => $courier_id,
+                            'awb' => $awb,
+                            'shipping_cost' => $dataMOP['price'],
+                            'currency_unit' => $currency_unit_id,
+                            'shipping_type_id' => $service_detail,
+                            'parcel_content' => $dataMO['content'],
+                            'parcel_value' => $dataMO['value'],
+                            'weight' => $weight,
+                            'pickup_date' => $dataMOP['collect_date'],
+                            'pickup_time' => $pickup_time,
                         ];
 
-                        foreach ($shipVariables as $value) {
+                        foreach ($shipVariables as $variable => $value) {
                             if ($value) {
                                 array_push($shipNewvalarr, $value);
+                                array_push($datafield, $variable);
                             }
                         }
 
-                        $log = array();
-                        $log['log_act'] = $pageAction;
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " added [id=$shipreq_id] " . $dataMOP['order_number'] . " into " . SHIPREQ . " Table.";
-                        $log['query_rec'] = $insertShipReq;
-                        $log['query_table'] = SHIPREQ;
-                        $log['page'] = $pageTitle;
-                        $log['newval'] = implodeWithComma($shipNewvalarr);
-                        $log['connect'] = $connect;
+                        $log = [
+                            'log_act'      => $pageAction,
+                            'cdate'        => $cdate,
+                            'ctime'        => $ctime,
+                            'uid'          => USER_ID,
+                            'cby'          => USER_ID,
+                            'query_rec'    => $insertShipReq,
+                            'query_table'  => SHIPREQ,
+                            'page'         => $pageTitle,
+                            'connect'      => $connect,
+                            'newval'       => implodeWithComma($shipNewvalarr),
+                            'act_msg'      => actMsgLog($dataID, $datafield, $shipNewvalarr, '', '', SHIPREQ, $pageAction, ''),
+                        ];
+                        
                         audit_log($log);
 
                         $_SESSION['tempValConfirmBox'] = true;
-
                         $act = "MO";
                     } catch (Exception $e) {
+
                         $errorMsg = $e->getMessage();
-                        $errorMsg = str_replace('\'', '', $errorMsg);
 
                         $act = "F";
                         $_SESSION['tempValConfirmBox'] = true;
 
-                        $log = array();
-                        $log['log_act'] = $pageAction;
-                        $log['cdate'] = $cdate;
-                        $log['ctime'] = $ctime;
-                        $log['uid'] = $log['cby'] = USER_ID;
-                        $log['act_msg'] = USER_NAME . " fail to complete order [" . $dataMOP['order_number'] . "] due to (" . $errorMsg . ")";
-                        $log['query_rec'] = '';
-                        $log['query_table'] = '';
-                        $log['page'] = $pageTitle;
-                        $log['newval'] = '';
-                        $log['connect'] = $connect;
+                        $log = [
+                            'log_act'     => $pageAction,
+                            'cdate'       => $cdate,
+                            'ctime'       => $ctime,
+                            'uid'         => USER_ID,
+                            'cby'         => USER_ID,
+                            'act_msg'     => USER_NAME . " fail to complete make order [" . $dataMOP['order_number'] . "] due to (" . $errorMsg . ")",
+                            'query_rec'   => '',
+                            'query_table' => '',
+                            'page'        => $pageTitle,
+                            'newval'      => '',
+                            'connect'     => $connect,
+                        ];
+
                         audit_log($log);
                     }
                 }
@@ -381,9 +395,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                                 </div>
-                                                <input class="form-control" type="text" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
+                                                <input class="form-control" type="email" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
                                             </div>
-
+                                            <span id="emailMsg1"></span>
                                             <div class="invalid-msg">
                                                 Please enter the sender email.
                                             </div>
@@ -525,9 +539,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                             </div>
-                                            <input class="form-control" type="text" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
+                                            <input class="form-control" type="email" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
                                         </div>
-
+                                        <span id="emailMsg2"></span>
                                         <div class="invalid-msg">
                                             Please enter the receiver email.
                                         </div>
@@ -843,6 +857,42 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             });
         });
     });
+
+    $(document).ready(function() {
+        $("#sender_email").on("input", function() {
+            if (!validateEmail('#sender_email')) {
+                $("#emailMsg1").html("<p class='text-danger'>Invalid Email Format</p>");
+            } else {
+                $("#emailMsg1").html("");
+            }
+        });
+
+        $("#receiver_email").on("input", function() {
+            if (!validateEmail('#receiver_email')) {
+                $("#emailMsg2").html("<p class='text-danger'>Invalid Email Format</p>");
+            } else {
+                $("#emailMsg2").html("");
+            }
+        });
+
+        $("#actionBtn").on("click", function(event) {
+            if (!validateEmail('#sender_email') || !validateEmail('#receiver_email')) {
+                event.preventDefault();
+            }
+        });
+    });
+
+    function validateEmail(inputID) {
+        // get value of input email
+        var email = $(inputID).val();
+        // use reular expression
+        var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+        if (reg.test(email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 </script>
 
 </html>

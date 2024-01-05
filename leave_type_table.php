@@ -19,6 +19,8 @@ if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
+    $datafield = $oldvalarr = $chgvalarr = array();
+
     $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
 
     if (!$rst) {
@@ -29,11 +31,12 @@ if (post('l_status_option')) {
     $rowLeaveType = $rst->fetch_assoc();
 
     if ($rowLeaveType['leave_status'] !== $leave_type_status) {
-        $oldval = $rowLeaveType['leave_status'];
-        $chgval = $leave_type_status;
+        array_push($oldvalarr, $rowLeaveType['leave_status']);
+        array_push($chgvalarr, $leave_type_status);
+        array_push($datafield, 'leave_status');
     }
 
-    if ($oldval && $chgval) {
+    if ($oldvalarr && $chgvalarr) {
         try {
             $query = "UPDATE " . $tblname . " SET leave_status = '$leave_type_status' WHERE id = '$leave_type_id'";
             mysqli_query($connect, $query);
@@ -43,22 +46,21 @@ if (post('l_status_option')) {
         }
 
         // audit log
-        $log = array();
-        $log['log_act'] = 'edit';
-        $log['cdate'] = $cdate;
-        $log['ctime'] = $ctime;
-        $log['uid'] = $log['cby'] = USER_ID;
-        if (isset($errorMsg)) {
-            $log['act_msg'] = USER_NAME . " fail to edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>. (".$errorMsg.")";
-        } else {
-            $log['act_msg'] = USER_NAME . " edited the data from <b>\'" . $oldval . "\'</b> to <b>\'" . $chgval . "\'</b> to <b><i>$tblname Table</i></b>.";
-        }
-        $log['query_rec'] = $query;
-        $log['query_table'] = $tblname;
-        $log['page'] = $pageTitle;
-        $log['oldval'] = $oldval;
-        $log['changes'] = $chgval;
-        $log['connect'] = $connect;
+        $log = [
+            'log_act'      => 'edit',
+            'cdate'        => $cdate,
+            'ctime'        => $ctime,
+            'uid'          => USER_ID,
+            'cby'          => USER_ID,
+            'query_rec'    => $query,
+            'query_table'  => $tblName,
+            'page'         => $pageTitle,
+            'connect'      => $connect,
+            'oldval'       => implodeWithComma($oldvalarr),
+            'changes'      => implodeWithComma($chgvalarr),
+            'act_msg'      => actMsgLog($leave_type_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
+        ];
+
         audit_log($log);
     }
 }

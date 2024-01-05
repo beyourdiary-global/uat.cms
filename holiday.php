@@ -5,7 +5,7 @@ include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
 echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-  
+
 $tblName = HOLIDAY;
 
 //Current Page Action And Data ID
@@ -17,7 +17,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/holiday_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -43,16 +42,16 @@ if ($act == 'D') {
     deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
- 
+
 //View Data
 if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
 
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -65,7 +64,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
         'page'    => $pageTitle,
         'connect' => $connect,
     ];
-    
+
     audit_log($log);
 }
 
@@ -81,7 +80,7 @@ if (post('actionBtn')) {
             $currentDataName = postSpaceFilter('currentDataName');
             $holidayDate = postSpaceFilter('currentHolidayDate');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
@@ -93,20 +92,23 @@ if (post('actionBtn')) {
                 break;
             }
 
-
             if ($action == 'addData') {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($holidayDate)
+                    if ($holidayDate) {
                         array_push($newvalarr, $holidayDate);
+                        array_push($datafield, 'date');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,date,create_by,create_date,create_time) VALUES ('$currentDataName','$holidayDate','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                 }
@@ -115,11 +117,13 @@ if (post('actionBtn')) {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['date'] != $holidayDate) {
                         array_push($oldvalarr, $row['date']);
                         array_push($chgvalarr, $holidayDate);
+                        array_push($datafield, 'date');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -133,11 +137,6 @@ if (post('actionBtn')) {
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -156,20 +155,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
@@ -196,7 +188,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 <html>
 
 <head>
-<link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
@@ -225,7 +217,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </div>
 
                 <div class="form-group mb-3">
-                    <label class="form-label"  for="currentHolidayDate">Holiday Date</label>
+                    <label class="form-label" for="currentHolidayDate">Holiday Date</label>
                     <input class="form-control" type="date" name="currentHolidayDate" id="currentHolidayDate" value="<?php if (isset($dataExisted) && isset($row['date'])) echo $row['date'] ?>" <?php if ($act == '') echo 'readonly' ?> required>
                     <div id="err_msg">
                         <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>

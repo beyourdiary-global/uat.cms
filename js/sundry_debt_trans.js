@@ -1,47 +1,15 @@
 //show text field when "create new merchant" is selected from dropdown list
-document.getElementById('invtr_mrcht').addEventListener('change', function() {
+document.getElementById('sdt_debtors').addEventListener('change', function() {
     var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
-    create_mrcht_sect.hidden = this.value !== 'Create New Merchant';
+    create_mrcht_sect.hidden = this.value !== 'other';
 })
 
 // Trigger the check on page load
 window.onload = function() {
     var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
     var invtr_mrcht_value = document.getElementById('invtr_mrcht').value;
-    create_mrcht_sect.hidden = invtr_mrcht_value !== 'Create New Merchant';
+    create_mrcht_sect.hidden = invtr_mrcht_value !== 'other';
 };
-
-//autocomplete
-$(document).ready(function() {
-
-    if (!($("#invtr_mrcht").attr('readonly'))) {
-        var selectedValue = '';
-        $("#invtr_mrcht").keyup(function() {
-            var param = {
-                search: $(this).val(),
-                searchType: 'name', // column of the table
-                elementID: $(this).attr('id'), // id of the input
-                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
-                dbTable: '<?= MERCHANT ?>', // json filename (generated when login)
-                addSelection: 'Create New Merchant'
-            }
-            console.log(param["elementID"]);
-            searchInput(param, '<?= $SITEURL ?>');
-        });
-
-        $("#invtr_mrcht").on('change', function() {
-        selectedValue = $(this).val();
-        var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
-
-        // Check if the selected value is 'Create New Merchant'
-        if (selectedValue == 'Create New Merchant') {
-            create_mrcht_sect.hidden = false; // Show INVTR_CreateMerchant
-        } else {
-            create_mrcht_sect.hidden = true; // Hide INVTR_CreateMerchant
-        }
-        });
-    }
-})
 
 $('#invtr_attach').on('change', function() {
     previewImage(this, 'invtr_attach_preview')

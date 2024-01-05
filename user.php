@@ -17,7 +17,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/user_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -50,9 +49,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -84,8 +83,7 @@ if (post('actionBtn')) {
             $userEmail = postSpaceFilter('currentUserEmail');
             $userPassword = md5($dataUsername);
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
-
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for username.";
@@ -110,47 +108,57 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($dataUsername)
+                    if ($dataUsername) {
                         array_push($newvalarr, $dataUsername);
+                        array_push($datafield, 'username');
+                    }
 
-                    if ($userEmail)
+                    if ($userEmail) {
                         array_push($newvalarr, $userEmail);
+                        array_push($datafield, 'email');
+                    }
 
-                    if ($userPassword)
-                        array_push($newvalarr, $userPassword);
-
-                    if ($userGroup)
+                    if ($userGroup) {
                         array_push($newvalarr, $userGroup);
+                        array_push($datafield, 'access_id');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,username,password_alt,email,access_id,create_by,create_date,create_time) VALUES ('$currentDataName','$dataUsername','$userPassword','$userEmail','$userGroup','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['username'] != $dataUsername) {
                         array_push($oldvalarr, $row['username']);
                         array_push($chgvalarr, $dataUsername);
+                        array_push($datafield, 'username');
                     }
 
                     if ($row['email'] != $userEmail) {
                         array_push($oldvalarr, $row['email']);
                         array_push($chgvalarr, $userEmail);
+                        array_push($datafield, 'email');
                     }
 
                     if ($row['access_id'] != $userGroup) {
                         array_push($oldvalarr, $row['access_id']);
                         array_push($chgvalarr, $userGroup);
+                        array_push($datafield, 'access_id');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -163,12 +171,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -187,20 +191,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 

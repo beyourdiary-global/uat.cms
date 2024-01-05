@@ -305,7 +305,7 @@ if (post('actionBtn')) {
                             <div class="tab-pane fade <?= $showActive_i ?>" id="international-section" role="tabpanel" aria-labelledby="international-tab">
                                 <form id="international" method="post">
                                     <div class="form-group">
-                                        <label class="form-label form_lbl " id="" for="from">From:</label>
+                                        <label class="form-label form_lbl " id="international_from" for="from">From:</label>
                                         <div class="row">
                                             <div class="col-6 col-md-6">
                                                 <select class="disabledSelection form-select mb-3 h-75" id="from" name="from">
@@ -326,7 +326,7 @@ if (post('actionBtn')) {
                                         <label class="form-label form_lbl" id="" for="to">To:</label>
                                         <div class="row">
                                             <div class="col-6 col-md-6">
-                                                <select class="form-select mb-3 h-75" id="to" name="to">
+                                                <select class="form-select mb-3 h-75" id="international_to" name="to">
                                                     <option selected></option>
                                                     <?php
                                                     $all_country = getCountry('all', $connect);

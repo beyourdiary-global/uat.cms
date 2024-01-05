@@ -17,7 +17,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/product_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -50,9 +49,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -89,7 +88,7 @@ if (post('actionBtn')) {
             $prod_expire_date = postSpaceFilter('prod_expire_date');
             $parent_prod = postSpaceFilter('parent_prod_hidden');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             $check_duplicate_record = isDuplicateRecord("name", $prod_name, $tblName, $connect, $dataID)
                 && isDuplicateRecord("brand", $prod_brand, $tblName, $connect, $dataID)
@@ -109,92 +108,123 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($prod_name)
+                    if ($prod_name) {
                         array_push($newvalarr, $prod_name);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($prod_brand)
+                    if ($prod_brand) {
                         array_push($newvalarr, $prod_brand);
+                        array_push($datafield, 'brand');
+                    }
 
-                    if ($prod_wgt)
+                    if ($prod_wgt) {
                         array_push($newvalarr, $prod_wgt);
+                        array_push($datafield, 'weight');
+                    }
 
-                    if ($prod_wgt_unit)
+                    if ($prod_wgt_unit) {
                         array_push($newvalarr, $prod_wgt_unit);
+                        array_push($datafield, 'weight_unit');
+                    }
 
-                    if ($prod_cost)
+                    if ($prod_cost) {
                         array_push($newvalarr, $prod_cost);
+                        array_push($datafield, 'cost');
+                    }
 
-                    if ($prod_cur_unit)
+                    if ($prod_cur_unit) {
                         array_push($newvalarr, $prod_cur_unit);
+                        array_push($datafield, 'currency_unit');
+                    }
 
-                    if ($prod_barcode_status)
+                    if ($prod_barcode_status) {
                         array_push($newvalarr, $prod_barcode_status);
+                        array_push($datafield, 'barcode_status');
+                    }
 
-                    if ($prod_barcode_slot)
+                    if ($prod_barcode_slot) {
                         array_push($newvalarr, $prod_barcode_slot);
+                        array_push($datafield, 'barcode_slot');
+                    }
 
-                    if ($prod_expire_date)
+                    if ($prod_expire_date) {
                         array_push($newvalarr, $prod_expire_date);
+                        array_push($datafield, 'expire_date');
+                    }
 
-                    if ($parent_prod)
+                    if ($parent_prod) {
                         array_push($newvalarr, $parent_prod);
+                        array_push($datafield, 'parent_product');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,expire_date,parent_product,create_by,create_date,create_time) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_expire_date','$parent_prod','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $prod_name) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $prod_name);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['brand'] != $prod_brand) {
                         array_push($oldvalarr, $row['brand']);
                         array_push($chgvalarr, $prod_brand);
+                        array_push($datafield, 'brand');
                     }
 
                     if ($row['weight'] != $prod_wgt) {
                         array_push($oldvalarr, $row['weight']);
                         array_push($chgvalarr, $prod_wgt);
+                        array_push($datafield, 'weight');
                     }
 
                     if ($row['weight_unit'] != $prod_wgt_unit) {
                         array_push($oldvalarr, $row['weight_unit']);
                         array_push($chgvalarr, $prod_wgt_unit);
+                        array_push($datafield, 'weight_unit');
                     }
 
                     if ($row['cost'] != $prod_cost) {
                         array_push($oldvalarr, $row['cost']);
                         array_push($chgvalarr, $prod_cost);
+                        array_push($datafield, 'cost');
                     }
 
                     if ($row['currency_unit'] != $prod_cur_unit) {
                         array_push($oldvalarr, $row['currency_unit']);
                         array_push($chgvalarr, $prod_cur_unit);
+                        array_push($datafield, 'currency_unit');
                     }
 
                     if ($row['barcode_status'] != $prod_barcode_status) {
                         array_push($oldvalarr, $row['barcode_status']);
                         array_push($chgvalarr, $prod_barcode_status);
+                        array_push($datafield, 'barcode_status');
                     }
 
                     if ($row['barcode_slot'] != $prod_barcode_slot) {
                         array_push($oldvalarr, $row['barcode_slot']);
                         array_push($chgvalarr, $prod_barcode_slot);
+                        array_push($datafield, 'barcode_slot');
                     }
 
                     if ($row['expire_date'] != $prod_expire_date) {
                         array_push($oldvalarr, $row['expire_date']);
                         array_push($chgvalarr, $prod_expire_date);
+                        array_push($datafield, 'expire_date');
                     }
 
                     if ($row['parent_product'] != $parent_prod) {
                         array_push($oldvalarr, $row['parent_product']);
                         array_push($chgvalarr, $parent_prod);
+                        array_push($datafield, 'parent_product');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -207,12 +237,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -231,20 +257,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$prod_name</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$prod_name</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
@@ -489,7 +508,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                     dbTable: '<?= BRAND ?>' // json filename (generated when login)
                 }
-                var arr = searchInput(param);
+                var arr = searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_brand").change(function() {
                 if ($(this).val() == '')
@@ -512,7 +531,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= WGT_UNIT ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_wgt_unit").change(function() {
                 if ($(this).val() == '')
@@ -529,7 +548,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= CUR_UNIT ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#prod_cur_unit").change(function() {
                 if ($(this).val() == '')
@@ -546,7 +565,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= $tblName ?>'
                 }
-                searchInput(param);
+                searchInput(param,'<?= $SITEURL ?>');
             });
             $("#parent_prod").change(function() {
                 if ($(this).val() == '')
