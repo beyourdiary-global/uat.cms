@@ -80,9 +80,9 @@ if (post('actionBtn')) {
 
             $currentDataName = postSpaceFilter('currentDataName');
             $colorSegmentation =  postSpaceFilter('segmentationColor');
-            $dataRemark = postSpaceFilter('currentDataRemark');
             $currentDataPriceFrom = postSpaceFilter('priceFrom');
             $currentDataPriceTo = postSpaceFilter('priceTo');
+            $dataRemark = postSpaceFilter('currentDataRemark');
 
             $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -107,19 +107,19 @@ if (post('actionBtn')) {
                     if ($currentDataName)
                         array_push($newvalarr, $currentDataName);
 
-                    if ($dataRemark)
-                        array_push($newvalarr, $dataRemark);
-
                     if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
-
+                    
                     if ($currentDataPriceFrom)
                         array_push($newvalarr, $currentDataPriceFrom);
 
                     if ($currentDataPriceTo)
                         array_push($newvalarr, $currentDataPriceTo);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,price_from,price_to,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                        $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                 } catch (Exception $e) {
@@ -137,25 +137,25 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $colorSegmentation);
                     }
 
+                    if ($row['price_from'] != $currentDataPriceFrom) {
+                        array_push($oldvalarr, $row['priceFrom']);
+                        array_push($chgvalarr, $currentDataPriceFrom);
+                    }
+
+                    if ($row['price_to'] != $currentDataPriceTo) {
+                        array_push($oldvalarr, $row['priceTo']);
+                        array_push($chgvalarr, $currentDataPriceTo);
+                    }
+
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
                     }
 
-                    if ($row['price_from'] != $currentDataPriceFrom) {
-                        array_push($oldvalarr, $row['price_from']);
-                        array_push($chgvalarr, $currentDataPriceFrom);
-                    }
-
-                    if ($row['price_to'] != $currentDataPriceTo) {
-                        array_push($oldvalarr, $row['price_to']);
-                        array_push($chgvalarr, $currentDataPriceTo);
-                    }
-
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , remark ='$dataRemark', price_from='$currentDataPriceFrom', price_to='$currentDataPriceTo', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , priceFrom='$currentDataPriceFrom', priceTo='$currentDataPriceTo', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -281,7 +281,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
                 </div>
             </div>
-
 
                 <div class="form-group mb-3">
                     <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>

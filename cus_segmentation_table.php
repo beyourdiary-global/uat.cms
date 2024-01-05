@@ -81,9 +81,8 @@ if (!$result) {
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= $row['name'] ?></td>
                                 <td scope="row"><input type="color" value="<?= $row['colorCode'] ?>" disabled></td>
-                                <td scope="row"><?= $row['price_from'] ?></td>
-                                <td scope="row"><?= $row['price_to'] ?></td>
-                                <td scope="row"><?= $row['remark'] ?></td>
+                                <td scope="row"><?= $row['priceFrom'] ?></td>
+                                <td scope="row"><?= $row['priceTo'] ?></td><td scope="row"><?= $row['remark'] ?></td>
 
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
