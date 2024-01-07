@@ -130,10 +130,6 @@ if (post('actionBtn')) {
                 break;
             } else if ($action == 'addTransaction') {
                 try {
-                    if ($initca_type) {
-                        array_push($newvalarr, $initca_type[0]);
-                        array_push($datafield, 'type');
-                    }
 
                     if ($initca_date) {
                         array_push($newvalarr, $initca_date);
