@@ -161,7 +161,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(transactionID,date,currency,amount,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$initca_date','$initca_curr','$initca_amt','$initca_desc','$initca_attach','$initca_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(transactionID,date,currency,amount,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$initca_date','$initca_curr','$initca_amt','$initca_desc','$initca_remark','$initca_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
