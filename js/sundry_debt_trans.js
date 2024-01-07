@@ -135,7 +135,7 @@ $('.submitBtn').on('click', () => {
         desc_chk = 1;
     }
 
-    if ($('#sdt_amt').val() == '' || $('#sdt_amt').val() === null || $('#sdt_amt')
+    if ($('#sdt_amt').val() == '' ||  $('#sdt_amt').val() == '0' || $('#sdt_amt').val() === null || $('#sdt_amt')
             .val() === undefined) {
         amt_chk = 0;
         $("#sdt_amt").after(
