@@ -304,6 +304,8 @@ if (post('actionBtn')) {
                             $sdt_prev_amt = 0; 
                         }
 
+                        $sdt_amt = floatval(str_replace(',', '', $sdt_amt));
+
                         if ($sdt_type == 'Add') {
                             $sdt_final_amt = number_format($sdt_prev_amt + $sdt_amt, 2, '.', '');
                         } else if ($sdt_type == 'Deduct') {
