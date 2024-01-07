@@ -103,7 +103,7 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
                                         </li>
                                         <li>
                                             <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/curr_bank_trans_table.php','D')">Delete</a>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/other_creditor_trans_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>
                                     </ul>
