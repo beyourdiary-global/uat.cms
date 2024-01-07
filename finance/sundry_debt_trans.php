@@ -220,7 +220,7 @@ if (post('actionBtn')) {
                     if ($sdt_remark)
                     array_push($newvalarr, $sdt_remark);
 
-                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_remark','$sdt_attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_attach','$sdt_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
