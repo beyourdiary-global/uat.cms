@@ -459,9 +459,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     </div>
 
-    <div id="SDTFormContainer" class="container d-flex justify-content-center">
+    <div id="OCRTFormContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="SDTForm" method="post" action="" enctype="multipart/form-data">
+            <form id="OCRTForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
