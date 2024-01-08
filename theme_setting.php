@@ -142,7 +142,6 @@ if (post('actionBtn')) {
                     $returnData = mysqli_query($connect, $query);
                     $act = 'E';
                     generateDBData($tblName, $connect);
-
                 } else {
                     $act = 'NC';
                 }
@@ -189,131 +188,137 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?= $pageTitle ?></p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="Container" class="container-fluid d-flex justify-content-center mt-2">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" action="" enctype="multipart/form-data">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-12 col-md-10">
-                        <div class="form-group mb-5">
-                            <h2>
-                                <?= $pageTitle ?>
-                            </h2>
+    <div class="page-load-cover">
+
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?= $pageTitle ?></p>
+        </div>
+
+        <div id="Container" class="container-fluid d-flex justify-content-center mt-2">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" action="" enctype="multipart/form-data">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-12 col-md-10">
+                            <div class="form-group mb-5">
+                                <h2>
+                                    <?= $pageTitle ?>
+                                </h2>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row d-flex justify-content-center mb-3">
-                    <div class="col-12 col-md-10 mb-3">
-                        <div class="form-group d-flex flex-md-row flex-column">
-                            <div class="col-12 col-md-3">
-                                <label class="form-label form_lbl" id="website_name_lbl" for="website_name">Website Name</label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <input class="form-control" type="text" name="website_name" id="website_name" value="<?php echo $row['project_title'] ?>" <?= $viewOnly  ?>>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    <div class="row d-flex justify-content-center mb-3">
+                        <div class="col-12 col-md-10 mb-3">
+                            <div class="form-group d-flex flex-md-row flex-column">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label form_lbl" id="website_name_lbl" for="website_name">Website Name</label>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row d-flex justify-content-center mb-3">
-                    <div class="col-12 col-md-10 mb-3">
-                        <div class="form-group d-flex flex-md-row flex-column">
-                            <div class="col-12 col-md-3">
-                                <label class="form-label form_lbl" id="themesColorLbl" for="themesColor">Themes Color</label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <input class="form-control" type="color" name="themesColor" id="themesColor" value="<?php echo  $row['themesColor'] ?>" style="height:40px ;" <?= $viewOnly  ?>>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row d-flex justify-content-center mb-3">
-                    <div class="col-12 col-md-10 mb-3">
-                        <div class="form-group d-flex flex-md-row flex-column">
-                            <div class="col-12 col-md-3">
-                                <label class="form-label form_lbl" id="buttonColorLbl" for="buttonColor">Button Color</label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <input class="form-control" type="color" name="buttonColor" id="buttonColor" value="<?php echo $row['buttonColor'] ?>" style="height:40px ;" <?= $viewOnly  ?>>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row d-flex justify-content-center mb-3">
-                    <div class="col-12 col-md-10">
-                        <div class="form-group d-flex flex-md-row flex-column">
-                            <div class="col-12 col-md-3">
-                                <label class="form-label form_lbl" id="light_logo_lbl" for="light_logo">Light Logo</label>
-                            </div>
-                            <div class="col-12 col-md-7 mb-3 mb-md-0">
-                                <input class="form-control" type="file" name="light_logo" id="light_logo" value="" <?= $viewOnly  ?>>
-                                <span class="mt-n1">Recommended image size is 40px x 40px</span>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-2">
-                                <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                    <img id="light_logo_preview" name="light_logo_preview" src="<?php echo ($row['logo'] == '' || $row['logo'] == NULL) ?   $SITEURL . '/' . img . '/logo2.png' : $SITEURL . '/' . $img_path . $row['logo']; ?>" class="img-thumbnail" alt="Logo Preview">
-                                    <input type="hidden" name="light_logo_imageValue" value="<?= $row['logo'] ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row d-flex justify-content-center mb-3">
-                    <div class="col-12 col-md-10">
-                        <div class="form-group d-flex flex-md-row flex-column">
-                            <div class="col-12 col-md-3">
-                                <label class="form-label form_lbl" id="favicon_lbl" for="favicon">Favicon</label>
-                            </div>
-                            <div class="col-12 col-md-7 mb-3 mb-md-0">
-                                <input class="form-control" type="file" name="favicon" id="favicon" value="" <?= $viewOnly  ?>>
-                                <span class="mt-n1">Recommended image size is 16px x 16px</span>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-2">
-                                <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                    <img id="favicon_preview" name="favicon_preview" src="<?php echo ($row['meta_logo'] == '' || $row['meta_logo'] == NULL) ? $SITEURL . '/' . img . '/logo2.png' :  $SITEURL . '/' . $img_path . $row['meta_logo']; ?>" class="img-thumbnail" alt="Meta Logo Preview">
-
-                                    <input type="hidden" name="favicon_imageValue" value="<?= $row['meta_logo'] ?>">
+                                <div class="col-12 col-md-9">
+                                    <input class="form-control" type="text" name="website_name" id="website_name" value="<?php echo $row['project_title'] ?>" <?= $viewOnly  ?>>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
-                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                    <button style="background-color: <?= $row['buttonColor'] ?>;" class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="save">Save</button>
-                                <?php endif; ?>
+                    <div class="row d-flex justify-content-center mb-3">
+                        <div class="col-12 col-md-10 mb-3">
+                            <div class="form-group d-flex flex-md-row flex-column">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label form_lbl" id="themesColorLbl" for="themesColor">Themes Color</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <input class="form-control" type="color" name="themesColor" id="themesColor" value="<?php echo  $row['themesColor'] ?>" style="height:40px ;" <?= $viewOnly  ?>>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+
+
+                    <div class="row d-flex justify-content-center mb-3">
+                        <div class="col-12 col-md-10 mb-3">
+                            <div class="form-group d-flex flex-md-row flex-column">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label form_lbl" id="buttonColorLbl" for="buttonColor">Button Color</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <input class="form-control" type="color" name="buttonColor" id="buttonColor" value="<?php echo $row['buttonColor'] ?>" style="height:40px ;" <?= $viewOnly  ?>>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row d-flex justify-content-center mb-3">
+                        <div class="col-12 col-md-10">
+                            <div class="form-group d-flex flex-md-row flex-column">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label form_lbl" id="light_logo_lbl" for="light_logo">Light Logo</label>
+                                </div>
+                                <div class="col-12 col-md-7 mb-3 mb-md-0">
+                                    <input class="form-control" type="file" name="light_logo" id="light_logo" value="" <?= $viewOnly  ?>>
+                                    <span class="mt-n1">Recommended image size is 40px x 40px</span>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                        <img id="light_logo_preview" name="light_logo_preview" src="<?php echo ($row['logo'] == '' || $row['logo'] == NULL) ?   $SITEURL . '/' . img . '/logo2.png' : $SITEURL . '/' . $img_path . $row['logo']; ?>" class="img-thumbnail" alt="Logo Preview">
+                                        <input type="hidden" name="light_logo_imageValue" value="<?= $row['logo'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex justify-content-center mb-3">
+                        <div class="col-12 col-md-10">
+                            <div class="form-group d-flex flex-md-row flex-column">
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label form_lbl" id="favicon_lbl" for="favicon">Favicon</label>
+                                </div>
+                                <div class="col-12 col-md-7 mb-3 mb-md-0">
+                                    <input class="form-control" type="file" name="favicon" id="favicon" value="" <?= $viewOnly  ?>>
+                                    <span class="mt-n1">Recommended image size is 16px x 16px</span>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                        <img id="favicon_preview" name="favicon_preview" src="<?php echo ($row['meta_logo'] == '' || $row['meta_logo'] == NULL) ? $SITEURL . '/' . img . '/logo2.png' :  $SITEURL . '/' . $img_path . $row['meta_logo']; ?>" class="img-thumbnail" alt="Meta Logo Preview">
+
+                                        <input type="hidden" name="favicon_imageValue" value="<?= $row['meta_logo'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col-12">
+                                <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
+                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <button style="background-color: <?= $row['buttonColor'] ?>;" class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="save">Save</button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </body>
 
 <script>
-    setAutofocus('E');
+    preloader(300, 'E');
 
     centerAlignment('Container')
 

@@ -243,201 +243,207 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container-fluid mt-2">
-        <div class="col-12 col-md-12 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+    <div class="page-load-cover">
+
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
+
+        <div id="formContainer" class="container-fluid mt-2">
+            <div class="col-12 col-md-12 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="price_lbl" for="price">Selling Price</label>
+                                <input class="form-control" type="number" name="price" id="price" value="<?php echo (isset($row['price'])) ? $row['price'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
+                                </div>
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="price_lbl" for="price">Selling Price</label>
-                            <input class="form-control" type="number" name="price" id="price" value="<?php echo (isset($row['price'])) ? $row['price'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-3">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="cur_unit_lbl" for="cur_unit">Currency Unit</label>
-                            <?php
-                            unset($echoVal);
-
-                            if (isset($row['currency_unit']))
-                                $echoVal = $row['currency_unit'];
-
-                            if (isset($echoVal)) {
-                                $product_info_result = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-
-                                $product_info_row = $product_info_result->fetch_assoc();
-                            }
-                            ?>
-                            <input class="form-control" type="text" name="cur_unit" id="cur_unit" value="<?php echo !empty($echoVal) ? $product_info_row['unit'] : ''  ?>" <?php if ($act == '') echo 'readonly' ?> required>
-                            <input type="hidden" name="cur_unit_hidden" id="cur_unit_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="table-responsive mb-3">
-                        <table class="table table-striped" id="productList">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Weight</th>
-                                    <th scope="col">Weight Unit</th>
-                                    <th scope="col">Barcode Status</th>
-                                    <th scope="col">Barcode Slot</th>
-                                    <th scope="col" id="action_col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
+                        <div class="col-12 col-md-3">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="cur_unit_lbl" for="cur_unit">Currency Unit</label>
                                 <?php
-                                // check act
-                                if ($act != '')
-                                    $readonly = '';
-                                else
-                                    $readonly = ' readonly';
-
-                                // get value
                                 unset($echoVal);
 
-                                if (isset($row['product']))
-                                    $echoVal = $row['product'];
+                                if (isset($row['currency_unit']))
+                                    $echoVal = $row['currency_unit'];
 
-                                // echo
                                 if (isset($echoVal)) {
-                                    $num = 1; // numbering
-                                    $echoVal = explode(',', $echoVal);
-                                    foreach ($echoVal as $prod_id) {
-                                        // product info
-                                        $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
-                                        $product_info_row = $product_info_result->fetch_assoc();
+                                    $product_info_result = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
 
-                                        $pid = $product_info_row['id'];
-                                        $pn = $product_info_row['name'];
-                                        $pw = $product_info_row['weight'];
-                                        $pwu = $product_info_row['weight_unit'];
-                                        $ps = $product_info_row['barcode_status'];
-                                        $pslot = $product_info_row['barcode_slot'];
-
-                                        // weight unit info
-                                        $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
-                                        $product_info_row = $product_info_result->fetch_assoc();
-
-                                        $pwun = $product_info_row['unit'];
+                                    $product_info_row = $product_info_result->fetch_assoc();
+                                }
                                 ?>
+                                <input class="form-control" type="text" name="cur_unit" id="cur_unit" value="<?php echo !empty($echoVal) ? $product_info_row['unit'] : ''  ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                                <input type="hidden" name="cur_unit_hidden" id="cur_unit_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php if (isset($err3)) echo $err3; ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="table-responsive mb-3">
+                            <table class="table table-striped" id="productList">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Weight</th>
+                                        <th scope="col">Weight Unit</th>
+                                        <th scope="col">Barcode Status</th>
+                                        <th scope="col">Barcode Slot</th>
+                                        <th scope="col" id="action_col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <?php
+                                    // check act
+                                    if ($act != '')
+                                        $readonly = '';
+                                    else
+                                        $readonly = ' readonly';
+
+                                    // get value
+                                    unset($echoVal);
+
+                                    if (isset($row['product']))
+                                        $echoVal = $row['product'];
+
+                                    // echo
+                                    if (isset($echoVal)) {
+                                        $num = 1; // numbering
+                                        $echoVal = explode(',', $echoVal);
+                                        foreach ($echoVal as $prod_id) {
+                                            // product info
+                                            $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
+                                            $product_info_row = $product_info_result->fetch_assoc();
+
+                                            $pid = $product_info_row['id'];
+                                            $pn = $product_info_row['name'];
+                                            $pw = $product_info_row['weight'];
+                                            $pwu = $product_info_row['weight_unit'];
+                                            $ps = $product_info_row['barcode_status'];
+                                            $pslot = $product_info_row['barcode_slot'];
+
+                                            // weight unit info
+                                            $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
+                                            $product_info_row = $product_info_result->fetch_assoc();
+
+                                            $pwun = $product_info_row['unit'];
+                                    ?>
+                                            <tr>
+                                                <td><?= $num ?></td>
+                                                <td class="autocomplete"><input type="text" name="prod_name[]" id="prod_name_<?= $num ?>" value="<?= $pn ?>" onkeyup="prodInfo(this)" <?= $readonly ?>><input type="hidden" name="prod_val[]" id="prod_val_<?= $num ?>" value="<?= $pid ?>" oninput="prodInfoAutoFill(this)">
+                                                    <div id="err_msg">
+                                                        <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
+                                                    </div>
+                                                </td>
+                                                <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly></td>
+                                                <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_<?= $num ?>" value="<?= $pwun ?>" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>" value="<?= $pwu ?>" readonly></td>
+                                                <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_<?= $num ?>" value="<?= $ps ?>" readonly></td>
+                                                <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_<?= $num ?>" value="<?= $pslot ?>" readonly></td>
+                                                <?php
+                                                if ($act != '') {
+                                                    if ($num == 1) {
+                                                ?>
+                                                        <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Remove(this)"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000" value="Remove"></i></button></td>
+                                                <?php
+                                                    }
+                                                }
+                                                ?>
+                                            </tr>
+                                        <?php
+                                            $num++;
+                                        }
+                                    } else {
+                                        ?>
                                         <tr>
-                                            <td><?= $num ?></td>
-                                            <td class="autocomplete"><input type="text" name="prod_name[]" id="prod_name_<?= $num ?>" value="<?= $pn ?>" onkeyup="prodInfo(this)" <?= $readonly ?>><input type="hidden" name="prod_val[]" id="prod_val_<?= $num ?>" value="<?= $pid ?>" oninput="prodInfoAutoFill(this)">
+                                            <td>1</td>
+                                            <td class="autocomplete"><input type="text" name="prod_name[]" id="prod_name_1" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_1" value="" oninput="prodInfoAutoFill(this)">
                                                 <div id="err_msg">
                                                     <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
                                                 </div>
                                             </td>
-                                            <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly></td>
-                                            <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_<?= $num ?>" value="<?= $pwun ?>" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>" value="<?= $pwu ?>" readonly></td>
-                                            <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_<?= $num ?>" value="<?= $ps ?>" readonly></td>
-                                            <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_<?= $num ?>" value="<?= $pslot ?>" readonly></td>
-                                            <?php
-                                            if ($act != '') {
-                                                if ($num == 1) {
-                                            ?>
-                                                    <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
-                                                <?php
-                                                } else {
-                                                ?>
-                                                    <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Remove(this)"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000" value="Remove"></i></button></td>
-                                            <?php
-                                                }
-                                            }
-                                            ?>
+                                            <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_1" value="" readonly></td>
+                                            <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_1" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_1" value="" readonly></td>
+                                            <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_1" value="" readonly></td>
+                                            <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_1" value="" readonly></td>
+                                            <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
                                         </tr>
-                                    <?php
-                                        $num++;
-                                    }
-                                } else {
-                                    ?>
+                                    <?php } ?>
+                                </tbody>
+                                <tfoot>
                                     <tr>
-                                        <td>1</td>
-                                        <td class="autocomplete"><input type="text" name="prod_name[]" id="prod_name_1" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_1" value="" oninput="prodInfoAutoFill(this)">
-                                            <div id="err_msg">
-                                                <span class="mt-n1"><?php if (isset($err4)) echo $err4; ?></span>
-                                            </div>
-                                        </td>
-                                        <td><input class="readonlyInput" type="text" name="wgt[]" id="wgt_1" value="" readonly></td>
-                                        <td><input class="readonlyInput" type="text" name="wgt_unit[]" id="wgt_unit_1" value="" readonly><input type="hidden" name="wgt_unit_val[]" id="wgt_unit_val_1" value="" readonly></td>
-                                        <td><input class="readonlyInput" type="text" name="barcode_status[]" id="barcode_status_1" value="" readonly></td>
-                                        <td><input class="readonlyInput" type="text" name="barcode_slot[]" id="barcode_slot_1" value="" readonly></td>
-                                        <td><button class="mt-1" id="action_menu_btn" type="button" onclick="Add()"><i class="fa-regular fa-square-plus fa-xl" style="color:#37c22e"></i></button></td>
+                                        <td scope="col" colspan="5" style="text-align:right">Total Barcode</td>
+                                        <td scope="col" id="barcode_slot_total" style="text-align:center">
+                                            <?php
+                                            if (isset($barcode_slot_total) && $barcode_slot_total != '')
+                                                echo $barcode_slot_total;
+                                            else {
+                                                if (isset($dataExisted) && isset($row['barcode_slot_total']))
+                                                    echo $row['barcode_slot_total'];
+                                                else echo '0';
+                                            }
+                                            ?><input name="barcode_slot_total_hidden" id="barcode_slot_total_hidden" type="hidden" value="<?php echo (isset($row['barcode_slot_total'])) ? $row['barcode_slot_total'] : ''; ?>"></td>
+                                        <td scope="col"></td>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td scope="col" colspan="5" style="text-align:right">Total Barcode</td>
-                                    <td scope="col" id="barcode_slot_total" style="text-align:center">
-                                        <?php
-                                        if (isset($barcode_slot_total) && $barcode_slot_total != '')
-                                            echo $barcode_slot_total;
-                                        else {
-                                            if (isset($dataExisted) && isset($row['barcode_slot_total']))
-                                                echo $row['barcode_slot_total'];
-                                            else echo '0';
-                                        }
-                                        ?><input name="barcode_slot_total_hidden" id="barcode_slot_total_hidden" type="hidden" value="<?php echo (isset($row['barcode_slot_total'])) ? $row['barcode_slot_total'] : ''; ?>"></td>
-                                    <td scope="col"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>

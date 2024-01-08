@@ -29,14 +29,21 @@ if (!$result) {
 <head>
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
+
 <script>
+    preloader(300);
+
     $(document).ready(() => {
         createSortingTable('table');
     });
 </script>
 
 <body>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
+    <div class="page-load-cover">
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
         <div class="col-12 col-md-8">
@@ -62,10 +69,10 @@ if (!$result) {
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col"><?= $pageTitle ?> (%)</th>
                         <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
                     </tr>
                 </thead>
 
@@ -120,6 +127,7 @@ if (!$result) {
                 </tfoot>
             </table>
         </div>
+    </div>
     </div>
 
     <script>

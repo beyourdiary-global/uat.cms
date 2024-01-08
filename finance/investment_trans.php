@@ -445,216 +445,222 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
 <head>
     <link rel="stylesheet" href="../css/main.css">
-
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
-                                                                                                                    ?></p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="IVSFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="IVSForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, 'Transaction');
-                        ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                        echo displayPageAction($act, 'Transaction');
+                                                                                                                        ?></p>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+        </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="ivs_trans_id_lbl" for="ivs_trans_id">Transaction
-                                ID</label>
-                            <p>
-                                <input class="form-control" type="text" name="ivs_trans_id" id="ivs_trans_id" disabled value="<?php echo $trans_id ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="ivs_type_label" for="ivs_type">Type
-                                <span class="requireRed">*</span></label>
-                            <select class="form-select" name="ivs_type" id="ivs_type" required <?php if ($act == '') echo 'disabled' ?>>
-                                <option disabled selected>Select transaction type</option>
-                                <option value="Add" <?php
-                                                    if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($ivs_type) ||  $ivs_type == 'Add')) {
-                                                        echo "selected";
-                                                    } else {
-                                                        echo "";
-                                                    }
+        <div id="IVSFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="IVSForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                            echo displayPageAction($act, 'Transaction');
+                            ?>
+                        </h2>
+                    </div>
 
-                                                    ?>>
-                                    Add</option>
-                                <option value="Deduct" <?php
-                                                        if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($ivs_type) || $ivs_type == 'Deduct')) {
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="ivs_trans_id_lbl" for="ivs_trans_id">Transaction
+                                    ID</label>
+                                <p>
+                                    <input class="form-control" type="text" name="ivs_trans_id" id="ivs_trans_id" disabled value="<?php echo $trans_id ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="ivs_type_label" for="ivs_type">Type
+                                    <span class="requireRed">*</span></label>
+                                <select class="form-select" name="ivs_type" id="ivs_type" required <?php if ($act == '') echo 'disabled' ?>>
+                                    <option disabled selected>Select transaction type</option>
+                                    <option value="Add" <?php
+                                                        if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($ivs_type) ||  $ivs_type == 'Add')) {
                                                             echo "selected";
                                                         } else {
                                                             echo "";
                                                         }
 
                                                         ?>>
-                                    Deduct</option>
-                            </select>
-                            <?php if (isset($type_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $type_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="ivs_date_label" for="ivs_date">Date<span class="requireRed">*</span></label>
-                            <input class="form-control" type="date" name="ivs_date" id="ivs_date" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['date']) && !isset($ivs_date)) {
-                                                                                                                echo $row['date'];
-                                                                                                            } else if (isset($ivs_date)) {
-                                                                                                                echo $ivs_date;
-                                                                                                            } else {
-                                                                                                                echo date('Y-m-d');
-                                                                                                            }
-                                                                                                            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($date_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $date_err; ?></span>
-                                </div>
-                            <?php } ?>
+                                        Add</option>
+                                    <option value="Deduct" <?php
+                                                            if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($ivs_type) || $ivs_type == 'Deduct')) {
+                                                                echo "selected";
+                                                            } else {
+                                                                echo "";
+                                                            }
 
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="ivs_amt_lbl" for="ivs_amt">Amount<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="ivs_amt" id="ivs_amt" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['amount']) && !isset($ivs_amt)) {
-                                                                                                            echo $row['amount'];
-                                                                                                        } else if (isset($ivs_amt)) {
-                                                                                                            echo $ivs_amt;
-                                                                                                        }
-                                                                                                        ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($amt_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="ivs_mrcht_lbl" for="ivs_mrcht">Merchant<span class="requireRed">*</span></label>
-                            <select class="form-select" id="ivs_mrcht" name="ivs_mrcht" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Merchant</option>
-                                <option value="other" <?php if (isset($ivs_mrcht) && $ivs_mrcht == 'other') echo 'selected'; ?>>Create New Merchant</option>
-                                <?php
-                                if ($mrcht_list_result->num_rows >= 1) {
-                                    $mrcht_list_result->data_seek(0);
-                                    while ($row2 = $mrcht_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['merchant']) && !isset($ivs_mrcht)) {
-                                            $selected = $row['merchant'] == $row2['id'] ? " selected" : "";
-                                        } else if (isset($ivs_mrcht) && ($ivs_mrcht != 'other')) {
-                                            $selected = $ivs_mrcht == $row2['id'] ? " selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <?php if (isset($mrcht_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $mrcht_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-
-                    </div>
-                </div>
-                <div id="createMerchant" hidden>
-                    <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label class="form-label form_lbl" id="mrcht_other_lbl" for="mrcht_other">Merchant
-                                    Name</label>
-                                <input class="form-control" type="text" name="mrcht_other" id="mrcht_other" <?php if ($act == '') echo 'readonly' ?>>
-                                <?php if (isset($mrcht_other_err)) { ?>
+                                                            ?>>
+                                        Deduct</option>
+                                </select>
+                                <?php if (isset($type_err)) { ?>
                                     <div id="err_msg">
-                                        <span class="mt-n1"><?php echo $mrcht_other_err; ?></span>
+                                        <span class="mt-n1"><?php echo $type_err; ?></span>
                                     </div>
                                 <?php } ?>
                             </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="ivs_date_label" for="ivs_date">Date<span class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="ivs_date" id="ivs_date" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['date']) && !isset($ivs_date)) {
+                                                                                                                    echo $row['date'];
+                                                                                                                } else if (isset($ivs_date)) {
+                                                                                                                    echo $ivs_date;
+                                                                                                                } else {
+                                                                                                                    echo date('Y-m-d');
+                                                                                                                }
+                                                                                                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $date_err; ?></span>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="ivs_amt_lbl" for="ivs_amt">Amount<span class="requireRed">*</span></label>
+                                <input class="form-control" type="text" name="ivs_amt" id="ivs_amt" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['amount']) && !isset($ivs_amt)) {
+                                                                                                                echo $row['amount'];
+                                                                                                            } else if (isset($ivs_amt)) {
+                                                                                                                echo $ivs_amt;
+                                                                                                            }
+                                                                                                            ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($amt_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="ivs_mrcht_lbl" for="ivs_mrcht">Merchant<span class="requireRed">*</span></label>
+                                <select class="form-select" id="ivs_mrcht" name="ivs_mrcht" <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Merchant</option>
+                                    <option value="other" <?php if (isset($ivs_mrcht) && $ivs_mrcht == 'other') echo 'selected'; ?>>Create New Merchant</option>
+                                    <?php
+                                    if ($mrcht_list_result->num_rows >= 1) {
+                                        $mrcht_list_result->data_seek(0);
+                                        while ($row2 = $mrcht_list_result->fetch_assoc()) {
+                                            $selected = "";
+                                            if (isset($dataExisted, $row['merchant']) && !isset($ivs_mrcht)) {
+                                                $selected = $row['merchant'] == $row2['id'] ? " selected" : "";
+                                            } else if (isset($ivs_mrcht) && ($ivs_mrcht != 'other')) {
+                                                $selected = $ivs_mrcht == $row2['id'] ? " selected" : "";
+                                            }
+                                            echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=\"0\">None</option>";
+                                    }
+                                    ?>
+                                </select>
+
+                                <?php if (isset($mrcht_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $mrcht_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-
-
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="ivs_remark_lbl" for="ivs_remark">Transaction Remark</label>
-                    <textarea class="form-control" name="ivs_remark" id="ivs_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php
-                                                                                                                                        if (isset($dataExisted) && isset($row['remarks']) && !isset($ivs_remark))
-                                                                                                                                            echo $row['remarks'];
-                                                                                                                                        else if (isset($ivs_remark))
-                                                                                                                                            echo $ivs_remark;
-                                                                                                                                        ?></textarea>
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="ivs_attach_lbl" for="ivs_attach">Attachment</label>
-                            <input class="form-control" type="file" name="ivs_attach" id="ivs_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($err2)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $err2; ?></span>
+                    <div id="createMerchant" hidden>
+                        <div class="form-group mb-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label form_lbl" id="mrcht_other_lbl" for="mrcht_other">Merchant
+                                        Name</label>
+                                    <input class="form-control" type="text" name="mrcht_other" id="mrcht_other" <?php if ($act == '') echo 'readonly' ?>>
+                                    <?php if (isset($mrcht_other_err)) { ?>
+                                        <div id="err_msg">
+                                            <span class="mt-n1"><?php echo $mrcht_other_err; ?></span>
+                                        </div>
+                                    <?php } ?>
                                 </div>
-                            <?php } ?>
-                            <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                                </div>
-                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                <?php
-                                $attachmentSrc = '';
-                                if (isset($row['attachment']))
-                                    $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
-                                ?>
-                                <img id="ivs_attach_preview" name="ivs_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="ivs_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
-                    switch ($act) {
-                        case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
-                            break;
-                        case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
-                            break;
-                    }
-                    ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="ivs_remark_lbl" for="ivs_remark">Transaction Remark</label>
+                        <textarea class="form-control" name="ivs_remark" id="ivs_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php
+                                                                                                                                            if (isset($dataExisted) && isset($row['remarks']) && !isset($ivs_remark))
+                                                                                                                                                echo $row['remarks'];
+                                                                                                                                            else if (isset($ivs_remark))
+                                                                                                                                                echo $ivs_remark;
+                                                                                                                                            ?></textarea>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="ivs_attach_lbl" for="ivs_attach">Attachment</label>
+                                <input class="form-control" type="file" name="ivs_attach" id="ivs_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($err2)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $err2; ?></span>
+                                    </div>
+                                <?php } ?>
+                                <?php if (isset($row['attachment']) && $row['attachment']) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                    </div>
+                                    <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <?php
+                                    $attachmentSrc = '';
+                                    if (isset($row['attachment']))
+                                        $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
+                                    ?>
+                                    <img id="ivs_attach_preview" name="ivs_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                    <input type="hidden" name="ivs_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                break;
+                            case 'E':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                break;
+                        }
+                        ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
     <?php
     /*
         oufei 20231014
@@ -668,8 +674,14 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
+
     <script>
         <?php include "../js/inv_trans.js" ?>
+        
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        preloader(300, action);
     </script>
 
 </body>

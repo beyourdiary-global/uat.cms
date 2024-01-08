@@ -378,627 +378,632 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </style>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="employeeDetailsFormContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="employeeDetailsForm" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
-                <!-- start step indicators -->
-                <div class="form-header d-flex mb-4 py-4">
-                    <span class="stepIndicator">Personal Information</span>
-                    <span class="stepIndicator">Emergency Information</span>
-                    <span class="stepIndicator">Bank Information</span>
-                    <span class="stepIndicator">Employment Information</span>
-                    <span class="stepIndicator">Statutory Requirements</span>
-                </div>
-                <!-- end step indicators -->
+    <div class="page-load-cover">
+        
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div id="err_msg" class="text-center h5">
-                    <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                </div>
+        <div id="employeeDetailsFormContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="employeeDetailsForm" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
+                    </div>
+                    <!-- start step indicators -->
+                    <div class="form-header d-flex mb-4 py-4">
+                        <span class="stepIndicator">Personal Information</span>
+                        <span class="stepIndicator">Emergency Information</span>
+                        <span class="stepIndicator">Bank Information</span>
+                        <span class="stepIndicator">Employment Information</span>
+                        <span class="stepIndicator">Statutory Requirements</span>
+                    </div>
+                    <!-- end step indicators -->
 
-                <!-- step one -->
-                <div class="step" id="personalInfo">
-                    <p class="text-center mb-3 h3">Personal Information</p>
+                    <div id="err_msg" class="text-center h5">
+                        <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
 
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Employee Identity</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="identityTypeLbl" for="identityType">Identity type </label>
-                                    <select class="form-select" aria-label="Default select example" name="identityType" id="identityType" required>
-                                        <?php
-                                        $result = getData('*', '', '', ID_TYPE, $connect);
+                    <!-- step one -->
+                    <div class="step" id="personalInfo">
+                        <p class="text-center mb-3 h3">Personal Information</p>
 
-                                        echo "<option disabled selected>Select identity type</option>";
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Employee Identity</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="identityTypeLbl" for="identityType">Identity type </label>
+                                        <select class="form-select" aria-label="Default select example" name="identityType" id="identityType" required>
+                                            <?php
+                                            $result = getData('*', '', '', ID_TYPE, $connect);
 
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
+                                            echo "<option disabled selected>Select identity type</option>";
 
-                                        while ($rowIDType = $result->fetch_assoc()) {
-                                            $selected = isset($row['id_type']) && $rowIDType['id'] == $row['id_type'] ? "selected" : "";
-                                            echo "<option value='{$rowIDType['id']}' $selected>{$rowIDType['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="identityNumberLbl" for="identityNum">Identity Number <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="tel" name="identityNum" id="identityNum" value="<?php if (isset($row['id_number'])) echo $row['id_number'] ?>" required>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Personal Details</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="nameLbl" for="employeeName">Full Name <span class="requireRed">*</span></label>
-                                    <input class="form-control " type="text" name="employeeName" id="employeeName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" required>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="emailLbl" for="employeeEmail">Email <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="text" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="genderLbl" for="employeeGender">Gender <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="employeeGender" id="employeeGender" required>
-                                        <option value="" disabled selected>Select your gender</option>
-                                        <option value="Female" <?php echo isset($row['gender']) && $row['gender'] == 'Female' ? "selected" : ""; ?>>Female</option>
-                                        <option value="Male" <?php echo isset($row['gender']) && $row['gender'] == 'Male' ? "selected" : ""; ?>>Male</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-
-                                <div class="col-sm-3">
-                                    <label class="form-label" id="birthdayLbl" for="employeeBirthday">Birthday <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="date" name="employeeBirthday" id="employeeBirthday" value="<?php if (isset($row['date_of_birth'])) echo $row['date_of_birth'] ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" required>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <label class="form-label" id="raceLbl" for="employeeRace">Race</label>
-                                    <select class="form-select" aria-label="Default select example" name="employeeRace" id="employeeRace">
-                                        <?php
-                                        $result = getData('*', '', '', RACE, $connect);
-
-                                        echo "<option disabled selected>Select employee race</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowRace = $result->fetch_assoc()) {
-                                            $selected = isset($row['race_id']) && $rowRace['id'] == $row['race_id'] ? "selected" : "";
-                                            echo "<option value='{$rowRace['id']}' $selected>{$rowRace['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <label class="form-label" id="residenceStatusLbl" for="employeeResidenceStatus">Residence <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="employeeResidenceStatus" id="employeeResidenceStatus" required>
-                                        <option disabled selected>Select employee residence status</option>
-                                        <option value="Resident" <?php echo isset($row['residence_status']) && $row['residence_status'] == 'Resident' ? "selected" : ""; ?>>Resident</option>
-                                        <option value="Non-Resident" <?php echo isset($row['residence_status']) && $row['residence_status'] == 'Non-Resident' ? "selected" : ""; ?>>Non-Resident</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <label class="form-label" id="nationalityLbl" for="employeeNationality">Nationality <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="employeeNationality" id="employeeNationality" required>
-                                        <?php
-                                        $result = getData('*', '', '', 'countries', $connect);
-
-                                        echo "<option disabled selected>Select employee nationality</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowNationality = $result->fetch_assoc()) {
-                                            $phoneCode = $rowNationality['phonecode'];
-                                            $selected = isset($row['nationality']) && $rowNationality['id'] == $row['nationality'] ? "selected" : "";
-                                            echo "<option value='{$rowNationality['id']}' data-phone-code='{$phoneCode}' $selected>{$rowNationality['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                    <input class="form-control" type="hidden" name="nationality" id="nationality" value="">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number<span class="requireRed">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
-                                        <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($row['phone_number'])) echo $row['phone_number'] ?>"><br>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employeeAlternatePhoneLbl" for="employeeAlternatePhone">Alternate Phone Number</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+<span id="alternatePhoneCodeSpan">00</span></span>
-                                        <input type="text" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </fieldset>
-
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Address</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employeeAddressOneLbl" for="employeeAddress1">Address Line 1</label>
-                                    <input class="form-control " type="text" name="employeeAddress1" id="employeeAddress1" value="<?php if (isset($row['address_line_1'])) echo $row['address_line_1'] ?>">
-                                </div>
-
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employeeAddress2Lbl" for="employeeAddress2">Address Line 2</label>
-                                    <input class="form-control " type="text" name="employeeAddress2" id="employeeAddress2" value="<?php if (isset($row['address_line_2'])) echo $row['address_line_2'] ?>">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <label class="form-label" id="employeeCityLbl" for="employeeCity">City</label>
-                                    <input class="form-control " type="text" name="employeeCity" id="employeeCity" value="<?php if (isset($row['city'])) echo $row['city'] ?>">
-                                </div>
-
-                                <div class="col-sm-5">
-                                    <label class="form-label" id="employeeStateLbl" for="employeeState">State</label>
-                                    <input class="form-control " type="text" name="employeeState" id="employeeState" value="<?php if (isset($row['state'])) echo $row['state'] ?>" <>
-                                </div>
-
-                                <div class="col-sm-2">
-                                    <label class="form-label" id="employeePostcodeLbl" for="employeePostcode">Postcode</label>
-                                    <input class="form-control " type="number" name="employeePostcode" id="employeePostcode" value="<?php if (isset($row['postcode'])) echo $row['postcode'] ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Marital status </legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="maritalStatusLbl" for="maritalStatus">Marital status <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="maritalStatus" id="maritalStatus" required>
-                                        <?php
-                                        $result = getData('*', '', '', MRTL_STATUS, $connect);
-
-                                        echo "<option disabled selected>Select employee race</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowMaritalSts = $result->fetch_assoc()) {
-                                            $selected = isset($row['marital_status']) && $rowMaritalSts['id'] == $row['marital_status'] ? "selected" : "";
-                                            echo "<option value='{$rowMaritalSts['id']}' $selected>{$rowMaritalSts['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="noOfChildLbl" for="noOfChild">No of Children</label>
-                                    <input class="form-control " type="number" name="noOfChild" id="noOfChild" value="<?php if (isset($row['no_of_children'])) echo $row['no_of_children'] ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <!-- step two -->
-                <div class="step" id="emergencyInfo">
-                    <p class="text-center mb-3 h3">Emergency Information</p>
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Emergency Information</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="form-label" id="emergencyContactNameLbl" for="emergencyContactName">Emergency Contact Name <span class="requireRed">*</span></label>
-                                    <input class="form-control " type="text" name="emergencyContactName" id="emergencyContactName" value="<?php if (isset($row['emergency_contact_name'])) echo $row['emergency_contact_name'] ?>" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="emergencyRelationshipLbl" for="emergencyRelationship">Relationship <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="text" name="emergencyRelationship" id="emergencyRelationship" value="<?php if (isset($row['emergency_relationship'])) echo $row['emergency_relationship'] ?>" required>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Emergency Contact Number <span class="requireRed">*</span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" style="height: 40px;">+<span id="emergencyContactNumSpan">00</span></span>
-                                        <input type="text" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <!-- step three -->
-                <div class="step" id="bankInfo">
-
-                    <p class="text-center mb-3 h3">BANK Information</p>
-
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">BANK Information</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="paymentMethodLbl" for="paymentMethod">Payment Method <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="paymentMethod" id="paymentMethod" required>
-                                        <?php
-                                        $result = getData('*', '', '', PAY_METH, $connect);
-                                        echo "<option disabled selected>Select employee preferred payment method</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowPayMeth = $result->fetch_assoc()) {
-                                            $selected = isset($row['preferred_payment_method']) && $rowPayMeth['id'] == $row['preferred_payment_method'] ? "selected" : "";
-                                            echo "<option value='{$rowPayMeth['id']}' $selected>{$rowPayMeth['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="bankLbl" for="bankName">BANK<span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="bankName" id="bankName" required>
-                                        <?php
-                                        $result = getData('*', '', '', BANK, $connect);
-                                        echo "<option disabled selected>Select preferred bank</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowPayMeth = $result->fetch_assoc()) {
-                                            $selected = isset($row['bank_id']) && $rowPayMeth['id'] == $row['bank_id'] ? "selected" : "";
-                                            echo "<option value='{$rowPayMeth['id']}' $selected>{$rowPayMeth['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="accHolderNameLbl" for="accHolderName">Account Holder's Name <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="text" name="accHolderName" id="accHolderName" value="<?php if (isset($row['account_holders_name'])) echo $row['account_holders_name'] ?>" required>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="accNumLbl" for="accNum">Account Number <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" name="accNum" id="accNum" value="<?php if (isset($row['account_number'])) echo $row['account_number'] ?>" required>
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <!-- step four -->
-                <div class="step" id="employmentInfo">
-
-                    <p class="text-center mb-3 h3">Employment Information</p>
-
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Employment Information</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="joinDateLbl" for="joinDate">Join Date <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="date" name="joinDate" id="joinDate" value="<?php if (isset($row2['join_date'])) echo $row2['join_date'] ?>" required>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="departmentLbl" for="department">Department <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="department" id="department" required>
-                                        <?php
-                                        $result = getData('*', '', '', DEPT, $connect);
-
-                                        echo "<option  disabled selected>Select employee department</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowDepartment = $result->fetch_assoc()) {
-                                            $selected = isset($row2['department_id']) && $rowDepartment['id'] == $row2['department_id'] ? "selected" : "";
-                                            echo "<option value='{$rowDepartment['id']}' $selected>{$rowDepartment['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="positionLbl" for="position">Position </label>
-                                    <input class="form-control" type="text" name="position" id="position" value="<?php if (isset($row2['position'])) echo $row2['position'] ?>">
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employmentStatusLbl" for="employmentStatus">Employment Status <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="employmentStatus" id="employmentStatus" required>
-                                        <?php
-                                        $result = getData('*', '', '', EM_TYPE_STATUS, $connect);
-
-                                        echo "<option disabled selected>Select employee status</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowEmpSts = $result->fetch_assoc()) {
-                                            $selected = isset($row2['employment_status_id']) && $rowEmpSts['id'] == $row2['employment_status_id'] ? "selected" : "";
-                                            echo "<option value='{$rowEmpSts['id']}' $selected>{$rowEmpSts['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="form-label" id="managerAprroveLeaveLbl" for="managerAprroveLeave">Manager Approval For Leave <span class="requireRed">*</span></label><br>
-                                    <select class="multiple_select form-control" name="managerAprroveLeave[]" id="managerAprroveLeave" multiple style="width: 100%;" onchange="checkSelectRequired()">
-                                        <?php
-                                        $result = getData('*', '', '', USR_USER, $connect);
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowUser = $result->fetch_assoc()) {
-                                            if (isset($row2['managers_for_leave_approval'])) {
-                                                $manageAssign = explode(',', $row2['managers_for_leave_approval']);
-                                                $selected = isset($manageAssign) && in_array($rowUser['id'], $manageAssign) ? "selected" : "";
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
                                             }
-                                            echo "<option value='{$rowUser['id']}' $selected>{$rowUser['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
+
+                                            while ($rowIDType = $result->fetch_assoc()) {
+                                                $selected = isset($row['id_type']) && $rowIDType['id'] == $row['id_type'] ? "selected" : "";
+                                                echo "<option value='{$rowIDType['id']}' $selected>{$rowIDType['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="identityNumberLbl" for="identityNum">Identity Number <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="tel" name="identityNum" id="identityNum" value="<?php if (isset($row['id_number'])) echo $row['id_number'] ?>" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
 
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="form-label" id="remarkLbl" for="remark">Remark</label>
-                                    <textarea class="form-control" name="remark" id="remark" rows="3"><?php if (isset($row2['remark'])) echo $row2['remark'] ?></textarea>
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Personal Details</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <label class="form-label" id="nameLbl" for="employeeName">Full Name <span class="requireRed">*</span></label>
+                                        <input class="form-control " type="text" name="employeeName" id="employeeName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-label" id="emailLbl" for="employeeEmail">Email <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="text" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-label" id="genderLbl" for="employeeGender">Gender <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="employeeGender" id="employeeGender" required>
+                                            <option value="" disabled selected>Select your gender</option>
+                                            <option value="Female" <?php echo isset($row['gender']) && $row['gender'] == 'Female' ? "selected" : ""; ?>>Female</option>
+                                            <option value="Male" <?php echo isset($row['gender']) && $row['gender'] == 'Male' ? "selected" : ""; ?>>Male</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
 
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Salary Information</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="salaryFrequencyLbl" for="salaryFrequency">Salary Frequency <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="salaryFrequency" id="salaryFrequency" required>
-                                        <option disabled selected>Select salary payment frequency</option>
-                                        <option value="monthly" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'monthly' ? "selected" : ""; ?>>Monthly</option>
-                                        <option value="daily" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'daily'   ? "selected" : ""; ?>>Daily</option>
-                                        <option value="hourly" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'hourly'  ? "selected" : ""; ?>>Hourly</option>
-                                    </select>
-                                </div>
+                            <div class="form-group mb-3">
+                                <div class="row">
 
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="currencyUnitLbl" for="currencyUnit">Currency Unit <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="currencyUnit" id="currencyUnit" required>
-                                        <?php
-                                        $result = getData('*', '', '', CUR_UNIT, $connect);
+                                    <div class="col-sm-3">
+                                        <label class="form-label" id="birthdayLbl" for="employeeBirthday">Birthday <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="date" name="employeeBirthday" id="employeeBirthday" value="<?php if (isset($row['date_of_birth'])) echo $row['date_of_birth'] ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" required>
+                                    </div>
 
-                                        echo "<option  disabled selected>Select currency unit</option>";
+                                    <div class="col-sm-3">
+                                        <label class="form-label" id="raceLbl" for="employeeRace">Race</label>
+                                        <select class="form-select" aria-label="Default select example" name="employeeRace" id="employeeRace">
+                                            <?php
+                                            $result = getData('*', '', '', RACE, $connect);
 
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
+                                            echo "<option disabled selected>Select employee race</option>";
 
-                                        while ($rowCurUnit = $result->fetch_assoc()) {
-                                            $selected = isset($row2['currency_unit_id']) && $rowCurUnit['id'] == $row2['currency_unit_id'] ? "selected" : "";
-                                            echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
 
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="salaryLbl" for="salary">Salary <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" step="any" name="salary" id="salary" value="<?php if (isset($row2['salary'])) echo $row2['salary'] ?>" required>
-                                </div>
+                                            while ($rowRace = $result->fetch_assoc()) {
+                                                $selected = isset($row['race_id']) && $rowRace['id'] == $row['race_id'] ? "selected" : "";
+                                                echo "<option value='{$rowRace['id']}' $selected>{$rowRace['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
 
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="allowanceLbl" for="allowance">Allowance </label>
-                                    <input class="form-control" type="number" step="any" name="allowance" id="allowance" value="<?php if (isset($row2['allowance'])) echo $row2['allowance'] ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
+                                    <div class="col-sm-3">
+                                        <label class="form-label" id="residenceStatusLbl" for="employeeResidenceStatus">Residence <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="employeeResidenceStatus" id="employeeResidenceStatus" required>
+                                            <option disabled selected>Select employee residence status</option>
+                                            <option value="Resident" <?php echo isset($row['residence_status']) && $row['residence_status'] == 'Resident' ? "selected" : ""; ?>>Resident</option>
+                                            <option value="Non-Resident" <?php echo isset($row['residence_status']) && $row['residence_status'] == 'Non-Resident' ? "selected" : ""; ?>>Non-Resident</option>
+                                        </select>
+                                    </div>
 
-                <!-- step five -->
-                <div class="step" id="statutoryRequirements">
+                                    <div class="col-sm-3">
+                                        <label class="form-label" id="nationalityLbl" for="employeeNationality">Nationality <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="employeeNationality" id="employeeNationality" required>
+                                            <?php
+                                            $result = getData('*', '', '', 'countries', $connect);
 
-                    <p class="text-center mb-3 h3">Statutory Requirements</p>
+                                            echo "<option disabled selected>Select employee nationality</option>";
 
-                    <fieldset class="border p-2" style="border-radius: 3px;">
-                        <legend class="float-none w-auto p-2">Statutory Requirements</legend>
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="epfOptionLbl" for="epfOption">Contributing EPF <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="epfOption" id="epfOption" required>
-                                        <option disabled selected>Select contributing EPF option</option>
-                                        <option value="Yes" <?php echo isset($row2['contributing_epf']) && $row2['contributing_epf'] == 'Yes' ? "selected" : ""; ?>>Yes</option>
-                                        <option value="No" <?php echo isset($row2['contributing_epf']) && $row2['contributing_epf'] == 'No'   ? "selected" : ""; ?>>No</option>
-                                    </select>
-                                </div>
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
 
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="epfNoLbl" for="epfNo">Contributing EPF No </label>
-                                    <input class="form-control" type="number" name="epfNo" id="epfNo" value="<?php if (isset($row2['contributing_epf_no'])) echo $row2['contributing_epf_no'] ?>">
+                                            while ($rowNationality = $result->fetch_assoc()) {
+                                                $phoneCode = $rowNationality['phonecode'];
+                                                $selected = isset($row['nationality']) && $rowNationality['id'] == $row['nationality'] ? "selected" : "";
+                                                echo "<option value='{$rowNationality['id']}' data-phone-code='{$phoneCode}' $selected>{$rowNationality['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                        <input class="form-control" type="hidden" name="nationality" id="nationality" value="">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group mb-3">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employeeEpfRateLbl" for="employeeEpfRate">Employee EPF Rate</label>
-                                    <select class="form-select" aria-label="Default select example" name="employeeEpfRate" id="employeeEpfRate">
-                                        <?php
-                                        $result = getData('*', '', '', EMPLOYEE_EPF, $connect);
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employeePhoneLbl" for="employeePhone">Phone Number<span class="requireRed">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
+                                            <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($row['phone_number'])) echo $row['phone_number'] ?>"><br>
+                                        </div>
+                                    </div>
 
-                                        echo "<option disabled selected>Select employee epf rate</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowEmpEpfRate = $result->fetch_assoc()) {
-                                            $selected = isset($row2['employee_epf_rate_id']) && $rowEmpEpfRate['id'] == $row2['employee_epf_rate_id'] ? "selected" : "";
-                                            echo "<option value='{$rowEmpEpfRate['id']}' $selected>{$rowEmpEpfRate['epf_rate']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label class="form-label" id="employerEpfRateLbl" for="employerEpfRate">Employer EPF Rate</label>
-                                    <select class="form-select" aria-label="Default select example" name="employerEpfRate" id="employerEpfRate">
-                                        <?php
-                                        $result = getData('*', '', '', EMPLOYER_EPF, $connect);
-
-                                        echo "<option disabled selected>Select employer epf rate</option>";
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowEmrEpfRate = $result->fetch_assoc()) {
-                                            $selected = isset($row2['employer_epf_rate_id']) && $rowEmrEpfRate['id'] == $row2['employer_epf_rate_id'] ? "selected" : "";
-                                            echo "<option value='{$rowEmrEpfRate['id']}' $selected>{$rowEmrEpfRate['epf_rate']}</option>";
-                                        }
-                                        ?>
-                                    </select>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employeeAlternatePhoneLbl" for="employeeAlternatePhone">Alternate Phone Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" style="height: 40px;">+<span id="alternatePhoneCodeSpan">00</span></span>
+                                            <input type="text" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group mb-3">
-                            <div class="row">
+                        </fieldset>
 
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="empTaxNumLbl" for="empTaxNum">Employee's Tax Number <span class="requireRed">*</span></label>
-                                    <input class="form-control" type="number" name="empTaxNum" id="empTaxNum" value="<?php if (isset($row2['employee_tax_number'])) echo $row2['employee_tax_number'] ?>" required>
-                                </div>
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Address</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employeeAddressOneLbl" for="employeeAddress1">Address Line 1</label>
+                                        <input class="form-control " type="text" name="employeeAddress1" id="employeeAddress1" value="<?php if (isset($row['address_line_1'])) echo $row['address_line_1'] ?>">
+                                    </div>
 
-                                <div class="col-sm-4">
-                                    <label class="form-label" id="socsoCtrLbl" for="socsoCtr">SOCSO Category<span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="socsoCtr" id="socsoCtr" required>
-                                        <?php
-                                        $result = getData('*', '', '', SOCSO_CATH, $connect);
 
-                                        echo "<option disabled selected>Select employee socso category</option>";;
-
-                                        if (!$result) {
-                                            echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-                                        }
-
-                                        while ($rowSocsoCth = $result->fetch_assoc()) {
-                                            $selected = isset($row2['socso_category_id']) && $rowSocsoCth['id'] == $row2['socso_category_id'] ? "selected" : "";
-                                            echo "<option value='{$rowSocsoCth['id']}' $selected>{$rowSocsoCth['name']}</option>";
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-4 ">
-                                    <label class="form-label" id="eisLbl" for="eis">EIS <span class="requireRed">*</span></label>
-                                    <select class="form-select" aria-label="Default select example" name="eis" id="eis" required>
-                                        <option value='' disabled selected>Select employee eis status</option>
-                                        <option value="Yes" <?php echo isset($row2['eis']) && $row2['eis'] == 'Yes' ? "selected" : ""; ?>>Yes</option>
-                                        <option value="No" <?php echo isset($row2['eis']) && $row2['eis'] == 'No'   ? "selected" : ""; ?>>No</option>
-                                    </select>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employeeAddress2Lbl" for="employeeAddress2">Address Line 2</label>
+                                        <input class="form-control " type="text" name="employeeAddress2" id="employeeAddress2" value="<?php if (isset($row['address_line_2'])) echo $row['address_line_2'] ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
-                </div>
 
-                <div class="row" style="padding-bottom : 20px;">
-                    <div class="col-sm-4 text-start button-bottom">
-                        <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <label class="form-label" id="employeeCityLbl" for="employeeCity">City</label>
+                                        <input class="form-control " type="text" name="employeeCity" id="employeeCity" value="<?php if (isset($row['city'])) echo $row['city'] ?>">
+                                    </div>
+
+                                    <div class="col-sm-5">
+                                        <label class="form-label" id="employeeStateLbl" for="employeeState">State</label>
+                                        <input class="form-control " type="text" name="employeeState" id="employeeState" value="<?php if (isset($row['state'])) echo $row['state'] ?>" <>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <label class="form-label" id="employeePostcodeLbl" for="employeePostcode">Postcode</label>
+                                        <input class="form-control " type="number" name="employeePostcode" id="employeePostcode" value="<?php if (isset($row['postcode'])) echo $row['postcode'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Marital status </legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="maritalStatusLbl" for="maritalStatus">Marital status <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="maritalStatus" id="maritalStatus" required>
+                                            <?php
+                                            $result = getData('*', '', '', MRTL_STATUS, $connect);
+
+                                            echo "<option disabled selected>Select employee race</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowMaritalSts = $result->fetch_assoc()) {
+                                                $selected = isset($row['marital_status']) && $rowMaritalSts['id'] == $row['marital_status'] ? "selected" : "";
+                                                echo "<option value='{$rowMaritalSts['id']}' $selected>{$rowMaritalSts['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="noOfChildLbl" for="noOfChild">No of Children</label>
+                                        <input class="form-control " type="number" name="noOfChild" id="noOfChild" value="<?php if (isset($row['no_of_children'])) echo $row['no_of_children'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
 
-                    <div class="col-sm-4 text-center button-bottom">
-                        <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="clearLocalStorageAndRedirect();" style="font-size: 15px;">Back</button>
-                        <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
+                    <!-- step two -->
+                    <div class="step" id="emergencyInfo">
+                        <p class="text-center mb-3 h3">Emergency Information</p>
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Emergency Information</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="form-label" id="emergencyContactNameLbl" for="emergencyContactName">Emergency Contact Name <span class="requireRed">*</span></label>
+                                        <input class="form-control " type="text" name="emergencyContactName" id="emergencyContactName" value="<?php if (isset($row['emergency_contact_name'])) echo $row['emergency_contact_name'] ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="emergencyRelationshipLbl" for="emergencyRelationship">Relationship <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="text" name="emergencyRelationship" id="emergencyRelationship" value="<?php if (isset($row['emergency_relationship'])) echo $row['emergency_relationship'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="emergencyContactNumLbl" for="emergencyContactNum">Emergency Contact Number <span class="requireRed">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" style="height: 40px;">+<span id="emergencyContactNumSpan">00</span></span>
+                                            <input type="text" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
 
-                    <div class="col-sm-4 text-end button-bottom">
-                        <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="" style="font-size: 15px;">Next</button>
+                    <!-- step three -->
+                    <div class="step" id="bankInfo">
+
+                        <p class="text-center mb-3 h3">BANK Information</p>
+
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">BANK Information</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="paymentMethodLbl" for="paymentMethod">Payment Method <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="paymentMethod" id="paymentMethod" required>
+                                            <?php
+                                            $result = getData('*', '', '', PAY_METH, $connect);
+                                            echo "<option disabled selected>Select employee preferred payment method</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowPayMeth = $result->fetch_assoc()) {
+                                                $selected = isset($row['preferred_payment_method']) && $rowPayMeth['id'] == $row['preferred_payment_method'] ? "selected" : "";
+                                                echo "<option value='{$rowPayMeth['id']}' $selected>{$rowPayMeth['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="bankLbl" for="bankName">BANK<span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="bankName" id="bankName" required>
+                                            <?php
+                                            $result = getData('*', '', '', BANK, $connect);
+                                            echo "<option disabled selected>Select preferred bank</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowPayMeth = $result->fetch_assoc()) {
+                                                $selected = isset($row['bank_id']) && $rowPayMeth['id'] == $row['bank_id'] ? "selected" : "";
+                                                echo "<option value='{$rowPayMeth['id']}' $selected>{$rowPayMeth['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="accHolderNameLbl" for="accHolderName">Account Holder's Name <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="text" name="accHolderName" id="accHolderName" value="<?php if (isset($row['account_holders_name'])) echo $row['account_holders_name'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="accNumLbl" for="accNum">Account Number <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="number" name="accNum" id="accNum" value="<?php if (isset($row['account_number'])) echo $row['account_number'] ?>" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
-                </div>
-            </form>
+
+                    <!-- step four -->
+                    <div class="step" id="employmentInfo">
+
+                        <p class="text-center mb-3 h3">Employment Information</p>
+
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Employment Information</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="joinDateLbl" for="joinDate">Join Date <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="date" name="joinDate" id="joinDate" value="<?php if (isset($row2['join_date'])) echo $row2['join_date'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="departmentLbl" for="department">Department <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="department" id="department" required>
+                                            <?php
+                                            $result = getData('*', '', '', DEPT, $connect);
+
+                                            echo "<option  disabled selected>Select employee department</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowDepartment = $result->fetch_assoc()) {
+                                                $selected = isset($row2['department_id']) && $rowDepartment['id'] == $row2['department_id'] ? "selected" : "";
+                                                echo "<option value='{$rowDepartment['id']}' $selected>{$rowDepartment['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="positionLbl" for="position">Position </label>
+                                        <input class="form-control" type="text" name="position" id="position" value="<?php if (isset($row2['position'])) echo $row2['position'] ?>">
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employmentStatusLbl" for="employmentStatus">Employment Status <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="employmentStatus" id="employmentStatus" required>
+                                            <?php
+                                            $result = getData('*', '', '', EM_TYPE_STATUS, $connect);
+
+                                            echo "<option disabled selected>Select employee status</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowEmpSts = $result->fetch_assoc()) {
+                                                $selected = isset($row2['employment_status_id']) && $rowEmpSts['id'] == $row2['employment_status_id'] ? "selected" : "";
+                                                echo "<option value='{$rowEmpSts['id']}' $selected>{$rowEmpSts['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="form-label" id="managerAprroveLeaveLbl" for="managerAprroveLeave">Manager Approval For Leave <span class="requireRed">*</span></label><br>
+                                        <select class="multiple_select form-control" name="managerAprroveLeave[]" id="managerAprroveLeave" multiple style="width: 100%;" onchange="checkSelectRequired()">
+                                            <?php
+                                            $result = getData('*', '', '', USR_USER, $connect);
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowUser = $result->fetch_assoc()) {
+                                                if (isset($row2['managers_for_leave_approval'])) {
+                                                    $manageAssign = explode(',', $row2['managers_for_leave_approval']);
+                                                    $selected = isset($manageAssign) && in_array($rowUser['id'], $manageAssign) ? "selected" : "";
+                                                }
+                                                echo "<option value='{$rowUser['id']}' $selected>{$rowUser['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="form-label" id="remarkLbl" for="remark">Remark</label>
+                                        <textarea class="form-control" name="remark" id="remark" rows="3"><?php if (isset($row2['remark'])) echo $row2['remark'] ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Salary Information</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="salaryFrequencyLbl" for="salaryFrequency">Salary Frequency <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="salaryFrequency" id="salaryFrequency" required>
+                                            <option disabled selected>Select salary payment frequency</option>
+                                            <option value="monthly" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'monthly' ? "selected" : ""; ?>>Monthly</option>
+                                            <option value="daily" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'daily'   ? "selected" : ""; ?>>Daily</option>
+                                            <option value="hourly" <?php echo isset($row2['salary_frequency']) && $row2['salary_frequency'] == 'hourly'  ? "selected" : ""; ?>>Hourly</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="currencyUnitLbl" for="currencyUnit">Currency Unit <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="currencyUnit" id="currencyUnit" required>
+                                            <?php
+                                            $result = getData('*', '', '', CUR_UNIT, $connect);
+
+                                            echo "<option  disabled selected>Select currency unit</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowCurUnit = $result->fetch_assoc()) {
+                                                $selected = isset($row2['currency_unit_id']) && $rowCurUnit['id'] == $row2['currency_unit_id'] ? "selected" : "";
+                                                echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="salaryLbl" for="salary">Salary <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="number" step="any" name="salary" id="salary" value="<?php if (isset($row2['salary'])) echo $row2['salary'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="allowanceLbl" for="allowance">Allowance </label>
+                                        <input class="form-control" type="number" step="any" name="allowance" id="allowance" value="<?php if (isset($row2['allowance'])) echo $row2['allowance'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <!-- step five -->
+                    <div class="step" id="statutoryRequirements">
+
+                        <p class="text-center mb-3 h3">Statutory Requirements</p>
+
+                        <fieldset class="border p-2" style="border-radius: 3px;">
+                            <legend class="float-none w-auto p-2">Statutory Requirements</legend>
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="epfOptionLbl" for="epfOption">Contributing EPF <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="epfOption" id="epfOption" required>
+                                            <option disabled selected>Select contributing EPF option</option>
+                                            <option value="Yes" <?php echo isset($row2['contributing_epf']) && $row2['contributing_epf'] == 'Yes' ? "selected" : ""; ?>>Yes</option>
+                                            <option value="No" <?php echo isset($row2['contributing_epf']) && $row2['contributing_epf'] == 'No'   ? "selected" : ""; ?>>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="epfNoLbl" for="epfNo">Contributing EPF No </label>
+                                        <input class="form-control" type="number" name="epfNo" id="epfNo" value="<?php if (isset($row2['contributing_epf_no'])) echo $row2['contributing_epf_no'] ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employeeEpfRateLbl" for="employeeEpfRate">Employee EPF Rate</label>
+                                        <select class="form-select" aria-label="Default select example" name="employeeEpfRate" id="employeeEpfRate">
+                                            <?php
+                                            $result = getData('*', '', '', EMPLOYEE_EPF, $connect);
+
+                                            echo "<option disabled selected>Select employee epf rate</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowEmpEpfRate = $result->fetch_assoc()) {
+                                                $selected = isset($row2['employee_epf_rate_id']) && $rowEmpEpfRate['id'] == $row2['employee_epf_rate_id'] ? "selected" : "";
+                                                echo "<option value='{$rowEmpEpfRate['id']}' $selected>{$rowEmpEpfRate['epf_rate']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <label class="form-label" id="employerEpfRateLbl" for="employerEpfRate">Employer EPF Rate</label>
+                                        <select class="form-select" aria-label="Default select example" name="employerEpfRate" id="employerEpfRate">
+                                            <?php
+                                            $result = getData('*', '', '', EMPLOYER_EPF, $connect);
+
+                                            echo "<option disabled selected>Select employer epf rate</option>";
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowEmrEpfRate = $result->fetch_assoc()) {
+                                                $selected = isset($row2['employer_epf_rate_id']) && $rowEmrEpfRate['id'] == $row2['employer_epf_rate_id'] ? "selected" : "";
+                                                echo "<option value='{$rowEmrEpfRate['id']}' $selected>{$rowEmrEpfRate['epf_rate']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="row">
+
+                                    <div class="col-sm-4">
+                                        <label class="form-label" id="empTaxNumLbl" for="empTaxNum">Employee's Tax Number <span class="requireRed">*</span></label>
+                                        <input class="form-control" type="number" name="empTaxNum" id="empTaxNum" value="<?php if (isset($row2['employee_tax_number'])) echo $row2['employee_tax_number'] ?>" required>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="form-label" id="socsoCtrLbl" for="socsoCtr">SOCSO Category<span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="socsoCtr" id="socsoCtr" required>
+                                            <?php
+                                            $result = getData('*', '', '', SOCSO_CATH, $connect);
+
+                                            echo "<option disabled selected>Select employee socso category</option>";;
+
+                                            if (!$result) {
+                                                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                                            }
+
+                                            while ($rowSocsoCth = $result->fetch_assoc()) {
+                                                $selected = isset($row2['socso_category_id']) && $rowSocsoCth['id'] == $row2['socso_category_id'] ? "selected" : "";
+                                                echo "<option value='{$rowSocsoCth['id']}' $selected>{$rowSocsoCth['name']}</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-4 ">
+                                        <label class="form-label" id="eisLbl" for="eis">EIS <span class="requireRed">*</span></label>
+                                        <select class="form-select" aria-label="Default select example" name="eis" id="eis" required>
+                                            <option value='' disabled selected>Select employee eis status</option>
+                                            <option value="Yes" <?php echo isset($row2['eis']) && $row2['eis'] == 'Yes' ? "selected" : ""; ?>>Yes</option>
+                                            <option value="No" <?php echo isset($row2['eis']) && $row2['eis'] == 'No'   ? "selected" : ""; ?>>No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="row" style="padding-bottom : 20px;">
+                        <div class="col-sm-4 text-start button-bottom">
+                            <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
+                        </div>
+
+                        <div class="col-sm-4 text-center button-bottom">
+                            <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="clearLocalStorageAndRedirect();" style="font-size: 15px;">Back</button>
+                            <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
+                        </div>
+
+                        <div class="col-sm-4 text-end button-bottom">
+                            <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="" style="font-size: 15px;">Next</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
     <?php
     switch ($act) {
         case 'I':
@@ -1029,8 +1034,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
-
+        preloader(300, action);
+        
         document.addEventListener('DOMContentLoaded', function() {
             var editButton = document.querySelector('[name="actionBtn"][value="updEmpDetails"]');
 
