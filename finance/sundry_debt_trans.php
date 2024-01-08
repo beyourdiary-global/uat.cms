@@ -25,7 +25,7 @@ if (!file_exists($img_path)) {
 // to display data to input
 if ($row_id) { //edit/remove/view
     $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
-    
+
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
@@ -44,7 +44,7 @@ if ($row_id) { //edit/remove/view
     $result = mysqli_query($finance_connect, $query);
     $maxRow = mysqli_fetch_assoc($result);
     $maxRowId = $maxRow['max_id'];
-    
+
     if ($maxRowId === null) {
         $nextRowId = str_pad(1, 5, '0', STR_PAD_LEFT);
     } else {
@@ -130,16 +130,16 @@ if (post('actionBtn')) {
             } else if (($sdt_debtors == 'other') && !isset($sdt_debtors)) {
                 $debtors_other_err = "Debtor name is required!";
                 break;
-            } else if(($sdt_debtors == 'other') && isDuplicateRecord("name", $debtor_other, MERCHANT, $finance_connect, '')) {
+            } else if (($sdt_debtors == 'other') && isDuplicateRecord("name", $debtor_other, MERCHANT, $finance_connect, '')) {
                 $mrcht_other_err = "Duplicate record found for Merchant name.";
                 $isDuplicateMerchant = true;
                 break;
             } else if (!$sdt_amt) {
                 $amt_err = "Amount cannot be empty.";
                 break;
-            }    else if (!$sdt_desc) {
-                    $desc_err = "Description cannot be empty.";
-                    break;
+            } else if (!$sdt_desc) {
+                $desc_err = "Description cannot be empty.";
+                break;
             } else if ($action == 'addTransaction') {
                 try {
                     //get final_amt from prev row
@@ -153,9 +153,9 @@ if (post('actionBtn')) {
                     ORDER BY
                         id DESC
                     LIMIT 1";
-            
+
                     $result = mysqli_query($finance_connect, $query);
-                    
+
                     if (!$result) {
                         die("Query failed: " . mysqli_error($finance_connect));
                     }
@@ -165,9 +165,9 @@ if (post('actionBtn')) {
                     if (isset($prev_row['final_amt'])) {
                         $sdt_prev_amt = $prev_row['final_amt'];
                     } else {
-                        $sdt_prev_amt = 0; 
+                        $sdt_prev_amt = 0;
                     }
-                    
+
                     $sdt_amt = floatval(str_replace(',', '', $sdt_amt));
 
                     if ($sdt_type == 'Add') {
@@ -179,44 +179,43 @@ if (post('actionBtn')) {
                     $newvalarr = array();
                     // check value
                     if ($sdt_type)
-                    array_push($newvalarr, $sdt_type[0]);
+                        array_push($newvalarr, $sdt_type[0]);
 
                     if ($sdt_date)
-                    array_push($newvalarr, $sdt_date);
+                        array_push($newvalarr, $sdt_date);
 
                     if ($sdt_final_amt)
-                    array_push($newvalarr, $sdt_amt);
+                        array_push($newvalarr, $sdt_amt);
 
                     if ($sdt_debtors)
-                    array_push($newvalarr, $sdt_debtors);
+                        array_push($newvalarr, $sdt_debtors);
 
                     if ($sdt_attach)
-                    array_push($newvalarr, $sdt_attach);
+                        array_push($newvalarr, $sdt_attach);
 
                     if ($sdt_prev_amt)
-                    array_push($newvalarr, $sdt_prev_amt);
-                
+                        array_push($newvalarr, $sdt_prev_amt);
+
                     if ($sdt_final_amt)
-                    array_push($newvalarr, $sdt_final_amt);
-                    
+                        array_push($newvalarr, $sdt_final_amt);
+
                     if ($sdt_desc)
-                    array_push($newvalarr, $sdt_desc);
+                        array_push($newvalarr, $sdt_desc);
 
                     if ($sdt_remark)
-                    array_push($newvalarr, $sdt_remark);
+                        array_push($newvalarr, $sdt_remark);
 
                     $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_remark','$sdt_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
-                    
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
                 }
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1',$tblName, $finance_connect);
+                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -291,7 +290,7 @@ if (post('actionBtn')) {
                         LIMIT 1";
 
                         $result = mysqli_query($finance_connect, $query);
-                        
+
                         if (!$result) {
                             die("Query failed: " . mysqli_error($finance_connect));
                         }
@@ -301,7 +300,7 @@ if (post('actionBtn')) {
                         if (isset($prev_row['final_amt'])) {
                             $sdt_prev_amt = $prev_row['final_amt'];
                         } else {
-                            $sdt_prev_amt = 0; 
+                            $sdt_prev_amt = 0;
                         }
 
                         if ($sdt_type == 'Add') {
@@ -313,7 +312,7 @@ if (post('actionBtn')) {
                         $query = "UPDATE " . $tblName . " SET type = '$sdt_type',payment_date = '$sdt_date',debtors = '$sdt_debtors', amount = '$sdt_amt', prev_amt ='$sdt_prev_amt', final_amt ='$sdt_final_amt', description='$sdt_desc', attachment ='$sdt_attach', remark ='$sdt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                        updateTransAmt($finance_connect, $tblName,['debtors'],['debtors']);
+                        updateTransAmt($finance_connect, $tblName, ['debtors'], ['debtors']);
                     } else {
                         $act = 'NC';
                     }
@@ -321,7 +320,7 @@ if (post('actionBtn')) {
                     $errorMsg = $e->getMessage();
                 }
             }
-            
+
             if (isset($errorMsg)) {
                 $act = "F";
                 $errorMsg = str_replace('\'', '', $errorMsg);
@@ -388,7 +387,7 @@ if (post('act') == 'D') {
             echo 'Message: ' . $e->getMessage();
         }
     }
-    updateTransAmt($finance_connect, $tblName, ['debtors'], ['debtors']);   
+    updateTransAmt($finance_connect, $tblName, ['debtors'], ['debtors']);
 }
 
 //view
@@ -425,112 +424,110 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?=$pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        echo displayPageAction($act, 'Transaction');
-        ?></p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="SDTFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="SDTForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                        echo displayPageAction($act, 'Transaction');
+                                                                                                                        ?></p>
+
+        </div>
+
+        <div id="SDTFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="SDTForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
                             echo displayPageAction($act, 'Transaction');
-                        ?>
-                    </h2>
-                </div>
-
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="sdt_trans_id_lbl" for="sdt_trans_id">Transaction
-                                ID</label>
-                            <p>
-                                <input class="form-control" type="text" name="sdt_trans_id" id="sdt_trans_id" disabled
-                                    value="<?php echo $trans_id ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="sdt_type_label" for="sdt_type">Type
-                                <span class="requireRed">*</span></label>
-                            <select class="form-select" name="sdt_type" id="sdt_type" required
-                                <?php if ($act == '') echo 'disabled' ?>>
-                                <option disabled selected>Select transaction type</option>
-                                <option value="Add" <?php
-                                        if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($sdt_type) ||  $sdt_type == 'Add')) {
-                                            echo "selected";
-                                        }else {
-                                            echo "";
-                                        }
-                                        
-                                    ?>>
-                                    Add</option>
-                                <option value="Deduct" <?php 
-                                        if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($sdt_type) || $sdt_type == 'Deduct')) {
-                                            echo "selected";
-                                        } else {
-                                            echo "";
-                                        }
-                                        
-                                    ?>>
-                                    Deduct</option>
-                            </select>
-                            <?php if (isset($type_err)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $type_err; ?></span>
-                            </div>
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="sdt_date_label" for="sdt_date">Payment Date<span
-                                    class="requireRed">*</span></label>
-                            <input class="form-control" type="date" name="sdt_date" id="sdt_date" value="<?php 
-                                if (isset($dataExisted) && isset($row['date']) && !isset($sdt_date)) {
-                                    echo $row['date'];
-                                } else if (isset($sdt_date)) {
-                                    echo $sdt_date;
-                                } else {
-                                    echo date('Y-m-d');
-                                }
-                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($date_err)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $date_err; ?></span>
-                            </div>
-                            <?php } ?>
-
-                        </div>
+                            ?>
+                        </h2>
                     </div>
 
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="sdt_debtors_lbl" for="sdt_debtors">Debtors<span
-                                    class="requireRed">*</span></label>
-                            <select class="form-select" id="sdt_debtors" name="sdt_debtors"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Debtor</option>
-                                <option value="other"
-                                    <?php if (isset($sdt_debtors) && $sdt_debtors == 'other') echo 'selected'; ?>>Create
-                                    New Merchant</option>
-                                <?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="sdt_trans_id_lbl" for="sdt_trans_id">Transaction
+                                    ID</label>
+                                <p>
+                                    <input class="form-control" type="text" name="sdt_trans_id" id="sdt_trans_id" disabled value="<?php echo $trans_id ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="sdt_type_label" for="sdt_type">Type
+                                    <span class="requireRed">*</span></label>
+                                <select class="form-select" name="sdt_type" id="sdt_type" required <?php if ($act == '') echo 'disabled' ?>>
+                                    <option disabled selected>Select transaction type</option>
+                                    <option value="Add" <?php
+                                                        if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($sdt_type) ||  $sdt_type == 'Add')) {
+                                                            echo "selected";
+                                                        } else {
+                                                            echo "";
+                                                        }
+
+                                                        ?>>
+                                        Add</option>
+                                    <option value="Deduct" <?php
+                                                            if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($sdt_type) || $sdt_type == 'Deduct')) {
+                                                                echo "selected";
+                                                            } else {
+                                                                echo "";
+                                                            }
+
+                                                            ?>>
+                                        Deduct</option>
+                                </select>
+                                <?php if (isset($type_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $type_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="sdt_date_label" for="sdt_date">Payment Date<span class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="sdt_date" id="sdt_date" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['date']) && !isset($sdt_date)) {
+                                                                                                                    echo $row['date'];
+                                                                                                                } else if (isset($sdt_date)) {
+                                                                                                                    echo $sdt_date;
+                                                                                                                } else {
+                                                                                                                    echo date('Y-m-d');
+                                                                                                                }
+                                                                                                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $date_err; ?></span>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="sdt_debtors_lbl" for="sdt_debtors">Debtors<span class="requireRed">*</span></label>
+                                <select class="form-select" id="sdt_debtors" name="sdt_debtors" <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Debtor</option>
+                                    <option value="other" <?php if (isset($sdt_debtors) && $sdt_debtors == 'other') echo 'selected'; ?>>Create
+                                        New Merchant</option>
+                                    <?php
                                     if ($mrcht_list_result->num_rows >= 1) {
                                         $mrcht_list_result->data_seek(0);
                                         while ($row2 = $mrcht_list_result->fetch_assoc()) {
                                             $selected = "";
-                                            if (isset($dataExisted,$row['debtors']) && !isset($invtr_mrcht)) {
+                                            if (isset($dataExisted, $row['debtors']) && !isset($invtr_mrcht)) {
                                                 $selected = $row['debtors'] == $row2['id'] ? " selected" : "";
-                                            }else if (isset($sdt_debtors) && ($sdt_debtors != 'other')) {
-                                            $selected = $sdt_debtors == $row2['id'] ? " selected" : "";
+                                            } else if (isset($sdt_debtors) && ($sdt_debtors != 'other')) {
+                                                $selected = $sdt_debtors == $row2['id'] ? " selected" : "";
                                             }
                                             echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
                                         }
@@ -538,127 +535,117 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         echo "<option value=\"0\">None</option>";
                                     }
                                     ?>
-                            </select>
-                            <?php if (isset($debt_err)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $debt_err; ?></span>
+                                </select>
+                                <?php if (isset($debt_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $debt_err; ?></span>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <?php } ?>
-                        </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="sdt_amt_lbl" for="sdt_amt">Amount<span
-                                    class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sdt_amt" id="sdt_amt" value="<?php 
-                                if (isset($dataExisted) && isset($row['amount']) && !isset($sdt_amt)){
-                                    echo $row['amount'];
-                                }else if (isset($sdt_amt)) {
-                                    echo $sdt_amt;
-                                }
-                                ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($amt_err)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $amt_err; ?></span>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="sdt_amt_lbl" for="sdt_amt">Amount<span class="requireRed">*</span></label>
+                                <input class="form-control" type="text" name="sdt_amt" id="sdt_amt" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['amount']) && !isset($sdt_amt)) {
+                                                                                                                echo $row['amount'];
+                                                                                                            } else if (isset($sdt_amt)) {
+                                                                                                                echo $sdt_amt;
+                                                                                                            }
+                                                                                                            ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($amt_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <?php } ?>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div id="SDT_CreateMerchant" hidden>
-                            <div class="form-group mb-3">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label class="form-label form_lbl" id="debtors_other_lbl"
-                                            for="mrcht_other">Debtor
-                                            Name*</label>
-                                        <input class="form-control" type="text" name="debtors_other" id="debtors_other"
-                                            <?php if ($act == '') echo 'readonly' ?>>
-                                        <?php if (isset($debtor_other_err)) {?>
-                                        <div id="err_msg">
-                                            <span class="mt-n1"><?php echo $debtor_other_err; ?></span>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div id="SDT_CreateMerchant" hidden>
+                                <div class="form-group mb-3">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label class="form-label form_lbl" id="debtors_other_lbl" for="mrcht_other">Debtor
+                                                Name*</label>
+                                            <input class="form-control" type="text" name="debtors_other" id="debtors_other" <?php if ($act == '') echo 'readonly' ?>>
+                                            <?php if (isset($debtor_other_err)) { ?>
+                                                <div id="err_msg">
+                                                    <span class="mt-n1"><?php echo $debtor_other_err; ?></span>
+                                                </div>
+                                            <?php } ?>
                                         </div>
-                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="sdt_desc_lbl" for="sdt_desc">Description<span
-                            class="requireRed">*</span></label>
-                    <textarea class="form-control" name="sdt_desc" id="sdt_desc" rows="3"
-                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['description'])) echo $row['description'] ?></textarea>
-                        <?php if (isset($desc_err)) {?>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="sdt_desc_lbl" for="sdt_desc">Description<span class="requireRed">*</span></label>
+                        <textarea class="form-control" name="sdt_desc" id="sdt_desc" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['description'])) echo $row['description'] ?></textarea>
+                        <?php if (isset($desc_err)) { ?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $desc_err; ?></span>
                             </div>
-                            <?php } ?>
-                </div>
+                        <?php } ?>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="sdt_remark_lbl" for="sdt_remark">Remark</label>
-                    <textarea class="form-control" name="sdt_remark" id="sdt_remark" rows="3"
-                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="sdt_remark_lbl" for="sdt_remark">Remark</label>
+                        <textarea class="form-control" name="sdt_remark" id="sdt_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="sdt_attach_lbl" for="sdt_attach">Attachment</label>
-                            <input class="form-control" type="file" name="sdt_attach" id="sdt_attach" value=""
-                                <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($err2)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $err2; ?></span>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="sdt_attach_lbl" for="sdt_attach">Attachment</label>
+                                <input class="form-control" type="file" name="sdt_attach" id="sdt_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($err2)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $err2; ?></span>
+                                    </div>
+                                <?php } ?>
+                                <?php if (isset($row['attachment']) && $row['attachment']) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                    </div>
+                                    <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <?php } ?>
                             </div>
-                            <?php } ?>
-                            <?php if (isset($row['attachment']) && $row['attachment']) {?>
-                            <div id="err_msg">
-                                <span
-                                    class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                            </div>
-                            <input type="hidden" name="existing_attachment"
-                                value="<?php echo htmlspecialchars($row['attachment']); ?>">
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                <?php
-                                $attachmentSrc = '';
-                                if (isset($row['attachment'])) 
-                                    $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
-                                ?>
-                                <img id="sdt_attach_preview" name="sdt_attach_preview"
-                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="sdt_attachmentValue"
-                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <?php
+                                    $attachmentSrc = '';
+                                    if (isset($row['attachment']))
+                                        $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
+                                    ?>
+                                    <img id="sdt_attach_preview" name="sdt_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                    <input type="hidden" name="sdt_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
-                    switch ($act) {
-                        case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
-                            break;
-                        case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
-                            break;
-                    }
-                    ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
-                        value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                break;
+                            case 'E':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                break;
+                        }
+                        ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
     <?php
     /*
         oufei 20231014
@@ -673,7 +660,12 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-    <?php include "../js/sundry_debt_trans.js" ?>
+        <?php include "../js/sundry_debt_trans.js" ?>
+
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        preloader(300, action);
     </script>
 
 </body>

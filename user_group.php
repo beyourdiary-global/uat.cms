@@ -259,125 +259,130 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    <div id="err_msg">
-                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
-                </div>
 
-                <div class="row d-flex justify-content-center">
                     <div class="form-group mb-3">
-                        <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
-                        <div class="table-responsive">
-                            <table class="table table-striped" id="permission_table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <?php
-                                        if (mysqli_num_rows($pinResult) != 0) {
-                                            while ($pin_row = $pinResult->fetch_assoc()) {
-                                        ?>
-                                                <th class="text-center" scope="col">
-                                                    <?php
-                                                    echo $pin_row['name'];
-                                                    array_push($pin_arr, $pin_row['id']);
-                                                    ?>
-                                                </th>
-                                        <?php
-                                            }
-                                            $pin_arr_num = count($pin_arr);
-                                        }
-                                        ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    if (mysqli_num_rows($pinGrpResult) != 0) {
-                                        while ($pin_grp_row = $pinGrpResult->fetch_assoc()) {
-                                            // get pin
-                                            $pin_grp_pins = explode(",", $pin_grp_row['pins']);
-                                            $pin_grp_pins_count = count($pin_grp_pins);
-                                    ?>
-                                            <tr id="<?php echo $pin_grp_row['name'] . '_row[' . $pin_grp_row['id'] . ']' ?>" name="<?php echo $pin_grp_row['name'] . '_row' ?>">
-                                                <th scope="row"><?php echo $pin_grp_row['name'] ?></th>
-                                                <?php
-                                                for ($i = 0; $i < $pin_arr_num; $i++) {
-                                                    $found = 0;
-                                                    $checked = '';
+                        <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                        <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                        <div id="err_msg">
+                            <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                        </div>
+                    </div>
 
-                                                    for ($j = 0; $j < $pin_grp_pins_count; $j++) {
-                                                        // check if pin exist in pin group
-                                                        if ($pin_arr[$i] == $pin_grp_pins[$j]) {
-                                                            // check if pin checked (act: edit/view)
-                                                            if ((isset($act)) && ($act != 'I')) {
-                                                                for ($k = 0; $k < $permission_grp_count; $k++) {
-                                                                    if ($permission_grp_keys[$k] == $pin_grp_row['id']) {
-                                                                        if (is_array($permission_grp[$permission_grp_keys[$k]]) || is_object($permission_grp[$permission_grp_keys[$k]])) {
-                                                                            foreach ($permission_grp[$permission_grp_keys[$k]] as $val) {
-                                                                                if ($val == $pin_grp_pins[$j])
-                                                                                    $checked = " checked";
+                    <div class="row d-flex justify-content-center">
+                        <div class="form-group mb-3">
+                            <label class="form-label" id="permission_table_lbl" for="permission_table">Permissions</label>
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="permission_table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <?php
+                                            if (mysqli_num_rows($pinResult) != 0) {
+                                                while ($pin_row = $pinResult->fetch_assoc()) {
+                                            ?>
+                                                    <th class="text-center" scope="col">
+                                                        <?php
+                                                        echo $pin_row['name'];
+                                                        array_push($pin_arr, $pin_row['id']);
+                                                        ?>
+                                                    </th>
+                                            <?php
+                                                }
+                                                $pin_arr_num = count($pin_arr);
+                                            }
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        if (mysqli_num_rows($pinGrpResult) != 0) {
+                                            while ($pin_grp_row = $pinGrpResult->fetch_assoc()) {
+                                                // get pin
+                                                $pin_grp_pins = explode(",", $pin_grp_row['pins']);
+                                                $pin_grp_pins_count = count($pin_grp_pins);
+                                        ?>
+                                                <tr id="<?php echo $pin_grp_row['name'] . '_row[' . $pin_grp_row['id'] . ']' ?>" name="<?php echo $pin_grp_row['name'] . '_row' ?>">
+                                                    <th scope="row"><?php echo $pin_grp_row['name'] ?></th>
+                                                    <?php
+                                                    for ($i = 0; $i < $pin_arr_num; $i++) {
+                                                        $found = 0;
+                                                        $checked = '';
+
+                                                        for ($j = 0; $j < $pin_grp_pins_count; $j++) {
+                                                            // check if pin exist in pin group
+                                                            if ($pin_arr[$i] == $pin_grp_pins[$j]) {
+                                                                // check if pin checked (act: edit/view)
+                                                                if ((isset($act)) && ($act != 'I')) {
+                                                                    for ($k = 0; $k < $permission_grp_count; $k++) {
+                                                                        if ($permission_grp_keys[$k] == $pin_grp_row['id']) {
+                                                                            if (is_array($permission_grp[$permission_grp_keys[$k]]) || is_object($permission_grp[$permission_grp_keys[$k]])) {
+                                                                                foreach ($permission_grp[$permission_grp_keys[$k]] as $val) {
+                                                                                    if ($val == $pin_grp_pins[$j])
+                                                                                        $checked = " checked";
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
                                                                 }
+
+                                                                if ($act == '')
+                                                                    $readonly = ' disabled';
+                                                                else $readonly = '';
+
+                                                                echo '<td class="text-center" scope="row"><input class="form-check-input" type="checkbox" name="user_grp_chkbox_val[' . $pin_grp_row['id'] . '][]" value="' . $pin_arr[$i] . '"' . $checked . $readonly . '></td>';
+                                                                $found = 1;
                                                             }
-
-                                                            if ($act == '')
-                                                                $readonly = ' disabled';
-                                                            else $readonly = '';
-
-                                                            echo '<td class="text-center" scope="row"><input class="form-check-input" type="checkbox" name="user_grp_chkbox_val[' . $pin_grp_row['id'] . '][]" value="' . $pin_arr[$i] . '"' . $checked . $readonly . '></td>';
-                                                            $found = 1;
                                                         }
+                                                        if ($found != 1)
+                                                            echo '<td scope="row"></td>';
                                                     }
-                                                    if ($found != 1)
-                                                        echo '<td scope="row"></td>';
-                                                }
-                                                ?>
-                                            </tr>
-                                    <?php }
-                                    } ?>
-                                </tbody>
-                            </table>
+                                                    ?>
+                                                </tr>
+                                        <?php }
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>

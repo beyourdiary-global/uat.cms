@@ -294,179 +294,185 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size : 21px"><?php if (isset($err)) echo $err; ?></span>
-                </div>
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Product Name</label>
-                            <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php echo (isset($row['name'])) ? $row['name'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
-                        </div>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand</label>
-                            <?php
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size : 21px"><?php if (isset($err)) echo $err; ?></span>
+                    </div>
 
-                            unset($echoVal);
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Product Name</label>
+                                <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php echo (isset($row['name'])) ? $row['name'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                            </div>
+                        </div>
 
-                            if (isset($row['brand']))
-                                $echoVal = $row['brand'];
+                        <div class="col-12 col-md-6">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand</label>
+                                <?php
 
-                            if (isset($echoVal)) {
-                                $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
-                                if (!$brand_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                unset($echoVal);
+
+                                if (isset($row['brand']))
+                                    $echoVal = $row['brand'];
+
+                                if (isset($echoVal)) {
+                                    $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                                    if (!$brand_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $brand_row = $brand_rst->fetch_assoc();
+                                    echo $brand_row['name'];
                                 }
-                                $brand_row = $brand_rst->fetch_assoc();
-                                echo $brand_row['name'];
-                            }
-                            ?>
+                                ?>
 
-                            <input class="form-control" type="text" name="prod_brand" id="prod_brand" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : ''  ?>" required>
+                                <input class="form-control" type="text" name="prod_brand" id="prod_brand" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : ''  ?>" required>
 
-                            <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+                                <input type="hidden" name="prod_brand_hidden" id="prod_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
-                            <?php
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
+                                <?php
 
-                            unset($echoVal);
+                                unset($echoVal);
 
-                            if (isset($row['weight_unit']))
-                                $echoVal = $row['weight_unit'];
+                                if (isset($row['weight_unit']))
+                                    $echoVal = $row['weight_unit'];
 
-                            if (isset($echoVal)) {
-                                $weight_rst = getData('unit', "id = '$echoVal'", '', WGT_UNIT, $connect);
-                                if (!$weight_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                if (isset($echoVal)) {
+                                    $weight_rst = getData('unit', "id = '$echoVal'", '', WGT_UNIT, $connect);
+                                    if (!$weight_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $weight_row = $weight_rst->fetch_assoc();
                                 }
-                                $weight_row = $weight_rst->fetch_assoc();
-                            }
 
-                            ?>
-                            <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $weight_row['unit'] : ''  ?>" required>
-                            <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value="<?php echo (isset($row['weight_unit'])) ? $row['weight_unit'] : ''; ?>">
+                                ?>
+                                <input class="form-control" type="text" name="prod_wgt_unit" id="prod_wgt_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $weight_row['unit'] : ''  ?>" required>
+                                <input type="hidden" name="prod_wgt_unit_hidden" id="prod_wgt_unit_hidden" value="<?php echo (isset($row['weight_unit'])) ? $row['weight_unit'] : ''; ?>">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
+                                <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php echo (isset($row['weight'])) ? $row['weight'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
-                            <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php echo (isset($row['weight'])) ? $row['weight'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
-                            <?php
-                            unset($echoVal);
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
+                                <?php
+                                unset($echoVal);
 
-                            if (isset($row['currency_unit']))
-                                $echoVal = $row['currency_unit'];
+                                if (isset($row['currency_unit']))
+                                    $echoVal = $row['currency_unit'];
 
-                            if (!empty($echoVal)) {
-                                $currency_unit_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-                                if (!$currency_unit_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                if (!empty($echoVal)) {
+                                    $currency_unit_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                                    if (!$currency_unit_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $currency_unit_row = $currency_unit_rst->fetch_assoc();
                                 }
-                                $currency_unit_row = $currency_unit_rst->fetch_assoc();
-                            }
-                            ?>
-                            <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_unit_row['unit'] : ''  ?>" required>
-                            <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
+                                ?>
+                                <input class="form-control" type="text" name="prod_cur_unit" id="prod_cur_unit" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_unit_row['unit'] : ''  ?>" required>
+                                <input type="hidden" name="prod_cur_unit_hidden" id="prod_cur_unit_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
-                            <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6 d-flex align-items-center">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_barcode_status_lbl" for="prod_barcode_status">Record Barcode?</label>
-                            <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php if ($act == '') echo 'disabled'; ?> <?php echo (isset($row['barcode_status']) && $row['barcode_status'] == 'Yes') ? 'checked' : ''; ?>>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
+                                <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
-                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php echo (isset($row['barcode_slot'])) ? $row['barcode_slot'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    <div class="row">
+                        <div class="col-12 col-md-6 d-flex align-items-center">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_barcode_status_lbl" for="prod_barcode_status">Record Barcode?</label>
+                                <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php if ($act == '') echo 'disabled'; ?> <?php echo (isset($row['barcode_status']) && $row['barcode_status'] == 'Yes') ? 'checked' : ''; ?>>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
+                                <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php echo (isset($row['barcode_slot'])) ? $row['barcode_slot'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date</label>
-                            <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php echo (isset($row['expire_date'])) ? $row['expire_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date</label>
+                                <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php echo (isset($row['expire_date'])) ? $row['expire_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="form-group autocomplete mb-3">
-                            <label class="form-label form_lbl" id="parent_prod_lbl" for="parent_prod">Parent Product</label>
-                            <?php
-                            unset($echoVal);
+                        <div class="col-12 col-md-6">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="parent_prod_lbl" for="parent_prod">Parent Product</label>
+                                <?php
+                                unset($echoVal);
 
-                            if (isset($row['parent_product']))
-                                $echoVal = $row['parent_product'];
+                                if (isset($row['parent_product']))
+                                    $echoVal = $row['parent_product'];
 
-                            if (!empty($echoVal)) {
-                                $product_rst = getData('name', "id = '$echoVal'", '', PROD, $connect);
-                                if (!$product_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                if (!empty($echoVal)) {
+                                    $product_rst = getData('name', "id = '$echoVal'", '', PROD, $connect);
+                                    if (!$product_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $product_row = $product_rst->fetch_assoc();
                                 }
-                                $product_row = $product_rst->fetch_assoc();
-                            }
-                            ?>
-                            <input class="form-control" type="text" name="parent_prod" id="parent_prod" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_row['name'] : ''  ?>">
-                            <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value="<?php echo (isset($row['parent_product'])) ? $row['parent_product'] : ''; ?>">
+                                ?>
+                                <input class="form-control" type="text" name="parent_prod" id="parent_prod" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_row['name'] : ''  ?>">
+                                <input type="hidden" name="parent_prod_hidden" id="parent_prod_hidden" value="<?php echo (isset($row['parent_product'])) ? $row['parent_product'] : ''; ?>">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -474,7 +480,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>
@@ -508,7 +514,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                     dbTable: '<?= BRAND ?>' // json filename (generated when login)
                 }
-                var arr = searchInput(param,'<?= $SITEURL ?>');
+                var arr = searchInput(param, '<?= $SITEURL ?>');
             });
             $("#prod_brand").change(function() {
                 if ($(this).val() == '')
@@ -531,7 +537,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= WGT_UNIT ?>'
                 }
-                searchInput(param,'<?= $SITEURL ?>');
+                searchInput(param, '<?= $SITEURL ?>');
             });
             $("#prod_wgt_unit").change(function() {
                 if ($(this).val() == '')
@@ -548,7 +554,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= CUR_UNIT ?>'
                 }
-                searchInput(param,'<?= $SITEURL ?>');
+                searchInput(param, '<?= $SITEURL ?>');
             });
             $("#prod_cur_unit").change(function() {
                 if ($(this).val() == '')
@@ -565,7 +571,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     hiddenElementID: $(this).attr('id') + '_hidden',
                     dbTable: '<?= $tblName ?>'
                 }
-                searchInput(param,'<?= $SITEURL ?>');
+                searchInput(param, '<?= $SITEURL ?>');
             });
             $("#parent_prod").change(function() {
                 if ($(this).val() == '')

@@ -225,7 +225,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
+    <div class="page-load-cover">
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
             <?php echo $pageActionTitle ?>
@@ -289,13 +293,12 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             </form>
         </div>
     </div>
-
+    </div>
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
-
+        preloader(300, action);
         // JavaScript code to update the color code display
         const colorInput = document.getElementById("segmentationColor");
         const colorDisplay = document.getElementById("color-display");
