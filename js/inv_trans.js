@@ -89,7 +89,7 @@ $('.submitBtn').on('click', () => {
         mrcht_other_chk = 1;
     }
 
-    if ($('#ivs_amt').val() == '' || $('#ivs_amt').val() === null || $('#ivs_amt')
+    if ($('#ivs_amt').val() == '' ||  $('#ivs_amt').val() == '0' || $('#ivs_amt').val() === null || $('#ivs_amt')
             .val() === undefined) {
         amt_chk = 0;
         $("#ivs_amt").after(

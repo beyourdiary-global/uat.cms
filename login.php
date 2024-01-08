@@ -70,6 +70,7 @@ if ($email && $password) {
                     generateDBData(PROD, $connect);
                     generateDBData(PROD_STATUS, $connect);
                     generateDBData(MERCHANT, $finance_connect);
+                    generateDBData(USR_USER, $connect);
 
                     return header('Location: dashboard.php');
                } else {

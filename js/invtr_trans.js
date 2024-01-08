@@ -121,7 +121,7 @@ $('.submitBtn').on('click', () => {
         item_chk = 1;
     }
 
-    if ($('#invtr_amt').val() == '' || $('#invtr_amt').val() === null || $('#invtr_amt')
+    if ($('#invtr_amt').val() == '' ||  $('#invtr_amt').val() == '0' || $('#invtr_amt').val() === null || $('#invtr_amt')
             .val() === undefined) {
         amt_chk = 0;
         $("#invtr_amt").after(
