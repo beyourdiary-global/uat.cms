@@ -98,10 +98,10 @@ $('.submitBtn').on('click', () => {
         mrcht_chk = 1;
     }
 
-    if ($('#invtr_mrcht').val() === 'other') {
-        if ($('#mrcht_other').val() === '' || $('#invtr_amt').val() === null || $('#invtr_amt').val() === undefined) {
+    if ($('#invtr_mrcht').val() === 'Create New Merchant') {
+        if ($('#invtr_mrcht_other').val() === '' || $('#invtr_mrcht_other').val() === null || $('#invtr_mrcht_other').val() === undefined) {
             mrcht_other_chk = 0;
-            $("#mrcht_other").after(
+            $("#invtr_mrcht_other").after(
                 '<span class="error-message mrcht-other-err">Other Merchant Name is required!</span>');
         } else {
             $(".mrcht-other-err").remove();

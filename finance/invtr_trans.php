@@ -75,7 +75,7 @@ if (post('actionBtn')) {
 
     $invtr_date = postSpaceFilter("invtr_date");
     $invtr_mrcht = postSpaceFilter('invtr_mrcht_hidden');
-    $mrcht_other = postSpaceFilter('mrcht_other');
+    $mrcht_other = postSpaceFilter('invtr_mrcht_other');
     $invtr_item = postSpaceFilter('invtr_item');
     $invtr_unit_price = postSpaceFilter('invtr_unit_price');
     $invtr_bal_qty = postSpaceFilter('invtr_bal_qty');
@@ -203,7 +203,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(transactionID,date,merchantID,itemID,unit_price,bal_qty,amount,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$invtr_date','$invtr_mrcht','$invtr_item','$invtr_unit_price','$invtr_bal_qty','$invtr_amt','$invtr_remark','$invtr_attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(transactionID,date,merchantID,itemID,unit_price,bal_qty,amount,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$invtr_date','$invtr_mrcht','$invtr_item','$invtr_unit_price','$invtr_bal_qty','$invtr_amt','$invtr_attach','$invtr_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -433,7 +433,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                             ?>
                             <input class="form-control" type="text" name="invtr_mrcht" id="invtr_mrcht"
                                 <?php if ($act == '') echo 'readonly' ?>
-                                value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : ''  ?>" required>
+                                value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : ''  ?>">
                             <input type="hidden" name="invtr_mrcht_hidden" id="invtr_mrcht_hidden"
                                 value="<?php echo (isset($row['merchantID'])) ? $row['merchantID'] : ''; ?>">
 
@@ -451,9 +451,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                             <div class="form-group mb-3">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <label class="form-label form_lbl" id="mrcht_other_lbl" for="mrcht_other">Merchant
+                                        <label class="form-label form_lbl" id="invtr_mrcht_other_lbl" for="invtr_mrcht_other">Merchant
                                             Name*</label>
-                                        <input class="form-control" type="text" name="mrcht_other" id="mrcht_other" <?php if ($act == '') echo 'readonly' ?>>
+                                        <input class="form-control" type="text" name="invtr_mrcht_other" id="invtr_mrcht_other" <?php if ($act == '') echo 'readonly' ?>>
                                         <?php if (isset($mrcht_other_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1"><?php echo $mrcht_other_err; ?></span>

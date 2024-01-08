@@ -7,24 +7,26 @@ include_once '../checkCurrentPagePin.php';
 
 $tblName = SD_TRANS;
 
-$row_id = !empty(input('id')) ? input('id') : post('id');
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
-$pageAction = getPageAction($act);
-$allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
-
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 $redirect_page = $SITEURL . '/finance/sundry_debt_trans_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
+$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
+$pageAction = getPageAction($act);
+$allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 $img_path = '../' . img_server . 'finance/sundry_debtors/';
 if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
 
 // to display data to input
-if ($row_id) { //edit/remove/view
-    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
+if ($dataID) { //edit/remove/view
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
     
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -55,30 +57,31 @@ if ($row_id) { //edit/remove/view
     $trans_id = "SDT{$currentDate}{$nextRowId}";
 }
 
-if (!($row_id) && !($act)) {
+if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
     window.location.href = "' . $redirect_page . '"; // Redirect to previous page
     </script>';
 }
 
-//dropdown list for merchant
-$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
-
 if (post('actionBtn')) {
+    $action = post('actionBtn');
+
     $sdt_type = postSpaceFilter("sdt_type");
     $sdt_date = postSpaceFilter("sdt_date");
-    $sdt_debtors = postSpaceFilter('sdt_debtors');
+    $sdt_debtors = postSpaceFilter('sdt_debtors_hidden');
     $debtors_other = postSpaceFilter('debtors_other');
     $sdt_amt = postSpaceFilter('sdt_amt');
     $sdt_prev_amt = 0;
     $sdt_final_amt = 0;
     $sdt_desc = postSpaceFilter('sdt_desc');
+    $sdt_attach = null;
     $sdt_remark = postSpaceFilter('sdt_remark');
-    $action = post('actionBtn');
+    
     $isDuplicateMerchant = false;
 
-    $sdt_attach = null;
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+
     if (isset($_FILES["sdt_attach"]) && $_FILES["sdt_attach"]["size"] != 0) {
         $sdt_attach = $_FILES["sdt_attach"]["name"];
     } elseif (isset($_POST['existing_attachment'])) {
@@ -127,18 +130,18 @@ if (post('actionBtn')) {
             } else if (!$sdt_debtors && $sdt_debtors < 1) {
                 $debt_err = "Please specify the debtor.";
                 break;
-            } else if (($sdt_debtors == 'other') && !isset($sdt_debtors)) {
+            } else if (($sdt_debtors == 'Create New Merchant') && !isset($debtors_other)) {
                 $debtors_other_err = "Debtor name is required!";
                 break;
-            } else if(($sdt_debtors == 'other') && isDuplicateRecord("name", $debtor_other, MERCHANT, $finance_connect, '')) {
-                $mrcht_other_err = "Duplicate record found for Merchant name.";
+            } else if(($sdt_debtors == 'Create New Merchant') && isDuplicateRecord("name", $debtors_other, MERCHANT, $finance_connect, '')) {
+                $debtors_other_err = "Duplicate record found for Merchant name.";
                 $isDuplicateMerchant = true;
                 break;
             } else if (!$sdt_amt) {
                 $amt_err = "Amount cannot be empty.";
                 break;
             }    else if (!$sdt_desc) {
-                    $desc_err = "Description cannot be empty.";
+                    $sdt_desc_err = "Description cannot be empty.";
                     break;
             } else if ($action == 'addTransaction') {
                 try {
@@ -176,8 +179,20 @@ if (post('actionBtn')) {
                         $sdt_final_amt = number_format($sdt_prev_amt - $sdt_amt, 2, '.', '');
                     }
 
-                    $newvalarr = array();
+                    if (($sdt_debtors == 'Create New Merchant') && !($isDuplicateMerchant)) {
+                        try {
+                            $sdt_debtors = insertNewMerchant($debtors_other, USER_ID, $finance_connect);
+                            generateDBData(MERCHANT, $finance_connect);
+                        }catch (Exception $e) {
+                            $errorMsg = $e->getMessage();
+                        }
+                    }
+
                     // check value
+                    if ($trans_id) {
+                        array_push($newvalarr, $trans_id);
+                        array_push($datafield, 'transactionID');
+                    }
                     if ($sdt_type)
                     array_push($newvalarr, $sdt_type[0]);
 
@@ -205,18 +220,27 @@ if (post('actionBtn')) {
                     if ($sdt_remark)
                     array_push($newvalarr, $sdt_remark);
 
-                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_remark','$sdt_attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_attach','$sdt_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                     
                 } catch (Exception $e) {
                     echo 'Message: ' . $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
+                    if (($sdt_debtors == 'Create New Merchant') && !($isDuplicateMerchant)) {
+                        try {
+                            $sdt_debtors = insertNewMerchant($debtors_other, USER_ID, $finance_connect);
+                        } catch (Exception $e) {
+                            $errorMsg = $e->getMessage();
+                        }
+                    }
                     // take old value
-                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1',$tblName, $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1',$tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
                     $oldvalarr = $chgvalarr = array();
 
@@ -284,7 +308,7 @@ if (post('actionBtn')) {
                             " . $tblName . "
                         WHERE
                             debtors = '$sdt_debtors'
-                            AND id < '$row_id'
+                            AND id < '$dataID'
                             AND `status` != 'D'
                         ORDER BY
                             id DESC
@@ -303,6 +327,7 @@ if (post('actionBtn')) {
                         } else {
                             $sdt_prev_amt = 0; 
                         }
+                        $sdt_amt = floatval(str_replace(',', '', $sdt_amt));
 
                         if ($sdt_type == 'Add') {
                             $sdt_final_amt = number_format($sdt_prev_amt + $sdt_amt, 2, '.', '');
@@ -310,7 +335,7 @@ if (post('actionBtn')) {
                             $sdt_final_amt = number_format($sdt_prev_amt - $sdt_amt, 2, '.', '');
                         }
 
-                        $query = "UPDATE " . $tblName . " SET type = '$sdt_type',payment_date = '$sdt_date',debtors = '$sdt_debtors', amount = '$sdt_amt', prev_amt ='$sdt_prev_amt', final_amt ='$sdt_final_amt', description='$sdt_desc', attachment ='$sdt_attach', remark ='$sdt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
+                        $query = "UPDATE " . $tblName . " SET type = '$sdt_type',payment_date = '$sdt_date',debtors = '$sdt_debtors', amount = '$sdt_amt', prev_amt ='$sdt_prev_amt', final_amt ='$sdt_final_amt', description='$sdt_desc', attachment ='$sdt_attach', remark ='$sdt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
                         updateTransAmt($finance_connect, $tblName,['debtors'],['debtors']);
@@ -319,6 +344,7 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             }
             
@@ -378,11 +404,11 @@ if (post('act') == 'D') {
             $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
-            $row_id = $row['id'];
+            $dataID = $row['id'];
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -392,7 +418,7 @@ if (post('act') == 'D') {
 }
 
 //view
-if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
+if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $trans_id = isset($dataExisted) ? $row['transactionID'] : '';
     $_SESSION['viewChk'] = 1;
 
@@ -513,32 +539,30 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 <div class="form-group mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 autocomplete">
                             <label class="form-label form_lbl" id="sdt_debtors_lbl" for="sdt_debtors">Debtors<span
                                     class="requireRed">*</span></label>
-                            <select class="form-select" id="sdt_debtors" name="sdt_debtors"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Debtor</option>
-                                <option value="other"
-                                    <?php if (isset($sdt_debtors) && $sdt_debtors == 'other') echo 'selected'; ?>>Create
-                                    New Merchant</option>
-                                <?php
-                                    if ($mrcht_list_result->num_rows >= 1) {
-                                        $mrcht_list_result->data_seek(0);
-                                        while ($row2 = $mrcht_list_result->fetch_assoc()) {
-                                            $selected = "";
-                                            if (isset($dataExisted,$row['debtors']) && !isset($invtr_mrcht)) {
-                                                $selected = $row['debtors'] == $row2['id'] ? " selected" : "";
-                                            }else if (isset($sdt_debtors) && ($sdt_debtors != 'other')) {
-                                            $selected = $sdt_debtors == $row2['id'] ? " selected" : "";
-                                            }
-                                            echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                                        }
-                                    } else {
-                                        echo "<option value=\"0\">None</option>";
-                                    }
-                                    ?>
-                            </select>
+                            <?php
+                            unset($echoVal);
+
+                            if (isset($row['debtors']))
+                                $echoVal = $row['debtors'];
+
+                            if (isset($echoVal)) {
+                                $mrcht_rst = getData('name', "id = '$echoVal'", '', MERCHANT, $finance_connect);
+                                if (!$mrcht_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $mrcht_row = $mrcht_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="sdt_debtors" id="sdt_debtors"
+                                <?php if ($act == '') echo 'disabled' ?>
+                                value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : ''  ?>">
+                            <input type="hidden" name="sdt_debtors_hidden" id="sdt_debtors_hidden"
+                                value="<?php echo (isset($row['debtors'])) ? $row['debtors'] : ''; ?>">
+
                             <?php if (isset($debt_err)) {?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $debt_err; ?></span>
@@ -572,13 +596,13 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label class="form-label form_lbl" id="debtors_other_lbl"
-                                            for="mrcht_other">Debtor
+                                            for="debtors_other">Debtor
                                             Name*</label>
                                         <input class="form-control" type="text" name="debtors_other" id="debtors_other"
-                                            <?php if ($act == '') echo 'readonly' ?>>
-                                        <?php if (isset($debtor_other_err)) {?>
+                                            <?php if ($act == '') echo 'disabled' ?>>
+                                        <?php if (isset($debtors_other_err)) {?>
                                         <div id="err_msg">
-                                            <span class="mt-n1"><?php echo $debtor_other_err; ?></span>
+                                            <span class="mt-n1"><?php echo $debtors_other_err; ?></span>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -593,11 +617,11 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             class="requireRed">*</span></label>
                     <textarea class="form-control" name="sdt_desc" id="sdt_desc" rows="3"
                         <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['description'])) echo $row['description'] ?></textarea>
-                        <?php if (isset($desc_err)) {?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $desc_err; ?></span>
-                            </div>
-                            <?php } ?>
+                    <?php if (isset($sdt_desc_err)) {?>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php echo $sdt_desc_err; ?></span>
+                    </div>
+                    <?php } ?>
                 </div>
 
                 <div class="form-group mb-3">
