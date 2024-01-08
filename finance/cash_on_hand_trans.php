@@ -71,7 +71,7 @@ if (post('actionBtn')) {
 
     $coh_type = postSpaceFilter("coh_type");
     $coh_date = postSpaceFilter("coh_date");
-    $coh_pic = postSpaceFilter("coh_pic");
+    $coh_pic = postSpaceFilter("coh_pic_hidden");
     $coh_bank = postSpaceFilter("coh_bank");
     $coh_curr = postSpaceFilter('coh_currency');
     $coh_amt = postSpaceFilter('coh_amt');
@@ -544,29 +544,30 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 <div class="form-group mb-3">
                     <div class="row">
-                    <div class="col-md-3">
-                            <label class="form-label form_lbl" id="coh_currency_lbl"
+                    <div class="col-md-3 autocomplete">
+                            <label class="form-label form_lbl" id="coh_pic_lbl"
                                 for="coh_pic">Person-In-Charge<span class="requireRed">*</span></label>
-                            <select class="form-select" id="coh_pic" name="coh_pic"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select PIC</option>
                                 <?php
-                                if ($pic_list_result->num_rows >= 1) {
-                                    $pic_list_result->data_seek(0);
-                                    while ($pic = $pic_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['pic']) && (!isset($coh_pic))) {
-                                            $selected = $row['pic'] == $pic['id'] ? "selected" : "";
-                                        } else if (isset($coh_pic)) {
-                                            $selected = $coh_pic == $pic['id'] ? "selected" : "";
-                                        }
-                                        echo "<option value=\"" . $pic['id'] . "\" $selected>" . $pic['name'] . "</option>";
+                                unset($echoVal);
+
+                                if (isset($row['pic']))
+                                    $echoVal = $row['pic'];
+
+                                if (isset($echoVal)) {
+                                    $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                                    if (!$user_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                     }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
+                                    $user_row = $user_rst->fetch_assoc();
                                 }
                                 ?>
-                            </select>
+                            <input class="form-control" type="text" name="coh_pic" id="coh_pic"
+                                <?php if ($act == '') echo 'disabled' ?>
+                                value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
+                            <input type="hidden" name="coh_pic_hidden" id="coh_pic_hidden"
+                                value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+
 
                             <?php if (isset($pic_err)) { ?>
                             <div id="err_msg">

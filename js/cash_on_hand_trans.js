@@ -2,6 +2,25 @@ $('#coh_attach').on('change', function() {
     previewImage(this, 'coh_attach_preview')
 })
 
+//autocomplete
+$(document).ready(function() {
+
+    if (!($("#coh_pic").attr('disabled'))) {
+        $("#coh_pic").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            console.log(param["elementID"]);
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+})
+
 //jQuery form validation
 $("#coh_type").on("input", function() {
     $(".coh-type-err").remove();
