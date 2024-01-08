@@ -323,7 +323,7 @@ if (post('actionBtn')) {
                             bank = '$coh_bank'
                             AND currency = '$coh_curr'
                             AND pic = '$coh_pic'
-                            AND id < '$row_id'
+                            AND id < '$dataID'
                             AND `status` != 'D'
                         ORDER BY
                             id DESC
