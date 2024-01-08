@@ -114,6 +114,7 @@ define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
 define('INVTR_TRANS', 'asset_inventories_transaction');
 define('INV_TRANS', 'asset_investment_transaction');
 define('SD_TRANS', 'asset_sundry_debtors_transaction');
+define('META_ADS_ACC', 'meta_ads_account');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
