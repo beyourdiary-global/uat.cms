@@ -547,6 +547,7 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     } else {
                                         echo "<option value=\"0\">None</option>";
                                     }
+
                                     ?>
                                 </select>
 
