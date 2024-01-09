@@ -5,7 +5,7 @@ $isFinance = 1;
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = CURR_BANK_TRANS ;
+$tblName = CURR_BANK_TRANS;
 
 $row_id = input('id');
 $act = input('act');
@@ -24,7 +24,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($row_id) { //edit/remove/view
-    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -231,7 +231,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -336,7 +336,7 @@ if (post('actionBtn')) {
                         $query = "UPDATE " . $tblName  . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                        updateTransAmt($finance_connect, $tblName , ['bank', 'currency'], ['bank', 'currency']);
+                        updateTransAmt($finance_connect, $tblName, ['bank', 'currency'], ['bank', 'currency']);
                     } else {
                         $act = 'NC';
                     }
@@ -386,20 +386,20 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $row_id = $row['id'];
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
-    updateTransAmt($finance_connect, $tblName , ['bank', 'currency'], ['bank', 'currency']);
+    updateTransAmt($finance_connect, $tblName, ['bank', 'currency'], ['bank', 'currency']);
 }
 
 //view
@@ -433,221 +433,232 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
 <head>
     <link rel="stylesheet" href="../css/main.css">
-
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
-                                                                                                                    ?></p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="CBAFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, 'Transaction');
-                        ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_trans_id_lbl" for="cba_trans_id">Transaction
-                                ID</label>
-                            <p>
-                                <input class="form-control" type="text" name="cba_trans_id" id="cba_trans_id" disabled value="<?php echo $trans_id ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_type_label" for="cba_type">Type
-                                <span class="requireRed">*</span></label>
-                            <select class="form-select" name="cba_type" id="cba_type" required <?php if ($act == '') echo 'disabled' ?>>
-                                <option disabled selected>Select transaction type</option>
-                                <option value="Add" <?php
-                                                    if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($cba_type) ||  $cba_type == 'Add')) {
-                                                        echo "selected";
-                                                    } else {
-                                                        echo "";
-                                                    }
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php
+                echo displayPageAction($act, 'Transaction');
+                ?>
+            </p>
+        </div>
 
-                                                    ?>>
-                                    Add</option>
-                                <option value="Deduct" <?php
-                                                        if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($cba_type) || $cba_type == 'Deduct')) {
+        <div id="CBAFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                            echo displayPageAction($act, 'Transaction');
+                            ?>
+                        </h2>
+                    </div>
+
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_trans_id_lbl" for="cba_trans_id">Transaction
+                                    ID</label>
+                                <p>
+                                    <input class="form-control" type="text" name="cba_trans_id" id="cba_trans_id" disabled value="<?php echo $trans_id ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_type_label" for="cba_type">Type
+                                    <span class="requireRed">*</span></label>
+                                <select class="form-select" name="cba_type" id="cba_type" required <?php if ($act == '') echo 'disabled' ?>>
+                                    <option disabled selected>Select transaction type</option>
+                                    <option value="Add" <?php
+                                                        if (isset($dataExisted, $row['type'])  && $row['type'] == 'Add'  && (!isset($cba_type) ||  $cba_type == 'Add')) {
                                                             echo "selected";
                                                         } else {
                                                             echo "";
                                                         }
 
                                                         ?>>
-                                    Deduct</option>
-                            </select>
-                            <?php if (isset($type_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $type_err; ?></span>
-                                </div>
-                            <?php } ?>
+                                        Add</option>
+                                    <option value="Deduct" <?php
+                                                            if (isset($dataExisted, $row['type']) && $row['type'] == 'Deduct' && (!isset($cba_type) || $cba_type == 'Deduct')) {
+                                                                echo "selected";
+                                                            } else {
+                                                                echo "";
+                                                            }
+
+                                                            ?>>
+                                        Deduct</option>
+                                </select>
+                                <?php if (isset($type_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $type_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_date_label" for="cba_date">Date<span class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="cba_date" id="cba_date" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['date']) && !isset($cba_date)) {
+                                                                                                                    echo $row['date'];
+                                                                                                                } else if (isset($cba_date)) {
+                                                                                                                    echo $cba_date;
+                                                                                                                } else {
+                                                                                                                    echo date('Y-m-d');
+                                                                                                                }
+                                                                                                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $date_err; ?></span>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_date_label" for="cba_date">Date<span class="requireRed">*</span></label>
-                            <input class="form-control" type="date" name="cba_date" id="cba_date" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['date']) && !isset($cba_date)) {
-                                                                                                                echo $row['date'];
-                                                                                                            } else if (isset($cba_date)) {
-                                                                                                                echo $cba_date;
-                                                                                                            } else {
-                                                                                                                echo date('Y-m-d');
+
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_bank_lbl" for="cba_bank">Bank<span class="requireRed">*</span></label>
+                                <select class="form-select" id="cba_bank" name="cba_bank" <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Bank</option>
+                                    <?php
+                                    if ($bank_list_result->num_rows >= 1) {
+                                        $bank_list_result->data_seek(0);
+                                        while ($row3 = $bank_list_result->fetch_assoc()) {
+                                            $selected = "";
+                                            if (isset($dataExisted, $row['bank']) && !isset($cba_bank)) {
+                                                $selected = $row['bank'] == $row3['id'] ? " selected" : "";
+                                            } else if (isset($cba_bank)) {
+                                                $selected = $cba_bank == $row3['id'] ? " selected" : "";
+                                            }
+                                            echo "<option value=\"" . $row3['id'] . "\"$selected>" . $row3['name'] . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=\"0\">None</option>";
+                                    }
+
+                                    ?>
+                                </select>
+
+                                <?php if (isset($bank_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $bank_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_currency_lbl" for="cba_currency">Currency<span class="requireRed">*</span></label>
+                                <select class="form-select" id="cba_currency" name="cba_currency" <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Currency</option>
+                                    <?php
+                                    if ($cur_list_result->num_rows >= 1) {
+                                        $cur_list_result->data_seek(0);
+                                        while ($row2 = $cur_list_result->fetch_assoc()) {
+                                            $selected = "";
+                                            if (isset($dataExisted, $row['currency']) && (!isset($cba_curr))) {
+                                                $selected = $row['currency'] == $row2['id'] ? "selected" : "";
+                                            } else if (isset($cba_curr)) {
+                                                list($cba_curr_id, $cba_curr_unit) = explode(':', $cba_curr);
+                                                $selected = $cba_curr == $row2['id'] ? "selected" : "";
+                                            }
+                                            echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=\"0\">None</option>";
+                                    }
+                                    ?>
+                                </select>
+
+                                <?php if (isset($curr_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label form_lbl" id="cba_amt_lbl" for="cba_amt">Amount<span class="requireRed">*</span></label>
+                                <input class="form-control" type="text" name="cba_amt" id="cba_amt" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['amount']) && !isset($cba_amt)) {
+                                                                                                                echo $row['amount'];
+                                                                                                            } else if (isset($cba_amt)) {
+                                                                                                                echo $cba_amt;
                                                                                                             }
-                                                                                                            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($date_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $date_err; ?></span>
-                                </div>
-                            <?php } ?>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_bank_lbl" for="cba_bank">Bank<span class="requireRed">*</span></label>
-                            <select class="form-select" id="cba_bank" name="cba_bank" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Bank</option>
-                                <?php
-                                if ($bank_list_result->num_rows >= 1) {
-                                    $bank_list_result->data_seek(0);
-                                    while ($row3 = $bank_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['bank']) && !isset($cba_bank)) {
-                                            $selected = $row['bank'] == $row3['id'] ? " selected" : "";
-                                        } else if (isset($cba_bank)) {
-                                            $selected = $cba_bank == $row3['id'] ? " selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row3['id'] . "\"$selected>" . $row3['name'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <?php if (isset($bank_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $bank_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_currency_lbl" for="cba_currency">Currency<span class="requireRed">*</span></label>
-                            <select class="form-select" id="cba_currency" name="cba_currency" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Currency</option>
-                                <?php
-                                if ($cur_list_result->num_rows >= 1) {
-                                    $cur_list_result->data_seek(0);
-                                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['currency']) && (!isset($cba_curr))) {
-                                            $selected = $row['currency'] == $row2['id'] ? "selected" : "";
-                                        } else if (isset($cba_curr)) {
-                                            $selected = $cba_curr == $row2['id'] ? "selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <?php if (isset($curr_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
-                                </div>
-                            <?php } ?>
-
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label form_lbl" id="cba_amt_lbl" for="cba_amt">Amount<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="cba_amt" id="cba_amt" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['amount']) && !isset($cba_amt)) {
-                                                                                                            echo $row['amount'];
-                                                                                                        } else if (isset($cba_amt)) {
-                                                                                                            echo $cba_amt;
-                                                                                                        }
-                                                                                                        ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($amt_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="cba_remark_lbl" for="cba_remark">Transaction Remark</label>
-                    <textarea class="form-control" name="cba_remark" id="cba_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="cba_attach_lbl" for="cba_attach">Attachment</label>
-                            <input class="form-control" type="file" name="cba_attach" id="cba_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($err2)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $err2; ?></span>
-                                </div>
-                            <?php } ?>
-                            <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                                </div>
-                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                <?php
-                                $attachmentSrc = '';
-                                if (isset($row['attachment']))
-                                    $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
-                                ?>
-                                <img id="cba_attach_preview" name="cba_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="cba_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                                                                                            ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($amt_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
-                    switch ($act) {
-                        case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
-                            break;
-                        case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
-                            break;
-                    }
-                    ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="cba_remark_lbl" for="cba_remark">Transaction Remark</label>
+                        <textarea class="form-control" name="cba_remark" id="cba_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="cba_attach_lbl" for="cba_attach">Attachment</label>
+                                <input class="form-control" type="file" name="cba_attach" id="cba_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($err2)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $err2; ?></span>
+                                    </div>
+                                <?php } ?>
+                                <?php if (isset($row['attachment']) && $row['attachment']) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                    </div>
+                                    <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <?php
+                                    $attachmentSrc = '';
+                                    if (isset($row['attachment']))
+                                        $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
+                                    ?>
+                                    <img id="cba_attach_preview" name="cba_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                    <input type="hidden" name="cba_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                break;
+                            case 'E':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                break;
+                        }
+                        ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
     <?php
     /*
         oufei 20231014
@@ -661,8 +672,14 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
+
     <script>
         <?php include "../js/curr_bank_trans.js" ?>
+        
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+        centerAlignment("formContainer");
+        setButtonColor();
+        preloader(300, action);
     </script>
 
 </body>

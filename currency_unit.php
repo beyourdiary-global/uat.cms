@@ -83,7 +83,7 @@ if (post('actionBtn')) {
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("unit", $currentDataUnit, $tblName, $connect, $dataID)) {
-                $err = "Duplicate record found for " . $pageTitle ;
+                $err = "Duplicate record found for " . $pageTitle;
                 break;
             }
 
@@ -189,48 +189,54 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataUnit"><?php echo $pageTitle ?> Name</label>
-                    <input class="form-control" type="text" name="currentDataUnit" id="currentDataUnit" value="<?php if (isset($row['unit'])) echo $row['unit'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    <div id="err_msg">
-                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
+
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataUnit"><?php echo $pageTitle ?> Name</label>
+                        <input class="form-control" type="text" name="currentDataUnit" id="currentDataUnit" value="<?php if (isset($row['unit'])) echo $row['unit'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                        <div id="err_msg">
+                            <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                        </div>
+                    </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
+    
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>
