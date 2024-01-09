@@ -269,7 +269,7 @@ function generateDBData($tblname, $conn)
 	}
 	$encode_rst = json_encode($data);
 
-	$path = "./data/" . "$tblname.json";
+	$path = ROOT . "/data/$tblname.json";
 
 	$f = fopen($path, 'w');
 	fwrite($f, $encode_rst);
@@ -637,19 +637,35 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
+
+function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr = array(), $chgvalarr = array(), $tblName, $action, $errorMsg)
 {
-	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
+	$action = strtolower($action);
 
-	for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-		if ($i == 0)
-			$actMsg .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-		else
-			$actMsg .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+	$actMsg = USER_NAME . (empty($errorMsg) ? " " : " fail to ") . $action . "  the data [ <b> ID = ".$id." </b> ]";
+
+	switch ($action) {
+		case 'add':
+			for ($i = 0; $i < sizeof($datafield); $i++) {
+				if ($i == 0)
+					$actMsg .= " [ <b> " . $datafield[$i] . " </b> : <b>\'" . $newvalarr[$i] . "\'</b>  ]";
+				else
+					$actMsg .= " , [ <b> " . $datafield[$i] . " </b> : <b>\'" . $newvalarr[$i] . "\'</b> ]";
+			}
+			break;
+		case 'edit':
+
+			for ($i = 0; $i < sizeof($datafield); $i++) {
+				if ($i == 0)
+					$actMsg .= " [ <b> " . $datafield[$i] . " </b> : <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b> ]";
+				else
+					$actMsg .= " , [ <b> " . $datafield[$i] . " </b> : <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b> ]";
+			}
+			break;
 	}
-	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
 
-	(!empty($errorMsg)) ? $actMsg .= "( $errorMsg )" : '';
+	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
+	(!empty($errorMsg)) ? $actMsg .= " ( " . str_replace('\'', '', $errorMsg) . " )" : '';
 
 	return $actMsg;
 }

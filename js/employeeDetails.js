@@ -189,9 +189,12 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateNoOfChildInput() {
     if (maritalStatusDropdown.value === "2") {
       noOfChildInput.disabled = false;
+      noOfChildInput.required = true;
     } else {
       noOfChildInput.disabled = true;
       noOfChildInput.value = "";
+      noOfChildInput.required = false;
+
     }
   }
 
