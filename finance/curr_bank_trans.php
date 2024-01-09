@@ -74,6 +74,7 @@ if (post('actionBtn')) {
     $cba_bank = postSpaceFilter('cba_bank');
     $cba_curr = postSpaceFilter('cba_currency');
     $cba_amt = postSpaceFilter('cba_amt');
+    $cba_amt = floatval(str_replace(',', '', $cba_amt));
 
     $cba_attach = null;
     if (isset($_FILES["cba_attach"]) && $_FILES["cba_attach"]["size"] != 0) {
@@ -165,8 +166,6 @@ if (post('actionBtn')) {
                     } else {
                         $cba_prev_amt = 0;
                     }
-
-                    $cba_amt = floatval(str_replace(',', '', $cba_amt));
 
                     if ($cba_type == 'Add') {
                         $cba_final_amt = number_format($cba_prev_amt + $cba_amt, 2, '.', '');
