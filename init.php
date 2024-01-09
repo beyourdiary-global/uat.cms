@@ -114,6 +114,7 @@ define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
 define('INVTR_TRANS', 'asset_inventories_transaction');
 define('INV_TRANS', 'asset_investment_transaction');
 define('SD_TRANS', 'asset_sundry_debtors_transaction');
+define('META_ADS_ACC', 'meta_ads_account');
 define('CAONHD', 'asset_cash_on_hand_transaction');
 define('INITCA_TRANS', 'asset_initial_capital_transaction');
 define('OCR_TRANS', 'asset_other_creditor_transaction');
