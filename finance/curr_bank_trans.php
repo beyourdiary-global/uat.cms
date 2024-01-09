@@ -223,7 +223,6 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(transactionID,type,date,bank,currency,amount,prev_amt,final_amt,attachment,remark,create_by,create_date,create_time) VALUES ('$trans_id','$cba_type','$cba_date','$cba_bank','$cba_curr','$cba_amt','$cba_prev_amt','$cba_final_amt','$cba_attach','$cba_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
-                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();

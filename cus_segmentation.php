@@ -269,17 +269,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </div>
 
                 <div class="form-group mb-3">
-                <div class="row">
-                    <div class="col-sm">
-                        <label class="form-label" for="priceFrom">Price From</label>
-                        <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    </div>
-                    <div class="col-sm">
-                        <label class="form-label" for="priceTo">Price To</label>
-                        <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    </div>
+        <div class="row">
+            <div class="col-sm">
+                <label class="form-label" for="priceFrom">Price From</label>
+                <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceFromErrorMsg', 'priceToErrorMsg')">
+                <div id="priceFromErrorMsg" class="error-message">
+                    <span class="mt-n1"></span>
                 </div>
             </div>
+            <div class="col-sm">
+                <label class="form-label" for="priceTo">Price To</label>
+                <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceToErrorMsg', 'priceFromErrorMsg')">
+                <div id="priceToErrorMsg" class="error-message">
+                    <span class="mt-n1"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
@@ -308,6 +314,28 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             const selectedColor = colorInput.value;
             colorDisplay.textContent = selectedColor;
         });
+
+        function validateNumericInput(inputField, errorMsgId, otherErrorMsgId) {
+            const inputValue = inputField.value;
+            const numericValue = parseFloat(inputValue);
+
+            if (isNaN(numericValue)) {
+                inputField.value = inputValue.replace(/[^0-9.]/g, '');
+            }
+
+            const currentErrorMsg = document.getElementById(errorMsgId);
+            const otherErrorMsg = document.getElementById(otherErrorMsgId);
+
+            if (isNaN(parseFloat(document.getElementById("priceFrom").value)) && isNaN(parseFloat(document.getElementById("priceTo").value))) {
+                currentErrorMsg.textContent = "Please enter a number.";
+                currentErrorMsg.classList.add("error-message");
+                otherErrorMsg.textContent = "";
+                otherErrorMsg.classList.remove("error-message");
+            } else {
+                currentErrorMsg.textContent = "";
+                currentErrorMsg.classList.remove("error-message");
+            }
+        }
     </script>
 
 </body>

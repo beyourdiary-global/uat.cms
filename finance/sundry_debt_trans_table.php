@@ -133,6 +133,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
+
                         </tr>
                     </tfoot>
                 </table>
