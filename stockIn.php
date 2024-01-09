@@ -142,52 +142,41 @@ if (post('usrBtn')) {
 </head>
 
 <body>
-<div class="container d-flex justify-content-center mt-2">
-    <div class="col-8 col-md-6">
-        <form id="stockForm" method="post" action="">
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group my-5">
-                        <h3>
-                            Stock In
-                        </h3>
+    <div class="container d-flex justify-content-center mt-2">
+        <div class="col-8 col-md-6">
+            <form id="stockForm" method="post" action="">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group my-5">
+                            <h3>
+                                Stock In
+                            </h3>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Package</label>
-                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($pkg_name) echo $pkg_name?>" readonly>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="prod_name">Product</label>
+                            <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php if ($prod_name) echo $prod_name ?>" readonly>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Warehouse</label>
-                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($whse_name) echo $whse_name?>" readonly>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="warehouse">Warehouse</label>
+                            <input class="form-control" type="text" name="warehouse" id="warehouse" value="<?php if ($whse_name) echo $whse_name ?>" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Barcode</label>
-                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($barcode) echo $barcode?>" readonly>
-                    </div>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group mb-3">
-                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Barcode Slot Input: <?= $pkg_barcode_slot_total ?></label>
-                        <?= $barcode_input ?>
-                        <div id="err_msg">
-                            <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="barcode">Barcode</label>
+                            <input class="form-control" type="text" name="barcode" id="barcode" value="<?php if ($barcode) echo $barcode ?>" readonly>
                         </div>
                     </div>
                 </div>
@@ -195,14 +184,29 @@ if (post('usrBtn')) {
 
             <hr />
 
-            <div class="row">
-                <div class="col-12 d-flex justify-content-none justify-content-md-center">
-                    <div class="form-group mb-3">
-                        <?= $usr_btn ?>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="expire_date">Product Expire Date</label>
+                            <input class="form-control" type="text" name="expire_date" id="expire_date">
+                        </div>
                     </div>
                 </div>
             </div>
-        </form>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="barcode_input">Barcode Slot Input</label>
+                            <?= $barcode_input ?>
+                            <div id="barcode_slot_error" style="color: red;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="submitBtn">Submit</button>
+            </form>
+        </div>
     </div>
 </div>
 </body>
