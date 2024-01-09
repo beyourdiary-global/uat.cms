@@ -46,16 +46,12 @@ if ($prod_barcode_slot_required && $prod_barcode_slot_total >= 1) {
     }
 }
 
-if($rst_usr)
-{
-    while($usr = $rst_usr->fetch_assoc())
-    {
-        $usr_id = $usr['id'];
-        $usr_name = $usr['name'];
+// Get user info and generate buttons
+while ($usr = $rst_usr->fetch_assoc()) {
+    $usr_id = $usr['id'];
+    $usr_name = $usr['name'];
 
-        /* $usr_btn .= "<button class=\"btn btn-lg btn-rounded btn-primary mx-2\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>"; */
-        $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
-    }
+    $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
 }
 
 /* echo $barcode_input;
