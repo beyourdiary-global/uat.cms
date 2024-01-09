@@ -54,12 +54,39 @@ while ($usr = $rst_usr->fetch_assoc()) {
     $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
 }
 
-/* echo $barcode_input;
-echo $usr_btn; */
+<script>
+    $(document).ready(function() {
+        // Check for necessary data
+        var barcode = '<?=$barcode?>';
+        var prod_id = '<?=$prod_id?>';
+        var whse_id = '<?=$whse_id?>';
+        var usr_id = '<?=$usr_id?>';
 
-// submission
-if(post('usrBtn'))
-{
+        if (!barcode || !prod_id || !whse_id || !usr_id) {
+            // Missing necessary data, show alert and redirect
+            alert('Invalid request for stock-in. Please provide valid data.');
+            window.location.href = '<?=$SITEURL?>/dashboard.php';
+        }
+
+        // Check barcode requirement
+        var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
+        if (isBarcodeRequired) {
+            // Show barcode input fields
+            showNotification('Barcode is required for this product.');
+            <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
+                $("#barcode_input_<?=$x?>").prop('readonly', false);
+            <?php endfor; ?>
+        }
+    });
+
+    // Additional JavaScript for notifications
+    function showNotification(message) {
+        $("#notification").text(message).fadeIn().delay(3000).fadeOut();
+    }
+</script>
+
+// Submission
+if (post('usrBtn')) {
     $usrBtn = post('usrBtn');
     $barcode_input = post('barcode_input');
 
