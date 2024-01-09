@@ -88,16 +88,43 @@ while ($usr = $rst_usr->fetch_assoc()) {
 // Submission
 if (post('usrBtn')) {
     $usrBtn = post('usrBtn');
-    $barcode_input = post('barcode_input');
+    $barcodeInputs = post('barcode_input');
 
-    if($barcode_input != '')
-    {
-        $arrNum = sizeOF($barcode_input);
-        if($arrNum >= 1)
-        {
-            foreach($barcode_input as $batch_code)
-            {
-                $bulkInsert = "INSERT INTO $tblname (product_id,stock_in_date,barcode,product_batch_code,warehouse_id,stock_in_person_in_charges,remark,create_date,create_time,create_by,`status`) VALUES ('')";
+    if ($barcodeInputs != '') {
+        $arrNum = sizeof($barcodeInputs);
+
+        if ($arrNum >= 1) {
+            $productInfo = $rst_prod_info->fetch_assoc();
+
+            if ($productInfo) {
+                $brandId = $productInfo['brand_id'];
+                $productId = $productInfo['id'];
+                $productCategoryId = $productInfo['product_category_id'];
+
+                foreach ($barcodeInputs as $batchCode) {
+                    $stockInDate = date("Y-m-d");
+                    $barcode = generateBarcode();
+                    $productBatchCode = $batchCode;
+                    $productStatusId = 4;
+                    $warehouseId = $whse_id;
+                    $stockInPersonInCharges = $usrBtn;
+                    $remark = "Stock In";
+                    $createDate = date("Y-m-d");
+                    $createTime = date("H:i:s");
+                    $createBy = $usrBtn;
+
+                    $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
+
+                    $result = mysqli_query($connect, $insertQuery);
+
+                    if ($result) {
+                        $logMessage = "Stock In - Barcode: $barcode, Product ID: $productId, Warehouse ID: $warehouseId, User ID: $createBy";
+                        logAction($logMessage);
+                        showNotification('Stock In successful.');
+                    } else {
+                        showNotification('Stock In failed. Please try again.');
+                    }
+                }
             }
         }    
     }
