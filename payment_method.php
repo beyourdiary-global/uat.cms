@@ -215,64 +215,69 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    <div id="err_msg">
-                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
+
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-
-                        <div class="col-sm">
-                            <label class="form-label" for="installmentPeriod">Installment Period</label>
-                            <input class="form-control" type="number" name="installmentPeriod" id="installmentPeriod" step="any" required value="<?php if (isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                        <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                        <div id="err_msg">
+                            <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
                         </div>
-
-                        <div class="col-sm">
-                            <label class=" form-label" for="serviceRate">Service Rate</label><br>
-                            <input type="number" name="serviceRate" id="serviceRate" step="any" required <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control" style="height: 40px;">
-                        </div>
-
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <div class="row">
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                            <div class="col-sm">
+                                <label class="form-label" for="installmentPeriod">Installment Period</label>
+                                <input class="form-control" type="number" name="installmentPeriod" id="installmentPeriod" step="any" required value="<?php if (isset($row['installment_period'])) echo $row['installment_period'] ?>" <?php if ($act == '') echo 'readonly' ?> style="height: 40px;">
+                            </div>
+
+                            <div class="col-sm">
+                                <label class=" form-label" for="serviceRate">Service Rate</label><br>
+                                <input type="number" name="serviceRate" id="serviceRate" step="any" required <?php if ($act == '') echo 'readonly ' ?> value="<?php if (isset($row['service_rate'])) echo $row['service_rate'] ?>" class="form-control" style="height: 40px;">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
     <script>
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>

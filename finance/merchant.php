@@ -270,133 +270,138 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <?php if (isset($name_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $name_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mrcht_business_no_lbl" for="mrcht_business_no"><?php echo $pageTitle ?> Business No</label>
-                            <input class="form-control" type="text" name="mrcht_business_no" id="mrcht_business_no" value="<?php
-                                                                                                                            if (isset($dataExisted) && isset($row['business_no']) && !isset($mrcht_business_no)) {
-                                                                                                                                echo $row['business_no'];
-                                                                                                                            } else if (isset($dataExisted) && isset($row['business_no']) && isset($mrcht_business_no)) {
-                                                                                                                                echo $mrcht_business_no;
-                                                                                                                            } else {
-                                                                                                                                echo '';
-                                                                                                                            } ?>" <?php if ($act == '') echo 'readonly' ?>>
-                        </div>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
 
-                            <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact"><?php echo $pageTitle ?> Contact</label>
-                            <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact" value="<?php
-                                                                                                                                if (isset($dataExisted) && isset($row['contact']) && !isset($mrcht_contact)) {
-                                                                                                                                    echo $row['contact'];
-                                                                                                                                } else if (isset($dataExisted) && isset($row['contact']) && isset($mrcht_contact)) {
-                                                                                                                                    echo $mrcht_contact;
+                                <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <?php if (isset($name_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $name_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="mrcht_business_no_lbl" for="mrcht_business_no"><?php echo $pageTitle ?> Business No</label>
+                                <input class="form-control" type="text" name="mrcht_business_no" id="mrcht_business_no" value="<?php
+                                                                                                                                if (isset($dataExisted) && isset($row['business_no']) && !isset($mrcht_business_no)) {
+                                                                                                                                    echo $row['business_no'];
+                                                                                                                                } else if (isset($dataExisted) && isset($row['business_no']) && isset($mrcht_business_no)) {
+                                                                                                                                    echo $mrcht_business_no;
                                                                                                                                 } else {
                                                                                                                                     echo '';
                                                                                                                                 } ?>" <?php if ($act == '') echo 'readonly' ?>>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email"><?php echo $pageTitle ?> Email</label>
-                            <input class="form-control" type="text" name="mrcht_email" id="mrcht_email" value="<?php
-                                                                                                                if (isset($dataExisted) && isset($row['email']) && !isset($mrcht_email)) {
-                                                                                                                    echo $row['email'];
-                                                                                                                } else if (isset($dataExisted) && isset($row['email']) && isset($mrcht_email)) {
-                                                                                                                    echo $mrcht_email;
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label form_lbl" id="mrcht_contact_lbl" for="mrcht_contact"><?php echo $pageTitle ?> Contact</label>
+                                <input class="form-control" type="number" step="any" name="mrcht_contact" id="mrcht_contact" value="<?php
+                                                                                                                                    if (isset($dataExisted) && isset($row['contact']) && !isset($mrcht_contact)) {
+                                                                                                                                        echo $row['contact'];
+                                                                                                                                    } else if (isset($dataExisted) && isset($row['contact']) && isset($mrcht_contact)) {
+                                                                                                                                        echo $mrcht_contact;
+                                                                                                                                    } else {
+                                                                                                                                        echo '';
+                                                                                                                                    } ?>" <?php if ($act == '') echo 'readonly' ?>>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email"><?php echo $pageTitle ?> Email</label>
+                                <input class="form-control" type="text" name="mrcht_email" id="mrcht_email" value="<?php
+                                                                                                                    if (isset($dataExisted) && isset($row['email']) && !isset($mrcht_email)) {
+                                                                                                                        echo $row['email'];
+                                                                                                                    } else if (isset($dataExisted) && isset($row['email']) && isset($mrcht_email)) {
+                                                                                                                        echo $mrcht_email;
+                                                                                                                    } else {
+                                                                                                                        echo '';
+                                                                                                                    }
+                                                                                                                    ?>" <?php if ($act == '') echo 'readonly' ?>>
+                                <?php if (isset($email_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $email_err; ?></span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="mrcht_address_lbl" for="mrcht_address"><?php echo $pageTitle ?> Address</label>
+                        <input class="form-control" type="text" name="mrcht_address" id="mrcht_address" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['address']) && !isset($mrcht_address)) {
+                                                                                                                    echo $row['address'];
+                                                                                                                } else if (isset($dataExisted) && isset($row['address']) && isset($mrcht_address)) {
+                                                                                                                    echo $mrcht_address;
+                                                                                                                } else {
+                                                                                                                    echo '';
+                                                                                                                } ?>" <?php if ($act == '') echo 'readonly' ?>>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge</label>
+                                <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)) {
+                                                                                                                    echo $row['person_in_charges'];
+                                                                                                                } else if (isset($dataExisted) && isset($row['person_in_charges']) && isset($mrcht_pic)) {
+                                                                                                                    echo $mrcht_pic;
                                                                                                                 } else {
                                                                                                                     echo '';
                                                                                                                 }
                                                                                                                 ?>" <?php if ($act == '') echo 'readonly' ?>>
-                            <?php if (isset($email_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $email_err; ?></span>
-                                </div>
-                            <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="mrcht_pic_contact_lbl" for="mrcht_pic_contact">Person In Charge Contact</label>
+                                <input class="form-control" type="number" step="any" name="mrcht_pic_contact" id="mrcht_pic_contact" value="<?php
+                                                                                                                                            if (isset($dataExisted) && isset($row['person_in_charges_contact']) && !isset($mrcht_pic_contact)) {
+                                                                                                                                                echo $row['person_in_charges_contact'];
+                                                                                                                                            } else if (isset($dataExisted) && isset($row['person_in_charges_contact']) && isset($mrcht_pic_contact)) {
+                                                                                                                                                echo $mrcht_pic_contact;
+                                                                                                                                            } else {
+                                                                                                                                                echo '';
+                                                                                                                                            }
+                                                                                                                                            ?>" <?php if ($act == '') echo 'readonly' ?>>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mrcht_address_lbl" for="mrcht_address"><?php echo $pageTitle ?> Address</label>
-                    <input class="form-control" type="text" name="mrcht_address" id="mrcht_address" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['address']) && !isset($mrcht_address)) {
-                                                                                                                echo $row['address'];
-                                                                                                            } else if (isset($dataExisted) && isset($row['address']) && isset($mrcht_address)) {
-                                                                                                                echo $mrcht_address;
-                                                                                                            } else {
-                                                                                                                echo '';
-                                                                                                            } ?>" <?php if ($act == '') echo 'readonly' ?>>
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge</label>
-                            <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)) {
-                                                                                                                echo $row['person_in_charges'];
-                                                                                                            } else if (isset($dataExisted) && isset($row['person_in_charges']) && isset($mrcht_pic)) {
-                                                                                                                echo $mrcht_pic;
-                                                                                                            } else {
-                                                                                                                echo '';
-                                                                                                            }
-                                                                                                            ?>" <?php if ($act == '') echo 'readonly' ?>>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mrcht_pic_contact_lbl" for="mrcht_pic_contact">Person In Charge Contact</label>
-                            <input class="form-control" type="number" step="any" name="mrcht_pic_contact" id="mrcht_pic_contact" value="<?php
-                                                                                                                                        if (isset($dataExisted) && isset($row['person_in_charges_contact']) && !isset($mrcht_pic_contact)) {
-                                                                                                                                            echo $row['person_in_charges_contact'];
-                                                                                                                                        } else if (isset($dataExisted) && isset($row['person_in_charges_contact']) && isset($mrcht_pic_contact)) {
-                                                                                                                                            echo $mrcht_pic_contact;
-                                                                                                                                        } else {
-                                                                                                                                            echo '';
-                                                                                                                                        }
-                                                                                                                                        ?>" <?php if ($act == '') echo 'readonly' ?>>
-                        </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
-
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -404,6 +409,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         setButtonColor();
         setAutofocus(action);
+        preloader(300, action);
 
         $("#merchant_name").on("input", function() {
             $(".mrcht-name-err").remove();

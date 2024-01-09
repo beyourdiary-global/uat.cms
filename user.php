@@ -228,92 +228,97 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="currentDataName">Name</label>
-                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err1)) echo $err1; ?></span>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="currentDataName">Name</label>
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err1)) echo $err1; ?></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="dataUsername">Username</label>
-                            <input class="form-control" type="text" name="dataUsername" id="dataUsername" value="<?php if (isset($row['username'])) echo $row['username'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err2)) echo $err2; ?></span>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="dataUsername">Username</label>
+                                <input class="form-control" type="text" name="dataUsername" id="dataUsername" value="<?php if (isset($row['username'])) echo $row['username'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err2)) echo $err2; ?></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="currentUserEmail">Email</label>
-                            <input class="form-control" type="text" name="currentUserEmail" id="currentUserEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err3)) echo $err3; ?></span>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="currentUserEmail">Email</label>
+                                <input class="form-control" type="text" name="currentUserEmail" id="currentUserEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err3)) echo $err3; ?></span>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="currentUsername">User Group</label>
-                            <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
-                                <option value="" disabled selected style="display:none;">Select User Group</option>
-                                <?php
-                                $user_grp_list = getData('id,name', '', '', USR_GRP, $connect);
-                                if ($user_grp_list) {
-                                    while ($row2 = $user_grp_list->fetch_assoc()) {
-                                        $selected = '';
-                                        $id = $row2['id'];
-                                        $grpname = $row2['name'];
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="currentUsername">User Group</label>
+                                <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
+                                    <option value="" disabled selected style="display:none;">Select User Group</option>
+                                    <?php
+                                    $user_grp_list = getData('id,name', '', '', USR_GRP, $connect);
+                                    if ($user_grp_list) {
+                                        while ($row2 = $user_grp_list->fetch_assoc()) {
+                                            $selected = '';
+                                            $id = $row2['id'];
+                                            $grpname = $row2['name'];
 
-                                        if (isset($userGroup)) {
-                                            if ($userGroup == $id)
-                                                $selected = ' selected';
-                                        } else if (isset($dataExisted)) {
-                                            if ($row['access_id'] == $id)
-                                                $selected = ' selected';
+                                            if (isset($userGroup)) {
+                                                if ($userGroup == $id)
+                                                    $selected = ' selected';
+                                            } else if (isset($dataExisted)) {
+                                                if ($row['access_id'] == $id)
+                                                    $selected = ' selected';
+                                            }
+
+                                            echo "<option value=\"$id\" $selected>$grpname</option>";
                                         }
-
-                                        echo "<option value=\"$id\" $selected>$grpname</option>";
+                                    } else {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                     }
-                                } else {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                }
-                                ?>
-                            </select>
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err4)) echo $err4; ?></span>
+                                    ?>
+                                </select>
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err4)) echo $err4; ?></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -321,7 +326,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>
