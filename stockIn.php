@@ -31,13 +31,8 @@ if (!$rst_prod_info || !$rst_whse_info || !$rst_usr) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.'); window.location.href ='$SITEURL/dashboard.php';</script>";
 }
 
-if($rst_whse_info)
-{
-    $whse_name = $rst_whse_info->fetch_assoc();
-    $whse_name = $whse_name['name'];
-} else {
-    $whse_name = '';
-}
+// Get warehouse name
+$whse_name = $rst_whse_info ? $rst_whse_info->fetch_assoc()['name'] : '';
 
 // Get product info and generate barcode input fields
 $prod_info = $rst_prod_info ? $rst_prod_info->fetch_assoc() : null;
