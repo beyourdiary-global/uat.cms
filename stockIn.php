@@ -7,6 +7,13 @@ $prod_id = input('prdid');
 $whse_id = input('whseid');
 $usr_id = input('usr_id');
 $redirect_page = 'dashboard.php';  // if no value get
+
+// Check if required parameters are missing and redirect if necessary
+if (!$barcode || !$prod_id || !$whse_id || !$usr_id) {
+    echo "<script type='text/javascript'>alert('Invalid request for stock-in. Please provide valid data.'); window.location.href ='$SITEURL/dashboard.php';</script>";
+    exit; // Terminate further execution
+}
+
 $tblname = STK_REC;
 
 // display
