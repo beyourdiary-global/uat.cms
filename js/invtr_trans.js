@@ -17,6 +17,7 @@ $(document).ready(function() {
     if (!($("#invtr_mrcht").attr('readonly'))) {
         var selectedValue = '';
         $("#invtr_mrcht").keyup(function() {
+            console.log("Keyup event triggered");
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -25,23 +26,30 @@ $(document).ready(function() {
                 dbTable: '<?= MERCHANT ?>', // json filename (generated when login)
                 addSelection: 'Create New Merchant'
             }
-            console.log(param["elementID"]);
+            console.log("Element ID:", param["elementID"]);
+            console.log("Site URL:", '<?= $SITEURL ?>');
             searchInput(param, '<?= $SITEURL ?>');
         });
 
         $("#invtr_mrcht").on('change', function() {
-        selectedValue = $(this).val();
-        var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
+            console.log("Change event triggered");
+            selectedValue = $(this).val();
+            console.log("Selected value:", selectedValue);
+            console.log("Site URL:", '<?= $SITEURL ?>');
+            var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
 
-        // Check if the selected value is 'Create New Merchant'
-        if (selectedValue == 'Create New Merchant') {
-            create_mrcht_sect.hidden = false; // Show INVTR_CreateMerchant
-        } else {
-            create_mrcht_sect.hidden = true; // Hide INVTR_CreateMerchant
-        }
+            // Check if the selected value is 'Create New Merchant'
+            if (selectedValue == 'Create New Merchant') {
+                console.log("Selected value is 'Create New Merchant'");
+                create_mrcht_sect.hidden = false; // Show INVTR_CreateMerchant
+            } else {
+                console.log("Selected value is not 'Create New Merchant'");
+                create_mrcht_sect.hidden = true; // Hide INVTR_CreateMerchant
+            }
         });
     }
 })
+
 
 $('#invtr_attach').on('change', function() {
     previewImage(this, 'invtr_attach_preview')
@@ -136,4 +144,4 @@ $('.submitBtn').on('click', () => {
     else
         return false;
 
-})
+});
