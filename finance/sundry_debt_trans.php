@@ -569,7 +569,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $debt_err; ?></span>
                             </div>
-
+                            <?php } ?>
                             <div class="col-md-6">
                                 <label class="form-label form_lbl" id="sdt_amt_lbl" for="sdt_amt">Amount<span class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="sdt_amt" id="sdt_amt" value="<?php
@@ -604,6 +604,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <div id="err_msg">
                                             <span class="mt-n1"><?php echo $debtors_other_err; ?></span>
                                         </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -645,6 +646,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <span
                                     class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
                             </div>
+                            <?php } ?>
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-center justify-content-md-end px-4">
                                     <?php
