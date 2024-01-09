@@ -115,6 +115,7 @@ define('INVTR_TRANS', 'asset_inventories_transaction');
 define('INV_TRANS', 'asset_investment_transaction');
 define('SD_TRANS', 'asset_sundry_debtors_transaction');
 define('INITCA_TRANS', 'asset_initial_capital_transaction');
+define('OCR_TRANS', 'asset_other_creditor_transaction');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

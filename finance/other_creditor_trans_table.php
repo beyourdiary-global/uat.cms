@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Sundry Debtors Transaction";
+$pageTitle = "Other Creditor Transaction";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,8 +10,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/sundry_debt_trans.php';
-$result = getData('*', '', '', SD_TRANS, $finance_connect);
+$redirect_page = $SITEURL . '/finance/other_creditor_trans.php';
+$result = getData('*', '', '', OCR_TRANS, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('sundry_debt_trans_table');
+        createSortingTable('other_creditor_trans_table');
     });
 </script>
 
@@ -50,14 +50,14 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                 </div>
             </div>
 
-            <table class="table table-striped" id="sundry_debt_trans_table">
+            <table class="table table-striped" id="other_creditor_trans_table">
                 <thead>
                     <tr>
                     <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Payment Date</th>
-                        <th scope="col">Debtors</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Creditor</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
@@ -69,15 +69,15 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) { 
-                        $debtors = getData('name', "id='" . $row['debtors'] . "'", '', MERCHANT, $finance_connect);
-                        $row2 = $debtors->fetch_assoc();
+                        $creditor = getData('name', "id='" . $row['creditor'] . "'", '', MERCHANT, $finance_connect);
+                        $row2 = $creditor->fetch_assoc();
                         ?>
                         
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['type'] ?></td>
-                            <td scope="row"><?= $row['payment_date'] ?></td>
+                            <td scope="row"><?= $row['date'] ?></td>
                             <td scope="row"><?= $row2['name'] ?></td>
                             <td scope="row"><?= $row['amount'] ?></td>
                             <td scope="row"><?= $row['prev_amt'] ?></td>
@@ -103,7 +103,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                                         </li>
                                         <li>
                                             <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/sundry_debt_trans_table.php','D')">Delete</a>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/other_creditor_trans_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>
                                     </ul>
@@ -117,8 +117,8 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
-                        <th scope="col">Payment Date</th>
-                        <th scope="col">Debtors</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Creditor</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
@@ -149,7 +149,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('sundry_debt_trans_table');
+    datatableAlignment('other_creditor_trans_table');
 </script>
 
 </html>
