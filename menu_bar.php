@@ -207,8 +207,18 @@ $menuList = array(
                 ),
                 'pin' => array('33'),
             ),
+            array(
+                'Finance Administration  Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Expense Type', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/expense_type_table.php', '47'),
+                ),
+                'pin' => array('47'),
+            ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47')
     ),
     array(
         'Audit Log',
