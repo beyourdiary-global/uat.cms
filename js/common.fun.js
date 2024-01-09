@@ -1116,7 +1116,8 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param, siteURL) {
+//autocomplete
+function searchInput(param,siteURL) { 
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
