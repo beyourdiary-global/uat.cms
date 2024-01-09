@@ -3,8 +3,9 @@ $pageTitle = "Stock In";
 include 'menuHeader.php';
 
 $barcode = input('barcode');
-$pkg_id = input('pkg_id');
-$whse_id = input('whse_id');
+$prod_id = input('prdid');
+$whse_id = input('whseid');
+$usr_id = input('usr_id');
 $redirect_page = 'dashboard.php';  // if no value get
 $tblname = STK_REC;
 
@@ -13,14 +14,14 @@ $tblname = STK_REC;
 $barcode_input = "";
 $usr_btn = "";
 
-$rst_pkg_info = getData('*',"id='$pkg_id'",'',PKG,$connect);
+$rst_prod_info = getData('*', "id='$prod_id'", '', PRODUCT, $connect);
 $rst_whse_info = getData('name',"id='$whse_id'",'',WHSE,$connect);
 $rst_usr = getData('*',"status='A'",'',USR_USER,$connect);
 
 
-if (!$rst_pkg_info || $rst_whse_info || $rst_us) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+// Check if database queries fail and redirect if necessary
+if (!$rst_prod_info || !$rst_whse_info || !$rst_usr) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.'); window.location.href ='$SITEURL/dashboard.php';</script>";
 }
 
 if($rst_whse_info)
@@ -31,18 +32,15 @@ if($rst_whse_info)
     $whse_name = '';
 }
 
-if($rst_pkg_info)
-{
-    $pkg_info = $rst_pkg_info->fetch_assoc();
-    $pkg_name = $pkg_info['name'];
-    $pkg_barcode_slot_total = $pkg_info['barcode_slot_total'];
+// Get product info and generate barcode input fields
+$prod_info = $rst_prod_info ? $rst_prod_info->fetch_assoc() : null;
+$prod_name = $prod_info ? $prod_info['name'] : '';
+$prod_barcode_slot_required = $prod_info ? $prod_info['barcode_required'] === 'yes' : false;
+$prod_barcode_slot_total = $prod_info ? $prod_info['barcode_slot_total'] : 0;
 
-    if($pkg_barcode_slot_total >= 1)
-    {
-        for($x=1;$x<=$pkg_barcode_slot_total;$x++)
-        {
-            $barcode_input .= "<input class=\"form-control mb-1\" id=\"barcode_input_$x\" name=\"barcode_input[]\" type=\"text\" placeholder=\"Barcode Slot $x\">";
-        }
+if ($prod_barcode_slot_required && $prod_barcode_slot_total >= 1) {
+    for ($x = 1; $x <= $prod_barcode_slot_total; $x++) {
+        $barcode_input .= "<input class=\"form-control mb-1\" id=\"barcode_input_$x\" name=\"barcode_input[]\" type=\"text\" placeholder=\"Barcode Slot $x\">";
     }
 }
 
