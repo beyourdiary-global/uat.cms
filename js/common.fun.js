@@ -1301,7 +1301,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function checkRequiredInputs() {
-    var requiredInputs = document.querySelectorAll("input[required], select[required]");
+    var requiredInputs = document.querySelectorAll(
+      "input[required], select[required]"
+    );
 
     requiredInputs.forEach(function (input) {
       if (input.value.trim() === "") {
@@ -1339,16 +1341,18 @@ document.addEventListener("DOMContentLoaded", function () {
         : "block";
   }
 
-  // Attach an input event listener to the input field
-  currentDataNameInput.addEventListener("input", toggleErrorMessage);
+  if (currentDataNameInput) {
+    // Attach an input event listener to the input field
+    currentDataNameInput.addEventListener("input", toggleErrorMessage);
 
-  // Initial toggle to set the initial state
-  toggleErrorMessage();
+    // Initial toggle to set the initial state
+    toggleErrorMessage();
+  }
 });
 
 function setCookie(cname, cvalue, exMins) {
   var d = new Date();
-  d.setTime(d.getTime() + (exMins * 60 * 1000));
+  d.setTime(d.getTime() + exMins * 60 * 1000);
   var expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -1361,4 +1365,3 @@ function checkCurrentPage(page) {
     localStorage.setItem("page", page);
   }
 }
-

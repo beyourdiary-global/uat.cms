@@ -310,6 +310,15 @@ function audit_log($data = array())
 	}
 }
 
+function formatTime($time)
+{
+	if (!empty($time)) {
+		return date('Y-m-d H:i:s', strtotime($time));
+	} else {
+		return "Time is empty.";
+	}
+}
+
 function getCountry($param, $connect)
 {
 	$all_country = array();
@@ -631,7 +640,7 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMsg)
+function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
 {
 	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
 
@@ -649,49 +658,49 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(),$tblName, $errorMs
 }
 
 // Function to update previous and final amounts for transactions
-function updateTransactionAmounts($finance_connect, $table_name) {
-    // Initialize an associative array to store previous amounts for each bank and currency combination
-    $prevAmounts = array();
+function updateTransactionAmounts($finance_connect, $table_name)
+{
+	// Initialize an associative array to store previous amounts for each bank and currency combination
+	$prevAmounts = array();
 
-    // Select all transactions ordered by id
-    $query = "SELECT id, `type`, amount, bank, currency, `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
-    $result = mysqli_query($finance_connect, $query);
+	// Select all transactions ordered by id
+	$query = "SELECT id, `type`, amount, bank, currency, `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+	$result = mysqli_query($finance_connect, $query);
 
-    if (!$result) {
-        die("Error reading records: " . mysqli_error($finance_connect));
-    }
+	if (!$result) {
+		die("Error reading records: " . mysqli_error($finance_connect));
+	}
 
-    // Loop through each transaction
-    while ($row = mysqli_fetch_assoc($result)) {
-        $id = $row['id'];
-        $type = $row['type'];
-        $amount = $row['amount'];
-        $currency = $row['currency'];
-        $bank = $row['bank'];
+	// Loop through each transaction
+	while ($row = mysqli_fetch_assoc($result)) {
+		$id = $row['id'];
+		$type = $row['type'];
+		$amount = $row['amount'];
+		$currency = $row['currency'];
+		$bank = $row['bank'];
 
-        $key = $bank . '_' . $currency;
+		$key = $bank . '_' . $currency;
 
-        if (!isset($prevAmounts[$key])) {
-            $prevAmounts[$key] = 0;
-        }
-        $prevFinalAmt = $prevAmounts[$key];
+		if (!isset($prevAmounts[$key])) {
+			$prevAmounts[$key] = 0;
+		}
+		$prevFinalAmt = $prevAmounts[$key];
 
-        // Calculate final_amt based on transaction type
-        if ($type === 'Add') {
-            $finalAmt = $prevFinalAmt + $amount;
-        } else if ($type === 'Deduct') {
-            $finalAmt = $prevFinalAmt - $amount;
-        }
+		// Calculate final_amt based on transaction type
+		if ($type === 'Add') {
+			$finalAmt = $prevFinalAmt + $amount;
+		} else if ($type === 'Deduct') {
+			$finalAmt = $prevFinalAmt - $amount;
+		}
 
-        // Update the row in the database
-        $updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
-        $updateResult = mysqli_query($finance_connect, $updateQuery);
+		// Update the row in the database
+		$updateQuery = "UPDATE $table_name SET prev_amt ='$prevFinalAmt', final_amt ='$finalAmt' WHERE id = '$id'";
+		$updateResult = mysqli_query($finance_connect, $updateQuery);
 
-        if (!$updateResult) {
-            die("Update failed: " . mysqli_error($finance_connect));
-        }
+		if (!$updateResult) {
+			die("Update failed: " . mysqli_error($finance_connect));
+		}
 
-        $prevAmounts[$key] = $finalAmt;
-    }
+		$prevAmounts[$key] = $finalAmt;
+	}
 }
-?>

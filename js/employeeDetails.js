@@ -295,3 +295,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updatePhoneCode();
 });
+
+
+$(document).ready(function($) {
+    $(document).on('change', '.leaveAssignAll', function(event) {
+        event.preventDefault();
+
+        var isChecked = $(this).prop('checked');
+        $('.leaveAssign').prop('checked', isChecked);
+        $('.leaveAssignAll').prop('checked', isChecked);
+    });
+});
+
+$(document).ready(function() {
+
+    $('button[name="leaveAssignBtn"]').on('click', function() {
+        var checkboxValues = [];
+
+        $('.leaveAssign:checked').each(function() {
+            checkboxValues.push($(this).val());
+        });
+
+        setCookie("employeeID", checkboxValues, 1);
+        sessionStorage.setItem("leaveAssignClick", "true");
+        location.reload(true);
+    });
+
+    $('#assignLeaveBtn, #unassignLeaveBtn').on('click', function() {
+        var assignTypeValue = $(this).val();
+        setCookie("assignType", assignTypeValue, 1);
+        sessionStorage.setItem("leaveAssignType", "true");
+        location.reload(true);
+    });
+
+
+    $('#leaveAssignCheckBtn').on('click', function() {
+        var checkboxValues = [];
+
+        $('.leaveAssignCheck:checked').each(function() {
+            checkboxValues.push($(this).val());
+        });
+
+        setCookie("leaveTypeSelect", checkboxValues, 1);
+        sessionStorage.setItem("leaveAssignSelect", "true");
+        location.reload(true);
+    });
+
+    $('.completeLeaveAssign').on('click', function() {
+        setCookie("leaveTypeSelect", '', 0);
+        setCookie("employeeID", '', 0);
+        setCookie("assignType", '', 0);
+    });
+
+    setTimeout(function() {
+        if (sessionStorage.getItem("leaveAssignClick")) {
+            $('#myModal').modal('show');
+            sessionStorage.removeItem("leaveAssignClick");
+        } else if (sessionStorage.getItem("leaveAssignType")) {
+            $('#secondModal').modal('show');
+            sessionStorage.removeItem("leaveAssignType");
+        } else if (sessionStorage.getItem("leaveAssignSelect")) {
+            $('#thirdModal').modal('show');
+            sessionStorage.removeItem("leaveAssignSelect");
+        }
+    }, 50);
+});

@@ -1,5 +1,5 @@
 <?php
-session_start(); 
+session_start();
 // $livemode = false; // true = test link, false = live link
 $siteOrlocalMode = false;  //true = live site, false = localhost
 
@@ -11,7 +11,7 @@ define('dbhost', '127.0.0.1');
 define('dbname', 'byd_cms');
 define('dbFinance', 'beyourdi_financial');
 /* define('SITEURL', 'https://localhost'); */
-define('SITEURL', '//localhost');
+define('SITEURL', '//localhost/www');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
 define('email_cc', "admin@beyourdiary.co");
@@ -94,18 +94,20 @@ define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
 define('L_TYPE', 'leave_type');
-define('CUR_SEGMENTATION','customer_segmentation');
-define('RACE','race');
-define('L_STS','leave_status');
-define('ID_TYPE','identity_type');
-define('EMPLOYER_EPF','employer_epf_rate');
-define('EMPLOYEE_EPF','employee_epf_rate');
-define('SOCSO_CATH','socso_category');
-define('PAY_METH','payment_method');
-define('EMPINFO','employee_info');
-define('EMPPERSONALINFO','employee_personal_info');
-define('TAG','tag');
-define('EMPLEAVE','employee_leave');
+define('CUR_SEGMENTATION', 'customer_segmentation');
+define('RACE', 'race');
+define('L_STS', 'leave_status');
+define('ID_TYPE', 'identity_type');
+define('EMPLOYER_EPF', 'employer_epf_rate');
+define('EMPLOYEE_EPF', 'employee_epf_rate');
+define('SOCSO_CATH', 'socso_category');
+define('PAY_METH', 'payment_method');
+define('EMPINFO', 'employee_info');
+define('EMPPERSONALINFO', 'employee_personal_info');
+define('TAG', 'tag');
+define('EMPLEAVE', 'employee_leave');
+define('CUS_INFO', 'customer_info');
+define('L_PENDING', 'leave_pending');
 
 //finance
 define('MERCHANT', 'merchant');
@@ -115,4 +117,3 @@ $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
 
 //define session
-?>
