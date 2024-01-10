@@ -4,8 +4,6 @@ $pageTitle = "Bank";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-
 $tblName = BANK;
 
 //Current Page Action And Data ID
@@ -188,7 +186,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
-<body> 
+<body>
     <div class="pre-load-center">
         <div class="preloader"></div>
     </div>
@@ -231,9 +229,13 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             </div>
         </div>
     </div>
- 
+
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

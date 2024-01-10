@@ -188,6 +188,8 @@ if ($resetpass_btn == 1) {
 </body>
 
 <script>
+    checkCurrentPage('invalid');
+
     $('#email-addr').on('input', () => {
         $("#email-addr_error").text("");
     })

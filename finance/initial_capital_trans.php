@@ -5,7 +5,7 @@ $isFinance = 1;
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = INITCA_TRANS ;
+$tblName = INITCA_TRANS;
 
 $row_id = input('id');
 $act = input('act');
@@ -24,7 +24,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($row_id) { //edit/remove/view
-    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -79,7 +79,7 @@ if (post('actionBtn')) {
         $initca_attach = $_POST['existing_attachment'];
     }
     $initca_remark = postSpaceFilter('initca_remark');
-    
+
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -173,7 +173,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -223,7 +223,6 @@ if (post('actionBtn')) {
 
                         $query = "UPDATE " . $tblName  . " SET date = '$initca_date', currency = '$initca_curr', amount = '$initca_amt', description = '$initca_desc', attachment ='$initca_attach', remark ='$initca_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
                         $returnData = mysqli_query($finance_connect, $query);
-
                     } else {
                         $act = 'NC';
                     }
@@ -273,14 +272,14 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $row_id = $row['id'];
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -349,31 +348,26 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_trans_id_lbl"
-                                for="initca_trans_id">Transaction
+                            <label class="form-label form_lbl" id="initca_trans_id_lbl" for="initca_trans_id">Transaction
                                 ID</label>
                             <p>
-                                <input class="form-control" type="text" name="initca_trans_id" id="initca_trans_id"
-                                    disabled value="<?php echo $trans_id ?>">
+                                <input class="form-control" type="text" name="initca_trans_id" id="initca_trans_id" disabled value="<?php echo $trans_id ?>">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_date_label" for="initca_date">Date<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="initca_date_label" for="initca_date">Date<span class="requireRed">*</span></label>
                             <input class="form-control" type="date" name="initca_date" id="initca_date" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['date']) && !isset($initca_date)) {
-                                                                                                                echo $row['date'];
-                                                                                                            } else if (isset($initca_date)) {
-                                                                                                                echo $initca_date;
-                                                                                                            } else {
-                                                                                                                echo date('Y-m-d');
-                                                                                                            }
-                                                                                                            ?>"
-                                placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                                if (isset($dataExisted) && isset($row['date']) && !isset($initca_date)) {
+                                                                                                                    echo $row['date'];
+                                                                                                                } else if (isset($initca_date)) {
+                                                                                                                    echo $initca_date;
+                                                                                                                } else {
+                                                                                                                    echo date('Y-m-d');
+                                                                                                                }
+                                                                                                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($date_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $date_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
@@ -384,10 +378,8 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_currency_lbl"
-                                for="initca_currency">Currency<span class="requireRed">*</span></label>
-                            <select class="form-select" id="initca_currency" name="initca_currency"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="initca_currency_lbl" for="initca_currency">Currency<span class="requireRed">*</span></label>
+                            <select class="form-select" id="initca_currency" name="initca_currency" <?php if ($act == '') echo 'disabled' ?>>
                                 <option value="0" disabled selected>Select Currency</option>
                                 <?php
                                 if ($cur_list_result->num_rows >= 1) {
@@ -409,27 +401,25 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             </select>
 
                             <?php if (isset($curr_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $curr_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_amt_lbl" for="initca_amt">Amount<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="initca_amt_lbl" for="initca_amt">Amount<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="initca_amt" id="initca_amt" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['amount']) && !isset($initca_amt)) {
-                                                                                                            echo $row['amount'];
-                                                                                                        } else if (isset($initca_amt)) {
-                                                                                                            echo $initca_amt;
-                                                                                                        }
-                                                                                                        ?>"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                                if (isset($dataExisted) && isset($row['amount']) && !isset($initca_amt)) {
+                                                                                                                    echo $row['amount'];
+                                                                                                                } else if (isset($initca_amt)) {
+                                                                                                                    echo $initca_amt;
+                                                                                                                }
+                                                                                                                ?>" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($amt_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $amt_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -443,40 +433,34 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                                                                                         } else if (isset($initca_desc)) {
                                                                                                             echo $initca_desc;
                                                                                                         }
-                                                                                                        ?>"
-                        <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                        ?>" <?php if ($act == '') echo 'disabled' ?>>
                     <?php if (isset($desc_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1"><?php echo $desc_err; ?></span>
-                    </div>
+                        <div id="err_msg">
+                            <span class="mt-n1"><?php echo $desc_err; ?></span>
+                        </div>
                     <?php } ?>
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="initca_remark_lbl" for="initca_remark">Remark</label>
-                    <textarea class="form-control" name="initca_remark" id="initca_remark" rows="3"
-                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    <textarea class="form-control" name="initca_remark" id="initca_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_attach_lbl"
-                                for="initca_attach">Attachment</label>
-                            <input class="form-control" type="file" name="initca_attach" id="initca_attach" value=""
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="initca_attach_lbl" for="initca_attach">Attachment</label>
+                            <input class="form-control" type="file" name="initca_attach" id="initca_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($err2)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $err2; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $err2; ?></span>
+                                </div>
                             <?php } ?>
                             <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                            <div id="err_msg">
-                                <span
-                                    class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                            </div>
-                            <input type="hidden" name="existing_attachment"
-                                value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                </div>
+                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                             <?php } ?>
                         </div>
                         <div class="col-md-6">
@@ -486,10 +470,8 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 if (isset($row['attachment']))
                                     $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
                                 ?>
-                                <img id="initca_attach_preview" name="initca_attach_preview"
-                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="initca_attachmentValue"
-                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                <img id="initca_attach_preview" name="initca_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                <input type="hidden" name="initca_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
                             </div>
                         </div>
                     </div>
@@ -506,8 +488,7 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
-                        value="back">Back</button>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
@@ -526,7 +507,13 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-    <?php include "../js/init_cap_trans.js" ?>
+        <?php include "../js/init_cap_trans.js" ?>
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
     </script>
 
 </body>

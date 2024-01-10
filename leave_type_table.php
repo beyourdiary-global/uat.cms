@@ -204,6 +204,11 @@ if (post('l_status_option')) {
 </body>
 
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     dropdownMenuDispFix();
     setButtonColor();
     datatableAlignment('leave_type_table');

@@ -499,6 +499,11 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
 </body>
 
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+    checkCurrentPage(page, action);
     setButtonColor();
 </script>
 

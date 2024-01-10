@@ -2,6 +2,16 @@
     color: red;
 }
 
+.stepIndicator {
+    padding: 10px;
+    text-align: center;
+}
+
+.form-header {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
 .form-select:disabled {
     background-color: #fff;
 }

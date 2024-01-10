@@ -143,6 +143,11 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
     </div>
 </body>
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     /* function(void) : to solve the issue of dropdown menu displaying inside the table when table class include table-responsive */
     dropdownMenuDispFix();
     /* function(id): to resize table with bootstrap 5 classes */

@@ -87,7 +87,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                     if ($rowCurrentEmp[$empLeaveAssignColumn] != $assignDay) {
                         array_push($oldvalarr, $rowCurrentEmp[$empLeaveAssignColumn]);
                         array_push($chgvalarr,  $assignDay);
-                        array_push($datafield, 'empLeaveAssignColumn');
+                        array_push($datafield, $empLeaveAssignColumn);
                     }
                 }
             }
@@ -115,7 +115,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         'cby'          => USER_ID,
                         'oldval'       => implodeWithComma($oldvalarr),
                         'changes'      => implodeWithComma($chgvalarr),
-                        'act_msg'      => actMsgLog($empArr[$i], $datafield, '', $oldvalarr, $chgvalarr, EMPLEAVE, $pageAction, (isset($returnData) ? '' : $errorMsg)),
+                        'act_msg'      => actMsgLog($empArr[$i], $datafield, '', $oldvalarr, $chgvalarr, EMPLEAVE, 'edit', (isset($returnData) ? '' : $errorMsg)),
                         'query_rec'    => $query,
                         'query_table'  => EMPLEAVE,
                         'page'         => $pageTitle,
@@ -141,7 +141,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
 <script>
     //Wait for all css,html,js file fully loader than display a content
-    preloader(300);
+    preloader(500);
 
     $(document).ready(() => {
         createSortingTable('employeeDetailsTable');
@@ -464,6 +464,11 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
     </div>
 </body>
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     setButtonColor();
     dropdownMenuDispFix();
 
@@ -531,8 +536,6 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                 sessionStorage.removeItem("leaveAssignSelect");
             }
         }, 50);
-
-
     });
 </script>
 

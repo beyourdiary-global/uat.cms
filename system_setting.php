@@ -214,6 +214,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </body>
 
 <script>
+    checkCurrentPage('invalid');
     preloader(300, 'E');
     centerAlignment('Container');
 </script>
