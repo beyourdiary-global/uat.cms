@@ -621,7 +621,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         if (isset($dataExisted, $row['currency']) && (!isset($coh_curr))) {
                                             $selected = $row['currency'] == $row2['id'] ? "selected" : "";
                                         } else if (isset($coh_curr)) {
-                                            list($coh_curr_id, $coh_curr_unit) = explode(':', $coh_curr);
                                             $selected = $coh_curr == $row2['id'] ? "selected" : "";
                                         }
                                         echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";

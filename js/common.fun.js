@@ -1128,7 +1128,7 @@ function searchInput(param, siteURL) {
 
   if (search != "") {
     $.ajax({
-      url: siteURL + "/getSearch.php",
+      url: siteURL + "/getSearch.php", 
       type: "post",
       data: {
         searchText: search,
@@ -1197,6 +1197,7 @@ function searchInput(param, siteURL) {
     $("#searchResult_" + elementID).remove();
     $("#clear_" + elementID).remove();
   }
+  
 }
 
 function retrieveJSONData(search, type, tblname) {
