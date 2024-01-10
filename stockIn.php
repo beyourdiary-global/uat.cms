@@ -54,37 +54,6 @@ while ($usr = $rst_usr->fetch_assoc()) {
     $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
 }
 
-<script>
-    $(document).ready(function() {
-        // Check for necessary data
-        var barcode = '<?=$barcode?>';
-        var prod_id = '<?=$prod_id?>';
-        var whse_id = '<?=$whse_id?>';
-        var usr_id = '<?=$usr_id?>';
-
-        if (!barcode || !prod_id || !whse_id || !usr_id) {
-            // Missing necessary data, show alert and redirect
-            alert('Invalid request for stock-in. Please provide valid data.');
-            window.location.href = '<?=$SITEURL?>/dashboard.php';
-        }
-
-        // Check barcode requirement
-        var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
-        if (isBarcodeRequired) {
-            // Show barcode input fields
-            showNotification('Barcode is required for this product.');
-            <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
-                $("#barcode_input_<?=$x?>").prop('readonly', false);
-            <?php endfor; ?>
-        }
-    });
-
-    // Additional JavaScript for notifications
-    function showNotification(message) {
-        $("#notification").text(message).fadeIn().delay(3000).fadeOut();
-    }
-</script>
-
 // Submission
 if (post('usrBtn')) {
     $usrBtn = post('usrBtn');
@@ -126,19 +95,56 @@ if (post('usrBtn')) {
                     }
                 }
             }
-        }    
-    }
-    else
-    {
-
+        }
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var barcode = '<?=$barcode?>';
+            var prod_id = '<?=$prod_id?>';
+            var whse_id = '<?=$whse_id?>';
+            var usr_id = '<?=$usr_id?>';
+
+            if (!barcode || !prod_id || !whse_id || !usr_id) {
+                alert('Invalid request for stock-in. Please provide valid data.');
+                window.location.href = '<?=$SITEURL?>/dashboard.php';
+            }
+
+            // Check barcode requirement 
+            var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
+            if (isBarcodeRequired) {
+                showNotification('Barcode is required for this product.');
+                <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
+                    $("#barcode_input_<?=$x?>").prop('readonly', false);
+                <?php endfor; ?>
+            }
+        });
+
+        // Notification
+        function showNotification(message) {
+            $("#notification").text(message).fadeIn().delay(3000).fadeOut();
+        }
+
+        // Form submission 
+        $('#submitBtn').on('click', function () {
+            var barcodeInputs = $('[name="barcode_input[]"]').toArray();
+            var isValid = true;
+
+            if (isValid) {
+                $('#stockForm').submit();
+            } else {
+                showNotification('Please fill in all required fields.');
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -154,7 +160,6 @@ if (post('usrBtn')) {
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="row">
                     <div class="col-12">
@@ -164,7 +169,6 @@ if (post('usrBtn')) {
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="row">
                     <div class="col-12 col-md-6">
@@ -180,9 +184,6 @@ if (post('usrBtn')) {
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <hr />
 
                 <div class="row">
                     <div class="col-12">
@@ -192,7 +193,6 @@ if (post('usrBtn')) {
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <div class="row">
                     <div class="col-12">
@@ -208,7 +208,6 @@ if (post('usrBtn')) {
             </form>
         </div>
     </div>
-</div>
 </body>
 
 </html>
