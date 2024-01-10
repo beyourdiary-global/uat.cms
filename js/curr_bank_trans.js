@@ -73,7 +73,7 @@ $('.submitBtn').on('click', () => {
         currency_chk = 1;
     }
 
-    if (($('#cba_amt').val() == '' || $('#cba_amt').val() === null || $('#cba_amt')
+    if (($('#cba_amt').val() == '' ||  $('#cba_amt').val() == '0' || $('#cba_amt').val() === null || $('#cba_amt')
             .val() === undefined)) {
         amt_chk = 0;
         $("#cba_amt").after(

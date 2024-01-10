@@ -7,7 +7,7 @@
 
 <!-- Website -->
 <title><?= $pageTitle ?></title>
- 
+
 <!-- Fonts -->
 <link href="<?= $SITEURL ?>/header/font/OpenSans.css" rel="stylesheet">
 
@@ -21,8 +21,8 @@
 <!-- DataTable -->
 <script src="<?= $SITEURL ?>/header/DataTable/1.13.5_js_jquery.dataTables.min.js"></script>
 <script src="<?= $SITEURL ?>/header/DataTable/1.13.5_js_dataTables.bootstrap5.min.js"></script>
-<link href="<?= $SITEURL ?>/header/DataTable/twitter-bootstrap_5.3.0_css_bootstrap.min.css" rel="stylesheet"/>
-<link href="<?= $SITEURL ?>/header/DataTable/1.13.5_css_dataTables.bootstrap5.min.css" rel="stylesheet"/>
+<link href="<?= $SITEURL ?>/header/DataTable/twitter-bootstrap_5.3.0_css_bootstrap.min.css" rel="stylesheet" />
+<link href="<?= $SITEURL ?>/header/DataTable/1.13.5_css_dataTables.bootstrap5.min.css" rel="stylesheet" />
 
 <!-- Functions -->
 <script src="<?= $SITEURL ?>/header/js/@popperjs_core@2.9.2_dist_umd_popper.min.js"></script>
@@ -30,7 +30,11 @@
 <script src="<?= $SITEURL ?>/js/common.fun.js"></script>
 
 <!-- Google Fonts -->
-<link href="<?= $SITEURL ?>/header/font/Roboto.css" rel="stylesheet"/>
+<link href="<?= $SITEURL ?>/header/font/Roboto.css" rel="stylesheet" />
 
 <!-- MDB -->
-<link href="<?= $SITEURL ?>/header/MDB/mdb-ui-kit_6.4.0_mdb.min.css" rel="stylesheet"/>
+<link href="<?= $SITEURL ?>/header/MDB/mdb-ui-kit_6.4.0_mdb.min.css" rel="stylesheet" />
+
+<!-- Select2 -->
+<link href="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\css\select2.min.css" rel="stylesheet" />
+<script src="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\js\select2.min.js"></script>

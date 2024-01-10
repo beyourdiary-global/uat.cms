@@ -113,6 +113,14 @@ if (post('actionBtn')) {
             break;
     }
 }
+
+/* 
+if(isset($_SESSION['tempValConfirmBox']))
+{
+    unset($_SESSION['tempValConfirmBox']);
+    echo '<script>confirmationDialog("","","Product","","'.$redirect_page.'","'.$act.'");</script>';
+} 
+*/
 ?>
 
 <!DOCTYPE html>
@@ -229,15 +237,11 @@ if (post('actionBtn')) {
             </form>
         </div>
     </div>
-    <?php
-    /* if(isset($_SESSION['tempValConfirmBox']))
-{
-    unset($_SESSION['tempValConfirmBox']);
-    echo '<script>confirmationDialog("","","Product","","'.$redirect_page.'","'.$act.'");</script>';
-} */
-    ?>
+
 </body>
 <script>
+    setButtonColor();
+
     $(document).ready(function() {
         var packageName = $("#product");
 
@@ -249,7 +253,7 @@ if (post('actionBtn')) {
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= $tblname ?>' // json filename (generated when login)
             }
-            var arr = searchInput(param);
+            var arr = searchInput(param, '<?= $SITEURL ?>');
         });
         packageName.change(function() {
             if ($(this).val() == '')

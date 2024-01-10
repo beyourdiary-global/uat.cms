@@ -67,6 +67,28 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
     $employeeID = $_COOKIE['employeeID'];
     $leaveTypeSelect = $_COOKIE['leaveTypeSelect'];
 
+    //Find All Exist Leave Type In Employee Leave Page
+    $existEmpLeave = array();
+
+    $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
+    $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
+
+    $columns = $resultEmpLeave_1->fetch_all(MYSQLI_ASSOC);
+
+    if (!$resultEmpLeave_1) {
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+    }
+
+    foreach ($columns as $column) {
+        if (preg_match('/leaveType_(\d+)/', $column['Field'], $matches)) {
+            $extractNumber = $matches[1];
+            array_push($existEmpLeave, $extractNumber);
+        }
+    }
+
+    $allEmpLeaveTypeColumn = getData('*', '', '', EMPLEAVE, $connect);
+
     if (!empty($employeeID) && !empty($leaveTypeSelect)) {
 
         $leaveTypeArr = explode(',', $leaveTypeSelect);
@@ -74,35 +96,53 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
         for ($i = 0; $i < sizeof($empArr); $i++) {
 
-            $oldvalarr = $chgvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr  = array();
 
             $query = "UPDATE " . EMPLEAVE . " SET ";
 
             for ($x = 0; $x < sizeof($leaveTypeArr); $x++) {
 
-                $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
+                if (in_array($leaveTypeArr[$x], $existEmpLeave)) {
 
-                $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
-                $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
+                    $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
 
+                       /*
                 if (!$resultLeaveType || !$resultCurrentEmp) {
                     echo $errorRedirectLink;
                 }
+*/
+                    $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
+                    $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
 
-                $rowLeaveType = $resultLeaveType->fetch_assoc();
-                $rowCurrentEmp = $resultCurrentEmp->fetch_assoc();
 
-                if ($assignType == 'assign') {
-                    $assignDay = $rowLeaveType['num_of_days'];
-                } else if ($assignType == 'unassign') {
-                    $assignDay = 0;
-                }
+                    if (!$resultLeaveType || !$resultCurrentEmp) {
+                        echo "
+                    <script>            
+                    setCookie('leaveTypeSelect', '', 0);
+                    setCookie('employeeID', '', 0);
+                    setCookie('assignType', '', 0);
+                    </script>";
 
-                $query .= "$empLeaveAssignColumn='" . $assignDay . "', ";
+                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                    }
 
-                if ($rowCurrentEmp[$empLeaveAssignColumn] != $assignDay) {
-                    array_push($oldvalarr, $rowCurrentEmp[$empLeaveAssignColumn]);
-                    array_push($chgvalarr,  $assignDay);
+                    $rowLeaveType = $resultLeaveType->fetch_assoc();
+                    $rowCurrentEmp = $resultCurrentEmp->fetch_assoc();
+
+                    if ($assignType == 'assign') {
+                        $assignDay = $rowLeaveType['num_of_days'];
+                    } else if ($assignType == 'unassign') {
+                        $assignDay = 0;
+                    }
+
+                    $query .= "$empLeaveAssignColumn='" . $assignDay . "', ";
+
+                    if ($rowCurrentEmp[$empLeaveAssignColumn] != $assignDay) {
+                        array_push($oldvalarr, $rowCurrentEmp[$empLeaveAssignColumn]);
+                        array_push($chgvalarr,  $assignDay);
+                        array_push($datafield, 'empLeaveAssignColumn');
+                    }
                 }
             }
 
@@ -129,7 +169,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         'cby'          => USER_ID,
                         'oldval'       => implodeWithComma($oldvalarr),
                         'changes'      => implodeWithComma($chgvalarr),
-                        'act_msg'      => actMsgLog($oldvalarr, $chgvalarr, EMPLEAVE, (isset($returnData) ? '' : $errorMsg)),
+                        'act_msg'      => actMsgLog($empArr[$i], $datafield, '', $oldvalarr, $chgvalarr, EMPLEAVE, $pageAction, (isset($returnData) ? '' : $errorMsg)),
                         'query_rec'    => $query,
                         'query_table'  => EMPLEAVE,
                         'page'         => $pageTitle,
@@ -153,9 +193,14 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 </head>
 
 <script>
+    //Wait for all css,html,js file fully loader than display a content
+    preloader(300);
+
     $(document).ready(() => {
+
         createSortingTable('table');
         createSortingTable('leaveApplicationTable');
+
     });
 </script>
 
@@ -166,9 +211,14 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 </style>
 
 <body>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -583,7 +633,10 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                     </div>
                                 </form>
                             </div>
+
+                            <!-- Modal -->
                         </div>
+
                     </div>
                 </div>
                 <!--Leave Application-->
@@ -596,9 +649,11 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                             <i class="mdi mdi-account-plus-outline"></i> Add <?php echo $pageTitle ?>
                         </a>&nbsp;
                     <?php endif; ?>
+
                 </div>
                 <!--Add New Employee-->
             </div>
+
         </div>
     </div>
 
