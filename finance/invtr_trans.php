@@ -378,7 +378,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
 
         </div>
 
-        <div id="IVTRFormContainer" class="container d-flex justify-content-center">
+        <div id="formContainer" class="container d-flex justify-content-center">
             <div class="col-6 col-md-6 formWidthAdjust">
                 <form id="IVTRForm" method="post" action="" enctype="multipart/form-data">
                     <div class="form-group mb-5">
@@ -433,7 +433,6 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                                     }
                                     $mrcht_row = $mrcht_rst->fetch_assoc();
                                 }
-                  <?php } ?>
                             ?>
                             <input class="form-control" type="text" name="invtr_mrcht" id="invtr_mrcht"
                                 <?php if ($act == '') echo 'readonly' ?>
@@ -445,6 +444,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $mrcht_err; ?></span>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -639,5 +639,4 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     </script>
 
 </body>
-
 </html>
