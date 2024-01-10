@@ -75,6 +75,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(accID,accName,create_by,create_date,create_time) VALUES ('$maa_id','$maa_name','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
+                    generateDBData(META_ADS_ACC, $finance_connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -107,6 +108,7 @@ if (post('actionBtn')) {
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET accID = '$maa_id',accName = '$maa_name', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
+                        generateDBData(META_ADS_ACC, $finance_connect);
                     } else {
                         $act = 'NC';
                     }
@@ -162,6 +164,7 @@ if (post('act') == 'D') {
             $dataID = $row['id'];
             //SET the record status to 'D'
             deleteRecord($tblName , $dataID, $maa_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            generateDBData(META_ADS_ACC, $finance_connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
