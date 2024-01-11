@@ -119,6 +119,7 @@ define('CAONHD', 'asset_cash_on_hand_transaction');
 define('INITCA_TRANS', 'asset_initial_capital_transaction');
 define('OCR_TRANS', 'asset_other_creditor_transaction');
 define('EXPENSE_TYPE', 'expense_type');
+define('FB_ADS_TOPUP', 'facebook_ads_topup_transaction');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
