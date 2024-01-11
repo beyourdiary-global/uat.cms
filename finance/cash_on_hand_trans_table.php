@@ -126,11 +126,16 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Transaction ID</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">PIC</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Bank</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
+                        <th scope="col">Previous Amount Record</th>
+                        <th scope="col">Final Amount Record</th>
                         <th scope="col">Description</th>   
-                        <th scope="col">Remark</th>                    
+                        <th scope="col">Remark</th>                     
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
