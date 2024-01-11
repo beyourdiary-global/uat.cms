@@ -82,12 +82,26 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                 $empLeaveAssignColumn = "leaveType_" . $leaveTypeArr[$x];
 
-                $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
-                $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
-
+                       /*
                 if (!$resultLeaveType || !$resultCurrentEmp) {
                     echo $errorRedirectLink;
                 }
+*/
+                    $resultLeaveType = getData('num_of_days', 'id ="' . $leaveTypeArr[$x] . '"', '', L_TYPE, $connect);
+                    $resultCurrentEmp = getData($empLeaveAssignColumn, 'employeeID ="' . $empArr[$i] . '"', '', EMPLEAVE, $connect);
+
+
+                    if (!$resultLeaveType || !$resultCurrentEmp) {
+                        echo "
+                    <script>            
+                    setCookie('leaveTypeSelect', '', 0);
+                    setCookie('employeeID', '', 0);
+                    setCookie('assignType', '', 0);
+                    </script>";
+
+                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                    }
 
                 $rowLeaveType = $resultLeaveType->fetch_assoc();
                 $rowCurrentEmp = $resultCurrentEmp->fetch_assoc();
@@ -154,8 +168,10 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
 <script>
     $(document).ready(() => {
+
         createSortingTable('table');
         createSortingTable('leaveApplicationTable');
+
     });
 </script>
 
@@ -166,9 +182,14 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 </style>
 
 <body>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -583,7 +604,10 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                     </div>
                                 </form>
                             </div>
+
+                            <!-- Modal -->
                         </div>
+
                     </div>
                 </div>
                 <!--Leave Application-->
@@ -596,9 +620,11 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                             <i class="mdi mdi-account-plus-outline"></i> Add <?php echo $pageTitle ?>
                         </a>&nbsp;
                     <?php endif; ?>
+
                 </div>
                 <!--Add New Employee-->
             </div>
+
         </div>
     </div>
 

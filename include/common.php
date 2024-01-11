@@ -640,9 +640,13 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
+
+function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr = array(), $chgvalarr = array(), $tblName, $action, $errorMsg)
+
 {
-	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
+	$action = strtolower($action);
+
+	$actMsg = USER_NAME . (empty($errorMsg) ? " " : " fail to ") . $action . "  the data [ <b> ID = ".$id." </b> ]";
 
 	for ($i = 0; $i < sizeof($oldvalarr); $i++) {
 		if ($i == 0)
@@ -658,13 +662,15 @@ function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorM
 }
 
 // Function to update previous and final amounts for transactions
-function updateTransactionAmounts($finance_connect, $table_name)
+
+function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
 {
-	// Initialize an associative array to store previous amounts for each bank and currency combination
+	// Initialize an associative array to store previous amounts
 	$prevAmounts = array();
 
-	// Select all transactions ordered by id
-	$query = "SELECT id, `type`, amount, bank, currency, `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+	// Construct the query
+	$query = "SELECT id, `type`, amount, " . implode(', ', $fields) . ", `status` FROM $table_name WHERE `status` <> 'D' ORDER BY id";
+
 	$result = mysqli_query($finance_connect, $query);
 
 	if (!$result) {
@@ -676,10 +682,12 @@ function updateTransactionAmounts($finance_connect, $table_name)
 		$id = $row['id'];
 		$type = $row['type'];
 		$amount = $row['amount'];
-		$currency = $row['currency'];
-		$bank = $row['bank'];
 
-		$key = $bank . '_' . $currency;
+		// Create the key for the $prevAmounts array
+		$keyParts = array_map(function ($field) use ($row) {
+			return $row[$field];
+		}, $uniqueKey);
+		$key = implode('_', $keyParts);
 
 		if (!isset($prevAmounts[$key])) {
 			$prevAmounts[$key] = 0;
@@ -703,4 +711,15 @@ function updateTransactionAmounts($finance_connect, $table_name)
 
 		$prevAmounts[$key] = $finalAmt;
 	}
+	return true;
+}
+
+function insertNewMerchant($merchantName, $userId, $financeConnect)
+{
+	$query = "INSERT INTO " . MERCHANT . "(name,create_by,create_date,create_time) VALUES ('$merchantName','$userId',curdate(),curtime())";
+	$queryResult = mysqli_query($financeConnect, $query);
+	if ($queryResult) {
+		return mysqli_insert_id($financeConnect);
+	}
+	return false;
 }

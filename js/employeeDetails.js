@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     epfOptionDropdown.addEventListener('change', updateEpfNoField);
 
-    updateEpfNoField();
+  updateEpfNoField();
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -291,8 +291,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('emergencyContactNumSpan').textContent = phoneCode;
     }
 
-    document.getElementById('employeeNationality').addEventListener('change', updatePhoneCode);
-
+  document
+    .getElementById("employeeNationality")
+    .addEventListener("change", updatePhoneCode);
     updatePhoneCode();
 });
 

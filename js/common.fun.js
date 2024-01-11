@@ -1331,15 +1331,17 @@ document.addEventListener("DOMContentLoaded", function () {
   var currentDataNameInput = document.getElementById("currentDataName");
   var errorSpan = document.getElementById("errorSpan");
 
-  // Function to toggle error message visibility
-  function toggleErrorMessage() {
-    var inputValue = currentDataNameInput.value.trim();
-    errorSpan.style.display =
-      inputValue !== "" &&
-      inputValue !== localStorage.getItem("currentDataName")
-        ? "none"
-        : "block";
-  }
+  if (currentDataNameInput) {
+    // Function to toggle error message visibility
+    function toggleErrorMessage() {
+      var inputValue = currentDataNameInput.value.trim();
+      errorSpan.style.display =
+        inputValue !== "" &&
+        inputValue !== localStorage.getItem("currentDataName")
+          ? "none"
+          : "block";
+    }
+
 
   if (currentDataNameInput) {
     // Attach an input event listener to the input field
@@ -1365,3 +1367,38 @@ function checkCurrentPage(page) {
     localStorage.setItem("page", page);
   }
 }
+
+function preloader(additionalDelay, action) {
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+      document.querySelector(".preloader").style.display = "none";
+      document.querySelector(".pre-load-center").style.display = "none";
+      document.querySelector(".page-load-cover").style.display = "block";
+      setAutofocus(action);
+    }, additionalDelay);
+  });
+}
+
+function setAutofocus(action) {
+  if (action === "I" || action === "E") {
+    var firstInput = $("input:visible:enabled:first");
+    if (firstInput.length > 0) {
+      firstInput.focus();
+
+      var inputValue = firstInput.val();
+      var lastSpaceIndex = inputValue.lastIndexOf(" ");
+
+      if (lastSpaceIndex !== -1) {
+        var input = firstInput.get(0);
+        var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
+        var cursorPosition =
+          lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
+        input.setSelectionRange(cursorPosition, cursorPosition);
+      } else {
+        firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
+          inputValue.length;
+      }
+    }
+  }
+}
+
