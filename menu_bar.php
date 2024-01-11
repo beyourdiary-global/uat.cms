@@ -84,7 +84,7 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'), 
                     array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
                     array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL.'/finance/sundry_debt_trans_table.php', '42'),
                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL.'/finance/other_creditor_trans_table.php', '43'),
