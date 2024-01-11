@@ -914,6 +914,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     case "MO":
       var title = msg + " Successful Place";
       break;
+    case "ErrMO":
+      var title = msg;
+      break;
     case "NC":
       var title = "No changes were made.";
       break;
@@ -924,7 +927,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       var title = "Error";
   }
 
-  localStorage.clear();
+  if (act != "ErrMO") {
+    localStorage.clear();
+  }
 
   var message = "";
   if (msg.length >= 1) {
@@ -1040,14 +1045,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     } else console.log("Operation Cancelled.");
   }
 
-  if (
-    act == "I" ||
-    act == "E" ||
-    act == "MO" ||
-    act == "NC" ||
-    act == "PC" ||
-    act == "F"
-  ) {
+  if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC" || act == "F" || act == "ErrMO") {
     const myModal2 = new bootstrap.Modal(modelResult, {
       keyboard: false,
       backdrop: "static",
@@ -1063,6 +1061,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         modelResult.remove();
         resolve(true);
         window.location.href = pathreturn;
+
       }, 5000);
 
       function response(e) {
@@ -1077,8 +1076,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         document.body.removeEventListener("click", response);
         document.body.querySelector(".modal-backdrop").remove();
         resolve(bool);
-        console.log("HELLO");
         window.location.href = pathreturn;
+
       }
     });
   }
@@ -1128,7 +1127,7 @@ function searchInput(param, siteURL) {
 
   if (search != "") {
     $.ajax({
-      url: siteURL + "/getSearch.php", 
+      url: siteURL + "/getSearch.php",
       type: "post",
       data: {
         searchText: search,
@@ -1197,7 +1196,7 @@ function searchInput(param, siteURL) {
     $("#searchResult_" + elementID).remove();
     $("#clear_" + elementID).remove();
   }
-  
+
 }
 
 function retrieveJSONData(search, type, tblname) {

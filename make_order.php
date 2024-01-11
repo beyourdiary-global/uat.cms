@@ -58,6 +58,11 @@ $country_telcode_to = getCountryTelCode($to, $connect);
 
     .invalid-msg {
         color: red;
+        margin-bottom: 0;
+    }
+
+    p {
+        margin-bottom: 0;
     }
 </style>
 
@@ -156,7 +161,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                     </div>
                                                     <input class="form-control" type="tel" name="sender_tel" id="sender_tel" placeholder="Sender ContactNum" required>
                                                 </div>
-
+                                                <span id="telMsg1"></span>
                                                 <div class="invalid-msg">
                                                     Please enter the sender contact number.
                                                 </div>
@@ -189,6 +194,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
 
                                                     <input class="form-control" type="tel" name="sender_alt_tel" id="sender_alt_tel" placeholder="Sender Alt.ContactNum">
                                                 </div>
+                                                <span id="telMsg2"></span>
                                             </div>
                                         </div>
 
@@ -308,6 +314,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                 </div>
                                                 <input class="form-control" type="tel" name="receiver_tel" id="receiver_tel" placeholder="Receiver ContactNum" required>
                                             </div>
+                                            <span id="telMsg3"></span>
                                             <div class="invalid-msg">
                                                 Please enter the receiver contact number.
                                             </div>
@@ -345,6 +352,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                 </div>
                                                 <input class="form-control" type="tel" name="receiver_alt_tel" id="receiver_alt_tel" placeholder="Receiver Alt.ContactNum">
                                             </div>
+                                            <span id="telMsg4"></span>
                                         </div>
                                     </div>
 
@@ -442,7 +450,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                             <div class="input-group">
                                                 <input class="form-control" type="date" name="pickup_date" id="pickup_date" placeholder="Pickup Date" required style="border-radius:3px;height: 40px;" data-toggle="tooltip" data-placement="right" title="Pickup Date">
                                             </div>
-
+                                            <span id="dateMsg5"></span>
                                             <div class="invalid-msg">
                                                 Please enter the pickup date
                                             </div>
@@ -499,7 +507,9 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                             <img src="<?= isset($courier_logo) ? $courier_logo : ''; ?>" style="width:50%">
                         </div>
                     </div>
+
                     <hr class="hr" />
+
                     <div class="row">
                         <div class="col-12">
                             <span>
@@ -518,6 +528,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                             </span>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-12 d-flex">
                             <div class="col-4 text-start">
@@ -531,7 +542,9 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                             </div>
                         </div>
                     </div>
+
                     <hr class="hr" />
+
                     <div class="row">
                         <div class="col-12 d-flex">
                             <span>Weight : <b><?= isset($weight) ? $weight : '' ?> kg</b></span>
@@ -543,13 +556,16 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                             <span id="displayedPrice">Price : <b><?= isset($price) ? $currency . ' ' . $price : '' ?></b></span>
                         </div>
                     </div>
+
                     <hr class="hr" />
+
                     <div class="row">
                         <div class="col-6">
                             <div class="d-flex justify-content-center">
-                                <a class="btn btn-default btn-primary" type="button" href="<?= "$SITEURL/rate_checking.php?country=" . urlencode($from) . "&postcodefrom=" . urlencode($postcode_from) . "&postcodeto=" . urlencode($postcode_to) .  "&from_full=" . urlencode($from_full) . "&to_full=" . urlencode($to_full); ?>" id="backBtn">Back</a>
+                                <a class="btn btn-default btn-primary" onclick="localStorage.clear();" type="button" href="<?= "$SITEURL/rate_checking.php?country=" . urlencode($from) . "&postcodefrom=" . urlencode($postcode_from) . "&postcodeto=" . urlencode($postcode_to) .  "&from_full=" . urlencode($from_full) . "&to_full=" . urlencode($to_full); ?>" id="backBtn">Back</a>
                             </div>
                         </div>
+
                         <div class="col-6">
                             <div class="d-flex justify-content-center">
                                 <button class="btn btn-default btn-primary" type="submit" value="makeOrder" name="actionBtn" id="actionBtn">Book</button>
@@ -560,9 +576,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
             </fieldset>
         </div>
     </div>
-    </div>
     <!-- Courier Detail -->
-    </form>
 
     <?php
     if (post('actionBtn')) {
@@ -631,10 +645,12 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                         if ($orderInfo['status'] != 'fail') {
                             $rstMakeOrderPayment = make_order_payment($dataMOP);
                         } else {
-                            echo  '<script>
-                        window.alert("' . $orderInfo['remarks'] . '");
-                      </script>
-                      ';
+                            $_SESSION['tempValConfirmBox'] = true;
+
+                            if (isset($_SESSION['tempValConfirmBox'])) {
+                                unset($_SESSION['tempValConfirmBox']);
+                                echo '<script>confirmationDialog("","Error Message : ' . $orderInfo['remarks'] . '","' . $pageTitle . '","","' . $SITEURL . '/make_order.php","ErrMO");</script>';
+                            }
                         }
                     }
                 }
@@ -817,7 +833,6 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                 }
                 break;
             case 'back':
-                echo ("$unsetVariable = 'tempValConfirmBox'; <script>unset($_SESSION[$unsetVariable]);</script>");
                 echo ("<script>location.href = 'rate_checking.php?country=$from';</script>");
                 break;
         }
@@ -830,6 +845,8 @@ $country_telcode_to = getCountryTelCode($to, $connect);
     }
     ?>
 
+    </form>
+
     </div>
 </body>
 
@@ -840,78 +857,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
 
     checkCurrentPage(page, action);
     setButtonColor();
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-        const hasValidationElements = document.querySelectorAll('.has-validation');
-
-        hasValidationElements.forEach(function(container) {
-            const inputField = container.querySelector('input, select');
-            const errorMessage = container.querySelector('.invalid-msg');
-
-            if (inputField && inputField.hasAttribute('required')) {
-                errorMessage.style.display = 'none';
-
-                inputField.addEventListener('input', function() {
-                    if (inputField.validity.valid) {
-                        errorMessage.style.display = 'none';
-                        inputField.style.borderColor = '';
-                    } else {
-                        errorMessage.style.display = 'block';
-                    }
-                });
-            }
-        });
-
-        document.getElementById('makeOrderForm').addEventListener('submit', function(event) {
-            hasValidationElements.forEach(function(container) {
-                const inputField = container.querySelector('input, select');
-                const errorMessage = container.querySelector('.invalid-msg');
-
-                if (inputField && !inputField.validity.valid) {
-                    errorMessage.style.display = 'block';
-                    inputField.style.borderColor = 'red';
-                    event.preventDefault();
-                }
-            });
-        });
-    });
-
-    $(document).ready(function() {
-        $("#sender_email").on("input", function() {
-            if (!validateEmail('#sender_email')) {
-                $("#emailMsg1").html("<p class='text-danger'>Invalid Email Format</p>");
-            } else {
-                $("#emailMsg1").html("");
-            }
-        });
-
-        $("#receiver_email").on("input", function() {
-            if (!validateEmail('#receiver_email')) {
-                $("#emailMsg2").html("<p class='text-danger'>Invalid Email Format</p>");
-            } else {
-                $("#emailMsg2").html("");
-            }
-        });
-
-        $("#actionBtn").on("click", function(event) {
-            if (!validateEmail('#sender_email') || !validateEmail('#receiver_email')) {
-                event.preventDefault();
-            }
-        });
-    });
-
-    function validateEmail(inputID) {
-        // get value of input email
-        var email = $(inputID).val();
-        // use reular expression
-        var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-        if (reg.test(email)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    <?php include "./js/make_order.js" ?>
 </script>
 
 </html>

@@ -20,6 +20,7 @@ $selected_d = "true";
 $selected_i = "false";
 $showActive_d = "show active";
 $showActive_i = "";
+$area = "D";
 
 if ($country) {
     $dispCountrySel = "style=\"display: none;\"";
@@ -31,8 +32,8 @@ if ($country) {
     $dispDeliverOpt = "style=\"display: none;\"";
 }
 
-if (isset($_GET['to_full'], $_GET['from_full'])) {
-    if ($_GET['from_full'] != $_GET['to_full']) {
+if (post('to') && post('from')) {
+    if (post('to') != post('from')) {
         $active_d = "";
         $active_i = "active";
         $selected_d = 'false';
@@ -40,8 +41,17 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
         $showActive_d = "";
         $showActive_i = "show active";
     }
+} else if (isset($_GET['to_full'], $_GET['from_full'])) {
+    if ($_GET['from_full'] != $_GET['to_full']) {
+        $active_d = "";
+        $active_i = "active";
+        $selected_d = 'false';
+        $selected_i = 'true';
+        $showActive_d = "";
+        $showActive_i = "show active";
+        $area = "I";
+    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -74,6 +84,10 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
     .disabledSelection {
         pointer-events: none;
     }
+
+    p{
+        margin-bottom: 0;
+    }
 </style>
 
 <body>
@@ -98,7 +112,7 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                     </div>
 
                     <div class="form-group" id="country_selector" <?= $dispCountrySel ?>>
-                        <form id="c_selectorForm" novalidate>
+                        <form id="c_selectorForm">
                             <div class="row d-flex flex-md-row flex-column">
                                 <div class="col-12 col-md-9">
                                     <label class="form-label form_lbl" id="country_lbl" for="country">From Which Country</label>
@@ -130,21 +144,19 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                             <!-- Tabs content -->
                             <div class="tab-content" id="dest-form">
                                 <div class="tab-pane fade <?= $showActive_d ?>" id="domestic-section" role="tabpanel" aria-labelledby="domestic-tab">
-                                    <form id="domestic" method="post" novalidate>
+                                    <form id="domestic" method="post">
                                         <div class="form-group">
-                                            <label class="form-label form_lbl" id="" required for="from">From:</label>
+                                            <label class="form-label form_lbl" id="" for="from">From:</label>
                                             <div class="row">
                                                 <div class="col-6 col-md-6">
-                                                    <select class="disabledSelection form-select mb-3 h-75" id="from" name="from">
+                                                    <select class="disabledSelection form-select mb-3" id="from" name="from">
                                                         <?= isset($domestic) ? $domestic : ''; ?>
                                                     </select>
                                                 </div>
 
                                                 <div class="col-6 col-md-6">
-                                                    <input class="form-control h-75" type="text" id="postcode_from" name="postcode_from" required placeholder="Postcode" style="line-height:30px;" value="<?php echo isset($_POST['postcode_from']) ? htmlspecialchars($_POST['postcode_from']) : (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : ''); ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err) ? $err : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="text" id="postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php echo (($area == 'D') ? (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : '') : ''); ?>">
+                                                    <span id="errorMsg1"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -153,16 +165,14 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                             <label class="form-label form_lbl" id="" for="to">To:</label>
                                             <div class="row">
                                                 <div class="col-6 col-md-6">
-                                                    <select class="disabledSelection form-select mb-3 h-75" id="to" name="to" required>
+                                                    <select class="disabledSelection form-select mb-3" id="to" name="to">
                                                         <?= isset($domestic) ? $domestic : ''; ?>
                                                     </select>
                                                 </div>
 
                                                 <div class="col-6 col-md-6">
-                                                    <input class="form-control h-75" type="text" id="postcode_to" name="postcode_to" required placeholder="Postcode" style="line-height:30px;" value="<?php echo isset($_POST['postcode_to']) ? htmlspecialchars($_POST['postcode_to']) : (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : ''); ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err2) ? $err2 : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="text" id="postcode_to"  name="postcode_to" placeholder="Postcode" style=";line-height:30px;" value="<?php echo (($area == 'D') ? (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : '') : ''); ?>">
+                                                    <span id="errorMsg2"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,13 +182,11 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-12 col-md-6 mb-3 mb-md-0">
-                                                    <input class="form-control" type="number" min="0" step=".01" id="weight" name="weight" required placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err5) ? $err5 : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="number" min="0" step=".01" id="weight" name="weight" placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
+                                                    <span id="errorMsg3"></span>
                                                 </div>
                                                 <div class="col-12 col-md-6 d-flex">
-                                                    <button class="btn btn-sm btn-primary mb-auto" name="actionBtn" id="actionBtn" value="chkRate_d" style="width:100%">Submit</button>
+                                                    <button class="btn btn-sm btn-primary mb-auto domestic_btn" name="actionBtn" id="actionBtn" value="chkRate_d" style="width:100%">Submit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -186,32 +194,28 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                 </div>
 
                                 <div class="tab-pane fade <?= $showActive_i ?>" id="international-section" role="tabpanel" aria-labelledby="international-tab">
-                                    <form id="international" method="post" novalidate>
+                                    <form id="international" method="post">
                                         <div class="form-group">
                                             <label class="form-label form_lbl " id="international_from" for="from">From:</label>
                                             <div class="row">
                                                 <div class="col-6 col-md-6">
-                                                    <select class="disabledSelection form-select mb-3 h-75" id="from" name="from">
+                                                    <select class="disabledSelection form-select mb-3" id="from" name="from">
                                                         <?= isset($domestic) ? $domestic : ''; ?>
                                                     </select>
                                                 </div>
 
                                                 <div class="col-6 col-md-6">
-                                                    <input class="form-control h-75" type="text" id="international_postcode_from" required name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php echo post('postcode_from') ? htmlspecialchars(post('postcode_from')) : (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : ''); ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err6) ? $err6 : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="text" id="international_postcode_from" name="postcode_from" placeholder="Postcode" style="line-height:30px;" value="<?php echo (($area == 'I') ? (isset($_GET['postcodefrom']) ? htmlspecialchars($_GET['postcodefrom']) : '') : ''); ?>">
+                                                    <span id="errorMsg4"></span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="form-label form_lbl" id="" for="to">To:</label>
-
                                             <div class="row">
                                                 <div class="col-6 col-md-6">
-                                                    <select class="form-select mb-3 h-75" id="international_to" required name="to">
-                                                        <option selected></option>
+                                                    <select class="form-select mb-3" id="international_to" name="to">
                                                         <?php
                                                         $all_country = getCountry('all', $connect);
                                                         asort($all_country);
@@ -237,10 +241,8 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                                 </div>
 
                                                 <div class="col-6 col-md-6">
-                                                    <input class="form-control h-75" type="text" id="international_postcode_to" name="postcode_to" required placeholder="Postcode" style="line-height:30px;" value="<?php echo post('postcode_to') ? htmlspecialchars(post('postcode_to')) : (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : ''); ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err7) ? $err7 : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="text" id="international_postcode_to" name="postcode_to" placeholder="Postcode" style="line-height:30px;" value="<?php echo (($area == 'I') ? (isset($_GET['postcodeto']) ? htmlspecialchars($_GET['postcodeto']) : '') : ''); ?>">
+                                                    <span id="errorMsg5"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -250,13 +252,11 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                         <div class="form-group">
                                             <div class="row">
                                                 <div class="col-12 col-md-6 mb-3 mb-md-0">
-                                                    <input class="form-control" type="number" min="0" step=".01" id="weight" name="weight" required placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
-                                                    <div id="errMsg">
-                                                        <span style="color:#ff0000;"><?= isset($err9) ? $err9 : ''; ?></span>
-                                                    </div>
+                                                    <input class="form-control" type="number" min="0" step=".01" id="international_weight" name="weight" placeholder="Weight (kg)" style="line-height:30px;" value="<?= post('weight') ? post('weight') : '' ?>">
+                                                    <span id="errorMsg6"></span>
                                                 </div>
                                                 <div class="col-12 col-md-6 d-flex">
-                                                    <button class="btn btn-sm btn-primary mb-auto" name="actionBtn" id="actionBtn" value="chkRate_i" style="width:100%">Submit</button>
+                                                    <button class="btn btn-sm btn-primary mb-auto international_btn" name="actionBtn" id="actionBtn" value="chkRate_i" style="width:100%">Submit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -315,15 +315,6 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                 $log['page'] = $pageTitle;
                                 $log['connect'] = $connect;
                                 audit_log($log);
-                            } else {
-                                if (!($data['postcode_from']))
-                                    $err = "Postcode is required.";
-
-                                if (!($data['postcode_to']))
-                                    $err2 = "Postcode is required.";
-
-                                if (!($data['weight']))
-                                    $err5 = "Parcel weight is required.";
                             }
                             break;
 
@@ -370,15 +361,6 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
                                 $log['page'] = $pageTitle;
                                 $log['connect'] = $connect;
                                 audit_log($log);
-                            } else {
-                                if (!($data['postcode_from']))
-                                    $err6 = "Postcode is required.";
-
-                                if (!($data['postcode_to']))
-                                    $err7 = "Postcode is required.";
-
-                                if (!($data['weight']))
-                                    $err9 = "Parcel weight is required.";
                             }
                             break;
                         default:
@@ -505,6 +487,79 @@ if (isset($_GET['to_full'], $_GET['from_full'])) {
 
     checkCurrentPage(page, action);
     setButtonColor();
+
+
+    $(".domestic_btn").on("click", function() {
+        var err;
+
+        if (!$("#postcode_from").val()) {
+            $("#errorMsg1").html("<p style='color:red'>Please enter a postcode</p>");
+            $("#errorMsg1").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg").html("");
+            $("#errorMsg1").css("border-color", "");
+        }
+
+        if (!$("#postcode_to").val()) {
+            $("#errorMsg2").html("<p style='color:red'>Please enter a postcode</p>");
+            $("#errorMsg2").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg2").html("");
+            $("#errorMsg2").css("border-color", "");
+        }
+
+        if (!$("#weight").val()) {
+            $("#errorMsg3").html("<p style='color:red'>Please enter a weight</p>");
+            $("#errorMsg3").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg3").html("");
+            $("#errorMsg3").css("border-color", "");
+        }
+
+        if (err) {
+            event.preventDefault();
+            $("#courier_table").hide();
+        }
+    });
+
+    $(".international_btn").on("click", function() {
+        var err;
+
+        if (!$("#international_postcode_from").val()) {
+            $("#errorMsg4").html("<p style='color:red'>Please enter a postcode</p>");
+            $("#errorMsg4").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg4").html("");
+            $("#errorMsg4").css("border-color", "");
+        }
+
+        if (!$("#international_postcode_to").val()) {
+            $("#errorMsg5").html("<p style='color:red'>Please enter a postcode</p>");
+            $("#errorMsg5").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg5").html("");
+            $("#errorMsg5").css("border-color", "");
+        }
+
+        if (!$("#international_weight").val()) {
+            $("#errorMsg6").html("<p style='color:red'>Please enter a weight</p>");
+            $("#errorMsg6").css("border-color", "red");
+            err = 1;
+        } else {
+            $("#errorMsg6").html("");
+            $("#errorMsg6").css("border-color", "");
+        }
+
+        if (err) {
+            event.preventDefault();
+            $("#courier_table").hide();
+        }
+    });
 </script>
 
 </html>
