@@ -834,6 +834,11 @@ $country_telcode_to = getCountryTelCode($to, $connect);
 </body>
 
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+    checkCurrentPage(page, action);
     setButtonColor();
 
     document.addEventListener("DOMContentLoaded", function() {

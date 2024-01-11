@@ -17,7 +17,7 @@ $clearLocalStorage = '<script>localStorage.clear();</script>';
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -28,7 +28,7 @@ if ($dataID) { //edit/remove/view
         $_SESSION['tempValConfirmBox'] = true;
         $act = "F";
     }
-} 
+}
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -48,7 +48,7 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addExpenseType':
         case 'updExpenseType':
-           
+
             if (!$et_name) {
                 $name_err = "Please specify the name.";
                 break;
@@ -89,7 +89,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -166,12 +166,12 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $et, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $dataID, $et, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -252,7 +252,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $name_err; ?></span>
                                 </div>
-                            <?php } ?>  
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -273,8 +273,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $code_err; ?></span>
                                 </div>
-                            <?php } ?>    
-                    </div>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
 
@@ -283,15 +283,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <div class="col-md-12">
                             <label class="form-label form_lbl" id="et_remark_lbl" for="et_remark">Remark</label>
                             <input class="form-control" type="text" name="et_remark" id="et_remark" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['remark']) && !isset($et_remark)) {
-                                                                                                            echo $row['remark'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['remark']) && isset($et_remark)) {
-                                                                                                            echo $et_remark;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
-                              
-                    </div>
+                                                                                                            if (isset($dataExisted) && isset($row['remark']) && !isset($et_remark)) {
+                                                                                                                echo $row['remark'];
+                                                                                                            } else if (isset($dataExisted) && isset($row['remark']) && isset($et_remark)) {
+                                                                                                                echo $et_remark;
+                                                                                                            } else {
+                                                                                                                echo '';
+                                                                                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
+
+                        </div>
                     </div>
                 </div>
 
@@ -325,6 +325,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+        
         <?php include "../js/expense_type.js" ?>
     </script>
 

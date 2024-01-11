@@ -670,7 +670,7 @@ function checkValidDate(inDate, futurecheck) {
   yy = inDate.substring(4, 8);
 
   /* Now, convert the string yr1 into a numeric and test for leap year.
-	If it is, change the end of month day string for Feb to 29  */
+  If it is, change the end of month day string for Feb to 29  */
 
   var isLeap = false;
   yy = yy * 1;
@@ -1146,8 +1146,8 @@ function searchInput(param, siteURL) {
         )
           $("#" + elementID).after(
             '<ul class="searchResult" id="searchResult_' +
-              elementID +
-              '"></ul>',
+            elementID +
+            '"></ul>',
             '<div id="clear_' + elementID + '" class="clear"></div>'
           );
 
@@ -1261,22 +1261,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function retrieveDataFromLocalStorage() {
     var inputFields = document.querySelectorAll("input, textarea ,select");
-    inputFields.forEach(function (input) {
-      // Check if the input is not readonly and has stored data
-      if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
-        input.value = localStorage.getItem(input.id);
-      }
-    });
+    var page = localStorage.getItem("page");
+
+    if (page !== 'invalid') {
+      inputFields.forEach(function (input) {
+        // Check if the input is not readonly and has stored data
+        if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
+          input.value = localStorage.getItem(input.id);
+        }
+      });
+    }
   }
 
   function saveFormDataToLocalStorage() {
     var inputFields = document.querySelectorAll("input, textarea ,select");
+    var page = localStorage.getItem("page");
 
-    inputFields.forEach(function (input) {
-      if (!input.readOnly && input.id) {
-        localStorage.setItem(input.id, input.value);
-      }
-    });
+    if (page !== 'invalid') {
+      inputFields.forEach(function (input) {
+        if (!input.readOnly && input.id && !input.multiple) {
+          localStorage.setItem(input.id, input.value);
+        }
+      });
+    }
   }
 
   function displayPreviousData() {
@@ -1338,7 +1345,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var inputValue = currentDataNameInput.value.trim();
       errorSpan.style.display =
         inputValue !== "" &&
-        inputValue !== localStorage.getItem("currentDataName")
+          inputValue !== localStorage.getItem("currentDataName")
           ? "none"
           : "block";
     }
@@ -1358,12 +1365,14 @@ function setCookie(cname, cvalue, exMins) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function checkCurrentPage(page) {
-  var previouspage = localStorage.getItem("page");
-  localStorage.setItem("page", page);
-  if (previouspage != page) {
+function checkCurrentPage(page, action) {
+  var previousPage = localStorage.getItem("page");
+  var perviousAction = localStorage.getItem("action");
+
+  if (previousPage != page || perviousAction != action) {
     localStorage.clear();
     localStorage.setItem("page", page);
+    localStorage.setItem("action", action);
   }
 }
 

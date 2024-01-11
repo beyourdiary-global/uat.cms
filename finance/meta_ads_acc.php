@@ -5,7 +5,7 @@ $isFinance = 1;
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = META_ADS_ACC ;
+$tblName = META_ADS_ACC;
 
 $dataID = input('id');
 $act = input('act');
@@ -17,7 +17,7 @@ $clearLocalStorage = '<script>localStorage.clear();</script>';
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -28,7 +28,7 @@ if ($dataID) { //edit/remove/view
         $_SESSION['tempValConfirmBox'] = true;
         $act = "F";
     }
-} 
+}
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -47,7 +47,7 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addAccount':
         case 'updAccount':
-           
+
             if (!$maa_id) {
                 $id_err = "Please specify the account ID.";
                 break;
@@ -84,7 +84,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -158,7 +158,7 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
@@ -246,7 +246,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $id_err; ?></span>
                                 </div>
-                            <?php } ?>  
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -257,19 +257,19 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <label class="form-label form_lbl" id="maa_name_lbl" for="maa_name">Account
                                 Name</label>
                             <input class="form-control" type="text" name="maa_name" id="maa_name" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['accName']) && !isset($maa_name)) {
-                                                                                                            echo $row['accName'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['accName']) && isset($maa_name)) {
-                                                                                                            echo $maa_name;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                            if (isset($dataExisted) && isset($row['accName']) && !isset($maa_name)) {
+                                                                                                                echo $row['accName'];
+                                                                                                            } else if (isset($dataExisted) && isset($row['accName']) && isset($maa_name)) {
+                                                                                                                echo $maa_name;
+                                                                                                            } else {
+                                                                                                                echo '';
+                                                                                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($name_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $name_err; ?></span>
                                 </div>
-                            <?php } ?>    
-                    </div>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
 
@@ -304,6 +304,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
     <script>
         <?php include "../js/meta_ads_acc.js" ?>
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
     </script>
 
 </body>

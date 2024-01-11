@@ -53,16 +53,16 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
             <table class="table table-striped" id="meta_ads_acc_table">
                 <thead>
                     <tr>
-                    <th class="hideColumn" scope="col">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Name</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { 
-                        ?>
-                        
+                    <?php while ($row = $result->fetch_assoc()) {
+                    ?>
+
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                             <td scope="row"><?= $row['accID'] ?></td>
@@ -108,7 +108,13 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
     </div>
 
 </body>
+
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     /**
   oufei 20231014
   common.fun.js
