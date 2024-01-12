@@ -103,8 +103,18 @@ $menuList = array(
                 ),
                 'pin' => array('46'),
             ),
+            array(
+                'Income', 
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '36')
+                ),
+                'pin' => array('36'), 
+            ),            
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46')
+        'pin' => array('36', '37','40','41','42','43','44','45','46','36')
 
     ),
     array(
@@ -372,6 +382,15 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
+    $(document).ready(() => {
+    console.log('Document is ready!');
+    createSortingTable('table');
+    
+    // Add the following lines for debugging
+    $('#addBtn').click(() => console.log('Add button clicked!'));
+    $('#table a').click(() => console.log('Table row link clicked!'));
+});
+
     var sidebar = $("#sidebar");
     var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
     var opacityBackground = $('div#filter_screen');
