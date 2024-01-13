@@ -1,3 +1,23 @@
+//autocomplete
+$(document).ready(function() {
+
+    if (!($("#courier_country").attr('disabled'))) {
+        var selectedValue = '';
+        $("#courier_country").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'nicename', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+            }
+            console.log("Element ID:", param["elementID"]);
+            console.log("Site URL:", '<?= $SITEURL ?>');
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
+})
+
 //jQuery form validation
 $("#courier_id").on("input", function() {
     $(".courier-id-err").remove();
