@@ -90,7 +90,7 @@ if (post('actionBtn')) {
             $gender = postSpaceFilter('employeeGender');
             $dateOfBirth = postSpaceFilter('employeeBirthday');
             $residenceStatus = postSpaceFilter('employeeResidenceStatus');
-            $nationality = postSpaceFilter('nationality');
+            $nationality = (postSpaceFilter('nationality') ? postSpaceFilter('nationality') : postSpaceFilter('employeeNationality'));
             $maritalStatus = postSpaceFilter('maritalStatus');
             $noOfChildren = (postSpaceFilter('noOfChild')) ? postSpaceFilter('noOfChild') : '0';
             $race = postSpaceFilter('employeeRace');
