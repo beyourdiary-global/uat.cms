@@ -23,7 +23,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('merchant_comm_table');
+        createSortingTable('merchant_comm_table'); 
     });
 </script>
 
