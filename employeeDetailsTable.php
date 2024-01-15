@@ -215,8 +215,6 @@ if ($action) {
     }
 }
 
-
-
 //Current Employee ID 
 $userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
 
@@ -696,6 +694,9 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                                     <form id="leaveApplicationApplyForm" action="" method="post" enctype="multipart/form-data" novalidate>
                                         <div class="mt-5">
+
+                                            <span class="warning-msg"></span>
+
                                             <div class="form-group  mb-2">
                                                 <label class="form-label" for="leaveType">Leave Type <span class="requiredRed">*</span></label>
                                                 <select class="form-select" id="leaveType" name="leaveType" required>
@@ -1011,11 +1012,36 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
         if (leaveTypes.hasOwnProperty(selectedLeaveId)) {
             remainingLeave = leaveTypes[selectedLeaveId];
-        } else {
-            remainingLeave = 0;
         }
 
         return remainingLeave;
+    }
+
+    function checkLeaveCredit() {
+
+        var leaveCredit = updateInitialLeave();
+        var warningMsg = $('.warning-msg');
+
+        if (leaveCredit == 0) {
+            $('#leaveApplicationApplyForm input, #leaveApplicationApplyForm select, #leaveApplicationApplyForm textarea').not('#leaveType').prop('disabled', true);
+            $('#leaveType').prop('disabled', false);
+
+            if (warningMsg.children().length === 0) {
+                warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
+                    '<p style="margin:0;text-align: center;">Leave Type You Selected Is Out Of Available Leave Credit </p>' +
+                    '</div>');
+
+                warningMsg.find('.alert').get(0).scrollIntoView();
+            }
+
+            return true;
+
+        } else {
+            $('#leaveApplicationApplyForm input, #leaveApplicationApplyForm select, #leaveApplicationApplyForm textarea').not('#leaveType').prop('disabled', false);
+            warningMsg.empty();
+
+            return false;
+        }
     }
 
     function updateRemainingLeaves() {
@@ -1040,16 +1066,18 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
         if (isNaN(inputTime)) {
             return false;
         }
-        // Check if input date is in the future
-        if (inputTime < currentTime) {
-            error.textContent = "Date must be in the future";
-            return false;
-        }
+
         // Check for incomplete day input
         var dayIncomplete = input.value.split("T")[0].split("-").some(part => part.length < 2);
 
         if (dayIncomplete) {
             error.textContent = "Incomplete day";
+            return false;
+        }
+
+        // Check if input date is in the future
+        if (inputTime < currentTime) {
+            error.textContent = "Date must be in the future";
             return false;
         }
 
@@ -1066,6 +1094,8 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
         var fromTimeDate = new Date(fromTime);
         var toTimeDate = new Date(toTime);
 
+        var warningMsg = $('.warning-msg');
+
         if (fromTime && toTime && fromTimeDate > currentTime && toTimeDate > currentTime) {
             var fromDate = new Date(fromTime);
             var toDate = new Date(toTime);
@@ -1074,12 +1104,69 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
             var durationInDays = Math.round((durationInMilliseconds / (1000 * 60 * 60 * 24)) * 2) / 2;
 
+            if (durationInDays == 0)
+                durationInDays = 0.5;
+
             var remainingLeave = parseInt(updateInitialLeave());
+
+            if (remainingLeave === undefined || isNaN(remainingLeave)) {
+                if (warningMsg.children().length === 0) {
+                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
+                        '<p style="margin:0;text-align: justify;">Please Select A Leave Type First' +
+                        '</div>');
+
+                    warningMsg.find('.alert').get(0).scrollIntoView();
+                }
+
+                return false;
+            } else {
+                warningMsg.empty();
+            }
+
+            if (remainingLeave === 0) {
+                checkLeaveCredit();
+                return false;
+            }
+
+            if (toDate <= fromDate) {
+                if (warningMsg.children().length === 0) {
+                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
+                        '<p style="margin:0;text-align: justify;">The end date of the leave must exceed the start date of the leave.</p>' +
+                        '</div>');
+
+                    warningMsg.find('.alert').get(0).scrollIntoView();
+                }
+
+                return false;
+            } else {
+                warningMsg.empty();
+            }
+
+            if (durationInDays >= remainingLeave) {
+                $('#numOfdays').val(0);
+                $('#remainingLeave').val(0);
+
+                if (warningMsg.children().length === 0) {
+                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
+                        '<p style="margin:0;text-align: justify;">Your Total Days Of Leave Exceed The Available Leave Credit.</p>' +
+                        '</div>');
+
+                    warningMsg.find('.alert').get(0).scrollIntoView();
+                }
+
+                return false;
+            } else {
+                warningMsg.empty();
+            }
 
             if (remainingLeave > 0 && (remainingLeave - durationInDays) <= remainingLeave) {
                 $('#numOfdays').val(durationInDays);
                 $('#remainingLeave').val(remainingLeave - durationInDays);
                 return true;
+            }
+        } else {
+            if (!checkLeaveCredit()) {
+                warningMsg.empty();
             }
         }
 
@@ -1097,31 +1184,38 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
         return allFieldsFilled;
     }
 
-    var leaveApplicationForm = document.getElementById('leaveApplicationApplyForm');
+    function validateAppFormSubmitBtn() {
+        var submitBtnBooleanArr = {
+            'validEmptyField': [],
+            'validToTime': [],
+            'validFromTime': [],
+            'validCalcTime': []
+        };
 
-    leaveApplicationForm.addEventListener("change", function() {
-
-        var submitBtnBooleanArr = [];
         var submitBtn = document.getElementById('actionBtn');
         var leaveType = document.getElementById('leaveType');
 
         leaveType.addEventListener('change', calculateNumberOfDays);
 
-        submitBtnBooleanArr.push(checkFormInputEmptyValue());
-        submitBtnBooleanArr.push(validateDateTime("toTime", "toTimeError"));
-        submitBtnBooleanArr.push(validateDateTime("fromTime", "fromTimeError"));
-        submitBtnBooleanArr.push(calculateNumberOfDays());
+        submitBtnBooleanArr['validEmptyField'].push(checkFormInputEmptyValue());
+        submitBtnBooleanArr['validToTime'].push(validateDateTime("toTime", "toTimeError"));
+        submitBtnBooleanArr['validFromTime'].push(validateDateTime("fromTime", "fromTimeError"));
+        submitBtnBooleanArr['validCalcTime'].push(calculateNumberOfDays());
 
-        var submitButtonDisabled = submitBtnBooleanArr.every(function(condition) {
-            return condition === true;
+        var submitButtonDisabled = Object.values(submitBtnBooleanArr).every(function(conditionArray) {
+            return conditionArray.every(function(condition) {
+                return condition === true;
+            });
         });
 
         submitBtn.disabled = !submitButtonDisabled;
 
         console.log("HELLO HELLO");
         console.log(submitBtnBooleanArr);
-    });
-</script>
+    }
 
+    $('#leaveType').on('change input click', checkLeaveCredit);
+    $('#leaveApplicationApplyForm').on('change input click', validateAppFormSubmitBtn);
+</script>
 
 </html>
