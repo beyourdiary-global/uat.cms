@@ -395,22 +395,45 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-12 col-md-6 d-flex align-items-center">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="prod_barcode_status_lbl" for="prod_barcode_status">Record Barcode?</label>
-                            <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php if ($act == '') echo 'disabled'; ?> <?php echo (isset($row['barcode_status']) && $row['barcode_status'] == 'Yes') ? 'checked' : ''; ?>>
+               
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label form_lbl" id="prod_barcode_status_lbl" for="prod_barcode_status">Record Barcode?</label>
+                                <input class="form-check-input ms-1" type="checkbox" name="prod_barcode_status" id="prod_barcode_status" value="Yes" <?php if ($act == '') echo 'disabled'; ?> <?php echo (isset($row['barcode_status']) && $row['barcode_status'] == 'Yes') ? 'checked' : ''; ?>>
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <div class="form-group autocomplete mb-3">
+                                <label class="form-label form_lbl" id="product_category_lbl" for="product_category">Product Category</label>
+                                <?php
+                                
+                                unset($echoVal);
+                                if (isset($row['product_category']))
+                                $echoVal = $row['product_category'];
+                            if (isset($echoVal)) {
+                                $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                                if (!$brand_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $brand_row = $product_category_rst->fetch_assoc();
+                                echo $product_category_row['name'];
+                            }
+                        ?>
+            <input class="form-control" type="text" name="product_category" id="product_category" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_category_row['name'] : ''; ?>" required>
+            <input type="hidden" name="product_category_hidden" id="product_category_hidden" value="<?php echo (isset($row['product_category'])) ? $row['product_category'] : ''; ?>">
+        </div>
+    </div>
 
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
-                            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php echo (isset($row['barcode_slot'])) ? $row['barcode_slot'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
-                        </div>
-                    </div>
-                </div>
-
+    <div class="col-12">
+        <div class="form-group mb-3">
+            <label class="form-label form_lbl" style="display:none" id="prod_barcode_slot_lbl" for="prod_barcode_slot">Product Barcode Slot</label>
+            <input class="form-control" style="display:none" type="text" name="prod_barcode_slot" id="prod_barcode_slot" value="<?php echo (isset($row['barcode_slot'])) ? $row['barcode_slot'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
+        </div>
+    </div>
+</div>
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group mb-3">
