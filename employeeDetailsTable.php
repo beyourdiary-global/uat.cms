@@ -75,6 +75,8 @@ if ($action) {
     $remainingLeave = postSpaceFilter('remainingLeave');
     $remark = postSpaceFilter('remark');
 
+    $imgExist = false;
+
     if (postSpaceFilter('leaveAttachmenetImgValue')) {
         $leaveAttachment = postSpaceFilter('leaveAttachmenetImgValue');
     }
@@ -93,6 +95,8 @@ if ($action) {
         $leaveAttachment_tmp_name = $_FILES["leaveAttachment"]["tmp_name"];
         $img_ext = pathinfo($leaveAttachment, PATHINFO_EXTENSION);
         $img_ext_lc = strtolower($img_ext);
+
+        $imgExist = true;
     }
 
     switch ($action) {
@@ -128,7 +132,10 @@ if ($action) {
                 try {
                     $query = "INSERT INTO " . $leavePendingTblName . "(leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,remark,create_by,create_date,create_time)VALUES('$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
-                    move_uploaded_file($leaveAttachment_tmp_name, $leaveAttachmentPath . $leaveAttachment);
+
+                    if ($imgExist)
+                        move_uploaded_file($leaveAttachment_tmp_name, $leaveAttachmentPath . $leaveAttachment);
+
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -152,7 +159,10 @@ if ($action) {
                 if ($oldvalarr && $chgvalarr) {
                     try {
                         $query = "UPDATE $leavePendingTblName SET leave_type='$leaveType', from_time='$fromTime', to_time='$toTime', numOfdays='$numOfdays', remainingLeave='$remainingLeave', attachment='$leaveAttachment', remark='$remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
-                        move_uploaded_file($leaveAttachment_tmp_name, $leaveAttachmentPath . $leaveAttachment);
+
+                        if ($imgExist)
+                            move_uploaded_file($leaveAttachment_tmp_name, $leaveAttachmentPath . $leaveAttachment);
+
                         $returnData = mysqli_query($connect, $query);
                     } catch (Exception $e) {
                         $errorMsg = $e->getMessage();
