@@ -122,13 +122,16 @@ $('.submitBtn').on('click', () => {
         amt_chk = 1;
     }
 
-    if (($('#fat_attachmentValue').val() == '' || $('#fat_attachmentValue').val() === null || $('#fat_attachmentValue')
-            .val() === undefined)) {
+    var fileInput = $('#fat_attach')[0];
+    console.log($('#fat_attachmentValue').val());
+    // Check if a new file is selected or if there is an existing attachment
+    if ((fileInput.files.length === 0) && ($('#fat_attachmentValue').val() == '' || $('#fat_attachmentValue').val() == '0' || $('#fat_attachmentValue').val() === null || $('#fat_attachmentValue')
+    .val() === undefined)) {
+        // No file selected and no existing attachment
         attach_chk = 0;
-        $("#fat_attach").after(
-            '<span class="error-message fat-attach-err">Attachment is required!</span>');
+        $("#fat_attach").after('<span class="error-message fat-attach-err">Attachment is required!</span>');
     } else {
-        $(".fat-attach-err").remove();
+        // File selected or existing attachment present
         attach_chk = 1;
     }
 
