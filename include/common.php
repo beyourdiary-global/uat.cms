@@ -316,6 +316,15 @@ function audit_log($data = array())
 	}
 }
 
+function formatTime($time)
+{
+	if (!empty($time)) {
+		return date('Y-m-d H:i:s', strtotime($time));
+	} else {
+		return "Time is empty.";
+	}
+}
+
 function getCountry($param, $connect)
 {
 	$all_country = array();
@@ -669,6 +678,7 @@ function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr =
 
 	return $actMsg;
 }
+
 
 // Function to update previous and final amounts for transactions
 function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)

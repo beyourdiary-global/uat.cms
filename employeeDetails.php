@@ -1049,5 +1049,4 @@ switch ($act) {
     <?php include "./js/employeeDetails.js" ?>
 </script>
 
-
 </html>
