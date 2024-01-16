@@ -19,7 +19,7 @@ $ownRedirectPage = $SITEURL . '/employeeDetailsTable.php';
 $errorRedirectLink = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script><script>location.href ='$SITEURL/dashboard.php';</script>";
 
 //Get All Employee Result 
-$result = getData('*', '', '', $tblName, $connect);
+$result  = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo $errorRedirectLink;
@@ -55,14 +55,35 @@ if ($dataID) {
     $rowLeavePending = $leavePendingResult->fetch_assoc();
 }
 
-//Leave Application Edit,Delete,Add
+//Current Employee ID 
+$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
 
-//Delete Leave Application
-if ($act == 'D') {
-    echo "<script>setCookie('leaveAppID','', 0);</script>";
-    deleteRecord('leave_pending', $dataID, $leavePendingResult['numOfdays'], $connect, $connect, $cdate, $ctime, 'Leave Application');
-    $_SESSION['delChk'] = 1;
+if (!$userResult) {
+    echo $errorRedirectLink;
 }
+
+$userRow = $userResult->fetch_assoc();
+$userName = $userRow['name'];
+
+$empResult = getData('id', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
+
+if (!$empResult) {
+    echo $errorRedirectLink;
+}
+
+$empRow = $empResult->fetch_assoc();
+$currEmpID = $empRow['id'];
+
+//Manager Approver
+$resultManagerApprover = getData('managers_for_leave_approval', 'employee_id="' . $currEmpID . '"', '', 'employee_info', $connect);
+
+if (!$resultManagerApprover) {
+    echo $errorRedirectLink;
+}
+$rowManagerApprover = $resultManagerApprover->fetch_assoc();
+$managerApprover = $rowManagerApprover['managers_for_leave_approval'];
+
+//Leave Application Edit,Delete,Add
 
 $action = post('actionBtn');
 
@@ -130,7 +151,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 try {
-                    $query = "INSERT INTO " . $leavePendingTblName . "(leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,remark,create_by,create_date,create_time)VALUES('$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $leavePendingTblName . "(leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,success_approver,remark,create_by,create_date,create_time)VALUES('$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$currEmpID','$managerApprover','$remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
 
                     if ($imgExist)
@@ -215,25 +236,7 @@ if ($action) {
     }
 }
 
-//Current Employee ID 
-$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
-
-if (!$userResult) {
-    echo $errorRedirectLink;
-}
-
-$userRow = $userResult->fetch_assoc();
-$userName = $userRow['name'];
-
-$empResult = getData('id', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-
-if (!$empResult) {
-    echo $errorRedirectLink;
-}
-
-$empRow = $empResult->fetch_assoc();
-$currEmpID = $empRow['id'];
-
+//Leave Assign And Unassign
 
 if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSelect'])) {
 
@@ -554,31 +557,23 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                         </div>
                     </div>
 
-                    <!--Pop up box after successfully submit leave application-->
-                    <div class="modal fade" id="successLeaveApplication" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <!--Acceess Denial-->
+                    <div class="modal fade" id="leaveApplicationTableModalAccessDenial" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-body">
-                                    <div class="text-end">
-                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-
-                                    <div class="text-center mt-3">
-                                        <?php
-                                        if (isset($$successSubmitLeave)) {
-                                            echo '<h5>Successfully Submitted Leave Application</h5>';
-                                        } else {
-                                            echo '<h5>Unsuccessfully Submitted Leave Application</h5>';
-                                        }
-                                        ?>
-                                    </div>
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-danger" id="exampleModalToggleLabel">Access Denial</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    You Don't Have Permission To View This Employee Leave Application Table
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!--Leave Application Table-->
-                    <div class="modal fade modal-xl" id="leaveApplicationTableModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal fade modal-xl" id="leaveApplicationTableModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body">
@@ -606,13 +601,14 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                                         <tbody>
                                             <?php
-                                            $currentEmpLeaveApplicationResult = getData('*', '', '', $leavePendingTblName, $connect);
+                                            $currentEmpLeaveApplicationResult = getData('*', 'pending_approver="' . $currEmpID . '"', '', $leavePendingTblName, $connect);
 
                                             if (!$currentEmpLeaveApplicationResult) {
                                                 echo $errorRedirectLink;
                                             }
 
                                             $numLeave = 1;
+                                            $leaveApplyDateArr = array();
 
                                             while ($rowCurrentEmpLeaveApplication = $currentEmpLeaveApplicationResult->fetch_assoc()) {
 
@@ -625,6 +621,9 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                 $rowLeaveType = $resultLeaveType->fetch_assoc();
 
                                                 if (!empty($rowCurrentEmpLeaveApplication['leave_type'])) { ?>
+                                                    <?php
+                                                    array_push($leaveApplyDateArr, $rowCurrentEmpLeaveApplication['from_time'] . '->' . $rowCurrentEmpLeaveApplication['to_time']);
+                                                    ?>
                                                     <tr>
                                                         <th class="hideColumn" scope="col"><?= $rowCurrentEmpLeaveApplication['id']; ?></th>
                                                         <th scope="col"><?= $numLeave++; ?></th>
@@ -656,6 +655,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                             <?php
                                                 }
                                             }
+                                            $leaveApplyDateArrJSON = json_encode($leaveApplyDateArr);
                                             ?>
 
                                         </tbody>
@@ -679,7 +679,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                     </div>
 
                     <!--Leave Application Form-->
-                    <div class="modal fade" id="leaveApplicationModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                    <div class="modal fade" id="leaveApplicationModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body">
@@ -696,6 +696,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                         <div class="mt-5">
 
                                             <span class="warning-msg"></span>
+                                            <span class="warning-msg-date"></span>
 
                                             <div class="form-group  mb-2">
                                                 <label class="form-label" for="leaveType">Leave Type <span class="requiredRed">*</span></label>
@@ -746,13 +747,13 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                                             <div class="form-group mb-2">
                                                 <label class="form-label" for="fromTime">From <span class="requiredRed">*</span></label>
-                                                <input class="form-control" type="datetime-local" name="fromTime" id="fromTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['from_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['from_time'])) : ''; ?>">
+                                                <input class="form-control" type="datetime-local" step="1" name="fromTime" id="fromTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['from_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['from_time'])) : ''; ?>">
                                                 <span id="fromTimeError" class="error" style="color:#ff0000"></span>
                                             </div>
 
                                             <div class="form-group mb-2">
                                                 <label class="form-label" for="toTime">To <span class="requiredRed">*</span></label>
-                                                <input class="form-control" type="datetime-local" name="toTime" id="toTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['to_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['to_time'])) : ''; ?>">
+                                                <input class="form-control" type="datetime-local" step="1" name="toTime" id="toTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['to_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['to_time'])) : ''; ?>">
                                                 <span id="toTimeError" class="error" style="color:#ff0000"></span>
                                             </div>
 
@@ -860,14 +861,27 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                             <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
                         </th>
                         <th scope=" row"><?= $num++ ?></th>
+                        <?php if ($row['id'] === $currEmpID) { ?>
 
-                        <td scope="row" class="text-center">
-                            <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
-                                <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
-                                    <i class="mdi mdi-format-list-bulleted"></i>
-                                </button>
-                            </a>
-                        </td>
+                            <td scope="row" class="text-center">
+                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
+                                        <i class="mdi mdi-format-list-bulleted"></i>
+                                    </button>
+                                </a>
+                            </td>
+
+                        <?php } else { ?>
+
+                            <td scope="row" class="text-center">
+                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModalAccessDenial">
+                                        <i class="mdi mdi-cancel"></i>
+                                    </button>
+                                </a>
+                            </td>
+
+                        <?php } ?>
 
                         <td scope="row"><?= $row['name'] ?></td>
                         <td scope='row'>
@@ -992,230 +1006,12 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
     datatableAlignment('employeeDetailsTable');
     datatableAlignment('leaveApplicationTable');
 
-    //Leave Application Form
-    <?php include "./js/employeeDetailsTable.js" ?>
-
-    $('#fromTime, #toTime').on('change', calculateNumberOfDays);
-
+    //Initial Value
     var leaveTypes = removeLeaveTypePrefix(<?php echo $empLeaveJSONArr; ?>);
-    var submitBtn = document.getElementById('actionBtn');
+    var leaveApplyDateArr = <?php echo $leaveApplyDateArrJSON; ?>;
 
-    if (!sessionStorage.getItem("leaveAppEdit"))
-        submitBtn.disabled = true;
-
-    //Assign a remaining leaves
-    document.getElementById("leaveType").addEventListener("change", updateRemainingLeaves);
-
-    function updateInitialLeave() {
-        var selectedLeaveId = document.getElementById("leaveType").value;
-        var remainingLeave;
-
-        if (leaveTypes.hasOwnProperty(selectedLeaveId)) {
-            remainingLeave = leaveTypes[selectedLeaveId];
-        }
-
-        return remainingLeave;
-    }
-
-    function checkLeaveCredit() {
-
-        var leaveCredit = updateInitialLeave();
-        var warningMsg = $('.warning-msg');
-
-        if (leaveCredit == 0) {
-            $('#leaveApplicationApplyForm input, #leaveApplicationApplyForm select, #leaveApplicationApplyForm textarea').not('#leaveType').prop('disabled', true);
-            $('#leaveType').prop('disabled', false);
-
-            if (warningMsg.children().length === 0) {
-                warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
-                    '<p style="margin:0;text-align: center;">Leave Type You Selected Is Out Of Available Leave Credit </p>' +
-                    '</div>');
-
-                warningMsg.find('.alert').get(0).scrollIntoView();
-            }
-
-            return true;
-
-        } else {
-            $('#leaveApplicationApplyForm input, #leaveApplicationApplyForm select, #leaveApplicationApplyForm textarea').not('#leaveType').prop('disabled', false);
-            warningMsg.empty();
-
-            return false;
-        }
-    }
-
-    function updateRemainingLeaves() {
-        var remainingLeaveValue = updateInitialLeave();
-
-        if (remainingLeaveValue >= 0) {
-            document.getElementById("remainingLeave").value = remainingLeaveValue;
-        } else {
-            document.getElementById("remainingLeave").value = 0;
-        }
-    }
-
-    // Validate Time Input: Check if the input is a valid future date and time
-    function validateDateTime(inputId, errorId) {
-        var input = document.getElementById(inputId);
-        var error = document.getElementById(errorId);
-
-        var inputTime = new Date(input.value);
-        var currentTime = new Date();
-
-        // Check if input is a valid date
-        if (isNaN(inputTime)) {
-            return false;
-        }
-
-        // Check for incomplete day input
-        var dayIncomplete = input.value.split("T")[0].split("-").some(part => part.length < 2);
-
-        if (dayIncomplete) {
-            error.textContent = "Incomplete day";
-            return false;
-        }
-
-        // Check if input date is in the future
-        if (inputTime < currentTime) {
-            error.textContent = "Date must be in the future";
-            return false;
-        }
-
-        error.textContent = "";
-        return true;
-    }
-
-    function calculateNumberOfDays() {
-        var fromTime = $('#fromTime').val();
-        var toTime = $('#toTime').val();
-        var submitBtn = document.getElementById('actionBtn');
-
-        var currentTime = new Date();
-        var fromTimeDate = new Date(fromTime);
-        var toTimeDate = new Date(toTime);
-
-        var warningMsg = $('.warning-msg');
-
-        if (fromTime && toTime && fromTimeDate > currentTime && toTimeDate > currentTime) {
-            var fromDate = new Date(fromTime);
-            var toDate = new Date(toTime);
-
-            var durationInMilliseconds = toDate - fromDate;
-
-            var durationInDays = Math.round((durationInMilliseconds / (1000 * 60 * 60 * 24)) * 2) / 2;
-
-            if (durationInDays == 0)
-                durationInDays = 0.5;
-
-            var remainingLeave = parseInt(updateInitialLeave());
-
-            if (remainingLeave === undefined || isNaN(remainingLeave)) {
-                if (warningMsg.children().length === 0) {
-                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
-                        '<p style="margin:0;text-align: justify;">Please Select A Leave Type First' +
-                        '</div>');
-
-                    warningMsg.find('.alert').get(0).scrollIntoView();
-                }
-
-                return false;
-            } else {
-                warningMsg.empty();
-            }
-
-            if (remainingLeave === 0) {
-                checkLeaveCredit();
-                return false;
-            }
-
-            if (toDate <= fromDate) {
-                if (warningMsg.children().length === 0) {
-                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
-                        '<p style="margin:0;text-align: justify;">The end date of the leave must exceed the start date of the leave.</p>' +
-                        '</div>');
-
-                    warningMsg.find('.alert').get(0).scrollIntoView();
-                }
-
-                return false;
-            } else {
-                warningMsg.empty();
-            }
-
-            if (durationInDays >= remainingLeave) {
-                $('#numOfdays').val(0);
-                $('#remainingLeave').val(0);
-
-                if (warningMsg.children().length === 0) {
-                    warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
-                        '<p style="margin:0;text-align: justify;">Your Total Days Of Leave Exceed The Available Leave Credit.</p>' +
-                        '</div>');
-
-                    warningMsg.find('.alert').get(0).scrollIntoView();
-                }
-
-                return false;
-            } else {
-                warningMsg.empty();
-            }
-
-            if (remainingLeave > 0 && (remainingLeave - durationInDays) <= remainingLeave) {
-                $('#numOfdays').val(durationInDays);
-                $('#remainingLeave').val(remainingLeave - durationInDays);
-                return true;
-            }
-        } else {
-            if (!checkLeaveCredit()) {
-                warningMsg.empty();
-            }
-        }
-
-        return false;
-    }
-
-    function checkFormInputEmptyValue() {
-
-        var requiredFields = document.getElementById('leaveApplicationApplyForm').querySelectorAll('[required]');
-
-        var allFieldsFilled = Array.from(requiredFields).every(function(field) {
-            return field.value.trim() !== '';
-        });
-
-        return allFieldsFilled;
-    }
-
-    function validateAppFormSubmitBtn() {
-        var submitBtnBooleanArr = {
-            'validEmptyField': [],
-            'validToTime': [],
-            'validFromTime': [],
-            'validCalcTime': []
-        };
-
-        var submitBtn = document.getElementById('actionBtn');
-        var leaveType = document.getElementById('leaveType');
-
-        leaveType.addEventListener('change', calculateNumberOfDays);
-
-        submitBtnBooleanArr['validEmptyField'].push(checkFormInputEmptyValue());
-        submitBtnBooleanArr['validToTime'].push(validateDateTime("toTime", "toTimeError"));
-        submitBtnBooleanArr['validFromTime'].push(validateDateTime("fromTime", "fromTimeError"));
-        submitBtnBooleanArr['validCalcTime'].push(calculateNumberOfDays());
-
-        var submitButtonDisabled = Object.values(submitBtnBooleanArr).every(function(conditionArray) {
-            return conditionArray.every(function(condition) {
-                return condition === true;
-            });
-        });
-
-        submitBtn.disabled = !submitButtonDisabled;
-
-        console.log("HELLO HELLO");
-        console.log(submitBtnBooleanArr);
-    }
-
-    $('#leaveType').on('change input click', checkLeaveCredit);
-    $('#leaveApplicationApplyForm').on('change input click', validateAppFormSubmitBtn);
+    //Leave Application Form And Leave Assign
+    <?php include "./js/employeeDetailsTable.js" ?>
 </script>
 
 </html>
