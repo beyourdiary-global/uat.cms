@@ -206,8 +206,9 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
+                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
                 ),
-                'pin' => array('33'),
+                'pin' => array('33','57'),
             ),
             array(
                 'Finance Administration  Setting',
