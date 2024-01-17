@@ -101,12 +101,13 @@ $menuList = array(
                 'expand' => array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '47'),
+                    array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
 
                 ),
-                'pin' => array('46','47'),
+                'pin' => array('46','47','58'),
             ),
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','47')
+        'pin' => array('36', '37','40','41','42','43','44','45','46','47','58')
 
     ),
     array(
