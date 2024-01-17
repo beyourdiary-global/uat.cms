@@ -233,6 +233,8 @@ if ($resetpass_btn == 1) {
                 },
                 cache: false,
                 success: (result) => {
+                    $('#loader_result_div').removeClass('hideColumn');
+                    $('#loader_result_div').empty();
                     toggle('loader_div');
                     toggle('loader_result_div');
                     $('#loader_result_div').append('<span style="color:#23B200">Reset link has been sent to your email.</span>');
@@ -247,5 +249,4 @@ if ($resetpass_btn == 1) {
             return false;
     })
 </script>
-
 </html>
