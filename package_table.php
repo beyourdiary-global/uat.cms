@@ -73,6 +73,8 @@ if (!$result) {
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Cost</th>
                             <th scope="col">Price</th>
                             <th scope="col">Product Quantity</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
@@ -87,6 +89,38 @@ if (!$result) {
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++ ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row">
+                                        <?php
+                                        if (!empty($row['brand'])) {
+
+                                        
+                                            $resultBrand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+
+                                            if (!$resultBrand) {
+                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            }
+                                            $rowBrand = $resultBrand->fetch_assoc();
+
+                                            echo $rowBrand['name'];
+                                        }
+                                        ?>
+                                    </td>
+                                    <td scope="row">
+                                        <?php
+                                        if (!empty($row['cost_curr'])) {
+                                            $resultCurUnit2 = getData('unit', "id='" . $row['cost_curr'] . "'", '', CUR_UNIT, $connect);
+
+                                            if (!$resultCurUnit2) {
+                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            }
+                                            $rowCurUnit2 = $resultCurUnit2->fetch_assoc();
+
+                                            echo $rowCurUnit2['unit'] . ' ' . $row['cost'];
+                                        }
+                                        ?>
+                                    </td>
                                     <td scope="row">
                                         <?php
                                         $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
@@ -142,6 +176,8 @@ if (!$result) {
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Cost</th>
                             <th scope="col">Price</th>
                             <th scope="col">Product Quantity</th>
                             <th scope="col" id="action_col">Action</th>

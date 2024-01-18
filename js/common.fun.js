@@ -905,7 +905,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       break;
     case "D":
       var title = "Successful Delete " + pagename;
-      var title2 = "Are you sure want to delete?";
+      var title2 = "Are You Sure Want To Delete This " + pagename + " ?";
       var btn = "Delete";
       break;
     case "F":
@@ -937,26 +937,35 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       message += `<p class="mt-n3" style="text-align:center; font-weight:bold;">${msg[i]}</p>`;
   }
 
+  if (act == 'D') {
+    var firstContent = title2;
+  } else {
+    var firstContent = title;
+  }
+
   const modalElem = document.createElement("div");
   modalElem.id = "modal-confirm";
   modalElem.className = "modal fade";
   modalElem.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered " style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        <div class="modal-content">             
-            <div class="modal-body fs-6 mt-3">
-            <p style="text-align:center; font-weight:bold; font-size:25px;">${title}</p>
-            <p class="mt-n2" style="text-align:center;">${title2}</p>
-            ${message}
-        </div>
-        <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
-            <button id="acceptBtn" type="button" class="btn" 
-            style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">${btn}</button>
-            <button id="rejectBtn" type="button" class="btn" 
-            style="border: 1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">Cancel</button>
-        </div>
-        </div>
-    </div>
-    `;
+  <div class="modal-dialog modal-dialog-centered" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <div class="modal-content">             
+          <div class="modal-body fs-6 mt-3">
+              <p style="text-align:center; font-weight:bold; font-size:25px;">${firstContent} </p>
+              ${message}
+          </div>
+          <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
+              <button id="acceptBtn" type="button" class="btn" 
+                  style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">
+                  ${btn}
+              </button>
+              <button id="rejectBtn" type="button" class="btn" 
+                  style="border: 1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">
+                  Cancel
+              </button>
+          </div>
+      </div>
+  </div>
+`;
 
   const modelResult = document.createElement("div");
   modelResult.id = "modal-confirm";
@@ -1005,8 +1014,10 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
           id: id,
           act: act,
         },
+
         cache: false,
         success: (result) => {
+          console.log(path);
           const myModal2 = new bootstrap.Modal(modelResult, {
             keyboard: false,
             backdrop: "static",
@@ -1265,7 +1276,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (page !== 'invalid') {
       inputFields.forEach(function (input) {
         // Check if the input is not readonly and has stored data
-        if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
+        if (!input.readOnly && localStorage.getItem(input.id) && input.id && input.type !== 'file') {
           input.value = localStorage.getItem(input.id);
         }
       });
@@ -1278,7 +1289,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (page !== 'invalid') {
       inputFields.forEach(function (input) {
-        if (!input.readOnly && input.id && !input.multiple) {
+        if (!input.readOnly && input.id && !input.multiple && input.type !== 'file') {
           localStorage.setItem(input.id, input.value);
         }
       });
@@ -1290,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var inputFields = document.querySelectorAll("input, textarea,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has previous data
-      if (!input.readOnly && localStorage.getItem(input.id)) {
+      if (!input.readOnly && localStorage.getItem(input.id) && input.type !== 'file') {
         input.value = localStorage.getItem(input.id);
       }
     });

@@ -38,3 +38,8 @@
 <!-- Select2 -->
 <link href="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\css\select2.min.css" rel="stylesheet" />
 <script src="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\js\select2.min.js"></script>
+
+<!-- Bootstrap Datepicker -->
+<link href="<?= $SITEURL ?>\header\js\bootstrap-datepicker-master\dist\css\bootstrap-datepicker.min.css" rel="stylesheet" />
+<script src="<?= $SITEURL ?>\header\js\bootstrap-datepicker-master\dist\js\bootstrap-datepicker.min.js"></script>
+
