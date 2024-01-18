@@ -65,8 +65,7 @@ if (!$userResult) {
 $userRow = $userResult->fetch_assoc();
 $userName = $userRow['name'];
 
-$empResult = getData('id', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-
+$empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
 if (!$empResult) {
     echo $errorRedirectLink;
 }
@@ -82,6 +81,7 @@ if (!$resultManagerApprover) {
 }
 $rowManagerApprover = $resultManagerApprover->fetch_assoc();
 $managerApprover = $rowManagerApprover['managers_for_leave_approval'];
+
 
 //Leave Application Edit,Delete,Add
 
@@ -151,7 +151,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 try {
-                    $query = "INSERT INTO " . $leavePendingTblName . "(leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,success_approver,remark,create_by,create_date,create_time)VALUES('$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$currEmpID','$managerApprover','$remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $leavePendingTblName . "(leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,remark,create_by,create_date,create_time)VALUES('$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$currEmpID','$remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
 
                     if ($imgExist)
@@ -160,7 +160,7 @@ if ($action) {
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
-                    $act = "F";
+                    $actLeave = "F";
                 }
             } else {
 
@@ -187,11 +187,88 @@ if ($action) {
                         $returnData = mysqli_query($connect, $query);
                     } catch (Exception $e) {
                         $errorMsg = $e->getMessage();
-                        $act = "F";
+                        $actLeave = "F";
                     }
                 } else {
                     $actLeave = 'NC';
                 }
+            }
+
+            //Sending Mail Notification
+            if ($actLeave != 'NC' && $actLeave != 'F' && $action = 'addLeave') {
+
+                //Leave Type
+                $leaveTypeResult = getData('name', 'id="' . $leaveType . '"', '', L_TYPE, $connect);
+
+                if (!$leaveTypeResult) {
+                    echo $errorRedirectLink;
+                }
+
+                $leaveRow = $leaveTypeResult->fetch_assoc();
+                $leaveTypeName = $leaveRow['name'];
+
+                ob_start();
+                $to = 'fankaixuan159@gmail.com';
+                $subject = 'Employee Leave Application';
+
+                $message = '
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
+                </head>
+                <body>
+                    <h3 style="margin-bottom:12px">You Have Received A Leave Application For Approval From The Employee <b>\'' . $userName . '\'</b></h3>
+
+                    <table style="border-collapse: collapse;width: 60%;">
+                        <thead style="background-color: #eee;">
+                            <tr>
+                                <th style="border: 1px solid black;padding: 5px;">Leave Type</th>
+                                <th style="border: 1px solid black;padding: 5px;">From</th>
+                                <th style="border: 1px solid black;padding: 5px;">To</th>
+                                <th style="border: 1px solid black;padding: 5px;">Total Days Leave</th>
+                                <th style="border: 1px solid black;padding: 5px;">Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black;padding: 5px;">' . $leaveTypeName . '</td>
+                                <td style="border: 1px solid black;padding: 5px;">' . $fromTime . '</td>
+                                <td style="border: 1px solid black;padding: 5px;">' . $toTime . '</td>
+                                <td style="border: 1px solid black;padding: 5px;">' . $numOfdays . '</td>
+                                <td style="border: 1px solid black;padding: 5px;">' . $remark . '</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </body>
+                </html>                
+                ';
+
+                // To send HTML mail, the Content-type header must be set
+                $headers[] = 'MIME-Version: 1.0';
+                $headers[] = 'Content-type: text/html; charset=utf-8';
+
+                // Additional headers
+                $headers[] = 'To: <' . $to . '>';
+                $headers[] = 'From: noreply <noreply@beyourdiary.com>';
+                $headers[] = 'Cc:' . email_cc . '';
+                $headers[] = 'Bcc:';
+
+                //SETUP A php.ini sendmail
+                ini_set('SMTP', 'smtp-relay.brevo.com');
+                ini_set('smtp_port', '587');
+                ini_set('sendmail_from', 'fankaixuan159@gmail.com');
+                ini_set('sendmail_path', "C:\xampp\sendmail\sendmail.exe' -t");
+
+                try {
+                    echo mail($to, $subject, $message, implode("\r\n", $headers));
+                } catch (Exception $e) {
+                    echo 'Caught exception: ', $e->getMessage();
+                }
+
+                ob_get_clean();
             }
 
             // audit log
@@ -702,13 +779,15 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                 <label class="form-label" for="leaveType">Leave Type <span class="requiredRed">*</span></label>
                                                 <select class="form-select" id="leaveType" name="leaveType" required>
                                                     <?php
-                                                    $leaveTypeArr = array();
+                                                    $leaveTypeArr = $currEmpLeaveApplyDays = array();
 
+                                                    $querySumOfCurrEmpLeave = "SELECT leave_type, pending_approver, SUM(numOfdays) as totalDays FROM $leavePendingTblName WHERE pending_approver = '$currEmpID' GROUP BY leave_type, pending_approver";
                                                     $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
                                                     $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
                                                     $resultEmpLeave_2 = getData('*', 'employeeID="' . $currEmpID . '"', '', EMPLEAVE, $connect);
+                                                    $resultEmpLeave_3 = mysqli_query($connect, $querySumOfCurrEmpLeave);
 
-                                                    if (!$resultEmpLeave_1 || !$resultEmpLeave_2) {
+                                                    if (!$resultEmpLeave_1 || !$resultEmpLeave_2 || !$resultEmpLeave_3) {
                                                         echo $errorRedirectLink;
                                                     } else {
 
@@ -721,7 +800,20 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                             }
                                                         }
 
+                                                        if ($resultEmpLeave_3->num_rows > 0) {
+                                                            while ($row1 = $resultEmpLeave_3->fetch_assoc()) {
+                                                                $currEmpLeaveApplyDays["leaveType_" . $row1["leave_type"]] = $row1["totalDays"];
+                                                            }
+                                                        }
+
                                                         $rowEmpLeave =  $resultEmpLeave_2->fetch_assoc();
+
+                                                        foreach ($currEmpLeaveApplyDays as $key => $value) {
+                                                            if (isset($rowEmpLeave[$key])) {
+                                                                $rowEmpLeave[$key] -= $value;
+                                                            }
+                                                        }
+
                                                         $empLeaveJSONArr = json_encode($rowEmpLeave);
                                                     }
 

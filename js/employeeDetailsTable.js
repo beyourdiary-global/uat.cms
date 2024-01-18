@@ -19,6 +19,8 @@ function validateLeaveDateAvailableRange() {
     var toTime = $('#toTime').val();
     var dateRangeArr = leaveApplyDateArr;
 
+    //console.log(dateRangeArr);
+
     if (fromTime && toTime) {
 
         // Parse input date range
