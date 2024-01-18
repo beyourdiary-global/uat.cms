@@ -46,16 +46,16 @@ if (post('actionBtn')) {
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
     switch ($action) {
-        case 'addPaymentMethod':
-        case 'updPaymentMethod':
+        case 'addPaymentTerms':
+        case 'updPaymentTerms':
 
             if (!$pay_terms_name) {
-                $id_err = "Please specify the payment terms name.";
+                $name_err = "Please specify the payment terms name.";
                 break;
             } else if ($pay_terms_name && isDuplicateRecord("name", $pay_terms_name, $tblName,  $finance_connect, $dataID)) {
-                $id_err = "Duplicate record found for " . $pageTitle . " name.";
+                $name_err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
-            } else if ($action == 'addPaymentMethod') {
+            } else if ($action == 'addPaymentTerms') {
                 try {
                     // check value
                     if ($pay_terms_name) {
@@ -74,7 +74,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(name,description,remark,create_by,create_date,create_time) VALUES ('$pay_terms_name','$pay_terms_desc','$pay_terms_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
-                    generateDBData(FIN_PAY_TERMS, $finance_connect);
+                    // generateDBData(FIN_PAY_TERMS, $finance_connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -286,10 +286,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <?php
                     switch ($act) {
                         case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addPaymentMethod">Add Payment Method</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addPaymentTerms">Add Payment Terms</button>';
                             break;
                         case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updPaymentMethod">Edit Payment Method</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updPaymentTerms">Edit Payment Terms</button>';
                             break;
                     }
                     ?>
