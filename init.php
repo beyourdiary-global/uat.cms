@@ -108,6 +108,7 @@ define('EMPPERSONALINFO','employee_personal_info');
 define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
+define('L_PENDING','leave_pending');
 
 //finance
 define('MERCHANT', 'merchant');
