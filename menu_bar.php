@@ -2,7 +2,7 @@
 
 $userID = USER_ID;
 
-if(empty($userID)){
+if (empty($userID)) {
     echo "<script>window.location.href = '$SITEURL/index.php';</script>";
 }
 
@@ -93,6 +93,7 @@ $menuList = array(
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL.'/finance/bank_trans_backup_table.php', '51'),
                 ),
                 'pin' => array('37','40','41','42','43','44','45','51'),
+
             ),
             array(
                 'Expense',
@@ -102,12 +103,13 @@ $menuList = array(
                 'expand' => array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
+                     array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49')
 
                 ),
-                'pin' => array('46','48'),
+                'pin' => array('46','48','49'),
             ),
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','48','51')
+        'pin' => array('36', '37','40','41','42','43','44','45','46', '47','48','49','51')
 
     ),
     array(
@@ -166,8 +168,9 @@ $menuList = array(
                 'expand' => array(
                     array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL . '/prod_status_table.php', '15'),
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
+                    array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                 ),
-                'pin' => array('15', '9'),
+                'pin' => array('15', '9', '50'),
             ),
             array(
                 'Employee Administration Setting',
