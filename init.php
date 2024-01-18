@@ -122,6 +122,7 @@ define('INITCA_TRANS', 'asset_initial_capital_transaction');
 define('OCR_TRANS', 'asset_other_creditor_transaction');
 define('EXPENSE_TYPE', 'expense_type');
 define('FB_ADS_TOPUP', 'facebook_ads_topup_transaction');
+define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 
