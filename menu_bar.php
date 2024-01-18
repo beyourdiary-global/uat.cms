@@ -102,8 +102,8 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
-                  array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
-                     array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49')
+                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
+                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '47'),
                     array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
 
@@ -249,12 +249,12 @@ $menuList = array(
 </head>
 
 <style>
-    @media (max-width: 768px) {
-        #navbarMenuBar {
-            display: none;
-            color: #FFFFFF;
-        }
+@media (max-width: 768px) {
+    #navbarMenuBar {
+        display: none;
+        color: #FFFFFF;
     }
+}
 </style>
 
 <script>
@@ -383,38 +383,38 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
-    var sidebar = $("#sidebar");
-    var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
-    var opacityBackground = $('div#filter_screen');
+var sidebar = $("#sidebar");
+var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
+var opacityBackground = $('div#filter_screen');
 
-    (function($) {
-        sidebar_toggleBtn.on("click", function() {
-            if (sidebar.hasClass("active")) {
-                sidebar.toggleClass("close", true);
-                opacityBackground.hide();
+(function($) {
+    sidebar_toggleBtn.on("click", function() {
+        if (sidebar.hasClass("active")) {
+            sidebar.toggleClass("close", true);
+            opacityBackground.hide();
 
-                // timeout value based on .close css transition (0.3s)
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 500);
-            } else {
-                sidebar.toggleClass("active", true);
-                sidebar.toggleClass("close", false);
-                opacityBackground.show();
-            }
-        });
+            // timeout value based on .close css transition (0.3s)
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 500);
+        } else {
+            sidebar.toggleClass("active", true);
+            sidebar.toggleClass("close", false);
+            opacityBackground.show();
+        }
+    });
 
-        opacityBackground.on('click', function(e) {
-            var sidebar2 = $("#sidebar, #sidebarCollapse");
-            if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
-                sidebar.toggleClass('close', true);
-                opacityBackground.hide();
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 300);
-            }
-        });
-    })(jQuery);
+    opacityBackground.on('click', function(e) {
+        var sidebar2 = $("#sidebar, #sidebarCollapse");
+        if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
+            sidebar.toggleClass('close', true);
+            opacityBackground.hide();
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 300);
+        }
+    });
+})(jQuery);
 </script>
