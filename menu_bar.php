@@ -109,12 +109,12 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '36')
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '51')
                 ),
-                'pin' => array('36'), 
+                'pin' => array('51'), 
             ),            
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','36')
+        'pin' => array('36', '37','40','41','42','43','44','45','46','51')
 
     ),
     array(
