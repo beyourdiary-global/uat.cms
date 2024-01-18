@@ -25,7 +25,7 @@
 
 <!-- Navbar -->
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-md topNav p-0" id="topNav">
+    <nav class="navbar navbar-expand-md topNav p-0" id="topNav" style="background-color:<?php if ($dataExisted) echo $row['themesColor']; ?>;">
         <!-- Container wrapper -->
         <div class="container-fluid p-0">
             <!-- Toggle button -->
@@ -174,12 +174,6 @@
 
 <!-- Move the script block to the end of the body -->
 <script>
-    function setThemesColor() {
-        var topnav = document.getElementById('topNav');
-        topnav.style.backgroundColor = '<?php if ($dataExisted) echo $row['themesColor']; ?>';
-    }
-
-    setThemesColor();
 
     function setButtonColor() {
         var buttons = document.querySelectorAll('#actionBtn, #addBtn');
