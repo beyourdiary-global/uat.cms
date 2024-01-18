@@ -740,3 +740,20 @@ function insertNewMerchant($merchantName, $userId, $financeConnect)
 	}
 	return false;
 }
+
+function monthStringToNumber($monthString) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return array_search($monthString, $monthArray) + 1;
+}
+
+function monthNumberToString($monthNumber) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Check if the monthNumber is valid
+    if ($monthNumber >= 1 && $monthNumber <= 12) {
+        return $monthArray[$monthNumber - 1];
+    } else {
+        // Handle invalid monthNumber
+        return false;
+    }
+}

@@ -31,6 +31,8 @@ if ($action) {
     $company_business_no = postSpaceFilter('company_business_no');
     $finance_year = postSpaceFilter('finance_year');
     $company_address = postSpaceFilter('company_address');
+    $company_contact = postSpaceFilter('company_contact');
+    $company_email = postSpaceFilter('company_email');
     $meta = postSpaceFilter('meta');
     $barcode_prefix = postSpaceFilter('barcode_prefix');
     $barcode_next_number = postSpaceFilter('barcode_next_number');
@@ -43,7 +45,7 @@ if ($action) {
         case 'save':
 
             try {
-                $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
+                $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'company_contact', 'company_email', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
 
                 foreach ($fields as $field) {
                     $postValue = postSpaceFilter($field);
@@ -58,7 +60,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 if ($oldvalarr && $chgvalarr) {
-                    $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix='$invoice_prefix', invoice_next_number='$invoice_next_number' WHERE id = '1'";
+                    $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', company_contact='$company_contact', company_email='$company_email', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix='$invoice_prefix', invoice_next_number='$invoice_next_number' WHERE id = '1'";
                     $returnData = mysqli_query($connect, $query);
                     $act = 'E';
                     generateDBData($tblName, $connect);
@@ -157,6 +159,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="col-sm">
                                 <label class="form-label" for="company_address">Company Address</label>
                                 <textarea class="form-control" name="company_address" id="company_address" rows="3" <?= $viewOnly ?>><?php if (isset($row['company_address'])) echo $row['company_address'] ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-sm">
+                                <label class="form-label" for="company_contact">Company Contact</label>
+                                <input class="form-control" type="number" name="company_contact" id="company_contact" value="<?php if (isset($row['company_contact'])) echo $row['company_contact'] ?>" <?= $viewOnly ?>>
+                            </div>
+                            <div class="col-sm">
+                                <label class="form-label" for="company_email">Company Email</label>
+                                <input class="form-control" type="text" name="company_email" id="company_email" value="<?php if (isset($row['company_email'])) echo $row['company_email'] ?>" <?= $viewOnly ?>>
                             </div>
                         </div>
                     </div>
