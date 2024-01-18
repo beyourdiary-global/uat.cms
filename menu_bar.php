@@ -2,7 +2,7 @@
 
 $userID = USER_ID;
 
-if(empty($userID)){
+if (empty($userID)) {
     echo "<script>window.location.href = '$SITEURL/index.php';</script>";
 }
 
@@ -83,15 +83,15 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'), 
-                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
-                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL.'/finance/sundry_debt_trans_table.php', '42'),
-                   array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL.'/finance/other_creditor_trans_table.php', '43'),
-                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL.'/finance/initial_capital_trans_table.php', '44'),   
-                  array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL.'/finance/cash_on_hand_trans_table.php', '45'),
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL . '/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL . '/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL . '/finance/invtr_trans_table.php', '41'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '42'),
+                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL . '/finance/other_creditor_trans_table.php', '43'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
+                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                 ),
-                'pin' => array('37','40','41','42','43','44','45'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45'),
             ),
             array(
                 'Expense',
@@ -103,7 +103,7 @@ $menuList = array(
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '47'),
 
                 ),
-                'pin' => array('46','47'),
+                'pin' => array('46', '47'),
             ),
             array(
                 'Income',
@@ -116,8 +116,7 @@ $menuList = array(
                 'pin' => array('49'),
             ),
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','47','49')
-
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47','49')
     ),
     array(
         'Other',
@@ -175,8 +174,9 @@ $menuList = array(
                 'expand' => array(
                     array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL . '/prod_status_table.php', '15'),
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
+                    array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                 ),
-                'pin' => array('15', '9'),
+                'pin' => array('15', '9', '50'),
             ),
             array(
                 'Employee Administration Setting',
@@ -230,7 +230,8 @@ $menuList = array(
                 'pin' => array('47'),
             ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49')
+
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50')
     ),
     array(
         'Audit Log',

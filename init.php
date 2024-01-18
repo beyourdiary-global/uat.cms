@@ -86,6 +86,7 @@ define('EM_TYPE_STATUS', 'em_type_status');
 define('CUR_UNIT', 'currency_unit');
 define('CURRENCIES', 'currencies');
 define('CUST', 'customer');
+define('COUNTRIES','countries');
 define('COURIER', 'courier');
 define('SHIPREQ', 'shipping_request');
 define('WGT_UNIT', 'weight_unit');
@@ -107,6 +108,7 @@ define('EMPPERSONALINFO','employee_personal_info');
 define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
+define('L_PENDING','leave_pending');
 
 //finance
 define('MERCHANT', 'merchant');
