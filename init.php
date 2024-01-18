@@ -86,6 +86,7 @@ define('EM_TYPE_STATUS', 'em_type_status');
 define('CUR_UNIT', 'currency_unit');
 define('CURRENCIES', 'currencies');
 define('CUST', 'customer');
+define('COUNTRIES','countries');
 define('COURIER', 'courier');
 define('SHIPREQ', 'shipping_request');
 define('WGT_UNIT', 'weight_unit');
