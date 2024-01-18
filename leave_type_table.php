@@ -225,8 +225,7 @@ if (post('l_status_option')) {
                 l_status_option: status,
             },
             success: function(data) {
-                // Reload the page on success
-                location.reload();
+                window.location.href = 'leave_type_table.php';
             },
         })
     }
