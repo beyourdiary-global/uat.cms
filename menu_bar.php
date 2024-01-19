@@ -223,12 +223,13 @@ $menuList = array(
                 'expand' => array(
                     array('Expense Type', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/expense_type_table.php', '47'),
                     array('Payment Method (Finance)', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fin_payment_method_table.php', '60'),
+                    array('Payment Terms', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/payment_terms_table.php', '63'),
                 ),
-                'pin' => array('47','60'),
+                'pin' => array('47','60','63'),
             ),
         ),
 
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','60')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','60','63')
     ),
     array(
         'Audit Log',
@@ -248,12 +249,12 @@ $menuList = array(
 </head>
 
 <style>
-    @media (max-width: 768px) {
-        #navbarMenuBar {
-            display: none;
-            color: #FFFFFF;
-        }
+@media (max-width: 768px) {
+    #navbarMenuBar {
+        display: none;
+        color: #FFFFFF;
     }
+}
 </style>
 
 <script>
@@ -382,38 +383,38 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
-    var sidebar = $("#sidebar");
-    var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
-    var opacityBackground = $('div#filter_screen');
+var sidebar = $("#sidebar");
+var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
+var opacityBackground = $('div#filter_screen');
 
-    (function($) {
-        sidebar_toggleBtn.on("click", function() {
-            if (sidebar.hasClass("active")) {
-                sidebar.toggleClass("close", true);
-                opacityBackground.hide();
+(function($) {
+    sidebar_toggleBtn.on("click", function() {
+        if (sidebar.hasClass("active")) {
+            sidebar.toggleClass("close", true);
+            opacityBackground.hide();
 
-                // timeout value based on .close css transition (0.3s)
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 500);
-            } else {
-                sidebar.toggleClass("active", true);
-                sidebar.toggleClass("close", false);
-                opacityBackground.show();
-            }
-        });
+            // timeout value based on .close css transition (0.3s)
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 500);
+        } else {
+            sidebar.toggleClass("active", true);
+            sidebar.toggleClass("close", false);
+            opacityBackground.show();
+        }
+    });
 
-        opacityBackground.on('click', function(e) {
-            var sidebar2 = $("#sidebar, #sidebarCollapse");
-            if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
-                sidebar.toggleClass('close', true);
-                opacityBackground.hide();
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 300);
-            }
-        });
-    })(jQuery);
+    opacityBackground.on('click', function(e) {
+        var sidebar2 = $("#sidebar, #sidebarCollapse");
+        if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
+            sidebar.toggleClass('close', true);
+            opacityBackground.hide();
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 300);
+        }
+    });
+})(jQuery);
 </script>
