@@ -141,30 +141,24 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                 </div>
                                             </div>
 
-                                            <div class="has-validation col-12 col-md-4 mb-2">
+                                            <div class="col-12 col-md-4 mb-2">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                                     </div>
-                                                    <input class="form-control" type="email" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL  ?>" required>
+                                                    <input class="form-control" type="email" name="sender_email" id="sender_email" placeholder="Sender Email" value="<?= USER_EMAIL ?>">
                                                 </div>
                                                 <span id="emailMsg1"></span>
-                                                <div class="invalid-msg">
-                                                    Please enter the sender email.
-                                                </div>
                                             </div>
 
-                                            <div class="has-validation col-12 col-md-4 mb-2">
+                                            <div class="col-12 col-md-4 mb-2">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <span class="form-control" style="max-width: 80px; height: 36px; border-radius: none; text-align: center; display: inline-block;"><?= $country_telcode_from ?></span>
                                                     </div>
-                                                    <input class="form-control" type="tel" name="sender_tel" id="sender_tel" placeholder="Sender ContactNum" required>
+                                                    <input class="form-control" type="tel" name="sender_tel" id="sender_tel" placeholder="Sender ContactNum">
                                                 </div>
                                                 <span id="telMsg1"></span>
-                                                <div class="invalid-msg">
-                                                    Please enter the sender contact number.
-                                                </div>
                                             </div>
                                         </div>
 
@@ -286,20 +280,17 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                 </div>
                                             </div>
 
-                                            <div class="col-12 col-md-4 mb-2 has-validation"">
+                                            <div class="col-12 col-md-4 mb-2">
                                             <div class=" input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id=""><i class="mdi mdi-email"></i></span>
                                                 </div>
-                                                <input class="form-control" type="email" name="receiver_email" id="receiver_email" placeholder="Receiver Email" required>
+                                                <input class="form-control" type="email" name="receiver_email" id="receiver_email" placeholder="Receiver Email">
                                             </div>
                                             <span id="emailMsg2"></span>
-                                            <div class="invalid-msg">
-                                                Please enter the receiver email.
-                                            </div>
                                         </div>
 
-                                        <div class="col-12 col-md-4 mb-2 has-validation">
+                                        <div class="col-12 col-md-4 mb-2">
                                             <div class=" input-group">
                                                 <div class="input-group-prepend">
                                                     <?php if (is_array($country_telcode_to)) : ?>
@@ -312,12 +303,9 @@ $country_telcode_to = getCountryTelCode($to, $connect);
                                                         </span>
                                                     <?php endif; ?>
                                                 </div>
-                                                <input class="form-control" type="tel" name="receiver_tel" id="receiver_tel" placeholder="Receiver ContactNum" required>
+                                                <input class="form-control" type="tel" name="receiver_tel" id="receiver_tel" placeholder="Receiver ContactNum">
                                             </div>
                                             <span id="telMsg3"></span>
-                                            <div class="invalid-msg">
-                                                Please enter the receiver contact number.
-                                            </div>
                                         </div>
                                     </div>
 
@@ -446,14 +434,11 @@ $country_telcode_to = getCountryTelCode($to, $connect);
 
                                     <div class="row">
 
-                                        <div class="col-12 col-sm-4 mb-2 has-validation">
+                                        <div class="col-12 col-sm-4 mb-2">
                                             <div class="input-group">
-                                                <input class="form-control" type="date" name="pickup_date" id="pickup_date" placeholder="Pickup Date" required style="border-radius:3px;height: 40px;" data-toggle="tooltip" data-placement="right" title="Pickup Date">
+                                                <input class="form-control" type="date" min='1500-01-01' max='3000-12-31' name="pickup_date" id="pickup_date" placeholder="Pickup Date" style="border-radius:3px;height: 40px;" data-toggle="tooltip" data-placement="right" title="Pickup Date">
                                             </div>
                                             <span id="dateMsg5"></span>
-                                            <div class="invalid-msg">
-                                                Please enter the pickup date
-                                            </div>
                                         </div>
 
                                         <div class="col-12 col-sm-4 mb-2">
@@ -855,7 +840,7 @@ $country_telcode_to = getCountryTelCode($to, $connect);
     var page = "<?= $pageTitle ?>";
     var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-    checkCurrentPage(page, action);
+    checkCurrentPage(page, 'makeOrder');
     setButtonColor();
     <?php include "./js/make_order.js" ?>
 </script>
