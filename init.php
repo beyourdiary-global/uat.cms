@@ -107,6 +107,7 @@ define('EMPPERSONALINFO','employee_personal_info');
 define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
+define('PROD_CATEGORY','product_category')
 
 //finance
 define('MERCHANT', 'merchant');
