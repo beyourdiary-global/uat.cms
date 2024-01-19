@@ -125,6 +125,7 @@ define('FB_ADS_TOPUP', 'facebook_ads_topup_transaction');
 define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
+define('FIN_PAY_TERMS', 'payment_terms');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
