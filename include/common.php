@@ -316,6 +316,15 @@ function audit_log($data = array())
 	}
 }
 
+function formatTime($time)
+{
+	if (!empty($time)) {
+		return date('Y-m-d H:i:s', strtotime($time));
+	} else {
+		return "Time is empty.";
+	}
+}
+
 function getCountry($param, $connect)
 {
 	$all_country = array();
@@ -670,6 +679,7 @@ function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr =
 	return $actMsg;
 }
 
+
 // Function to update previous and final amounts for transactions
 function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
 {
@@ -729,4 +739,21 @@ function insertNewMerchant($merchantName, $userId, $financeConnect)
 		return mysqli_insert_id($financeConnect);
 	}
 	return false;
+}
+
+function monthStringToNumber($monthString) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return array_search($monthString, $monthArray) + 1;
+}
+
+function monthNumberToString($monthNumber) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Check if the monthNumber is valid
+    if ($monthNumber >= 1 && $monthNumber <= 12) {
+        return $monthArray[$monthNumber - 1];
+    } else {
+        // Handle invalid monthNumber
+        return false;
+    }
 }

@@ -5,7 +5,7 @@ $isFinance = 1;
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = META_ADS_ACC ;
+$tblName = META_ADS_ACC;
 
 $dataID = input('id');
 $act = input('act');
@@ -17,7 +17,7 @@ $clearLocalStorage = '<script>localStorage.clear();</script>';
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -28,7 +28,7 @@ if ($dataID) { //edit/remove/view
         $_SESSION['tempValConfirmBox'] = true;
         $act = "F";
     }
-} 
+}
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -47,7 +47,7 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addAccount':
         case 'updAccount':
-           
+
             if (!$maa_id) {
                 $id_err = "Please specify the account ID.";
                 break;
@@ -75,6 +75,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(accID,accName,create_by,create_date,create_time) VALUES ('$maa_id','$maa_name','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
+                    generateDBData(META_ADS_ACC, $finance_connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -83,7 +84,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -107,6 +108,7 @@ if (post('actionBtn')) {
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET accID = '$maa_id',accName = '$maa_name', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
+                        generateDBData(META_ADS_ACC, $finance_connect);
                     } else {
                         $act = 'NC';
                     }
@@ -156,12 +158,13 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
             //SET the record status to 'D'
             deleteRecord($tblName , $dataID, $maa_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            generateDBData(META_ADS_ACC, $finance_connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -243,7 +246,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $id_err; ?></span>
                                 </div>
-                            <?php } ?>  
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -254,19 +257,19 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <label class="form-label form_lbl" id="maa_name_lbl" for="maa_name">Account
                                 Name</label>
                             <input class="form-control" type="text" name="maa_name" id="maa_name" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['accName']) && !isset($maa_name)) {
-                                                                                                            echo $row['accName'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['accName']) && isset($maa_name)) {
-                                                                                                            echo $maa_name;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                            if (isset($dataExisted) && isset($row['accName']) && !isset($maa_name)) {
+                                                                                                                echo $row['accName'];
+                                                                                                            } else if (isset($dataExisted) && isset($row['accName']) && isset($maa_name)) {
+                                                                                                                echo $maa_name;
+                                                                                                            } else {
+                                                                                                                echo '';
+                                                                                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($name_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $name_err; ?></span>
                                 </div>
-                            <?php } ?>    
-                    </div>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
 
@@ -301,6 +304,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
     <script>
         <?php include "../js/meta_ads_acc.js" ?>
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
     </script>
 
 </body>
