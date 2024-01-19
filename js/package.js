@@ -93,7 +93,7 @@ function prodInfo(element) {
             hiddenElementID: 'prod_val_' + id,
             dbTable: '<?= PROD ?>'
         }
-        searchInput(param);
+        searchInput(param, '<?= $SITEURL ?>');
 
         if ($(element).val() == '') {
             $('#prod_val_' + id).val('');
@@ -153,9 +153,41 @@ $(document).ready(function() {
                 hiddenElementID: $(this).attr('id') + '_hidden',
                 dbTable: '<?= CUR_UNIT ?>'
             }
-            searchInput(param);
+            searchInput(param,'<?= $SITEURL ?>');
         });
         $("#cur_unit").change(function() {
+            if ($(this).val() == '')
+                $('#' + $(this).attr('id') + '_hidden').val('');
+        });
+    }
+    if (!($("#brand").attr('readonly'))) {
+        $("#brand").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name',
+                elementID: $(this).attr('id'),
+                hiddenElementID: $(this).attr('id') + '_hidden',
+                dbTable: '<?= BRAND ?>'
+            }
+            searchInput(param,'<?= $SITEURL ?>');
+        });
+        $("#brand").change(function() {
+            if ($(this).val() == '')
+                $('#' + $(this).attr('id') + '_hidden').val('');
+        });
+    }
+    if (!($("#cost_curr").attr('readonly'))) {
+        $("#cost_curr").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'unit',
+                elementID: $(this).attr('id'),
+                hiddenElementID: $(this).attr('id') + '_hidden',
+                dbTable: '<?= CUR_UNIT ?>'
+            }
+            searchInput(param,'<?= $SITEURL ?>');
+        });
+        $("#cost_curr").change(function() {
             if ($(this).val() == '')
                 $('#' + $(this).attr('id') + '_hidden').val('');
         });
