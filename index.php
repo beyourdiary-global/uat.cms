@@ -119,6 +119,8 @@ $row = $result->fetch_assoc();
 </body>
 
 <script>
+    checkCurrentPage('invalid');
+
     $(document).ready(() => {
         $("#row-password-input i").on('click', () => {
             if ($("#password").attr("type") == "password") {

@@ -670,7 +670,7 @@ function checkValidDate(inDate, futurecheck) {
   yy = inDate.substring(4, 8);
 
   /* Now, convert the string yr1 into a numeric and test for leap year.
-	If it is, change the end of month day string for Feb to 29  */
+  If it is, change the end of month day string for Feb to 29  */
 
   var isLeap = false;
   yy = yy * 1;
@@ -801,7 +801,7 @@ function createSortingTable(tableid) {
     /* info: false, */
     order: [[1, "asc"]], // 0 = db id column; 1 = numbering column
     /* responsive: true, */
-    /* autoWidth: false */
+    autoWidth: false
   });
 }
 
@@ -857,7 +857,7 @@ function centerAlignment(elementID) {
   $(window).on("load resize", () => {
     var form = $("#" + elementID);
 
-    if (window.matchMedia("(max-height: 750px)").matches) {
+    if (window.matchMedia("(max-height: 950px)").matches) {
       if (form.hasClass("centered")) form.removeClass("centered");
 
       form.css("overflow", "auto");
@@ -905,7 +905,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       break;
     case "D":
       var title = "Successful Delete " + pagename;
-      var title2 = "Are you sure want to delete?";
+      var title2 = "Are You Sure Want To Delete This " + pagename + " ?";
       var btn = "Delete";
       break;
     case "F":
@@ -913,6 +913,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       break;
     case "MO":
       var title = msg + " Successful Place";
+      break;
+    case "ErrMO":
+      var title = msg;
       break;
     case "NC":
       var title = "No changes were made.";
@@ -924,7 +927,9 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       var title = "Error";
   }
 
-  localStorage.clear();
+  if (act != "ErrMO") {
+    localStorage.clear();
+  }
 
   var message = "";
   if (msg.length >= 1) {
@@ -932,26 +937,35 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       message += `<p class="mt-n3" style="text-align:center; font-weight:bold;">${msg[i]}</p>`;
   }
 
+  if (act == 'D') {
+    var firstContent = title2;
+  } else {
+    var firstContent = title;
+  }
+
   const modalElem = document.createElement("div");
   modalElem.id = "modal-confirm";
   modalElem.className = "modal fade";
   modalElem.innerHTML = `
-        <div class="modal-dialog modal-dialog-centered " style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-        <div class="modal-content">             
-            <div class="modal-body fs-6 mt-3">
-            <p style="text-align:center; font-weight:bold; font-size:25px;">${title}</p>
-            <p class="mt-n2" style="text-align:center;">${title2}</p>
-            ${message}
-        </div>
-        <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
-            <button id="acceptBtn" type="button" class="btn" 
-            style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">${btn}</button>
-            <button id="rejectBtn" type="button" class="btn" 
-            style="border: 1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">Cancel</button>
-        </div>
-        </div>
-    </div>
-    `;
+  <div class="modal-dialog modal-dialog-centered" style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <div class="modal-content">             
+          <div class="modal-body fs-6 mt-3">
+              <p style="text-align:center; font-weight:bold; font-size:25px;">${firstContent} </p>
+              ${message}
+          </div>
+          <div class="modal-footer d-flex justify-content-center mt-n3" style="border-top:0px">             
+              <button id="acceptBtn" type="button" class="btn" 
+                  style="border:1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">
+                  ${btn}
+              </button>
+              <button id="rejectBtn" type="button" class="btn" 
+                  style="border: 1px solid #FF9B44; background-color:#FFFFFF; color:#FF9B44; box-shadow: 0 0 !important; border-radius: 24px; text-transform:none;">
+                  Cancel
+              </button>
+          </div>
+      </div>
+  </div>
+`;
 
   const modelResult = document.createElement("div");
   modelResult.id = "modal-confirm";
@@ -1000,8 +1014,10 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
           id: id,
           act: act,
         },
+
         cache: false,
         success: (result) => {
+          console.log(path);
           const myModal2 = new bootstrap.Modal(modelResult, {
             keyboard: false,
             backdrop: "static",
@@ -1040,14 +1056,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     } else console.log("Operation Cancelled.");
   }
 
-  if (
-    act == "I" ||
-    act == "E" ||
-    act == "MO" ||
-    act == "NC" ||
-    act == "PC" ||
-    act == "F"
-  ) {
+  if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC" || act == "F" || act == "ErrMO") {
     const myModal2 = new bootstrap.Modal(modelResult, {
       keyboard: false,
       backdrop: "static",
@@ -1063,6 +1072,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         modelResult.remove();
         resolve(true);
         window.location.href = pathreturn;
+
       }, 5000);
 
       function response(e) {
@@ -1077,8 +1087,8 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         document.body.removeEventListener("click", response);
         document.body.querySelector(".modal-backdrop").remove();
         resolve(bool);
-        console.log("HELLO");
         window.location.href = pathreturn;
+
       }
     });
   }
@@ -1116,16 +1126,19 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param) {
+function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
   var type = param["searchType"];
   var dbTable = param["dbTable"];
+  if (param["addSelection"]) {
+    var addSelection = param["addSelection"];
+  }
 
   if (search != "") {
     $.ajax({
-      url: "getSearch.php",
+      url: siteURL + "/getSearch.php",
       type: "post",
       data: {
         searchText: search,
@@ -1143,8 +1156,8 @@ function searchInput(param) {
         )
           $("#" + elementID).after(
             '<ul class="searchResult" id="searchResult_' +
-              elementID +
-              '"></ul>',
+            elementID +
+            '"></ul>',
             '<div id="clear_' + elementID + '" class="clear"></div>'
           );
 
@@ -1173,9 +1186,16 @@ function searchInput(param) {
           }
         }
 
+        if (addSelection) {
+          $("#searchResult_" + elementID).append(
+            "<li value='" + addSelection + "'>" + addSelection + "</li>"
+          );
+        }
+
         // binding click event to li
         $("#searchResult_" + elementID + " li").bind("click", function () {
           setText(this, "#" + elementID, "#" + hiddenElementID);
+          $("#" + elementID).change();
           $("#searchResult_" + elementID).empty();
           $("#searchResult_" + elementID).remove();
           $("#clear_" + elementID).remove();
@@ -1187,6 +1207,7 @@ function searchInput(param) {
     $("#searchResult_" + elementID).remove();
     $("#clear_" + elementID).remove();
   }
+
 }
 
 function retrieveJSONData(search, type, tblname) {
@@ -1216,18 +1237,6 @@ function setText(element, val, val2) {
   } else {
     $(val).val("");
     $(val2).val("").trigger("input"); // to trigger input event from package page
-  }
-}
-
-function setAutofocus(action) {
-  if (action === "I" || action === "E") {
-    var firstInputOrSelect = document.querySelector("input, select");
-
-    if (firstInputOrSelect) {
-      $(document).ready(function () {
-        $("input:visible:enabled:first").focus();
-      });
-    }
   }
 }
 
@@ -1262,22 +1271,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function retrieveDataFromLocalStorage() {
     var inputFields = document.querySelectorAll("input, textarea ,select");
-    inputFields.forEach(function (input) {
-      // Check if the input is not readonly and has stored data
-      if (!input.readOnly && localStorage.getItem(input.id) && input.id) {
-        input.value = localStorage.getItem(input.id);
-      }
-    });
+    var page = localStorage.getItem("page");
+
+    if (page !== 'invalid') {
+      inputFields.forEach(function (input) {
+        // Check if the input is not readonly and has stored data
+        if (!input.readOnly && localStorage.getItem(input.id) && input.id && input.type !== 'file') {
+          input.value = localStorage.getItem(input.id);
+        }
+      });
+    }
   }
 
   function saveFormDataToLocalStorage() {
     var inputFields = document.querySelectorAll("input, textarea ,select");
+    var page = localStorage.getItem("page");
 
-    inputFields.forEach(function (input) {
-      if (!input.readOnly && input.id) {
-        localStorage.setItem(input.id, input.value);
-      }
-    });
+    if (page !== 'invalid') {
+      inputFields.forEach(function (input) {
+        if (!input.readOnly && input.id && !input.multiple && input.type !== 'file') {
+          localStorage.setItem(input.id, input.value);
+        }
+      });
+    }
   }
 
   function displayPreviousData() {
@@ -1285,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var inputFields = document.querySelectorAll("input, textarea,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has previous data
-      if (!input.readOnly && localStorage.getItem(input.id)) {
+      if (!input.readOnly && localStorage.getItem(input.id) && input.type !== 'file') {
         input.value = localStorage.getItem(input.id);
       }
     });
@@ -1339,7 +1355,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var inputValue = currentDataNameInput.value.trim();
       errorSpan.style.display =
         inputValue !== "" &&
-        inputValue !== localStorage.getItem("currentDataName")
+          inputValue !== localStorage.getItem("currentDataName")
           ? "none"
           : "block";
     }
@@ -1359,11 +1375,47 @@ function setCookie(cname, cvalue, exMins) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function checkCurrentPage(page) {
-  var previouspage = localStorage.getItem("page");
-  localStorage.setItem("page", page);
-  if (previouspage != page) {
+function checkCurrentPage(page, action) {
+  var previousPage = localStorage.getItem("page");
+  var perviousAction = localStorage.getItem("action");
+
+  if (previousPage != page || perviousAction != action) {
     localStorage.clear();
     localStorage.setItem("page", page);
+    localStorage.setItem("action", action);
+  }
+}
+
+function preloader(additionalDelay, action) {
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+      document.querySelector(".preloader").style.display = "none";
+      document.querySelector(".pre-load-center").style.display = "none";
+      document.querySelector(".page-load-cover").style.display = "block";
+      setAutofocus(action);
+    }, additionalDelay);
+  });
+}
+
+function setAutofocus(action) {
+  if (action === "I" || action === "E") {
+    var firstInput = $("input:visible:enabled:first");
+    if (firstInput.length > 0) {
+      firstInput.focus();
+
+      var inputValue = firstInput.val();
+      var lastSpaceIndex = inputValue.lastIndexOf(" ");
+
+      if (lastSpaceIndex !== -1) {
+        var input = firstInput.get(0);
+        var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
+        var cursorPosition =
+          lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
+        input.setSelectionRange(cursorPosition, cursorPosition);
+      } else {
+        firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
+          inputValue.length;
+      }
+    }
   }
 }

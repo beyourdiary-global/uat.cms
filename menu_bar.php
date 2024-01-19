@@ -1,4 +1,11 @@
 <?php
+
+$userID = USER_ID;
+
+if (empty($userID)) {
+    echo "<script>window.location.href = '$SITEURL/index.php';</script>";
+}
+
 $pinArr = array();
 
 $pin_query = "SELECT id FROM " . PIN;
@@ -77,13 +84,35 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'), 
                     array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL.'/finance/sundry_debt_trans_table.php', '42'),
+                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL.'/finance/other_creditor_trans_table.php', '43'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL.'/finance/initial_capital_trans_table.php', '44'),   
+                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL.'/finance/cash_on_hand_trans_table.php', '45'),
+                    array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL.'/finance/bank_trans_backup_table.php', '51'),
                 ),
-                'pin' => array('37','40','41'),
+                'pin' => array('37','40','41','42','43','44','45','51'),
+
+            ),
+            array(
+                'Expense',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
+                  array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
+                     array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
+                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '47'),
+                    array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
+
+                ),
+                'pin' => array('46','47','48','49','58'),
             ),
         ),
-        'pin' => array('36', '37','40','41')
+        'pin' => array('36', '37','40','41','42','43','44','45','46','47','48','49','51','58')
+
     ),
     array(
         'Other',
@@ -141,8 +170,9 @@ $menuList = array(
                 'expand' => array(
                     array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL . '/prod_status_table.php', '15'),
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
+                    array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                 ),
-                'pin' => array('15', '9'),
+                'pin' => array('15', '9', '50'),
             ),
             array(
                 'Employee Administration Setting',
@@ -182,11 +212,24 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
+                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
                 ),
-                'pin' => array('33'),
+                'pin' => array('33','57'),
+            ),
+            array(
+                'Finance Administration  Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Expense Type', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/expense_type_table.php', '47'),
+                    array('Payment Method (Finance)', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fin_payment_method_table.php', '52'),
+                ),
+                'pin' => array('47'),
             ),
         ),
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41')
+
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52')
     ),
     array(
         'Audit Log',

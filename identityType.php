@@ -4,8 +4,6 @@ $pageTitle = "Identity Type";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-
 $tblName = ID_TYPE;
 
 //Current Page Action And Data ID
@@ -17,7 +15,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/identityTypeTable.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -43,16 +40,16 @@ if ($act == 'D') {
     deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
- 
+
 //View Data
 if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
 
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -65,7 +62,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
         'page'    => $pageTitle,
         'connect' => $connect,
     ];
-    
+
     audit_log($log);
 }
 
@@ -81,7 +78,7 @@ if (post('actionBtn')) {
             $currentDataName = postSpaceFilter('currentDataName');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
@@ -92,28 +89,35 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
+                        array_push($datafield, 'name');
+                    }
 
-                    if ($dataRemark)
+                    if ($dataRemark) {
                         array_push($newvalarr, $dataRemark);
+                        array_push($datafield, 'remark');
+                    }
 
                     $query = "INSERT INTO " . $tblName . "(name,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$dataRemark','" . USER_ID . "',curdate(),curtime())";
-
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                        array_push($datafield, 'remark');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -126,12 +130,8 @@ if (post('actionBtn')) {
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -150,20 +150,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
@@ -190,52 +183,61 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 <html>
 
 <head>
-<link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                    <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                    <div id="err_msg">
-                        <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                        <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                        <div id="err_msg">
+                            <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                        </div>
+                    </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
+        preloader(300, action);
     </script>
 
 </body>
