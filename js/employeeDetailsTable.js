@@ -4,6 +4,18 @@
 $('#fromTime, #toTime').on('change', calculateNumberOfDays);
 $('#leaveType').on('change input click', checkLeaveCredit);
 $('#leaveApplicationApplyForm').on('change input click', validateAppFormSubmitBtn);
+$('#leaveApplicationModal').one('shown.bs.modal', function () {
+    calculateNumberOfDays();
+    var currRemainingLeave = $('#remainingLeave').val();
+    var currNumOfDays = $('#numOfdays').val();
+
+    if (currNumOfDays && currRemainingLeave) {
+        var remaingingLeave = parseFloat(currRemainingLeave) + parseFloat(currNumOfDays);
+        $('#remainingLeave').val(remaingingLeave);
+        localStorage.setItem('editNumOfDays', currNumOfDays);
+    }
+});
+
 document.getElementById("leaveType").addEventListener("change", updateRemainingLeaves);
 
 var submitBtn = document.getElementById('actionBtn');
@@ -12,7 +24,7 @@ var submitBtn = document.getElementById('actionBtn');
 if (!sessionStorage.getItem("leaveAppEdit"))
     submitBtn.disabled = true;
 
-//To Check A Leave Date Apply By User Is Valid Or Not
+//To Check A Leave Date Apply By User Is Valid Or Not 
 function validateLeaveDateAvailableRange() {
 
     var fromTime = $('#fromTime').val();
@@ -160,13 +172,17 @@ function validateDateTime(inputId, errorId) {
 function calculateNumberOfDays() {
     var fromTime = $('#fromTime').val();
     var toTime = $('#toTime').val();
-    var submitBtn = document.getElementById('actionBtn');
 
     var currentTime = new Date();
     var fromTimeDate = new Date(fromTime);
     var toTimeDate = new Date(toTime);
+    var adjustment = 0;
 
     var warningMsg = $('.warning-msg');
+
+    if (localStorage.getItem('editNumOfDays')) {
+        adjustment = parseFloat(localStorage.getItem('editNumOfDays'));
+    }
 
     if (fromTime && toTime && fromTimeDate > currentTime && toTimeDate > currentTime) {
         var fromDate = new Date(fromTime);
@@ -179,7 +195,7 @@ function calculateNumberOfDays() {
         if (durationInDays == 0)
             durationInDays = 0.5;
 
-        var remainingLeave = parseInt(updateInitialLeave());
+        var remainingLeave = parseFloat(updateInitialLeave());
 
         if (remainingLeave === undefined || isNaN(remainingLeave)) {
             if (warningMsg.children().length === 0) {
@@ -231,9 +247,9 @@ function calculateNumberOfDays() {
             warningMsg.empty();
         }
 
-        if (remainingLeave > 0 && (remainingLeave - durationInDays) <= remainingLeave) {
+        if (remainingLeave > 0 && (remainingLeave - durationInDays + adjustment) <= remainingLeave) {
             $('#numOfdays').val(durationInDays);
-            $('#remainingLeave').val(remainingLeave - durationInDays);
+            $('#remainingLeave').val(remainingLeave - durationInDays + adjustment);
             return true;
         }
     } else {
@@ -286,7 +302,7 @@ function validateAppFormSubmitBtn() {
 
     submitBtn.disabled = !submitButtonDisabled;
 
-    // console.log(submitBtnBooleanArr);
+    console.log(submitBtnBooleanArr);
 }
 
 //Clear A Storage Before Reload Window
