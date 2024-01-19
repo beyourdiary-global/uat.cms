@@ -24,59 +24,66 @@ if (!$result) {
 <head>
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
+
 <script>
+    preloader(500);
+
     $(document).ready(() => {
         createSortingTable('table');
     });
 </script>
 
 <body>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-8">
+            <div class="col-12 col-md-8">
 
-            <div class="d-flex flex-column mb-3">
-                <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
-                </div>
+                <div class="d-flex flex-column mb-3">
+                    <div class="row">
+                        <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                    </div>
 
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2><?php echo $pageTitle ?></h2>
-                        <div class="mt-auto mb-auto">
-                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
-                            <?php endif; ?>
+                    <div class="row">
+                        <div class="col-12 d-flex justify-content-between flex-wrap">
+                            <h2><?php echo $pageTitle ?></h2>
+                            <div class="mt-auto mb-auto">
+                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <table class="table table-striped" id="table">
-                <thead>
-                    <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
-                        <th scope="col">DateTime</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
+                <table class="table table-striped" id="table">
+                    <thead>
+                        <tr>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">DateTime</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <?php
-                    if (mysqli_num_rows($result) >= 1) {
+                    <tbody>
+                        <?php
+                        if (mysqli_num_rows($result) >= 1) {
 
-                        while ($row = $result->fetch_assoc()) {
-                            $resultUser = getData('username', "id='" . $row['user_id'] . "'", '', USR_USER, $connect);
-                            if (!$resultUser) {
-                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                            }
-                            $rowUser = $resultUser->fetch_assoc();
+                            while ($row = $result->fetch_assoc()) {
+                                $resultUser = getData('username', "id='" . $row['user_id'] . "'", '', USR_USER, $connect);
+                                if (!$resultUser) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $rowUser = $resultUser->fetch_assoc();
 
-                            echo '
+                                echo '
                             <tr>
                                 <th class="hideColumn" scope="row">' . $row['id'] . '</th>
                                 <th scope="row">' . $num++ . '</th>
@@ -85,25 +92,31 @@ if (!$result) {
                                 <td scope="row">' . $row['action_message'] . '</td>
                             </tr>
                             ';
+                            }
                         }
-                    }
-                    ?>
-                </tbody>
+                        ?>
+                    </tbody>
 
-                <tfoot>
-                    <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
-                        <th scope="col">DateTime</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </tfoot>
-            </table>
+                    <tfoot>
+                        <tr>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">DateTime</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+        checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes

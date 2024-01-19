@@ -4,8 +4,6 @@ $pageTitle = "Customer Segmentation";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-
 $tblName = CUR_SEGMENTATION;
 
 //Current Page Action And Data ID
@@ -17,7 +15,6 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 $redirect_page = $SITEURL . '/cus_segmentation_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-$errorMsgAlert = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -50,9 +47,9 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data ";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -80,9 +77,11 @@ if (post('actionBtn')) {
 
             $currentDataName = postSpaceFilter('currentDataName');
             $colorSegmentation =  postSpaceFilter('segmentationColor');
+            $currentDataPriceFrom = postSpaceFilter('priceFrom');
+            $currentDataPriceTo = postSpaceFilter('priceTo');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
-            $oldvalarr = $chgvalarr = $newvalarr = array();
+            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
@@ -94,7 +93,7 @@ if (post('actionBtn')) {
                 $errorCount  = 1;
             }
 
-            if(isset($errorCount)){
+            if (isset($errorCount)) {
                 break;
             }
 
@@ -102,54 +101,73 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($currentDataName)
+                    if ($currentDataName) {
                         array_push($newvalarr, $currentDataName);
-
-                    if ($dataRemark)
-                        array_push($newvalarr, $dataRemark);
+                        array_push($datafield, 'name');
+                    }
 
                     if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+                    if ($currentDataPriceFrom)
+                        array_push($newvalarr, $currentDataPriceFrom);
+
+                    if ($currentDataPriceTo)
+                        array_push($newvalarr, $currentDataPriceTo);
+
+                    if ($dataRemark)
+                        array_push($newvalarr, $dataRemark);
+
+                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
+                    $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
             } else {
                 try {
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
+                        array_push($datafield, 'name');
                     }
 
                     if ($row['colorCode'] != $colorSegmentation) {
                         array_push($oldvalarr, $row['colorCode']);
                         array_push($chgvalarr, $colorSegmentation);
+                        array_push($datafield, 'colorCode');
+                    }
+
+                    if ($row['price_from'] != $currentDataPriceFrom) {
+                        array_push($oldvalarr, $row['priceFrom']);
+                        array_push($chgvalarr, $currentDataPriceFrom);
+                    }
+
+                    if ($row['price_to'] != $currentDataPriceTo) {
+                        array_push($oldvalarr, $row['priceTo']);
+                        array_push($chgvalarr, $currentDataPriceTo);
                     }
 
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                        array_push($datafield, 'remark');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , priceFrom='$currentDataPriceFrom', priceTo='$currentDataPriceTo', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
                     }
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    $act = "F";
                 }
-            }
-
-            if (isset($errorMsg)) {
-                $act = "F";
-                $errorMsg = str_replace('\'', '', $errorMsg);
             }
 
             // audit log
@@ -168,20 +186,13 @@ if (post('actionBtn')) {
                 ];
 
                 if ($pageAction == 'Add') {
-
                     $log['newval'] = implodeWithComma($newvalarr);
-
-                    if (isset($returnData)) {
-                        $log['act_msg'] = USER_NAME . " added <b>$currentDataName</b> into <b><i>$tblName Table</i></b>.";
-                    } else {
-                        $log['act_msg'] = USER_NAME . " fail to insert <b>$currentDataName</b> into <b><i>$tblName Table</i></b> ( $errorMsg )";
-                    }
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval'] = implodeWithComma($oldvalarr);
+                    $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($oldvalarr, $chgvalarr, $tblName, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
-
                 audit_log($log);
             }
 
@@ -212,64 +223,91 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-            <?php echo $pageActionTitle ?>
-        </p>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-8 col-md-6 formWidthAdjust">
-            <form id="form" method="post" novalidate>
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php echo $pageActionTitle ?>
-                    </h2>
-                </div>
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageActionTitle ?>
+            </p>
+        </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-sm">
-                            <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                            <div id="err_msg">
-                                <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
-                            </div>
-                        </div>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
+                <form id="form" method="post" novalidate>
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php echo $pageActionTitle ?>
+                        </h2>
+                    </div>
 
-                        <div class="col-sm">
-                            <label class=" form-label" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
-                            <div class="col d-flex justify-content-start align-items-center">
-                                <input type="color" name="segmentationColor" id="segmentationColor" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control" style="height: 40px;">
-                                <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-sm">
+                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                                </div>
                             </div>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
+
+                            <div class="col-sm">
+                                <label class=" form-label" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
+                                <div class="col d-flex justify-content-start align-items-center">
+                                    <input type="color" name="segmentationColor" id="segmentationColor" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control" style="height: 40px;">
+                                    <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
+                                </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-sm">
+                                <label class="form-label" for="priceFrom">Price From</label>
+                                <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceFromErrorMsg', 'priceToErrorMsg')">
+                                <div id="priceFromErrorMsg" class="error-message">
+                                    <span class="mt-n1"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <label class="form-label" for="priceTo">Price To</label>
+                                <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceToErrorMsg', 'priceFromErrorMsg')">
+                                <div id="priceToErrorMsg" class="error-message">
+                                    <span class="mt-n1"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
-        setAutofocus(action);
-
+        preloader(300, action);
+        
         // JavaScript code to update the color code display
         const colorInput = document.getElementById("segmentationColor");
         const colorDisplay = document.getElementById("color-display");
@@ -279,6 +317,28 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             const selectedColor = colorInput.value;
             colorDisplay.textContent = selectedColor;
         });
+
+        function validateNumericInput(inputField, errorMsgId, otherErrorMsgId) {
+            const inputValue = inputField.value;
+            const numericValue = parseFloat(inputValue);
+
+            if (isNaN(numericValue)) {
+                inputField.value = inputValue.replace(/[^0-9.]/g, '');
+            }
+
+            const currentErrorMsg = document.getElementById(errorMsgId);
+            const otherErrorMsg = document.getElementById(otherErrorMsgId);
+
+            if (isNaN(parseFloat(document.getElementById("priceFrom").value)) && isNaN(parseFloat(document.getElementById("priceTo").value))) {
+                currentErrorMsg.textContent = "Please enter a number.";
+                currentErrorMsg.classList.add("error-message");
+                otherErrorMsg.textContent = "";
+                otherErrorMsg.classList.remove("error-message");
+            } else {
+                currentErrorMsg.textContent = "";
+                currentErrorMsg.classList.remove("error-message");
+            }
+        }
     </script>
 
 </body>

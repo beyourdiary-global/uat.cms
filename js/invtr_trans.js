@@ -1,15 +1,55 @@
 //show text field when "create new merchant" is selected from dropdown list
 document.getElementById('invtr_mrcht').addEventListener('change', function() {
     var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
-    create_mrcht_sect.hidden = this.value !== 'other';
+    create_mrcht_sect.hidden = this.value !== 'Create New Merchant';
 })
 
 // Trigger the check on page load
 window.onload = function() {
     var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
     var invtr_mrcht_value = document.getElementById('invtr_mrcht').value;
-    create_mrcht_sect.hidden = invtr_mrcht_value !== 'other';
+    create_mrcht_sect.hidden = invtr_mrcht_value !== 'Create New Merchant';
 };
+
+//autocomplete
+$(document).ready(function() {
+
+    if (!($("#invtr_mrcht").attr('readonly'))) {
+        var selectedValue = '';
+        $("#invtr_mrcht").keyup(function() {
+            console.log("Keyup event triggered");
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= MERCHANT ?>', // json filename (generated when login)
+                addSelection: 'Create New Merchant'
+            }
+            console.log("Element ID:", param["elementID"]);
+            console.log("Site URL:", '<?= $SITEURL ?>');
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+        $("#invtr_mrcht").on('change', function() {
+            console.log("Change event triggered");
+            selectedValue = $(this).val();
+            console.log("Selected value:", selectedValue);
+            console.log("Site URL:", '<?= $SITEURL ?>');
+            var create_mrcht_sect = document.getElementById('INVTR_CreateMerchant');
+
+            // Check if the selected value is 'Create New Merchant'
+            if (selectedValue == 'Create New Merchant') {
+                console.log("Selected value is 'Create New Merchant'");
+                create_mrcht_sect.hidden = false; // Show INVTR_CreateMerchant
+            } else {
+                console.log("Selected value is not 'Create New Merchant'");
+                create_mrcht_sect.hidden = true; // Hide INVTR_CreateMerchant
+            }
+        });
+    }
+})
+
 
 $('#invtr_attach').on('change', function() {
     previewImage(this, 'invtr_attach_preview')
@@ -66,10 +106,10 @@ $('.submitBtn').on('click', () => {
         mrcht_chk = 1;
     }
 
-    if ($('#invtr_mrcht').val() === 'other') {
-        if ($('#mrcht_other').val() === '' || $('#invtr_amt').val() === null || $('#invtr_amt').val() === undefined) {
+    if ($('#invtr_mrcht').val() === 'Create New Merchant') {
+        if ($('#invtr_mrcht_other').val() === '' || $('#invtr_mrcht_other').val() === null || $('#invtr_mrcht_other').val() === undefined) {
             mrcht_other_chk = 0;
-            $("#mrcht_other").after(
+            $("#invtr_mrcht_other").after(
                 '<span class="error-message mrcht-other-err">Other Merchant Name is required!</span>');
         } else {
             $(".mrcht-other-err").remove();
@@ -89,7 +129,7 @@ $('.submitBtn').on('click', () => {
         item_chk = 1;
     }
 
-    if ($('#invtr_amt').val() == '' || $('#invtr_amt').val() === null || $('#invtr_amt')
+    if ($('#invtr_amt').val() == '' ||  $('#invtr_amt').val() == '0' || $('#invtr_amt').val() === null || $('#invtr_amt')
             .val() === undefined) {
         amt_chk = 0;
         $("#invtr_amt").after(
@@ -104,4 +144,4 @@ $('.submitBtn').on('click', () => {
     else
         return false;
 
-})
+});
