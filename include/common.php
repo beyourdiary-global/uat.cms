@@ -269,7 +269,7 @@ function generateDBData($tblname, $conn)
 	}
 	$encode_rst = json_encode($data);
 
-	$path = "./data/" . "$tblname.json";
+	$path = ROOT . "/data/$tblname.json";
 
 	$f = fopen($path, 'w');
 	fwrite($f, $encode_rst);
@@ -313,6 +313,15 @@ function audit_log($data = array())
 
 		if (isset($query))
 			mysqli_query($connect, $query);
+	}
+}
+
+function formatTime($time)
+{
+	if (!empty($time)) {
+		return date('Y-m-d H:i:s', strtotime($time));
+	} else {
+		return "Time is empty.";
 	}
 }
 
@@ -637,22 +646,39 @@ function implodeWithComma($data)
 	return implode(",", $data);
 }
 
-function actMsgLog($oldvalarr = array(), $chgvalarr = array(), $tblName, $errorMsg)
+
+function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr = array(), $chgvalarr = array(), $tblName, $action, $errorMsg)
 {
-	$actMsg = USER_NAME . (empty($errorMsg) ? "" : " fail to") . " edited the data";
+	$action = strtolower($action);
 
-	for ($i = 0; $i < sizeof($oldvalarr); $i++) {
-		if ($i == 0)
-			$actMsg .= " from <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
-		else
-			$actMsg .= ", <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b>";
+	$actMsg = USER_NAME . (empty($errorMsg) ? " " : " fail to ") . $action . "  the data [ <b> ID = ".$id." </b> ]";
+
+	switch ($action) {
+		case 'add':
+			for ($i = 0; $i < sizeof($datafield); $i++) {
+				if ($i == 0)
+					$actMsg .= " [ <b> " . $datafield[$i] . " </b> : <b>\'" . $newvalarr[$i] . "\'</b>  ]";
+				else
+					$actMsg .= " , [ <b> " . $datafield[$i] . " </b> : <b>\'" . $newvalarr[$i] . "\'</b> ]";
+			}
+			break;
+		case 'edit':
+
+			for ($i = 0; $i < sizeof($datafield); $i++) {
+				if ($i == 0)
+					$actMsg .= " [ <b> " . $datafield[$i] . " </b> : <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b> ]";
+				else
+					$actMsg .= " , [ <b> " . $datafield[$i] . " </b> : <b>\'" . $oldvalarr[$i] . "\'</b> to <b>\'" . $chgvalarr[$i] . "\'</b> ]";
+			}
+			break;
 	}
-	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
 
-	(!empty($errorMsg)) ? $actMsg .= "( $errorMsg )" : '';
+	$actMsg .= "  under <b><i>$tblName Table</i></b>.";
+	(!empty($errorMsg)) ? $actMsg .= " ( " . str_replace('\'', '', $errorMsg) . " )" : '';
 
 	return $actMsg;
 }
+
 
 // Function to update previous and final amounts for transactions
 function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
@@ -713,4 +739,21 @@ function insertNewMerchant($merchantName, $userId, $financeConnect)
 		return mysqli_insert_id($financeConnect);
 	}
 	return false;
+}
+
+function monthStringToNumber($monthString) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return array_search($monthString, $monthArray) + 1;
+}
+
+function monthNumberToString($monthNumber) {
+    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    // Check if the monthNumber is valid
+    if ($monthNumber >= 1 && $monthNumber <= 12) {
+        return $monthArray[$monthNumber - 1];
+    } else {
+        // Handle invalid monthNumber
+        return false;
+    }
 }

@@ -6,7 +6,6 @@
     include_once "include/connection.php";
     include_once "include/common.php";
     include_once "include/common_variable.php";
-    include_once "header.php";
 
     $img_path = $SITEURL . '/' . img_server . 'themes/';
     $rst = getData('*', "id = '1'", '', 'projects', $connect);
@@ -18,14 +17,17 @@
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
     }
+
+    include_once "header.php";
+
     ?>
     <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <!-- Navbar -->
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-md topNav p-0" id="topNav">
+    <nav class="navbar navbar-expand-md topNav p-0" id="topNav" style="background-color:<?php if ($dataExisted) echo $row['themesColor']; ?>;">
         <!-- Container wrapper -->
         <div class="container-fluid p-0">
             <!-- Toggle button -->
@@ -174,13 +176,6 @@
 
 <!-- Move the script block to the end of the body -->
 <script>
-    function setThemesColor() {
-        var topnav = document.getElementById('topNav');
-        topnav.style.backgroundColor = '<?php if ($dataExisted) echo $row['themesColor']; ?>';
-    }
-
-    setThemesColor();
-
     function setButtonColor() {
         var buttons = document.querySelectorAll('#actionBtn, #addBtn');
 
