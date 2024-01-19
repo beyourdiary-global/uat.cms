@@ -288,7 +288,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                     <div class="col-sm-5">
                                         <label class="form-label" for="cusEmail">Email </label>
-                                        <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                        <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?>>
                                         <span id="emailMsg"></span>
                                     </div>
 
@@ -513,9 +513,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         $(document).ready(function() {
             $("#cusEmail").on("input", function() {
                 if (!$("#cusEmail").val()) {
-                    $("#emailMsg").html("<p style='color:red;'>Email is required!</p>");
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
                 } else if (!validateEmail()) {
-                    $("#emailMsg").html("<p style='color:red;'>Invalid Email Format</p>");
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Invalid Email Format</p>");
                 } else {
                     $("#emailMsg").html("");
                 }
@@ -523,12 +523,12 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
             $("#actionBtn").on("click", function(event) {
                 if (!validateEmail()) {
-                    $("#emailMsg").html("<p style='color:red;'>Invalid Email Format</p>");
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Invalid Email Format</p>");
                     event.preventDefault();
                 }
 
                 if (!$("#cusEmail").val()) {
-                    $("#emailMsg").html("<p style='color:red;'>Email is required!</p>");
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
                     event.preventDefault();
                 }
             });
