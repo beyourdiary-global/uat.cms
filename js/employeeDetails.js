@@ -25,7 +25,13 @@ showTab(currentTab); // Display the current tab
 function nextPrev(n) {
   var x = document.getElementsByClassName("step");
 
-  if (n == 1 && !validateForm()) return false;
+  if (!validateEmailInput()) {
+    return false;
+  }
+
+  if (n == 1 && !validateForm()) {
+    return false;
+  }
 
   x[currentTab].style.display = "none";
   currentTab = currentTab + n;
@@ -40,6 +46,37 @@ function nextPrev(n) {
 
   showTab(currentTab);
 }
+
+function validateForm() {
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("step");
+  y = x[currentTab].querySelectorAll("input, select");
+
+  for (i = 0; i < y.length; i++) {
+
+    if ((y[i].value === "" || (y[i].tagName === "SELECT" && y[i].selectedIndex === 0)) && y[i].hasAttribute("required")) {
+
+      y[i].classList.add("invalid");
+      y[i].style.borderColor = "red";
+      valid = false;
+
+      displayErrorMessage(y[i], "<p style='margin-bottom:0;'>Please fill the " + getLabelContent(y[i]) + " field.</p>");
+
+    } else {
+
+      y[i].classList.remove("invalid");
+      y[i].style.borderColor = "";
+
+      hideErrorMessage(y[i]);
+    }
+  }
+
+  if (valid)
+    document.getElementsByClassName("stepIndicator")[currentTab].classList.add("finish");
+
+  return valid;
+}
+
 
 function showTab(n) {
   var x = document.getElementsByClassName("step");
@@ -72,36 +109,6 @@ function showTab(n) {
   }
 
   fixStepIndicator(n);
-}
-
-function validateForm() {
-  var x, y, i, valid = true;
-  x = document.getElementsByClassName("step");
-  y = x[currentTab].querySelectorAll("input, select");
-
-  for (i = 0; i < y.length; i++) {
-
-    if ((y[i].value === "" || (y[i].tagName === "SELECT" && y[i].selectedIndex === 0)) && y[i].hasAttribute("required")) {
-
-      y[i].classList.add("invalid");
-      y[i].style.borderColor = "red";
-      valid = false;
-
-      displayErrorMessage(y[i], "<p style='margin-bottom:0;'>Please fill the " + getLabelContent(y[i]) + " field.</p>");
-
-    } else {
-
-      y[i].classList.remove("invalid");
-      y[i].style.borderColor = "";
-
-      hideErrorMessage(y[i]);
-    }
-  }
-
-  if (valid)
-    document.getElementsByClassName("stepIndicator")[currentTab].classList.add("finish");
-
-  return valid;
 }
 
 function displayErrorMessage(inputField, message) {
@@ -329,20 +336,25 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-$(document).ready(function () {
-  $("#employeeEmail").on("input", function () {
-    if (!validateEmail("#employeeEmail"))
-      $("#emailMsg1").html("<p style='color:red;margin-bottom:0;'>Invalid Email Format</p>");
-    else
-      $("#emailMsg1").html("");
-  });
+function validateEmailInput() {
+  var emailInput = $("#employeeEmail");
+  var emailMsg = $("#emailMsg1");
 
-  $("#actionBtn").on("click", function (event) {
-    if (!validateEmail("#employeeEmail")) {
-      event.preventDefault();
-    }
-  });
-});
+  if (!emailInput.val()) {
+    emailInput.css("border-color", "red");
+    emailMsg.html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
+    return false
+  } else if (!validateEmail('#employeeEmail')) {
+    emailInput.css("border-color", "red");
+    emailMsg.html("<p style='color:red;margin-bottom:0;'>Invalid Email Format</p>");
+    return false
+  }
+
+  emailInput.css("border-color", "");
+  emailMsg.html("");
+  return true
+
+}
 
 function validateEmail(inputID) {
 

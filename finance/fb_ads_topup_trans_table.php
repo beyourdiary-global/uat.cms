@@ -53,7 +53,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
             <table class="table table-striped" id="fb_ads_topup_trans_table">
                 <thead>
                     <tr>
-                    <th class="hideColumn" scope="col">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Meta Account</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Invoice/Payment Date</th>
@@ -74,6 +75,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $meta_acc['accName']?></td>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['payment_date'] ?></td>
@@ -111,6 +113,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Meta Account</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Invoice/Payment Date</th>

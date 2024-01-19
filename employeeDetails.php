@@ -445,7 +445,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <div class="col-sm-4 mb-2">
                                         <div>
                                             <label class="form-label" id="emailLbl" for="employeeEmail">Email <span class="requireRed">*</span></label>
-                                            <input class="form-control" type="text" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required>
+                                            <input class="form-control" type="text" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" >
                                         </div>
                                         <span id="emailMsg1"></span>
                                     </div>
@@ -468,7 +468,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         <label class="form-label" id="birthdayLbl" for="employeeBirthday">Birthday <span class="requireRed">*</span></label>
                                         <input class="form-control" type="date" name="employeeBirthday" id="employeeBirthday" min='1500-01-01' max='3000-12-31' value="<?php if (isset($row['date_of_birth'])) echo $row['date_of_birth'] ?>" required>
                                     </div>
-
+ 
                                     <div class="col-sm-3 mb-2">
                                         <label class="form-label" id="raceLbl" for="employeeRace">Race</label>
                                         <select class="form-select" aria-label="Default select example" name="employeeRace" id="employeeRace" required>
@@ -999,7 +999,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
 
                         <div class="col-sm-4 text-end button-bottom">
-                            <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="" style="font-size: 15px;">Next</button>
+                            <button type="button"  name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right actionNextSubBtn" value="" style="font-size: 15px;">Next</button>
                         </div>
                     </div>
                 </form>

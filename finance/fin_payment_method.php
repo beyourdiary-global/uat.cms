@@ -244,23 +244,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
                     </div>
                 </div>
-
                 <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="pmf_remark_lbl" for="pmf_remark">Remark
-                            </label>
-                            <input class="form-control" type="text" name="pmf_remark" id="pmf_remark" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['remark']) && !isset($pmf_remark)) {
-                                                                                                                echo $row['remark'];
-                                                                                                            } else if (isset($dataExisted) && isset($row['remark']) && isset($pmf_remark)) {
-                                                                                                                echo $pmf_remark;
-                                                                                                            } else {
-                                                                                                                echo '';
-                                                                                                            } ?>"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                        </div>
-                    </div>
+                    <label class="form-label form_lbl" id="pmf_remark_lbl" for="pmf_remark">Remark</label>
+                    <textarea class="form-control" name="pmf_remark" id="pmf_remark" rows="3"
+                        <?php if ($act == '') echo 'disabled' ?>><?php
+                                                                if (isset($dataExisted) && isset($row['remark']) && !isset($pmf_remark)) {
+                                                                    echo $row['remark'];
+                                                                } else if (isset($dataExisted) && isset($row['remark']) && isset($pmf_remark)) {
+                                                                    echo $pmf_remark;
+                                                                } ?></textarea>
                 </div>
 
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
