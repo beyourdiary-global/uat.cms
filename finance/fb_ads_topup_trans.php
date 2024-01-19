@@ -317,9 +317,13 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
+    <div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
+    <div class="page-load-cover">
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
+                                                                                                                    echo displayPageAction($act, $pageTitle);
                                                                                                                     ?>
         </p>
 
@@ -331,7 +335,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                        echo displayPageAction($act, 'Transaction');
+                        echo displayPageAction($act, $pageTitle);
                         ?>
                     </h2>
                 </div>
@@ -340,9 +344,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-4 autocomplete">
+                        <div class="col-md-4 mb-3 autocomplete">
                             <label class="form-label form_lbl" id="fat_meta_acc_lbl" for="fat_meta_acc">Meta
                                 Account<span class="requireRed">*</span></label>
                             <?php
@@ -374,7 +378,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
 
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label form_lbl" id="fat_trans_lbl" for="fat_trans_id">Transaction ID<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="fat_trans_id" id="fat_trans_id" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['transactionID']) && !isset($fat_trans_id)) {
@@ -391,7 +395,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label form_lbl" id="fat_date_label" for="fat_date">Invoice/Payment
                                 Date<span class="requireRed">*</span></label>
                             <input class="form-control" type="date" name="fat_date" id="fat_date" value="<?php
@@ -416,9 +420,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6 autocomplete">
+                        <div class="col-md-6 mb-3 autocomplete">
                             <label class="form-label form_lbl" id="fat_pic_lbl" for="fat_pic">Person-In-Charge<span
                                     class="requireRed">*</span></label>
                             <?php
@@ -451,7 +455,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                         </div>
                         
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label form_lbl" id="fat_amt_lbl" for="fat_amt">Amount<span
                                     class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="fat_amt" id="fat_amt" value="<?php
@@ -470,9 +474,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
                     </div>
                 </div>
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label form_lbl" id="fat_attach_lbl" for="fat_attach">Attachment*</label>
                             <input class="form-control" type="file" name="fat_attach" id="fat_attach"
                                 <?php if ($act == '') echo 'disabled' ?>>
@@ -493,7 +497,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-center justify-content-md-end px-4">
                                 <?php
                                 $attachmentSrc = '';
@@ -537,6 +541,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             </form>
         </div>
     </div>
+    </div>
+
     <?php
     /*
         oufei 20231014

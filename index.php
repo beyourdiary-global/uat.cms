@@ -4,7 +4,6 @@ $pageTitle = "Login";
 include "./include/common.php";
 include "./include/common_variable.php";
 include "init.php";
-include "header.php";
 
 $img_path = $SITEURL . '/' . img_server . 'themes/';
 
@@ -17,6 +16,8 @@ if (!$result) {
 }
 
 $row = $result->fetch_assoc();
+
+include "header.php";
 ?>
 
 <!DOCTYPE html>
