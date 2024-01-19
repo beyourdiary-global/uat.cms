@@ -118,6 +118,16 @@ $menuList = array(
                 ),
                 'pin' => array('49'),
             ),
+            array(
+                'Income', 
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '51')
+                ),
+                'pin' => array('51'), 
+            ),            
         ),
         'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
 
@@ -393,6 +403,7 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
+
 var sidebar = $("#sidebar");
 var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
 var opacityBackground = $('div#filter_screen');
