@@ -83,16 +83,16 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'), 
-                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
-                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL.'/finance/sundry_debt_trans_table.php', '42'),
-                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL.'/finance/other_creditor_trans_table.php', '43'),
-                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL.'/finance/initial_capital_trans_table.php', '44'),   
-                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL.'/finance/cash_on_hand_trans_table.php', '45'),
-                    array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL.'/finance/bank_trans_backup_table.php', '51'),
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL . '/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL . '/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL . '/finance/invtr_trans_table.php', '41'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '42'),
+                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL . '/finance/other_creditor_trans_table.php', '43'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
+                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
+                    array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
                 ),
-                'pin' => array('37','40','41','42','43','44','45','51'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51'),
 
             ),
             array(
@@ -119,7 +119,7 @@ $menuList = array(
                 'pin' => array('49'),
             ),
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','47','48','49','51','58')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
 
     ),
     array(
@@ -222,7 +222,7 @@ $menuList = array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
                     array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
                 ),
-                'pin' => array('33','57'),
+                'pin' => array('33', '57'),
             ),
             array(
                 'Finance Administration  Setting',
@@ -238,7 +238,8 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','60','63')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52','60','63')
+
     ),
     array(
         'Audit Log',
