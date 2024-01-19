@@ -382,15 +382,6 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
-    $(document).ready(() => {
-    console.log('Document is ready!');
-    createSortingTable('table');
-    
-    // Add the following lines for debugging
-    $('#addBtn').click(() => console.log('Add button clicked!'));
-    $('#table a').click(() => console.log('Table row link clicked!'));
-});
-
     var sidebar = $("#sidebar");
     var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
     var opacityBackground = $('div#filter_screen');
