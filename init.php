@@ -107,6 +107,10 @@ define('EMPPERSONALINFO','employee_personal_info');
 define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
+<<<<<<< Updated upstream
+=======
+define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions')
+>>>>>>> Stashed changes
 define('PROD_CATEGORY','product_category')
 
 //finance
