@@ -52,6 +52,11 @@ $(document).ready(() => {
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
             <table class="table table-striped" id="merchant_comm_table">
                 <thead>
@@ -125,6 +130,7 @@ $(document).ready(() => {
                     </tr>
                 </tfoot>
             </table>
+            <?php } ?>
         </div>
 
     </div>
