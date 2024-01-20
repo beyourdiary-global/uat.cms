@@ -54,6 +54,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">PIC</th>
@@ -83,6 +84,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['type'] ?></td>
                             <td scope="row"><?= $usr['name'] ?></td>
@@ -125,6 +127,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">PIC</th>
