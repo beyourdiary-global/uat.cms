@@ -51,6 +51,16 @@ $menuList = array(
         'pin' => array('38')
     ),
     array(
+        'Distributor',
+        'mdi mdi-account-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/agent_table.php', '62'),
+        ),
+        'pin' => array('62')
+    ),
+    array(
         'Product',
         'mdi mdi-package-variant',
         'javascript:void(0)',
