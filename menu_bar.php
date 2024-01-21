@@ -118,6 +118,16 @@ $menuList = array(
                 ),
                 'pin' => array('49'),
             ),
+            array(
+                'Income', 
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '51')
+                ),
+                'pin' => array('51'), 
+            ),            
         ),
         'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
 
@@ -178,9 +188,11 @@ $menuList = array(
                 'expand' => array(
                     array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL . '/prod_status_table.php', '15'),
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
-                    array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
+                    array('Carier Account', 'mdi mdi-label-outline', $SITEURL . '/carier_table.php', '50'),
+                    array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
                 ),
-                'pin' => array('15', '9', '50'),
+                'pin' => array('15', '9','50','56'),
+
             ),
             array(
                 'Employee Administration Setting',
@@ -393,6 +405,8 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
+
+
 var sidebar = $("#sidebar");
 var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
 var opacityBackground = $('div#filter_screen');
