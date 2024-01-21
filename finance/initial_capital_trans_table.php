@@ -54,6 +54,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>
@@ -72,6 +73,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
 
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
                             <td scope="row"><?= $row2['unit'] ?></td>
@@ -109,6 +111,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>

@@ -54,6 +54,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                 <thead>
                     <tr>
                     <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Merchant ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency Unit</th>
@@ -70,6 +71,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                         
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['merchantID'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
                             <td scope="row"><?= $row2['unit'] ?></td>
@@ -105,6 +107,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Merchant ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency Unit</th>
