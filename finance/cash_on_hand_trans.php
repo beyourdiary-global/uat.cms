@@ -12,7 +12,6 @@ $act = input('act');
 $pageAction = getPageAction($act);
 $allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
-
 $redirect_page = $SITEURL . '/finance/cash_on_hand_trans_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
@@ -24,7 +23,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -86,8 +85,8 @@ if (post('actionBtn')) {
     } elseif (isset($_POST['existing_attachment'])) {
         $coh_attach = $_POST['existing_attachment'];
     }
-    
-    
+
+
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -237,7 +236,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -257,7 +256,7 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $coh_pic);
                         array_push($datafield, 'pic');
                     }
-                    
+
                     if ($row['bank'] != $coh_bank) {
                         array_push($oldvalarr, $row['bank']);
                         array_push($chgvalarr, $coh_bank);
@@ -348,12 +347,11 @@ if (post('actionBtn')) {
                         } else if ($coh_type == 'Deduct') {
                             $coh_final_amt = number_format($coh_prev_amt - $coh_amt, 2, '.', '');
                         }
-                        
+
                         $query = "UPDATE " . $tblName  . " SET type = '$coh_type', date = '$coh_date', pic = '$coh_pic', bank = '$coh_bank', currency = '$coh_curr', amount = '$coh_amt', prev_amt = '$coh_prev_amt', final_amt = '$coh_final_amt', description = '$coh_desc', attachment ='$coh_attach', remark ='$coh_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                        updateTransAmt($finance_connect, $tblName , ['pic', 'bank', 'currency'], ['pic', 'bank', 'currency']);
-
+                        updateTransAmt($finance_connect, $tblName, ['pic', 'bank', 'currency'], ['pic', 'bank', 'currency']);
                     } else {
                         $act = 'NC';
                     }
@@ -403,20 +401,20 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
-    updateTransAmt($finance_connect, $tblName , ['pic', 'bank', 'currency'], ['pic', 'bank', 'currency']);
+    updateTransAmt($finance_connect, $tblName, ['pic', 'bank', 'currency'], ['pic', 'bank', 'currency']);
 }
 
 //view
@@ -480,12 +478,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-4">
-                            <label class="form-label form_lbl" id="coh_trans_id_lbl"
-                                for="coh_trans_id">Transaction
+                            <label class="form-label form_lbl" id="coh_trans_id_lbl" for="coh_trans_id">Transaction
                                 ID</label>
                             <p>
-                                <input class="form-control" type="text" name="coh_trans_id" id="coh_trans_id"
-                                    disabled value="<?php echo $trans_id ?>">
+                                <input class="form-control" type="text" name="coh_trans_id" id="coh_trans_id" disabled value="<?php echo $trans_id ?>">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label form_lbl" id="coh_type_label" for="coh_type">Type
@@ -518,8 +514,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label form_lbl" id="coh_date_label" for="coh_date">Date<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="coh_date_label" for="coh_date">Date<span class="requireRed">*</span></label>
                             <input class="form-control" type="date" name="coh_date" id="coh_date" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['date']) && !isset($coh_date)) {
                                                                                                                 echo $row['date'];
@@ -528,13 +523,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                                                                                             } else {
                                                                                                                 echo date('Y-m-d');
                                                                                                             }
-                                                                                                            ?>"
-                                placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($date_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $date_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
@@ -544,43 +537,37 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 <div class="form-group mb-3">
                     <div class="row">
-                    <div class="col-md-3 autocomplete">
-                            <label class="form-label form_lbl" id="coh_pic_lbl"
-                                for="coh_pic">Person-In-Charge<span class="requireRed">*</span></label>
-                                <?php
-                                unset($echoVal);
+                        <div class="col-md-3 autocomplete">
+                            <label class="form-label form_lbl" id="coh_pic_lbl" for="coh_pic">Person-In-Charge<span class="requireRed">*</span></label>
+                            <?php
+                            unset($echoVal);
 
-                                if (isset($row['pic']))
-                                    $echoVal = $row['pic'];
+                            if (isset($row['pic']))
+                                $echoVal = $row['pic'];
 
-                                if (isset($echoVal)) {
-                                    $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
-                                    if (!$user_rst) {
-                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                    }
-                                    $user_row = $user_rst->fetch_assoc();
+                            if (isset($echoVal)) {
+                                $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                                if (!$user_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
-                                ?>
-                            <input class="form-control" type="text" name="coh_pic" id="coh_pic"
-                                <?php if ($act == '') echo 'disabled' ?>
-                                value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
-                            <input type="hidden" name="coh_pic_hidden" id="coh_pic_hidden"
-                                value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+                                $user_row = $user_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="coh_pic" id="coh_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
+                            <input type="hidden" name="coh_pic_hidden" id="coh_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
 
 
                             <?php if (isset($pic_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $pic_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $pic_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label form_lbl" id="coh_bank_lbl"
-                                for="coh_bank">Bank<span class="requireRed">*</span></label>
-                            <select class="form-select" id="coh_bank" name="coh_bank"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="coh_bank_lbl" for="coh_bank">Bank<span class="requireRed">*</span></label>
+                            <select class="form-select" id="coh_bank" name="coh_bank" <?php if ($act == '') echo 'disabled' ?>>
                                 <option value="0" disabled selected>Select Bank</option>
                                 <?php
                                 if ($bank_list_result->num_rows >= 1) {
@@ -601,17 +588,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             </select>
 
                             <?php if (isset($curr_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $curr_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label form_lbl" id="coh_currency_lbl"
-                                for="coh_currency">Currency<span class="requireRed">*</span></label>
-                            <select class="form-select" id="coh_currency" name="coh_currency"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="coh_currency_lbl" for="coh_currency">Currency<span class="requireRed">*</span></label>
+                            <select class="form-select" id="coh_currency" name="coh_currency" <?php if ($act == '') echo 'disabled' ?>>
                                 <option value="0" disabled selected>Select Currency</option>
                                 <?php
                                 if ($cur_list_result->num_rows >= 1) {
@@ -632,27 +617,25 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             </select>
 
                             <?php if (isset($curr_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $curr_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label form_lbl" id="coh_amt_lbl" for="coh_amt">Amount<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="coh_amt_lbl" for="coh_amt">Amount<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="coh_amt" id="coh_amt" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['amount']) && !isset($coh_amt)) {
                                                                                                             echo $row['amount'];
                                                                                                         } else if (isset($coh_amt)) {
                                                                                                             echo $coh_amt;
                                                                                                         }
-                                                                                                        ?>"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                        ?>" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($amt_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $amt_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -661,45 +644,39 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="coh_desc_lbl" for="coh_desc">Description*</label>
                     <input class="form-control" type="text" name="coh_desc" id="coh_desc" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['description']) && !isset($coh_desc)) {
-                                                                                                            echo $row['description'];
-                                                                                                        } else if (isset($coh_desc)) {
-                                                                                                            echo $coh_desc;
-                                                                                                        }
-                                                                                                        ?>"
-                        <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                    if (isset($dataExisted) && isset($row['description']) && !isset($coh_desc)) {
+                                                                                                        echo $row['description'];
+                                                                                                    } else if (isset($coh_desc)) {
+                                                                                                        echo $coh_desc;
+                                                                                                    }
+                                                                                                    ?>" <?php if ($act == '') echo 'disabled' ?>>
                     <?php if (isset($desc_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1"><?php echo $desc_err; ?></span>
-                    </div>
+                        <div id="err_msg">
+                            <span class="mt-n1"><?php echo $desc_err; ?></span>
+                        </div>
                     <?php } ?>
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="coh_remark_lbl" for="coh_remark">Remark</label>
-                    <textarea class="form-control" name="coh_remark" id="coh_remark" rows="3"
-                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    <textarea class="form-control" name="coh_remark" id="coh_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="form-label form_lbl" id="coh_attach_lbl"
-                                for="coh_attach">Attachment</label>
-                            <input class="form-control" type="file" name="coh_attach" id="coh_attach" value=""
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <label class="form-label form_lbl" id="coh_attach_lbl" for="coh_attach">Attachment</label>
+                            <input class="form-control" type="file" name="coh_attach" id="coh_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
                             <?php if (isset($err2)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $err2; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $err2; ?></span>
+                                </div>
                             <?php } ?>
                             <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                            <div id="err_msg">
-                                <span
-                                    class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                            </div>
-                            <input type="hidden" name="existing_attachment"
-                                value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                </div>
+                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                             <?php } ?>
                         </div>
                         <div class="col-md-6">
@@ -709,10 +686,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 if (isset($row['attachment']))
                                     $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
                                 ?>
-                                <img id="coh_attach_preview" name="coh_attach_preview"
-                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="coh_attachmentValue"
-                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                <img id="coh_attach_preview" name="coh_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                <input type="hidden" name="coh_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
                             </div>
                         </div>
                     </div>
@@ -729,8 +704,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
-                        value="back">Back</button>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
@@ -749,6 +723,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+
         <?php include "../js/cash_on_hand_trans.js" ?>
     </script>
 

@@ -60,6 +60,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">Date</th>
@@ -84,6 +85,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
 
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= $row['transactionID'] ?></td>
                                 <td scope="row"><?= $row['type'] ?></td>
                                 <td scope="row"><?= $row['date'] ?></td>
@@ -124,6 +126,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">Date</th>
@@ -143,6 +146,11 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
     </div>
 </body>
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     /* function(void) : to solve the issue of dropdown menu displaying inside the table when table class include table-responsive */
     dropdownMenuDispFix();
     /* function(id): to resize table with bootstrap 5 classes */

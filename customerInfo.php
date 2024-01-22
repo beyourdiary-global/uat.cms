@@ -4,8 +4,6 @@ $pageTitle = "Customer Info";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-
 $tblName = CUS_INFO;
 
 //Current Page Action And Data ID
@@ -275,6 +273,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </div>
                             </div>
 
+
                             <div class="form-group mb-3">
                                 <div class="row">
 
@@ -289,7 +288,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                     <div class="col-sm-5">
                                         <label class="form-label" for="cusEmail">Email </label>
-                                        <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
+                                        <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?>>
                                         <span id="emailMsg"></span>
                                     </div>
 
@@ -297,7 +296,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         <label class="form-label" for="cusBirthday">Birthday</label>
                                         <input class="form-control" type="date" name="cusBirthday" id="cusBirthday" value="<?php if (isset($row['birthday'])) echo $row['birthday'] ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'readonly' ?>>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -504,14 +502,20 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         setButtonColor();
         preloader(300, action);
 
         $(document).ready(function() {
             $("#cusEmail").on("input", function() {
-                if (!validateEmail()) {
-                    $("#emailMsg").html("<p class='text-danger'>Invalid Email Format</p>");
+                if (!$("#cusEmail").val()) {
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
+                } else if (!validateEmail()) {
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Invalid Email Format</p>");
                 } else {
                     $("#emailMsg").html("");
                 }
@@ -519,6 +523,12 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
             $("#actionBtn").on("click", function(event) {
                 if (!validateEmail()) {
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Invalid Email Format</p>");
+                    event.preventDefault();
+                }
+
+                if (!$("#cusEmail").val()) {
+                    $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
                     event.preventDefault();
                 }
             });

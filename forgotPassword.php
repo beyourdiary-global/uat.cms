@@ -9,11 +9,13 @@ $rst = getData('*', "id = '1'", '', PROJ, $connect);
 
 if ($rst != false) {
     $dataExisted = 1;
-    $rowProj = $rst->fetch_assoc();
+    $row = $rst->fetch_assoc();
 } else {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
     echo "<script>location.href ='$SITEURL/index.php';</script>";
 }
+
+include "header.php";
 
 $resetpass_btn = post('resetpass_btn');
 
@@ -25,15 +27,16 @@ if ($resetpass_btn == 1) {
     if ($email) {
         $query = "SELECT * FROM " . USR_USER . " WHERE email = '" . $email . "'";
         $result = mysqli_query($connect, $query);
-        $result = getData('*', '', '', $tblName, $connect);
+
         if (!$result) {
             echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
             echo "<script>location.href ='$SITEURL/index.php';</script>";
         }
-        $row = $result->fetch_assoc();
+
+        $rowUser = $result->fetch_assoc();
 
         if (mysqli_num_rows($result) == 1) {
-            $name = $row['name'];
+            $name = $rowUser['name'];
 
             ob_start();
 
@@ -44,12 +47,12 @@ if ($resetpass_btn == 1) {
             $subject = 'Request Reset Password';
 
             // Message
-            $message_user = '
+            $message = '
             <html>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
-                <link rel="icon" type="image" href="' . ($dataExisted ? $img_path . $rowProj['meta_logo'] : '.img/byd_logo.') . '">
+                <link rel="icon" type="image" href="' . ($dataExisted ? $img_path . $row['meta_logo'] : '.img/byd_logo.') . '">
                 <head>
                     <title>' . $subject . '</title>
                 </head>
@@ -60,7 +63,7 @@ if ($resetpass_btn == 1) {
                     <table class="header" style="border-spacing: 0;width: 100%;">
                         <tr>
                             <td class="logo" align="center" style="padding: 0;">
-                            <img src="' . ($dataExisted ? $img_path . $rowProj['meta_logo'] : '.img/byd_logo.') . '" style="border: 0;">;
+                            <img src="' . ($dataExisted ? $img_path . $row['meta_logo'] : '.img/byd_logo.') . '" style="border: 0;">;
                             </td>
                         </tr>
                     </table> <!-- End Header -->
@@ -111,9 +114,25 @@ if ($resetpass_btn == 1) {
             $headers[] = 'Cc:' . email_cc . '';
             $headers[] = 'Bcc:';
 
+            //SETUP A php.ini sendmail
+            ini_set('SMTP', 'smtp-relay.brevo.com');
+            ini_set('smtp_port', '587');
+            ini_set('sendmail_from', 'fankaixuan159@gmail.com');
+            ini_set('sendmail_path', "C:\xampp\sendmail\sendmail.exe' -t");
+
             // Mail it
-            $email_to_user = mail($to, $subject, $message_user, implode("\r\n", $headers));
-            $email_to_admin = mail(email_cc, 'User Request Reset Password Action', $message_admin);
+            try {
+                echo mail($to, $subject, $message, implode("\r\n", $headers));
+            } catch (Exception $e) {
+                echo 'Caught exception: ', $e->getMessage();
+            }
+
+            // Mail it
+            try {
+                $email_to_admin = mail(email_cc, 'User Request Reset Password Action', $message_admin);
+            } catch (Exception $e) {
+                echo 'Caught exception: ', $e->getMessage();
+            }
 
             ob_get_clean();
 
@@ -128,10 +147,9 @@ if ($resetpass_btn == 1) {
 <html>
 
 <head>
-    <?php include "header.php"; ?>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/login.css">
-    <link rel="icon" type="image" href="<?php echo ($dataExisted ? $img_path . $rowProj['meta_logo'] : 'img/byd_logo'); ?>">
+    <link rel="icon" type="image" href="<?php echo ($dataExisted ? $img_path . $row['meta_logo'] : 'img/byd_logo'); ?>">
 </head>
 
 <body>
@@ -140,7 +158,7 @@ if ($resetpass_btn == 1) {
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-center my-4" id="logo_element">
-                        <img style="min-height:100px; max-height : 150px; width : auto;" src="<?php echo ($dataExisted ? $img_path . $rowProj['logo'] : 'img/byd_logo'); ?>">
+                        <img style="min-height:100px; max-height : 150px; width : auto;" src="<?php echo ($dataExisted ? $img_path . $row['logo'] : 'img/byd_logo'); ?>">
                     </div>
                 </div>
             </div>
@@ -175,7 +193,7 @@ if ($resetpass_btn == 1) {
                     <div class="row d-flex justify-content-center">
                         <div class="col-10">
                             <div class="form-group mb-3">
-                                <button class="btn btn-block btn-primary mb-3" style="background-color: <?php echo ($dataExisted) ? $rowProj['themesColor'] : ''; ?>" name="resetpass_btn" id="resetpass_btn">Reset password</button>
+                                <button class="btn btn-block btn-primary mb-3" style="background-color: <?php echo ($dataExisted) ? $row['themesColor'] : ''; ?>" name="resetpass_btn" id="resetpass_btn">Reset password</button>
                                 <input type="button" class="btn btn-block btn-primary" id="back_btn" onclick="window.location.href='<?= $SITEURL ?>/index.php'" value="back">
                             </div>
                         </div>
@@ -188,6 +206,8 @@ if ($resetpass_btn == 1) {
 </body>
 
 <script>
+    checkCurrentPage('invalid');
+
     $('#email-addr').on('input', () => {
         $("#email-addr_error").text("");
     })
@@ -231,6 +251,8 @@ if ($resetpass_btn == 1) {
                 },
                 cache: false,
                 success: (result) => {
+                    $('#loader_result_div').removeClass('hideColumn');
+                    $('#loader_result_div').empty();
                     toggle('loader_div');
                     toggle('loader_result_div');
                     $('#loader_result_div').append('<span style="color:#23B200">Reset link has been sent to your email.</span>');

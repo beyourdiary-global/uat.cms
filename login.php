@@ -71,6 +71,8 @@ if ($email && $password) {
                     generateDBData(PROD_STATUS, $connect);
                     generateDBData(MERCHANT, $finance_connect);
                     generateDBData(USR_USER, $connect);
+                    generateDBData(META_ADS_ACC, $finance_connect);
+                    generateDBData(COUNTRIES, $connect);
 
                     return header('Location: dashboard.php');
                } else {

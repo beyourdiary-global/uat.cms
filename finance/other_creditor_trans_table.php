@@ -53,7 +53,8 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
             <table class="table table-striped" id="other_creditor_trans_table">
                 <thead>
                     <tr>
-                    <th class="hideColumn" scope="col">ID</th>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">Date</th>
@@ -62,19 +63,20 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Remark</th>                        
+                        <th scope="col">Remark</th>
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { 
+                    <?php while ($row = $result->fetch_assoc()) {
                         $creditor = getData('name', "id='" . $row['creditor'] . "'", '', MERCHANT, $finance_connect);
                         $row2 = $creditor->fetch_assoc();
-                        ?>
-                        
+                    ?>
+
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['type'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
@@ -115,6 +117,7 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">Date</th>
@@ -123,7 +126,7 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Remark</th>                        
+                        <th scope="col">Remark</th>
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -134,7 +137,13 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
     </div>
 
 </body>
+
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     /**
   oufei 20231014
   common.fun.js
