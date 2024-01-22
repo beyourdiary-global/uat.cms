@@ -190,8 +190,9 @@ $menuList = array(
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Carier Account', 'mdi mdi-label-outline', $SITEURL . '/carier_table.php', '50'),
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
+                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '64'),
                 ),
-                'pin' => array('15', '9','50','56'),
+                'pin' => array('15', '9', '50', '56', '64'),
 
             ),
             array(
@@ -250,7 +251,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52','60','63')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '50', '56', '64', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52','60','63')
 
     ),
     array(
