@@ -109,7 +109,7 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
-define('PROD_CATEGORY','product_category')
+define('PROD_CATEGORY','product_category');
 
 
 //finance
