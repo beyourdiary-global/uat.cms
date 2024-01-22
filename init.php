@@ -110,7 +110,7 @@ define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
 define('PROD_CATEGORY','product_category');
-
+define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions');
 
 //finance
 define('MERCHANT', 'merchant');

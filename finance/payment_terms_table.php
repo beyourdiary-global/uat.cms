@@ -68,6 +68,7 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Description</th>
                             <th scope="col">Remark</th>
@@ -81,6 +82,7 @@ if (!$result) {
                             if (!empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row"><?= $row['description'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
@@ -118,6 +120,7 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Description</th>
                             <th scope="col">Remark</th>
