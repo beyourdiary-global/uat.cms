@@ -5,6 +5,8 @@ include 'menuHeader.php';
 include "./header/phpqrcode/qrlib.php";
 include 'checkCurrentPagePin.php';
 
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $redirect_page = '';
@@ -19,8 +21,8 @@ if (!file_exists($PNG_TEMP_DIR)) {
 }
 
 // to display data to input
-if ($product_id) {
-    $rst = getData('*', "id = '$product_id'", '', $tblname, $connect);
+if($product_id) {
+    $rst = getData('*',"id = '$product_id'", '', $tblname,$connect);
 
     if ($rst != false) {
         $dataExisted = 1;
@@ -156,7 +158,7 @@ if(isset($_SESSION['tempValConfirmBox']))
                                                                                                             $echoVal = $row['id'];
 
                                                                                                         if (isset($echoVal)) {
-                                                                                                            $rst = getData('name', "id = '$echoVal'", '', $tblname, $connect);
+                                                                                                            $rst = getData('name',"id = '$echoVal'",'',$tblname,$connect);
                                                                                                             if (!$rst) {
                                                                                                                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                                                                                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -200,7 +202,7 @@ if(isset($_SESSION['tempValConfirmBox']))
                             <select class="form-select" name="warehouse" id="warehouse">
                                 <option value="noValue" <?php if (!isset($warehouse)) echo 'selected' ?>>--Please Choose--</option>
                                 <?php
-                                $rst_warehouse_list = getData("id,name", '', '', WHSE, $connect);
+                                $rst_warehouse_list = getData("id,name",'','',WHSE,$connect);
                                 if (!$rst_warehouse_list) {
                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -238,11 +240,6 @@ if(isset($_SESSION['tempValConfirmBox']))
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
-
-    checkCurrentPage(page, action);
     setButtonColor();
 
     $(document).ready(function() {

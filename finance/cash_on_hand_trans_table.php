@@ -53,8 +53,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
             <table class="table table-striped" id="cash_on_hand_trans_table">
                 <thead>
                     <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
+                    <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">PIC</th>
@@ -64,14 +63,14 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Remark</th>
+                        <th scope="col">Description</th>   
+                        <th scope="col">Remark</th>                     
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
+                    <?php while ($row = $result->fetch_assoc()) { 
                         $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                         $row2 = $curr->fetch_assoc();
 
@@ -80,11 +79,10 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
                         $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
                         $usr = $pic->fetch_assoc();
-                    ?>
-
+                        ?>
+                        
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['type'] ?></td>
                             <td scope="row"><?= $usr['name'] ?></td>
@@ -127,18 +125,12 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">PIC</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Bank</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Previous Amount Record</th>
-                        <th scope="col">Final Amount Record</th>
                         <th scope="col">Description</th>   
-                        <th scope="col">Remark</th>                     
+                        <th scope="col">Remark</th>                    
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -150,11 +142,6 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-    checkCurrentPage(page, action);
     /**
   oufei 20231014
   common.fun.js

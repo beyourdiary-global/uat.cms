@@ -4,6 +4,8 @@ $pageTitle = "Customer Segmentation";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
+echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+
 $tblName = CUR_SEGMENTATION;
 
 //Current Page Action And Data ID
@@ -108,7 +110,7 @@ if (post('actionBtn')) {
 
                     if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
-
+                    
                     if ($currentDataPriceFrom)
                         array_push($newvalarr, $currentDataPriceFrom);
 
@@ -118,7 +120,7 @@ if (post('actionBtn')) {
                     if ($dataRemark)
                         array_push($newvalarr, $dataRemark);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
+                        $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
@@ -223,91 +225,86 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </head>
 
 <body>
-    <div class="pre-load-center">
+<div class="pre-load-center">
         <div class="preloader"></div>
     </div>
 
     <div class="page-load-cover">
-        <div class="d-flex flex-column my-3 ms-3">
-            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
-                <?php echo $pageActionTitle ?>
-            </p>
-        </div>
+    <div class="d-flex flex-column my-3 ms-3">
+        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+            <?php echo $pageActionTitle ?>
+        </p>
+    </div>
 
-        <div id="formContainer" class="container d-flex justify-content-center">
-            <div class="col-8 col-md-6 formWidthAdjust">
-                <form id="form" method="post" novalidate>
-                    <div class="form-group mb-5">
-                        <h2>
-                            <?php echo $pageActionTitle ?>
-                        </h2>
-                    </div>
+    <div id="formContainer" class="container d-flex justify-content-center">
+        <div class="col-8 col-md-6 formWidthAdjust">
+            <form id="form" method="post" novalidate>
+                <div class="form-group mb-5">
+                    <h2>
+                        <?php echo $pageActionTitle ?>
+                    </h2>
+                </div>
 
-                    <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-sm">
-                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                                <div id="err_msg">
-                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
-                                </div>
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-sm">
+                            <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                            <div id="err_msg">
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
                             </div>
+                        </div>
 
-                            <div class="col-sm">
-                                <label class=" form-label" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
-                                <div class="col d-flex justify-content-start align-items-center">
-                                    <input type="color" name="segmentationColor" id="segmentationColor" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control" style="height: 40px;">
-                                    <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
-                                </div>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
-                                </div>
+                        <div class="col-sm">
+                            <label class=" form-label" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
+                            <div class="col d-flex justify-content-start align-items-center">
+                                <input type="color" name="segmentationColor" id="segmentationColor" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control" style="height: 40px;">
+                                <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
+                            </div>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php if (isset($err2)) echo $err2; ?></span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-sm">
-                                <label class="form-label" for="priceFrom">Price From</label>
-                                <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceFromErrorMsg', 'priceToErrorMsg')">
-                                <div id="priceFromErrorMsg" class="error-message">
-                                    <span class="mt-n1"></span>
-                                </div>
-                            </div>
-                            <div class="col-sm">
-                                <label class="form-label" for="priceTo">Price To</label>
-                                <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceToErrorMsg', 'priceFromErrorMsg')">
-                                <div id="priceToErrorMsg" class="error-message">
-                                    <span class="mt-n1"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                    </div>
-
-                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                    </div>
-                </form>
+                <div class="form-group mb-3">
+        <div class="row">
+            <div class="col-sm">
+                <label class="form-label" for="priceFrom">Price From</label>
+                <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceFromErrorMsg', 'priceToErrorMsg')">
+                <div id="priceFromErrorMsg" class="error-message">
+                    <span class="mt-n1"></span>
+                </div>
+            </div>
+            <div class="col-sm">
+                <label class="form-label" for="priceTo">Price To</label>
+                <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceToErrorMsg', 'priceFromErrorMsg')">
+                <div id="priceToErrorMsg" class="error-message">
+                    <span class="mt-n1"></span>
+                </div>
             </div>
         </div>
     </div>
-    <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-        checkCurrentPage(page, action);
+                <div class="form-group mb-3">
+                    <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                    <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
+                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                    <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+    <script>
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);
-        
         // JavaScript code to update the color code display
         const colorInput = document.getElementById("segmentationColor");
         const colorDisplay = document.getElementById("color-display");

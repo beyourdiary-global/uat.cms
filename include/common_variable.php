@@ -2,7 +2,6 @@
 // define path
 define('img', '/image/');
 define('img_server', '/images_server/');
-define('ATCH', '/attachment/');
 
 // social website
 define('FB_LINK', 'https://www.facebook.com/beyourdiary/');

@@ -632,11 +632,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     <script>
         <?php include "../js/invtr_trans.js" ?>
 
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
-
-        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

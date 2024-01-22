@@ -3,17 +3,9 @@ $pageTitle = "Stock In";
 include 'menuHeader.php';
 
 $barcode = input('barcode');
-$prod_id = input('prdid');
-$whse_id = input('whseid');
-$usr_id = input('usr_id');
+$pkg_id = input('pkg_id');
+$whse_id = input('whse_id');
 $redirect_page = 'dashboard.php';  // if no value get
-
-// Check if required parameters are missing and redirect if necessary
-if (!$barcode || !$prod_id || !$whse_id || !$usr_id) {
-    echo "<script type='text/javascript'>alert('Invalid request for stock-in. Please provide valid data.'); window.location.href ='$SITEURL/dashboard.php';</script>";
-    exit; // Terminate further execution
-}
-
 $tblname = STK_REC;
 
 // display
@@ -21,193 +13,148 @@ $tblname = STK_REC;
 $barcode_input = "";
 $usr_btn = "";
 
-$rst_prod_info = getData('*', "id='$prod_id'", '', PRODUCT, $connect);
+$rst_pkg_info = getData('*',"id='$pkg_id'",'',PKG,$connect);
 $rst_whse_info = getData('name',"id='$whse_id'",'',WHSE,$connect);
 $rst_usr = getData('*',"status='A'",'',USR_USER,$connect);
 
 
-// Check if database queries fail and redirect if necessary
-if (!$rst_prod_info || !$rst_whse_info || !$rst_usr) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.'); window.location.href ='$SITEURL/dashboard.php';</script>";
+if (!$rst_pkg_info || $rst_whse_info || $rst_us) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
 }
 
-// Get warehouse name
-$whse_name = $rst_whse_info ? $rst_whse_info->fetch_assoc()['name'] : '';
+if($rst_whse_info)
+{
+    $whse_name = $rst_whse_info->fetch_assoc();
+    $whse_name = $whse_name['name'];
+} else {
+    $whse_name = '';
+}
 
-// Get product info and generate barcode input fields
-$prod_info = $rst_prod_info ? $rst_prod_info->fetch_assoc() : null;
-$prod_name = $prod_info ? $prod_info['name'] : '';
-$prod_barcode_slot_required = $prod_info ? $prod_info['barcode_required'] === 'yes' : false;
-$prod_barcode_slot_total = $prod_info ? $prod_info['barcode_slot_total'] : 0;
+if($rst_pkg_info)
+{
+    $pkg_info = $rst_pkg_info->fetch_assoc();
+    $pkg_name = $pkg_info['name'];
+    $pkg_barcode_slot_total = $pkg_info['barcode_slot_total'];
 
-if ($prod_barcode_slot_required && $prod_barcode_slot_total >= 1) {
-    for ($x = 1; $x <= $prod_barcode_slot_total; $x++) {
-        $barcode_input .= "<input class=\"form-control mb-1\" id=\"barcode_input_$x\" name=\"barcode_input[]\" type=\"text\" placeholder=\"Barcode Slot $x\">";
+    if($pkg_barcode_slot_total >= 1)
+    {
+        for($x=1;$x<=$pkg_barcode_slot_total;$x++)
+        {
+            $barcode_input .= "<input class=\"form-control mb-1\" id=\"barcode_input_$x\" name=\"barcode_input[]\" type=\"text\" placeholder=\"Barcode Slot $x\">";
+        }
     }
 }
 
-// Get user info and generate buttons
-while ($usr = $rst_usr->fetch_assoc()) {
-    $usr_id = $usr['id'];
-    $usr_name = $usr['name'];
+if($rst_usr)
+{
+    while($usr = $rst_usr->fetch_assoc())
+    {
+        $usr_id = $usr['id'];
+        $usr_name = $usr['name'];
 
-    $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
+        /* $usr_btn .= "<button class=\"btn btn-lg btn-rounded btn-primary mx-2\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>"; */
+        $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
+    }
 }
 
-// Submission
-if (post('usrBtn')) {
+/* echo $barcode_input;
+echo $usr_btn; */
+
+// submission
+if(post('usrBtn'))
+{
     $usrBtn = post('usrBtn');
-    $barcodeInputs = post('barcode_input');
+    $barcode_input = post('barcode_input');
 
-    if ($barcodeInputs != '') {
-        $arrNum = sizeof($barcodeInputs);
-
-        if ($arrNum >= 1) {
-            $productInfo = $rst_prod_info->fetch_assoc();
-
-            if ($productInfo) {
-                $brandId = $productInfo['brand_id'];
-                $productId = $productInfo['id'];
-                $productCategoryId = $productInfo['product_category_id'];
-
-                foreach ($barcodeInputs as $batchCode) {
-                    $stockInDate = date("Y-m-d");
-                    $barcode = generateBarcode();
-                    $productBatchCode = $batchCode;
-                    $productStatusId = 4;
-                    $warehouseId = $whse_id;
-                    $stockInPersonInCharges = $usrBtn;
-                    $remark = "Stock In";
-                    $createDate = date("Y-m-d");
-                    $createTime = date("H:i:s");
-                    $createBy = $usrBtn;
-
-                    $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
-
-                    $result = mysqli_query($connect, $insertQuery);
-
-                    if ($result) {
-                        $logMessage = "Stock In - Barcode: $barcode, Product ID: $productId, Warehouse ID: $warehouseId, User ID: $createBy";
-                        logAction($logMessage);
-                        showNotification('Stock In successful.');
-                    } else {
-                        showNotification('Stock In failed. Please try again.');
-                    }
-                }
+    if($barcode_input != '')
+    {
+        $arrNum = sizeOF($barcode_input);
+        if($arrNum >= 1)
+        {
+            foreach($barcode_input as $batch_code)
+            {
+                $bulkInsert = "INSERT INTO $tblname (product_id,stock_in_date,barcode,product_batch_code,warehouse_id,stock_in_person_in_charges,remark,create_date,create_time,create_by,`status`) VALUES ('')";
             }
-        }
+        }    
+    }
+    else
+    {
+
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-
 <head>
-    <link rel="stylesheet" href="./css/main.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var barcode = '<?=$barcode?>';
-            var prod_id = '<?=$prod_id?>';
-            var whse_id = '<?=$whse_id?>';
-            var usr_id = '<?=$usr_id?>';
-
-            if (!barcode || !prod_id || !whse_id || !usr_id) {
-                alert('Invalid request for stock-in. Please provide valid data.');
-                window.location.href = '<?=$SITEURL?>/dashboard.php';
-            }
-
-            // Check barcode requirement 
-            var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
-            if (isBarcodeRequired) {
-                showNotification('Barcode is required for this product.');
-                <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
-                    $("#barcode_input_<?=$x?>").prop('readonly', false);
-                <?php endfor; ?>
-            }
-        });
-
-        // Notification
-        function showNotification(message) {
-            $("#notification").text(message).fadeIn().delay(3000).fadeOut();
-        }
-
-        // Form submission 
-        $('#submitBtn').on('click', function () {
-            var barcodeInputs = $('[name="barcode_input[]"]').toArray();
-            var isValid = true;
-
-            if (isValid) {
-                $('#stockForm').submit();
-            } else {
-                showNotification('Please fill in all required fields.');
-            }
-        });
-    </script>
+<link rel="stylesheet" href="./css/main.css">
 </head>
 
 <body>
-    <div class="container d-flex justify-content-center mt-2">
-        <div class="col-8 col-md-6">
-            <form id="stockForm" method="post" action="">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group my-5">
-                            <h3>
-                                Stock In
-                            </h3>
+<div class="container d-flex justify-content-center mt-2">
+    <div class="col-8 col-md-6">
+        <form id="stockForm" method="post" action="">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group my-5">
+                        <h3>
+                            Stock In
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Package</label>
+                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($pkg_name) echo $pkg_name?>" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Warehouse</label>
+                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($whse_name) echo $whse_name?>" readonly>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Barcode</label>
+                        <input class="form-control" type="text" name="pkg_name" id="prod_name" value="<?php if($barcode) echo $barcode?>" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Barcode Slot Input: <?= $pkg_barcode_slot_total ?></label>
+                        <?= $barcode_input ?>
+                        <div id="err_msg">
+                            <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" for="prod_name">Product</label>
-                            <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php if ($prod_name) echo $prod_name ?>" readonly>
-                        </div>
+            <hr />
+
+            <div class="row">
+                <div class="col-12 d-flex justify-content-none justify-content-md-center">
+                    <div class="form-group mb-3">
+                        <?= $usr_btn ?>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" for="warehouse">Warehouse</label>
-                            <input class="form-control" type="text" name="warehouse" id="warehouse" value="<?php if ($whse_name) echo $whse_name ?>" readonly>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" for="barcode">Barcode</label>
-                            <input class="form-control" type="text" name="barcode" id="barcode" value="<?php if ($barcode) echo $barcode ?>" readonly>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" for="expire_date">Product Expire Date</label>
-                            <input class="form-control" type="text" name="expire_date" id="expire_date">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" for="barcode_input">Barcode Slot Input</label>
-                            <?= $barcode_input ?>
-                            <div id="barcode_slot_error" style="color: red;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="button" id="submitBtn">Submit</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
 </body>
 
 </html>

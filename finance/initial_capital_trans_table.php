@@ -53,27 +53,25 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
             <table class="table table-striped" id="initial_capital_trans_table">
                 <thead>
                     <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
+                    <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Remark</th>
+                        <th scope="col">Description</th>   
+                        <th scope="col">Remark</th>                     
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
+                    <?php while ($row = $result->fetch_assoc()) { 
                         $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                         $row2 = $curr->fetch_assoc();
-                    ?>
-
+                        ?>
+                        
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
                             <td scope="row"><?= $row2['unit'] ?></td>
@@ -111,13 +109,12 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>
                         <th scope="col">Amount</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Remark</th>
+                        <th scope="col">Description</th>   
+                        <th scope="col">Remark</th>                    
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -129,11 +126,6 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-    checkCurrentPage(page, action);
     /**
   oufei 20231014
   common.fun.js

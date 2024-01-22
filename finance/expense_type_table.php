@@ -53,8 +53,7 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
             <table class="table table-striped" id="expense_type_table">
                 <thead>
                     <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
+                    <th class="hideColumn" scope="col">ID</th>
                         <th scope="col">Name</th>
                         <th scope="col">Code</th>
                         <th scope="col">Remark</th>
@@ -62,12 +61,11 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
-                    ?>
-
+                    <?php while ($row = $result->fetch_assoc()) { 
+                        ?>
+                        
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['name'] ?></td>
                             <td scope="row"><?= $row['code'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
@@ -101,7 +99,6 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Code</th>
                         <th scope="col">Remark</th>
@@ -115,11 +112,6 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-    checkCurrentPage(page, action);
     /**
   oufei 20231014
   common.fun.js

@@ -269,9 +269,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </div>
             </div>
     </div>
-
     <script>
-        checkCurrentPage('invalid');
         centerAlignment("passwordContainer");
     </script>
 </body>

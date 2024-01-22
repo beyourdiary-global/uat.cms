@@ -677,12 +677,8 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     <script>
         <?php include "../js/inv_trans.js" ?>
-
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
+        
         var action = "<?php echo isset($act) ? $act : ''; ?>";
-
-        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

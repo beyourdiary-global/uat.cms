@@ -1,7 +1,7 @@
 <!-- Meta Tags -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="description" content="<?= $row['meta'] ?>">
+<meta name="description" content="Login to access dashboard">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
 <meta name="robots" content="beyourdiary">
 
@@ -38,8 +38,3 @@
 <!-- Select2 -->
 <link href="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\css\select2.min.css" rel="stylesheet" />
 <script src="<?= $SITEURL ?>\header\js\select2-4.0.13\dist\js\select2.min.js"></script>
-
-<!-- Bootstrap Datepicker -->
-<link href="<?= $SITEURL ?>\header\js\bootstrap-datepicker-master\dist\css\bootstrap-datepicker.min.css" rel="stylesheet" />
-<script src="<?= $SITEURL ?>\header\js\bootstrap-datepicker-master\dist\js\bootstrap-datepicker.min.js"></script>
-

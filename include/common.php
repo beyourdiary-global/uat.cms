@@ -238,32 +238,22 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
-function tableExists($tableName, $conn) {
-    $result = $conn->query("SHOW TABLES LIKE '$tableName'");
-    return $result && $result->num_rows > 0;
-}
-
 function getData($search_val, $val, $val2, $tbl, $conn)
 {
-	if (!tableExists($tbl, $conn)) {
-        // Display "NO RESULT" message or handle it as needed
-        return false;
-    } else {
-		$statusAvailable = isStatusFieldAvailable($tbl, $conn);
+	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
-		//Checking a status is available in data field or not then check a val is exist or not
-		if ($statusAvailable) {
-			$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
-		} else {
-			$chk_val = $val == '' ? "" : "WHERE $val";
-		}
-
-		//combine together to process a query
-		$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
-
-		$result = $conn->query($query);
+	//Checking a status is available in data field or not then check a val is exist or not
+	if ($statusAvailable) {
+		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+	} else {
+		$chk_val = $val == '' ? "" : "WHERE $val";
 	}
-	
+
+	//combine together to process a query
+	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
+
+	$result = $conn->query($query);
+
 	if (empty($result) && $result->num_rows == 0)
 		return false;
 	else
@@ -323,15 +313,6 @@ function audit_log($data = array())
 
 		if (isset($query))
 			mysqli_query($connect, $query);
-	}
-}
-
-function formatTime($time)
-{
-	if (!empty($time)) {
-		return date('Y-m-d H:i:s', strtotime($time));
-	} else {
-		return "Time is empty.";
 	}
 }
 
@@ -689,7 +670,6 @@ function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr =
 	return $actMsg;
 }
 
-
 // Function to update previous and final amounts for transactions
 function updateTransAmt($finance_connect, $table_name, $fields, $uniqueKey)
 {
@@ -749,21 +729,4 @@ function insertNewMerchant($merchantName, $userId, $financeConnect)
 		return mysqli_insert_id($financeConnect);
 	}
 	return false;
-}
-
-function monthStringToNumber($monthString) {
-    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return array_search($monthString, $monthArray) + 1;
-}
-
-function monthNumberToString($monthNumber) {
-    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
-    // Check if the monthNumber is valid
-    if ($monthNumber >= 1 && $monthNumber <= 12) {
-        return $monthArray[$monthNumber - 1];
-    } else {
-        // Handle invalid monthNumber
-        return false;
-    }
 }

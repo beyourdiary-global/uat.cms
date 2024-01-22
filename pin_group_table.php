@@ -41,7 +41,7 @@ if (!$result) {
     </div>
 
     <div class="page-load-cover">
-
+        
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
             <div class="col-12 col-md-8">
@@ -150,22 +150,15 @@ if (!$result) {
                 </table>
             </div>
         </div>
-    </div>
-    
-    <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-        checkCurrentPage(page, action);
-        //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-        dropdownMenuDispFix();
-        //to resize table with bootstrap 5 classes
-        datatableAlignment('table');
-        setButtonColor();
-        preloader(300);
-    </script>
-
+        <script>
+            //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+            dropdownMenuDispFix();
+            //to resize table with bootstrap 5 classes
+            datatableAlignment('table');
+            setButtonColor();
+            preloader(300);
+        </script>
 </body>
 
 </html>
