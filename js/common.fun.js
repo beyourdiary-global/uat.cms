@@ -1400,7 +1400,7 @@ function preloader(additionalDelay, action) {
 
 function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInput = $("input:visible:enabled:first");
+    var firstInput = $("input:visible:enabled[value='']:first");
     if (firstInput.length > 0) {
       firstInput.focus();
 
