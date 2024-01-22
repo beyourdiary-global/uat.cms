@@ -15,11 +15,6 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/finance/fin_payment_method.php';
 
 $result = getData('*', '', '', $tblName, $finance_connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -55,14 +50,23 @@ if (!$result) {
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2><?php echo $pageTitle ?></h2>
+                            <?php
+                            if ($result) {
+                            ?>
                             <div class="mt-auto mb-auto">
                                 <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                     <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                                 <?php endif; ?>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
+                <?php
+                    if (!$result) {
+                    echo '<div class="text-center"><h4>No Result!</h4></div>';
+                } else {
+                ?>
 
                 <table class="table table-striped" id="fin_payment_method_table">
                     <thead>
@@ -125,6 +129,7 @@ if (!$result) {
                         </tr>
                     </tfoot>
                 </table>
+                <?php } ?>
             </div>
         </div>
     </div>
@@ -140,6 +145,7 @@ if (!$result) {
         //to resize table with bootstrap 5 classes
         datatableAlignment('fin_payment_method_table');
         setButtonColor();
+        setAutofocus(action);
     </script>
 </body>
 
