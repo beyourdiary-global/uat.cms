@@ -16,11 +16,6 @@ $redirect_page = $SITEURL . '/cus_segmentation.php';
 $deleteRedirectPage = $SITEURL . '/cus_segmentation_table.php';
 
 $result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -71,8 +66,9 @@ if (!$result) {
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Color Segmentation</th>
-                            <th scope="col">Price From</th>
-                            <th scope="col">Price To</th>
+                            <th scope="col">Box From</th>
+                            <th scope="col">Box Until</th>
+                            <th scope="col">Brand Series</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -87,8 +83,9 @@ if (!$result) {
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row"><input type="color" value="<?= $row['colorCode'] ?>" disabled></td>
-                                    <td scope="row"><?= $row['priceFrom'] ?></td>
-                                    <td scope="row"><?= $row['priceTo'] ?></td>
+                                    <td scope="row"><?= $row['boxFrom'] ?></td>
+                                    <td scope="row"><?= $row['boxUntil'] ?></td>
+                                    <td scope="row"><?= $row['brandSeries'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
 
                                     <td scope="row">
@@ -125,11 +122,12 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
+                            <th scope="col" width="60px">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Color Segmentation</th>
-                            <th scope="col">Price From</th>
-                            <th scope="col">Price To</th>
+                            <th scope="col">Box From</th>
+                            <th scope="col">Box Until</th>
+                            <th scope="col">Brand Series</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>

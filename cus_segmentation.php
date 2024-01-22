@@ -77,8 +77,8 @@ if (post('actionBtn')) {
 
             $currentDataName = postSpaceFilter('currentDataName');
             $colorSegmentation =  postSpaceFilter('segmentationColor');
-            $currentDataPriceFrom = postSpaceFilter('priceFrom');
-            $currentDataPriceTo = postSpaceFilter('priceTo');
+            $currentDataboxFrom = postSpaceFilter('boxFrom');
+            $currentDataboxUntil = postSpaceFilter('boxUntil');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -109,16 +109,16 @@ if (post('actionBtn')) {
                     if ($colorSegmentation)
                         array_push($newvalarr, $colorSegmentation);
 
-                    if ($currentDataPriceFrom)
-                        array_push($newvalarr, $currentDataPriceFrom);
+                    if ($currentDataboxFrom)
+                        array_push($newvalarr, $currentDataboxFrom);
 
-                    if ($currentDataPriceTo)
-                        array_push($newvalarr, $currentDataPriceTo);
+                    if ($currentDataboxUntil)
+                        array_push($newvalarr, $currentDataboxUntil);
 
                     if ($dataRemark)
                         array_push($newvalarr, $dataRemark);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,priceFrom,priceTo,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataPriceFrom','$currentDataPriceTo','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,boxFrom,boxUntil,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataboxFrom','$currentDataboxUntil','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
@@ -140,14 +140,14 @@ if (post('actionBtn')) {
                         array_push($datafield, 'colorCode');
                     }
 
-                    if ($row['price_from'] != $currentDataPriceFrom) {
-                        array_push($oldvalarr, $row['priceFrom']);
-                        array_push($chgvalarr, $currentDataPriceFrom);
+                    if ($row['box_from'] != $currentDataboxFrom) {
+                        array_push($oldvalarr, $row['boxFrom']);
+                        array_push($chgvalarr, $currentDataboxFrom);
                     }
 
-                    if ($row['price_to'] != $currentDataPriceTo) {
-                        array_push($oldvalarr, $row['priceTo']);
-                        array_push($chgvalarr, $currentDataPriceTo);
+                    if ($row['box_until'] != $currentDataboxUntil) {
+                        array_push($oldvalarr, $row['boxUntil']);
+                        array_push($chgvalarr, $currentDataboxUntil);
                     }
 
                     if ($row['remark'] != $dataRemark) {
@@ -159,7 +159,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , priceFrom='$currentDataPriceFrom', priceTo='$currentDataPriceTo', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , boxFrom='$currentDataboxFrom', boxUntil='$currentDataboxUntil', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -246,7 +246,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <div class="row">
                             <div class="col-sm">
-                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name*</label>
                                 <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
                                     <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
@@ -269,16 +269,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <div class="row">
                             <div class="col-sm">
-                                <label class="form-label" for="priceFrom">Price From</label>
-                                <input class="form-control" type="text" name="priceFrom" id="priceFrom" value="<?php if (isset($row['priceFrom'])) echo $row['priceFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceFromErrorMsg', 'priceToErrorMsg')">
-                                <div id="priceFromErrorMsg" class="error-message">
+                                <label class="form-label" for="boxFrom">Box From*</label>
+                                <input class="form-control" type="text" name="boxFrom" id="boxFrom" value="<?php if (isset($row['boxFrom'])) echo $row['boxFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'boxFromErrorMsg', 'boxUntilErrorMsg')">
+                                <div id="boxFromErrorMsg" class="error-message">
                                     <span class="mt-n1"></span>
                                 </div>
                             </div>
                             <div class="col-sm">
-                                <label class="form-label" for="priceTo">Price To</label>
-                                <input class="form-control" type="text" name="priceTo" id="priceTo" value="<?php if (isset($row['priceTo'])) echo $row['priceTo'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'priceToErrorMsg', 'priceFromErrorMsg')">
-                                <div id="priceToErrorMsg" class="error-message">
+                                <label class="form-label" for="boxUntil">Box Until*</label>
+                                <input class="form-control" type="text" name="boxUntil" id="boxUntil" value="<?php if (isset($row['boxUntil'])) echo $row['boxUntil'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'boxUntilErrorMsg', 'boxFromErrorMsg')">
+                                <div id="boxUntilErrorMsg" class="error-message">
+                                    <span class="mt-n1"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm autocomplete">
+                                <label class="form-label" for="brandSeries">Brand Series</label>
+                                <input class="form-control" type="text" name="brandSeries" id="brandSeries" value="<?php if (isset($row['brandSeries'])) echo $row['brandSeries'] ?>" <?php if ($act == '') echo 'readonly' ?> autocomplete="off">
+                                <div id="brandSeriesErrorMsg" class="error-message">
                                     <span class="mt-n1"></span>
                                 </div>
                             </div>
@@ -308,37 +315,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         setButtonColor();
         preloader(300, action);
         
-        // JavaScript code to update the color code display
-        const colorInput = document.getElementById("segmentationColor");
-        const colorDisplay = document.getElementById("color-display");
-
-        // Add an event listener to the color input
-        colorInput.addEventListener("input", function() {
-            const selectedColor = colorInput.value;
-            colorDisplay.textContent = selectedColor;
-        });
-
-        function validateNumericInput(inputField, errorMsgId, otherErrorMsgId) {
-            const inputValue = inputField.value;
-            const numericValue = parseFloat(inputValue);
-
-            if (isNaN(numericValue)) {
-                inputField.value = inputValue.replace(/[^0-9.]/g, '');
-            }
-
-            const currentErrorMsg = document.getElementById(errorMsgId);
-            const otherErrorMsg = document.getElementById(otherErrorMsgId);
-
-            if (isNaN(parseFloat(document.getElementById("priceFrom").value)) && isNaN(parseFloat(document.getElementById("priceTo").value))) {
-                currentErrorMsg.textContent = "Please enter a number.";
-                currentErrorMsg.classList.add("error-message");
-                otherErrorMsg.textContent = "";
-                otherErrorMsg.classList.remove("error-message");
-            } else {
-                currentErrorMsg.textContent = "";
-                currentErrorMsg.classList.remove("error-message");
-            }
-        }
+        <?php include "js/cus_segmentation.js" ?>
     </script>
 
 </body>
