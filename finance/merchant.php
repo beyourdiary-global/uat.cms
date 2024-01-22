@@ -406,7 +406,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         setButtonColor();
         setAutofocus(action);
         preloader(300, action);

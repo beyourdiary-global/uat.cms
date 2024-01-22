@@ -7,7 +7,7 @@ include_once '../checkCurrentPagePin.php';
 
 $tblName = CURR_BANK_TRANS;
 
-$row_id = input('id');
+$dataID = input('id');
 $act = input('act');
 $pageAction = getPageAction($act);
 $allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
@@ -23,8 +23,8 @@ if (!file_exists($img_path)) {
 }
 
 // to display data to input
-if ($row_id) { //edit/remove/view
-    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
+if ($dataID) { //edit/remove/view
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -55,7 +55,7 @@ if ($row_id) { //edit/remove/view
     $trans_id = "CBA{$currentDate}{$nextRowId}";
 }
 
-if (!($row_id) && !($act)) {
+if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
     window.location.href = "' . $redirect_page . '"; // Redirect to previous page
@@ -137,6 +137,9 @@ if (post('actionBtn')) {
                 break;
             } else if (!$cba_amt) {
                 $amt_err = "Please specify the amount.";
+                break;
+            } else if (!is_numeric($cba_amt)) {
+                $amt_err = "Please specify a valid numeric amount.";
                 break;
             } else if ($action == 'addTransaction') {
                 try {
@@ -230,7 +233,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$row_id'", 'LIMIT 1', $tblName, $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -306,7 +309,7 @@ if (post('actionBtn')) {
                         WHERE
                             bank = '$cba_bank'
                             AND currency = '$cba_curr'
-                            AND id < '$row_id'
+                            AND id < '$dataID'
                             AND `status` != 'D'
                         ORDER BY
                             id DESC
@@ -332,7 +335,7 @@ if (post('actionBtn')) {
                             $cba_final_amt = number_format($cba_prev_amt - $cba_amt, 2, '.', '');
                         }
 
-                        $query = "UPDATE " . $tblName  . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$row_id'";
+                        $query = "UPDATE " . $tblName  . " SET type = '$cba_type',date = '$cba_date',bank = '$cba_bank', currency = '$cba_curr',amount = '$cba_amt', prev_amt ='$cba_prev_amt', final_amt ='$cba_final_amt', attachment ='$cba_attach', remark ='$cba_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
                         updateTransAmt($finance_connect, $tblName, ['bank', 'currency'], ['bank', 'currency']);
@@ -366,7 +369,7 @@ if (post('actionBtn')) {
                 } else if ($pageAction == 'Edit') {
                     $log['oldval']  = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
-                    $log['act_msg'] = actMsgLog($row_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
+                    $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
                 audit_log($log);
             }
@@ -388,11 +391,11 @@ if (post('act') == 'D') {
             $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
-            $row_id = $row['id'];
+            $dataID = $row['id'];
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -402,14 +405,14 @@ if (post('act') == 'D') {
 }
 
 //view
-if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
+if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $trans_id = isset($dataExisted) ? $row['transactionID'] : '';
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $row_id . "</b> ] from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $row_id . "</b> ] <b>" . $row['transactionID'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['transactionID'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -674,8 +677,12 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     <script>
         <?php include "../js/curr_bank_trans.js" ?>
-        
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

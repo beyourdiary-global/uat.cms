@@ -4,8 +4,6 @@ $pageTitle = "Warehouse";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
-
 $tblName = WHSE;
 
 //Current Page Action And Data ID
@@ -233,7 +231,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

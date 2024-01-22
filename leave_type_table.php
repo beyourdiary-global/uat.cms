@@ -19,22 +19,30 @@ if (post('l_status_option')) {
     $leave_type_id = post('l_type_id');
     $leave_type_status = post('l_status_option');
 
+    echo "<script>console.log('TEST1')</script>";
+
     $datafield = $oldvalarr = $chgvalarr = array();
 
     $rst = getData('*', "id = '$leave_type_id'", '', $tblname, $connect);
 
+    echo "<script>console.log('TEST2')</script>";
+
     if (!$rst) {
-        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</>";
         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
     }
 
     $rowLeaveType = $rst->fetch_assoc();
+
+    echo "<script>console.log('TEST3')</script>";
 
     if ($rowLeaveType['leave_status'] !== $leave_type_status) {
         array_push($oldvalarr, $rowLeaveType['leave_status']);
         array_push($chgvalarr, $leave_type_status);
         array_push($datafield, 'leave_status');
     }
+
+    echo "<script>console.log('TEST4')</script>";
 
     if ($oldvalarr && $chgvalarr) {
         try {
@@ -60,8 +68,11 @@ if (post('l_status_option')) {
             'changes'      => implodeWithComma($chgvalarr),
             'act_msg'      => actMsgLog($leave_type_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
         ];
+        echo "<script>console.log('TEST5')</script>";
 
         audit_log($log);
+    } else {
+        echo "<script>console.log('TEST6')</script>";
     }
 }
 ?>
@@ -204,6 +215,11 @@ if (post('l_status_option')) {
 </body>
 
 <script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
     dropdownMenuDispFix();
     setButtonColor();
     datatableAlignment('leave_type_table');
@@ -220,8 +236,8 @@ if (post('l_status_option')) {
                 l_status_option: status,
             },
             success: function(data) {
-                // Reload the page on success
-                location.reload();
+                console.log('TEST7');
+                window.location.href = 'leave_type_table.php';
             },
         })
     }
