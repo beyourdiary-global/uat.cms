@@ -109,6 +109,7 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
+define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
 define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions');
 
