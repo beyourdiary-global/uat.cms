@@ -102,8 +102,9 @@ $menuList = array(
                     array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
+                    array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '61', '62'),
 
             ),
             array(
@@ -203,8 +204,8 @@ $menuList = array(
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
                     array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '64'),
                 ),
-                'pin' => array('15', '9', '50', '56', '64'),
 
+                'pin' => array('15', '9', '50', '56', '64'),
 
             ),
             array(
