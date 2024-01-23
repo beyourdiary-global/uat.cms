@@ -127,6 +127,7 @@ define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 define('FIN_PAY_TERMS', 'payment_terms');
+define('ITL_CSM_ITEM', 'internal_consume_item');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
