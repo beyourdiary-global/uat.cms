@@ -113,6 +113,7 @@ define('TAX_SETT','tex_setting');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
 define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions');
+define('TAX_SETT','tax_setting');
 define('BRD_SERIES','brand_series');
 
 //finance
@@ -131,6 +132,7 @@ define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 define('FIN_PAY_TERMS', 'payment_terms');
+define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 
 

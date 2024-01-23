@@ -116,9 +116,10 @@ $menuList = array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
                     array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
+                    array('Delivery Fees Claim Record', 'mdi storefront-outline', $SITEURL . '/finance/del_fees_claim_table.php', '66'),
 
                 ),
-                'pin' => array('46', '47', '48', '58'),
+                'pin' => array('46','47','48','58','66'),
             ),
             array(
                 'Income',
@@ -126,22 +127,14 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49')
-                ),
-                'pin' => array('49'),
-            ),
-            array(
-                'Income',
-                'mdi mdi-finance',
-                'javascript:void(0)',
-                'y',
-                'expand' => array(
+                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
                     array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '51')
                 ),
-                'pin' => array('51'),
-            ),
+                'pin' => array('49','51'),
+            ),       
+
         ),
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58','66')
 
     ),
     array(
@@ -263,7 +256,8 @@ $menuList = array(
                 'pin' => array('47', '60', '63'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63' ,'64')
+
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63' ,'64','66')
 
     ),
     array(
