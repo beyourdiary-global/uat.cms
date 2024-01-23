@@ -91,8 +91,9 @@ $menuList = array(
                     array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
+                    array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67'),
 
             ),
             array(
@@ -129,7 +130,7 @@ $menuList = array(
                 'pin' => array('51'), 
             ),            
         ),
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '51', '67', '46', '47', '48', '49', '51', '58')
 
     ),
     array(
