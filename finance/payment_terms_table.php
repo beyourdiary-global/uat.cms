@@ -1,10 +1,10 @@
 <?php
-$pageTitle = "Payment Method (Finance)";
+$pageTitle = "Payment Terms";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = FIN_PAY_METH;
+$tblName = FIN_PAY_TERMS;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -12,7 +12,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fin_payment_method.php';
+$redirect_page = $SITEURL . '/finance/payment_terms.php';
 
 $result = getData('*', '', '', $tblName, $finance_connect);
 
@@ -33,7 +33,7 @@ if (!$result) {
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('fin_payment_method_table');
+        createSortingTable('payment_terms_table');
     });
 </script>
 
@@ -64,12 +64,13 @@ if (!$result) {
                     </div>
                 </div>
 
-                <table class="table table-striped" id="fin_payment_method_table">
+                <table class="table table-striped" id="payment_terms_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Description</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -83,6 +84,7 @@ if (!$result) {
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?= $row['description'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
@@ -102,7 +104,7 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fin_payment_method_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['description'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/payment_terms_table.php','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -120,6 +122,7 @@ if (!$result) {
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Description</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
@@ -138,7 +141,7 @@ if (!$result) {
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
-        datatableAlignment('fin_payment_method_table');
+        datatableAlignment('payment_terms_table');
         setButtonColor();
     </script>
 </body>

@@ -51,6 +51,16 @@ $menuList = array(
         'pin' => array('38')
     ),
     array(
+        'Distributor',
+        'mdi mdi-account-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/agent_table.php', '62'),
+        ),
+        'pin' => array('62')
+    ),
+    array(
         'Product',
         'mdi mdi-package-variant',
         'javascript:void(0)',
@@ -83,16 +93,16 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL.'/finance/curr_bank_trans_table.php', '37'),
-                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL.'/finance/investment_trans_table.php', '40'), 
-                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL.'/finance/invtr_trans_table.php', '41'),
-                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL.'/finance/sundry_debt_trans_table.php', '42'),
-                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL.'/finance/other_creditor_trans_table.php', '43'),
-                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL.'/finance/initial_capital_trans_table.php', '44'),   
-                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL.'/finance/cash_on_hand_trans_table.php', '45'),
-                    array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL.'/finance/bank_trans_backup_table.php', '51'),
+                    array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL . '/finance/curr_bank_trans_table.php', '37'),
+                    array('Investment Transaction', 'mdi storefront-outline', $SITEURL . '/finance/investment_trans_table.php', '40'),
+                    array('Inventories Transaction', 'mdi storefront-outline', $SITEURL . '/finance/invtr_trans_table.php', '41'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '42'),
+                    array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL . '/finance/other_creditor_trans_table.php', '43'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
+                    array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
+                    array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
                 ),
-                'pin' => array('37','40','41','42','43','44','45','51'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51'),
 
             ),
             array(
@@ -102,16 +112,34 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
-                  array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
-                     array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
-                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '47'),
+                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
                     array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
 
                 ),
-                'pin' => array('46','47','48','49','58'),
+                'pin' => array('46','47','48','58'),
             ),
+            array(
+                'Income',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49')
+                ),
+                'pin' => array('49'),
+            ),
+            array(
+                'Income', 
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/withdrawal_transactions_table.php', '51')
+                ),
+                'pin' => array('51'), 
+            ),            
         ),
-        'pin' => array('36', '37','40','41','42','43','44','45','46','47','48','49','51','58')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58')
 
     ),
     array(
@@ -171,8 +199,10 @@ $menuList = array(
                     array('Product Status', 'mdi mdi-package-variant-closed', $SITEURL . '/prod_status_table.php', '15'),
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
+                    array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
                 ),
-                'pin' => array('15', '9', '50'),
+                'pin' => array('15', '9','50','56'),
+
             ),
             array(
                 'Employee Administration Setting',
@@ -214,7 +244,7 @@ $menuList = array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
                     array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
                 ),
-                'pin' => array('33','57'),
+                'pin' => array('33', '57'),
             ),
             array(
                 'Finance Administration  Setting',
@@ -223,13 +253,15 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Expense Type', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/expense_type_table.php', '47'),
-                    array('Payment Method (Finance)', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fin_payment_method_table.php', '52'),
+                    array('Payment Method (Finance)', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fin_payment_method_table.php', '60'),
+                    array('Payment Terms', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/payment_terms_table.php', '63'),
                 ),
-                'pin' => array('47'),
+                'pin' => array('47','60','63'),
             ),
         ),
 
-        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52')
+        'pin' => array('1', '2', '3', '8', '11', '10', '14', '16', '19', '15', '9', '12', '13', '6', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52','60','63')
+
     ),
     array(
         'Audit Log',
@@ -249,12 +281,12 @@ $menuList = array(
 </head>
 
 <style>
-    @media (max-width: 768px) {
-        #navbarMenuBar {
-            display: none;
-            color: #FFFFFF;
-        }
+@media (max-width: 768px) {
+    #navbarMenuBar {
+        display: none;
+        color: #FFFFFF;
     }
+}
 </style>
 
 <script>
@@ -383,38 +415,40 @@ $menuList = array(
 <!-- V.Navbar -->
 
 <script>
-    var sidebar = $("#sidebar");
-    var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
-    var opacityBackground = $('div#filter_screen');
 
-    (function($) {
-        sidebar_toggleBtn.on("click", function() {
-            if (sidebar.hasClass("active")) {
-                sidebar.toggleClass("close", true);
-                opacityBackground.hide();
 
-                // timeout value based on .close css transition (0.3s)
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 500);
-            } else {
-                sidebar.toggleClass("active", true);
-                sidebar.toggleClass("close", false);
-                opacityBackground.show();
-            }
-        });
+var sidebar = $("#sidebar");
+var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
+var opacityBackground = $('div#filter_screen');
 
-        opacityBackground.on('click', function(e) {
-            var sidebar2 = $("#sidebar, #sidebarCollapse");
-            if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
-                sidebar.toggleClass('close', true);
-                opacityBackground.hide();
-                setTimeout(() => {
-                    sidebar.removeClass('active');
-                    sidebar.removeClass('close');
-                }, 300);
-            }
-        });
-    })(jQuery);
+(function($) {
+    sidebar_toggleBtn.on("click", function() {
+        if (sidebar.hasClass("active")) {
+            sidebar.toggleClass("close", true);
+            opacityBackground.hide();
+
+            // timeout value based on .close css transition (0.3s)
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 500);
+        } else {
+            sidebar.toggleClass("active", true);
+            sidebar.toggleClass("close", false);
+            opacityBackground.show();
+        }
+    });
+
+    opacityBackground.on('click', function(e) {
+        var sidebar2 = $("#sidebar, #sidebarCollapse");
+        if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
+            sidebar.toggleClass('close', true);
+            opacityBackground.hide();
+            setTimeout(() => {
+                sidebar.removeClass('active');
+                sidebar.removeClass('close');
+            }, 300);
+        }
+    });
+})(jQuery);
 </script>

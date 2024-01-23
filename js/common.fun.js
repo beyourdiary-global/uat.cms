@@ -927,7 +927,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       var title = "Error";
   }
 
-  if (act != "ErrMO") {
+  if (act !== 'ErrMO') {
     localStorage.clear();
   }
 

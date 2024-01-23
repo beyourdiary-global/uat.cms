@@ -1,3 +1,11 @@
+var page = "<?= $pageTitle ?>";
+var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+checkCurrentPage(page, action);
+setButtonColor();
+setAutofocus(action);
+preloader(300, action);
+
 $('#fat_attach').on('change', function() {
     previewImage(this, 'fat_attach_preview')
 })

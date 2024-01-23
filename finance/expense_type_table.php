@@ -54,6 +54,7 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Code</th>
                         <th scope="col">Remark</th>
@@ -66,6 +67,7 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
 
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['name'] ?></td>
                             <td scope="row"><?= $row['code'] ?></td>
                             <td scope="row"><?= $row['remark'] ?></td>
@@ -99,6 +101,7 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Name</th>
                         <th scope="col">Code</th>
                         <th scope="col">Remark</th>

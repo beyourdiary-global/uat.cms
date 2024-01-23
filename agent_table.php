@@ -1,20 +1,22 @@
 <?php
-$pageTitle = "Payment Method (Finance)";
-$isFinance = 1;
-include '../menuHeader.php';
-include '../checkCurrentPagePin.php';
+$pageTitle = "Agent";
 
-$tblName = FIN_PAY_METH;
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$tblName = AGENT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
+
 
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fin_payment_method.php';
+$redirect_page = $SITEURL . '/agent.php';
+$deleteRedirectPage = $SITEURL . '/agent_table.php';
 
-$result = getData('*', '', '', $tblName, $finance_connect);
+$result = getData('*', '', '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -33,7 +35,7 @@ if (!$result) {
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('fin_payment_method_table');
+        createSortingTable('table');
     });
 </script>
 
@@ -43,6 +45,7 @@ if (!$result) {
     </div>
 
     <div class="page-load-cover">
+
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
             <div class="col-12 col-md-8">
@@ -64,12 +67,16 @@ if (!$result) {
                     </div>
                 </div>
 
-                <table class="table table-striped" id="fin_payment_method_table">
+                <table class="table table-striped" id="table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Contact</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Country</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -81,9 +88,14 @@ if (!$result) {
                             if (!empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?= $row['brand'] ?></td>
+                                    <td scope="row"><?= $row['person_in_charge'] ?></td>
+                                    <td scope="row"><?= $row['contact'] ?></td>
+                                    <td scope="row"><?= $row['email'] ?></td>
+                                    <td scope="row"><?= $row['country'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
+                                       
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -102,7 +114,7 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fin_payment_method_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -118,8 +130,12 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Contact</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Country</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
@@ -138,7 +154,7 @@ if (!$result) {
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
-        datatableAlignment('fin_payment_method_table');
+        datatableAlignment('table');
         setButtonColor();
     </script>
 </body>

@@ -249,44 +249,48 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
-                                                                                                                    ?>
-        </p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="MCRForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, 'Transaction');
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                    echo displayPageAction($act, $pageTitle);
+                                                                                                                    ?>
+            </p>
+
+        </div>
+
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="MCRForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                        echo displayPageAction($act, $pageTitle);
                         ?>
-                    </h2>
-                </div>
+                        </h2>
+                    </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mcr_trans_id_lbl"
-                                for="mcr_trans_id">Merchant
-                                ID</label>
-                            <p>
-                                <input class="form-control" type="text" name="mcr_trans_id" id="mcr_trans_id"
-                                    disabled value="<?php echo $trans_id ?>">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mcr_date_label" for="mcr_date">Date<span
-                                    class="requireRed">*</span></label>
-                            <input class="form-control" type="date" name="mcr_date" id="mcr_date" value="<?php
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="mcr_trans_id_lbl" for="mcr_trans_id">Merchant
+                                    ID</label>
+                                <p>
+                                    <input class="form-control" type="text" name="mcr_trans_id" id="mcr_trans_id"
+                                        disabled value="<?php echo $trans_id ?>">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="mcr_date_label" for="mcr_date">Date<span
+                                        class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="mcr_date" id="mcr_date" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['date']) && !isset($mcr_date)) {
                                                                                                                 echo $row['date'];
                                                                                                             } else if (isset($mcr_date)) {
@@ -295,28 +299,28 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                                                                                                 echo date('Y-m-d');
                                                                                                             }
                                                                                                             ?>"
-                                placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($date_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $date_err; ?></span>
-                            </div>
-                            <?php } ?>
+                                    placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                                </div>
+                                <?php } ?>
 
+                            </div>
                         </div>
+
                     </div>
 
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mcr_currency_lbl"
-                                for="mcr_currency">Currency<span class="requireRed">*</span></label>
-                            <select class="form-select" id="mcr_currency" name="mcr_currency"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Currency</option>
-                                <?php
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="mcr_currency_lbl"
+                                    for="mcr_currency">Currency<span class="requireRed">*</span></label>
+                                <select class="form-select" id="mcr_currency" name="mcr_currency"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Currency</option>
+                                    <?php
                                 if ($cur_list_result->num_rows >= 1) {
                                     $cur_list_result->data_seek(0);
                                     while ($row2 = $cur_list_result->fetch_assoc()) {
@@ -332,45 +336,45 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo "<option value=\"0\">None</option>";
                                 }
                                 ?>
-                            </select>
+                                </select>
 
-                            <?php if (isset($curr_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                <?php if (isset($curr_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                                </div>
+                                <?php } ?>
+
                             </div>
-                            <?php } ?>
-
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="mcr_amt_lbl" for="mcr_amt">Amount<span
-                                    class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="mcr_amt" id="mcr_amt" value="<?php
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="mcr_amt_lbl" for="mcr_amt">Amount<span
+                                        class="requireRed">*</span></label>
+                                <input class="form-control" type="number" name="mcr_amt" id="mcr_amt" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['amount']) && !isset($mcr_amt)) {
                                                                                                             echo $row['amount'];
                                                                                                         } else if (isset($mcr_amt)) {
                                                                                                             echo $mcr_amt;
                                                                                                         }
                                                                                                         ?>"
-                                <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($amt_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($amt_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
+                                </div>
+                                <?php } ?>
                             </div>
-                            <?php } ?>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="mcr_remark_lbl" for="mcr_remark">Remark</label>
-                    <textarea class="form-control" name="mcr_remark" id="mcr_remark" rows="3"
-                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="mcr_remark_lbl" for="mcr_remark">Remark</label>
+                        <textarea class="form-control" name="mcr_remark" id="mcr_remark" rows="3"
+                            <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
 
-                
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
+
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
                     switch ($act) {
                         case 'I':
                             echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
@@ -380,10 +384,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
-                        value="back">Back</button>
-                </div>
-            </form>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <?php
@@ -400,7 +405,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-        <?php include "../js/merchant_comm.js" ?>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+    checkCurrentPage(page, action);
+    setButtonColor();
+    setAutofocus(action);
+    preloader(300, action);
+    <?php include "../js/merchant_comm.js" ?>
     </script>
 
 </body>
