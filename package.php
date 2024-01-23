@@ -378,11 +378,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="col-12 col-md-4">
                             <div class="form-group mb-3">
                                 <label class="form-label form_lbl" id="cost_lbl" for="package_cost">Cost</label>
-                                <input class="form-control" type="number" name="package_cost" id="package_cost"
+                                <input class="form-control" type="number" required step="0.01" name="package_cost" id="package_cost"
                                     value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>"
-                                    <?php if ($act == '') echo 'readonly' ?> required>
+                                    <?php if ($act == '') echo 'readonly' ?>>
                                 <div id="err_msg">
-                                    <span class="mt-n1"><?php if (isset($$cost_err)) echo $cost_err; ?></span>
+                                    <span class="mt-n1"><?php if (isset($cost_err)) echo $cost_err; ?></span>
                                 </div>
                             </div>
                         </div>
