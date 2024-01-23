@@ -1210,6 +1210,36 @@ function searchInput(param, siteURL) {
 
 }
 
+function retrieveDBData(param, siteURL, callback) {
+  var search = param["search"];
+  var type = param["searchType"];
+  var dbTable = param["dbTable"];
+  var col = param["searchCol"];
+
+  if (search != "") {
+    $.ajax({
+      url: siteURL + '/searchData.php',
+      type: 'post',
+      data: {
+          searchText: search,
+          searchType: type,
+          tblname: dbTable,
+          searchCol: col
+      },
+      dataType: 'json',
+      success: (result) => {   
+          callback(result);      
+      },
+      error: function (xhr, status, error) {
+        console.error('Error fetching data:', error);
+        console.log('XHR Status:', status);
+        console.log('XHR Response Text:', xhr.responseText);
+        console.log('XHR Response JSON:', xhr.responseJSON);
+    }
+    });
+  }
+}
+
 function retrieveJSONData(search, type, tblname) {
   return $.ajax({
     url: "getSearch.php",
