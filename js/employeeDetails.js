@@ -24,14 +24,18 @@ showTab(currentTab); // Display the current tab
 
 function nextPrev(n) {
   var x = document.getElementsByClassName("step");
+  var error = false;
 
   if (!validateEmailInput()) {
-    return false;
+    error = true;
   }
 
   if (n == 1 && !validateForm()) {
-    return false;
+    error = true;
   }
+
+  if (error)
+    return false;
 
   x[currentTab].style.display = "none";
   currentTab = currentTab + n;
@@ -340,20 +344,22 @@ function validateEmailInput() {
   var emailInput = $("#employeeEmail");
   var emailMsg = $("#emailMsg1");
 
+  emailInput.removeClass("red-border");
+  emailMsg.html("");
+
   if (!emailInput.val()) {
-    emailInput.css("border-color", "red");
     emailMsg.html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
-    return false
-  } else if (!validateEmail('#employeeEmail')) {
-    emailInput.css("border-color", "red");
-    emailMsg.html("<p style='color:red;margin-bottom:0;'>Invalid Email Format</p>");
+    emailInput.addClass("red-border");
     return false
   }
 
-  emailInput.css("border-color", "");
-  emailMsg.html("");
-  return true
+  if (!validateEmail('#employeeEmail')) {
+    emailMsg.html("<p style='color:red;margin-bottom:0;'>Invalid Email Format</p>");
+    emailInput.addClass("red-border");
+    return false
+  }
 
+  return true
 }
 
 function validateEmail(inputID) {

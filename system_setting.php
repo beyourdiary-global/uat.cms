@@ -26,23 +26,30 @@ $row = $result->fetch_assoc();
 $action = post('actionBtn');
 
 if ($action) {
-
-    $company_name = postSpaceFilter('company_name');
-    $company_business_no = postSpaceFilter('company_business_no');
-    $finance_year = postSpaceFilter('finance_year');
-    $company_address = postSpaceFilter('company_address');
-    $company_contact = postSpaceFilter('company_contact');
-    $company_email = postSpaceFilter('company_email');
-    $meta = postSpaceFilter('meta');
-    $barcode_prefix = postSpaceFilter('barcode_prefix');
-    $barcode_next_number = postSpaceFilter('barcode_next_number');
-    $invoice_prefix = postSpaceFilter('invoice_prefix');
-    $invoice_next_number = postSpaceFilter('invoice_next_number');
-
-    $datafield = $oldvalarr = $chgvalarr  = array();
-
     switch ($action) {
         case 'save':
+            $company_name = postSpaceFilter('company_name');
+            $company_business_no = postSpaceFilter('company_business_no');
+            $finance_year = postSpaceFilter('finance_year');
+            $company_address = postSpaceFilter('company_address');
+            $company_contact = postSpaceFilter('company_contact');
+            $company_email = postSpaceFilter('company_email');
+            $meta = postSpaceFilter('meta');
+            $barcode_prefix = postSpaceFilter('barcode_prefix');
+            $barcode_next_number = postSpaceFilter('barcode_next_number');
+            $invoice_prefix = postSpaceFilter('invoice_prefix');
+            $invoice_next_number = postSpaceFilter('invoice_next_number');
+
+            $datafield = $oldvalarr = $chgvalarr  = array();
+
+            if ($company_email && !isEmail($company_email)) {
+                $email_err = "Wrong email format!";
+                $error = 1;
+            }
+
+            if (isset($error)) {
+                break;
+            }
 
             try {
                 $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'company_contact', 'company_email', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
@@ -116,7 +123,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <div class="page-load-cover">
 
         <div class="d-flex flex-column my-3 ms-3">
-            <p><a href="<?= $redirect_page ?>">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?= $pageTitle ?></p>
+            <p><a href="<?= $redirect_page ?>">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i>
+                <?= $pageTitle ?></p>
         </div>
 
         <div id="Container" class="container-fluid d-flex justify-content-center mt-2">
@@ -138,17 +146,24 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="row">
                             <div class="col-sm">
                                 <label class="form-label" for="company_name">Company Name</label>
-                                <input class="form-control" type="text" name="company_name" id="company_name" value="<?php if (isset($row['company_name'])) echo $row['company_name'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="company_name" id="company_name"
+                                    value="<?php if (isset($row['company_name'])) echo $row['company_name'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
                                 <label class="form-label" for="company_business_no">Company Business No</label>
-                                <input class="form-control" type="text" name="company_business_no" id="company_business_no" value="<?php if (isset($row['company_business_no'])) echo $row['company_business_no'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="company_business_no"
+                                    id="company_business_no"
+                                    value="<?php if (isset($row['company_business_no'])) echo $row['company_business_no'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
                                 <label class="form-label" for="finance_year">Finance Year</label>
-                                <input class="form-control" type="date" name="finance_year" id="finance_year" value="<?php if (isset($row['finance_year'])) echo $row['finance_year'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="date" name="finance_year" id="finance_year"
+                                    value="<?php if (isset($row['finance_year'])) echo $row['finance_year'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                         </div>
@@ -158,7 +173,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="row">
                             <div class="col-sm">
                                 <label class="form-label" for="company_address">Company Address</label>
-                                <textarea class="form-control" name="company_address" id="company_address" rows="3" <?= $viewOnly ?>><?php if (isset($row['company_address'])) echo $row['company_address'] ?></textarea>
+                                <textarea class="form-control" name="company_address" id="company_address" rows="3"
+                                    <?= $viewOnly ?>><?php if (isset($row['company_address'])) echo $row['company_address'] ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -167,11 +183,20 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="row">
                             <div class="col-sm">
                                 <label class="form-label" for="company_contact">Company Contact</label>
-                                <input class="form-control" type="number" name="company_contact" id="company_contact" value="<?php if (isset($row['company_contact'])) echo $row['company_contact'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="company_contact" id="company_contact"
+                                    value="<?php if (isset($row['company_contact'])) echo $row['company_contact'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
                             <div class="col-sm">
                                 <label class="form-label" for="company_email">Company Email</label>
-                                <input class="form-control" type="text" name="company_email" id="company_email" value="<?php if (isset($row['company_email'])) echo $row['company_email'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="company_email" id="company_email"
+                                    value="<?php if (isset($row['company_email'])) echo $row['company_email'] ?>"
+                                    <?= $viewOnly ?>>
+                                <?php if (isset($email_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $email_err; ?></span>
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -181,17 +206,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                             <div class="col-sm">
                                 <label class="form-label" for="meta">Meta</label>
-                                <input class="form-control" type="text" name="meta" id="meta" value="<?php if (isset($row['meta'])) echo $row['meta'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="meta" id="meta"
+                                    value="<?php if (isset($row['meta'])) echo $row['meta'] ?>" <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
                                 <label class="form-label" for="barcode_prefix">Barcode Perfix</label>
-                                <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix" value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix"
+                                    value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
                                 <label class="form-label" for="barcode_next_number">Barcode Next Number</label>
-                                <input class="form-control" type="number" step="any" name="barcode_next_number" id="barcode_next_number" value="<?php if (isset($row['barcode_next_number'])) echo $row['barcode_next_number'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="number" step="any" name="barcode_next_number"
+                                    id="barcode_next_number"
+                                    value="<?php if (isset($row['barcode_next_number'])) echo $row['barcode_next_number'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                         </div>
@@ -201,12 +232,17 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="row">
                             <div class="col-sm">
                                 <label class="form-label" for="invoice_prefix">Invoice Perfix</label>
-                                <input class="form-control" type="text" name="invoice_prefix" id="invoice_prefix" value="<?php if (isset($row['invoice_prefix'])) echo $row['invoice_prefix'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="text" name="invoice_prefix" id="invoice_prefix"
+                                    value="<?php if (isset($row['invoice_prefix'])) echo $row['invoice_prefix'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
                                 <label class="form-label" for="invoice_next_number">Invoice Next Number</label>
-                                <input class="form-control" type="number" step="any" name="invoice_next_number" id="invoice_next_number" value="<?php if (isset($row['invoice_next_number'])) echo $row['invoice_next_number'] ?>" <?= $viewOnly ?>>
+                                <input class="form-control" type="number" step="any" name="invoice_next_number"
+                                    id="invoice_next_number"
+                                    value="<?php if (isset($row['invoice_next_number'])) echo $row['invoice_next_number'] ?>"
+                                    <?= $viewOnly ?>>
                             </div>
 
                         </div>
@@ -216,7 +252,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="col-12">
                             <div class="form-group mb-3 d-flex justify-content-center flex-md-row flex-column">
                                 <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                    <button style="background-color: <?= $row['buttonColor'] ?>;" class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="save">Save</button>
+                                <button style="background-color: <?= $row['buttonColor'] ?>;"
+                                    class="btn btn-lg btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn"
+                                    value="save">Save</button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -229,9 +267,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 </body>
 
 <script>
-    checkCurrentPage('invalid');
-    preloader(300, 'E');
-    centerAlignment('Container');
+checkCurrentPage('invalid');
+preloader(300, 'E');
+centerAlignment('Container');
 </script>
 
 </html>
