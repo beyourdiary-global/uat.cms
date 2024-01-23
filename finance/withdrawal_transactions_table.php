@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Sundry Debtors Transaction";
+$pageTitle = "Shopee Withdrawal Transactions";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,8 +10,10 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/sundry_debt_trans.php';
-$result = getData('*', '', '', SD_TRANS, $finance_connect);
+$redirect_page = $SITEURL . '/finance/withdrawal_transactions.php';
+$query = "SELECT * FROM `withdrawal_table`";
+$result = mysqli_query($finance_connect, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('sundry_debt_trans_table');
+        createSortingTable('withdrawal_transactions_table');
     });
 </script>
 
@@ -35,7 +37,6 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
     </div>
 
     <div class="page-load-cover">
-
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
             <div class="col-12 col-md-8">
@@ -49,51 +50,39 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2><?php echo $pageTitle ?></h2>
                             <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
-                                <?php endif; ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <table class="table table-striped" id="sundry_debt_trans_table">
+                <table class="table table-striped" id="withdrawal_transactions_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Transaction ID</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Payment Date</th>
-                            <th scope="col">Debtors</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Previous Amount Record</th>
-                            <th scope="col">Final Amount Record</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
+                            <th scope="col">Withdrawal Amount (SGD)</th>
+                            <th scope="col">Withdrawal Person In Charges</th>
                             <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                            $debtors = getData('name', "id='" . $row['debtors'] . "'", '', MERCHANT, $finance_connect);
-                            $row2 = $debtors->fetch_assoc();
+                             $pic = getData('name', "id='" . $row['withdrawalPersonInCharges'] . "'", '', USR_USER, $connect);
+                             $usr = $pic->fetch_assoc();
                         ?>
 
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?= $row['transactionID'] ?></td>
-                                <td scope="row"><?= $row['type'] ?></td>
-                                <td scope="row"><?= $row['payment_date'] ?></td>
-                                <td scope="row"><?= $row2['name'] ?></td>
-                                <td scope="row"><?= $row['amount'] ?></td>
-                                <td scope="row"><?= $row['prev_amt'] ?></td>
-                                <td scope="row"><?= $row['final_amt'] ?></td>
-                                <td scope="row"><?= $row['description'] ?></td>
-                                <td scope="row"><?= $row['remark'] ?></td>
+                                <td scope="row"><?= $row['withdrawal_date'] ?></td>
+                                <td scope="row"><?= $row['withdrawal_id'] ?></td>
+                                <td scope="row"><?= $row['withdrawal_amount'] ?></td>
+                                <td scope="row"><?= $row['withdrawal_person_in_charges'] ?></td>
                                 <td scope="row"><?= $row['attachment'] ?></td>
+                                <td scope="row"><?= $row['remark'] ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -112,7 +101,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/curr_bank_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['withdrawal_id'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/withdrawal_transactions_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -124,37 +113,25 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Payment Date</th>
-                            <th scope="col">Debtors</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Previous Amount Record</th>
-                            <th scope="col">Final Amount Record</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
+                            <th scope="col">Withdrawal Amount (SGD)</th>
+                            <th scope="col">Withdrawal Person In Charges</th>
                             <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
-
                         </tr>
                     </tfoot>
                 </table>
             </div>
-
         </div>
-
+    </div>
 </body>
-
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-    checkCurrentPage(page, action);
     /* function(void) : to solve the issue of dropdown menu displaying inside the table when table class include table-responsive */
     dropdownMenuDispFix();
     /* function(id): to resize table with bootstrap 5 classes */
-    datatableAlignment('sundry_debt_trans_table');
+    datatableAlignment('withdrawal_transactions_table');
     setButtonColor();
 </script>
 

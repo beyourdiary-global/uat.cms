@@ -238,22 +238,32 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
+function tableExists($tableName, $conn) {
+    $result = $conn->query("SHOW TABLES LIKE '$tableName'");
+    return $result && $result->num_rows > 0;
+}
+
 function getData($search_val, $val, $val2, $tbl, $conn)
 {
-	$statusAvailable = isStatusFieldAvailable($tbl, $conn);
+	if (!tableExists($tbl, $conn)) {
+        // Display "NO RESULT" message or handle it as needed
+        return false;
+    } else {
+		$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
-	//Checking a status is available in data field or not then check a val is exist or not
-	if ($statusAvailable) {
-		$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
-	} else {
-		$chk_val = $val == '' ? "" : "WHERE $val";
+		//Checking a status is available in data field or not then check a val is exist or not
+		if ($statusAvailable) {
+			$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+		} else {
+			$chk_val = $val == '' ? "" : "WHERE $val";
+		}
+
+		//combine together to process a query
+		$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
+
+		$result = $conn->query($query);
 	}
-
-	//combine together to process a query
-	$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
-
-	$result = $conn->query($query);
-
+	
 	if (empty($result) && $result->num_rows == 0)
 		return false;
 	else

@@ -54,6 +54,7 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Name</th>
                         <th scope="col" id="action_col">Action</th>
@@ -65,6 +66,7 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
 
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['accID'] ?></td>
                             <td scope="row"><?= $row['accName'] ?></td>
                             <td scope="row">
@@ -97,6 +99,7 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Account Name</th>
                         <th scope="col" id="action_col">Action</th>

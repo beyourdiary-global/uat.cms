@@ -207,74 +207,82 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Account');
-                                                                                                                    ?></p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="CBAFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, 'Account');
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                    echo displayPageAction($act, $pageTitle);
+                                                                                                                    ?>
+            </p>
+
+        </div>
+
+        <div id="CBAFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                        echo displayPageAction($act, $pageTitle);
                         ?>
-                    </h2>
-                </div>
+                        </h2>
+                    </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="maa_id_lbl" for="maa_id">Account
-                                ID</label>
-                            <input class="form-control" type="text" name="maa_id" id="maa_id" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label form_lbl" id="maa_id_lbl" for="maa_id">Account
+                                    ID</label>
+                                <input class="form-control" type="text" name="maa_id" id="maa_id" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['accID']) && !isset($maa_id)) {
                                                                                                             echo $row['accID'];
                                                                                                         } else if (isset($dataExisted) && isset($row['accID']) && isset($maa_id)) {
                                                                                                             echo $maa_id;
                                                                                                         } else {
                                                                                                             echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($id_err)) { ?>
+                                                                                                        } ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($id_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $id_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="maa_name_lbl" for="maa_name">Account
-                                Name</label>
-                            <input class="form-control" type="text" name="maa_name" id="maa_name" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label form_lbl" id="maa_name_lbl" for="maa_name">Account
+                                    Name</label>
+                                <input class="form-control" type="text" name="maa_name" id="maa_name" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['accName']) && !isset($maa_name)) {
                                                                                                                 echo $row['accName'];
                                                                                                             } else if (isset($dataExisted) && isset($row['accName']) && isset($maa_name)) {
                                                                                                                 echo $maa_name;
                                                                                                             } else {
                                                                                                                 echo '';
-                                                                                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($name_err)) { ?>
+                                                                                                            } ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($name_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $name_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
                     switch ($act) {
                         case 'I':
                             echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
@@ -284,9 +292,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <?php
@@ -303,13 +313,16 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-        <?php include "../js/meta_ads_acc.js" ?>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
+    checkCurrentPage(page, action);
+    setButtonColor();
+    setAutofocus(action);
+    preloader(300, action);
 
-        checkCurrentPage(page, action);
+    <?php include "../js/meta_ads_acc.js" ?>
     </script>
 
 </body>
