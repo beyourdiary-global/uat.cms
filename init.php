@@ -113,6 +113,7 @@ define('TAX_SETT','tex_setting');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
 define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions');
+define('BRD_SERIES','brand_series');
 
 //finance
 define('MERCHANT', 'merchant');
