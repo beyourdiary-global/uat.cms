@@ -1126,7 +1126,8 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param, siteURL) {
+//autocomplete
+function searchInput(param,siteURL) { 
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
@@ -1399,7 +1400,7 @@ function preloader(additionalDelay, action) {
 
 function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInput = $("input:visible:enabled:first");
+    var firstInput = $("input:visible:enabled[value='']:first");
     if (firstInput.length > 0) {
       firstInput.focus();
 
