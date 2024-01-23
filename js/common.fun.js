@@ -1126,7 +1126,8 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param, siteURL) {
+//autocomplete
+function searchInput(param,siteURL) { 
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
@@ -1402,6 +1403,7 @@ function setAutofocus(action) {
     var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
       return $.trim($(this).val()) === '';
     }).first();    if (firstInput.length > 0) {
+
       firstInput.focus();
 
       var inputValue = firstInput.val();

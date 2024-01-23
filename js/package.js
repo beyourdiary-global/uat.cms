@@ -142,6 +142,9 @@ function prodInfoAutoFill(element) {
 
     allFunc();
 }
+$("#package_cost").on("input", function() {
+    $(".package-cost-err").remove();
+});
 
 $(document).ready(function() {
     if (!($("#cur_unit").attr('readonly'))) {
@@ -193,3 +196,17 @@ $(document).ready(function() {
         });
     }
 })
+
+//block "e" in input type number field
+document.querySelector("#package_cost").addEventListener("keypress", function (evt) {
+    var inputValue = this.value;
+
+    if (evt.which != 8 && evt.which != 0 && (evt.which < 48 || evt.which > 57) && evt.which != 46) {
+        evt.preventDefault();
+    }
+
+    // Allow only one decimal point
+    if (inputValue.indexOf('.') !== -1 && evt.which == 46) {
+        evt.preventDefault();
+    }
+});

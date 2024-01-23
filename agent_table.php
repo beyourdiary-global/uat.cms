@@ -1,20 +1,27 @@
 <?php
-$pageTitle = "Payment Method (Finance)";
-$isFinance = 1;
-include '../menuHeader.php';
-include '../checkCurrentPagePin.php';
+$pageTitle = "Agent";
 
-$tblName = FIN_PAY_METH;
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
+
+$tblName = AGENT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
+
 
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fin_payment_method.php';
+$redirect_page = $SITEURL . '/agent.php';
+$deleteRedirectPage = $SITEURL . '/agent_table.php';
 
-$result = getData('*', '', '', $tblName, $finance_connect);
+$result = getData('*', '', '', $tblName, $connect);
+
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +35,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('fin_payment_method_table');
+        createSortingTable('table');
     });
 </script>
 
@@ -38,6 +45,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
     </div>
 
     <div class="page-load-cover">
+
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
             <div class="col-12 col-md-8">
@@ -50,30 +58,25 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2><?php echo $pageTitle ?></h2>
-                            <?php
-                            if ($result) {
-                            ?>
                             <div class="mt-auto mb-auto">
                                 <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                     <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                                 <?php endif; ?>
                             </div>
-                            <?php } ?>
                         </div>
                     </div>
                 </div>
-                <?php
-                    if (!$result) {
-                    echo '<div class="text-center"><h4>No Result!</h4></div>';
-                } else {
-                ?>
 
-                <table class="table table-striped" id="fin_payment_method_table">
+                <table class="table table-striped" id="table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Contact</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Country</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -85,9 +88,14 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                             if (!empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?= $row['brand'] ?></td>
+                                    <td scope="row"><?= $row['person_in_charge'] ?></td>
+                                    <td scope="row"><?= $row['contact'] ?></td>
+                                    <td scope="row"><?= $row['email'] ?></td>
+                                    <td scope="row"><?= $row['country'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
+                                       
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -106,7 +114,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fin_payment_method_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -122,14 +130,17 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Contact</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Country</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>
-                <?php } ?>
             </div>
         </div>
     </div>
@@ -143,9 +154,8 @@ $result = getData('*', '', '', $tblName, $finance_connect);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
-        datatableAlignment('fin_payment_method_table');
+        datatableAlignment('table');
         setButtonColor();
-        setAutofocus(action);
     </script>
 </body>
 
