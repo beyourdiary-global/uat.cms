@@ -61,7 +61,7 @@ $('.submitBtn').on('click', () => {
     }
 
     var fileInput = $('#btb_attach')[0];
-    console.log($('#btb_attachmentValue').val());
+    
     // Check if a new file is selected or if there is an existing attachment
     if ((fileInput.files.length === 0) && ($('#btb_attachmentValue').val() == '' || $('#btb_attachmentValue').val() == '0' || $('#btb_attachmentValue').val() === null || $('#btb_attachmentValue')
     .val() === undefined)) {

@@ -1400,8 +1400,10 @@ function preloader(additionalDelay, action) {
 
 function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInput = $("input:visible:enabled[value='']:first");
-    if (firstInput.length > 0) {
+    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
+      return $.trim($(this).val()) === '';
+    }).first();    if (firstInput.length > 0) {
+
       firstInput.focus();
 
       var inputValue = firstInput.val();

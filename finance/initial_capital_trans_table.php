@@ -41,14 +41,22 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
+                        <?php if ($result) { ?>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             <?php endif; ?>
                         </div>
+                        <?php } ?>
+
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
             <table class="table table-striped" id="initial_capital_trans_table">
                 <thead>
@@ -123,6 +131,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                     </tr>
                 </tfoot>
             </table>
+            <?php } ?>
         </div>
 
     </div>
