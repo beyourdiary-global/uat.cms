@@ -2,6 +2,10 @@
     color: red;
 }
 
+.red-border {
+    border-color: red !important;
+}
+
 .stepIndicator {
     padding: 10px;
     text-align: center;
