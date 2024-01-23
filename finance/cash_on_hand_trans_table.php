@@ -22,9 +22,9 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 </head>
 
 <script>
-    $(document).ready(() => {
-        createSortingTable('cash_on_hand_trans_table');
-    });
+$(document).ready(() => {
+    createSortingTable('cash_on_hand_trans_table');
+});
 </script>
 
 <body>
@@ -35,20 +35,32 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
+                            class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
+                        <?php
+                        if ($result) {
+                        ?>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
+                                href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                Transaction </a>
                             <?php endif; ?>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
             <table class="table table-striped" id="cash_on_hand_trans_table">
                 <thead>
@@ -82,46 +94,51 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                         $usr = $pic->fetch_assoc();
                     ?>
 
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
-                            <td scope="row"><?= $row['transactionID'] ?></td>
-                            <td scope="row"><?= $row['type'] ?></td>
-                            <td scope="row"><?= $usr['name'] ?></td>
-                            <td scope="row"><?= $row['date'] ?></td>
-                            <td scope="row"><?= $row3['name'] ?></td>
-                            <td scope="row"><?= $row2['unit'] ?></td>
-                            <td scope="row"><?= $row['amount'] ?></td>
-                            <td scope="row"><?= $row['prev_amt'] ?></td>
-                            <td scope="row"><?= $row['final_amt'] ?></td>
-                            <td scope="row"><?= $row['description'] ?></td>
-                            <td scope="row"><?= $row['remark'] ?></td>
-                            <td scope="row"><?= $row['attachment'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr>
+                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                        <th scope="row"><?= $num++; ?></th>
+                        <td scope="row"><?= $row['transactionID'] ?></td>
+                        <td scope="row"><?= $row['type'] ?></td>
+                        <td scope="row"><?= $usr['name'] ?></td>
+                        <td scope="row"><?= $row['date'] ?></td>
+                        <td scope="row"><?= $row3['name'] ?></td>
+                        <td scope="row"><?= $row2['unit'] ?></td>
+                        <td scope="row"><?= $row['amount'] ?></td>
+                        <td scope="row"><?= $row['prev_amt'] ?></td>
+                        <td scope="row"><?= $row['final_amt'] ?></td>
+                        <td scope="row"><?= $row['description'] ?></td>
+                        <td scope="row"><?= $row['remark'] ?></td>
+                        <td scope="row"><?= $row['attachment'] ?></td>
+                        <td scope="row">
+                            <div class="dropdown" style="text-align:center">
+                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
+                                            id="action_menu"></i></button>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                    <li>
+                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="dropdown-item"
+                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                        <?php endif; ?>
+                                    </li>
+                                    <li>
+                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="dropdown-item"
+                                            href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                        <?php endif; ?>
+                                    </li>
+                                    <li>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                        <a class="dropdown-item"
+                                            onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
+                                        <?php endif; ?>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
                     <?php } ?>
                 </tbody>
                 <tfoot>
@@ -137,39 +154,40 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                         <th scope="col">Amount</th>
                         <th scope="col">Previous Amount Record</th>
                         <th scope="col">Final Amount Record</th>
-                        <th scope="col">Description</th>   
-                        <th scope="col">Remark</th>                     
+                        <th scope="col">Description</th>
+                        <th scope="col">Remark</th>
                         <th scope="col">Attachment</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
             </table>
+            <?php } ?>
         </div>
 
     </div>
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+//Initial Page And Action Value
+var page = "<?= $pageTitle ?>";
+var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-    checkCurrentPage(page, action);
-    /**
+checkCurrentPage(page, action);
+/**
   oufei 20231014
   common.fun.js
   function(void)
   to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
 */
-    dropdownMenuDispFix();
+dropdownMenuDispFix();
 
-    /**
-      oufei 20231014
-      common.fun.js
-      function(id)
-      to resize table with bootstrap 5 classes
-    */
-    datatableAlignment('cash_on_hand_trans_table');
+/**
+  oufei 20231014
+  common.fun.js
+  function(id)
+  to resize table with bootstrap 5 classes
+*/
+datatableAlignment('cash_on_hand_trans_table');
 </script>
 
 </html>
