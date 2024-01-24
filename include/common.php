@@ -238,6 +238,31 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
+//example: isDuplicateRecordWithConditions(['month', 'year'], [$btb_month, $btb_year], $tblName, $finance_connect, $dataID)
+function isDuplicateRecordWithConditions($fields, $values, $tbl, $connect, $primaryKeyValue)
+{
+    if (count($fields) !== count($values) || empty($fields)) {
+        return false; // Invalid input, return false
+    }
+
+    $conditions = array_combine($fields, $values);
+    $conditions += ['status' => 'A']; // Add 'status' condition
+    if ($primaryKeyValue) $conditions['id !='] = $primaryKeyValue; // Exclude current record if editing
+
+    $whereClause = implode(' AND ', array_map(
+        fn($key, $value) => "`$key` = '" . mysqli_real_escape_string($connect, $value) . "'",
+        array_keys($conditions),
+        $conditions
+    ));
+
+    $query = "SELECT COUNT(*) as count FROM `$tbl` WHERE $whereClause";
+    $result = mysqli_query($connect, $query);
+
+    return $result && mysqli_fetch_assoc($result)['count'] > 0;
+}
+
+
+
 function tableExists($tableName, $conn) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
     return $result && $result->num_rows > 0;
