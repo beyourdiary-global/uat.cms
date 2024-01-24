@@ -109,11 +109,11 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
-define('TAX_SETT','tex_setting');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
 define('TAX_SETT','tax_setting');
 define('BRD_SERIES','brand_series');
+define('FB_ORDER_REQ','facebook_order_request');
 
 //finance
 define('MERCHANT', 'merchant');
