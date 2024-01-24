@@ -109,7 +109,6 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
-define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions')
 
 //finance
 define('MERCHANT', 'merchant');
@@ -127,6 +126,7 @@ define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 define('FIN_PAY_TERMS', 'payment_terms');
+define('SHOPEE_WDL_TRANS','shopee_withdrawal_transactions');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
