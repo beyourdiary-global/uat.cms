@@ -14,7 +14,7 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/finance/internal_consume_table.php';
-$redirectLink = ("<script>location.href = '$redirect_page';</script>");
+$redirectLink = null;// ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
 //Check a current page pin is exist or not
