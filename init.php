@@ -112,8 +112,7 @@ define('L_PENDING','leave_pending');
 define('TAX_SETT','tex_setting');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
-define('TAX_SETT','tax_setting');
-define('BRD_SERIES','brand_series');
+
 
 //finance
 define('MERCHANT', 'merchant');
