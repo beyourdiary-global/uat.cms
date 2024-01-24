@@ -14,7 +14,7 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/finance/internal_consume_table.php';
-$redirectLink = null;// ("<script>location.href = '$redirect_page';</script>");
+$redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
 //Check a current page pin is exist or not
@@ -346,7 +346,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                             <div class="col-md-4 mb-2">
                                 <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit<span class="requireRed">*</span></label>
-                                <select class="form-select"  id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
+                                <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
                                     <?php
                                     $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);
 
@@ -369,7 +369,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                             <div class="col-md-4 mb-2">
                                 <label class="form-label form_lbl" id="ampunt_lbl" for="amount">Amount<span class="requireRed">*</span></label>
-                                <input class="form-control"  type="number" step="any" name="amount" id="amount" value="<?php echo (isset($row['amount']) ? $row['amount'] : '') ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                <input class="form-control" type="number" step="any" name="amount" id="amount" value="<?php echo (isset($row['amount']) ? $row['amount'] : '') ?>" <?php if ($act == '') echo 'disabled' ?>>
                             </div>
                         </div>
                     </div>
