@@ -1126,7 +1126,8 @@ function dropdownMenuDispFix() {
   );
 }
 
-function searchInput(param, siteURL) {
+//autocomplete
+function searchInput(param,siteURL) { 
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
@@ -1208,6 +1209,36 @@ function searchInput(param, siteURL) {
     $("#clear_" + elementID).remove();
   }
 
+}
+
+function retrieveDBData(param, siteURL, callback) {
+  var search = param["search"];
+  var type = param["searchType"];
+  var dbTable = param["dbTable"];
+  var col = param["searchCol"];
+
+  if (search != "") {
+    $.ajax({
+      url: siteURL + '/searchData.php',
+      type: 'post',
+      data: {
+          searchText: search,
+          searchType: type,
+          tblname: dbTable,
+          searchCol: col
+      },
+      dataType: 'json',
+      success: (result) => {   
+          callback(result);      
+      },
+      error: function (xhr, status, error) {
+        console.error('Error fetching data:', error);
+        console.log('XHR Status:', status);
+        console.log('XHR Response Text:', xhr.responseText);
+        console.log('XHR Response JSON:', xhr.responseJSON);
+    }
+    });
+  }
 }
 
 function retrieveJSONData(search, type, tblname) {
@@ -1399,8 +1430,10 @@ function preloader(additionalDelay, action) {
 
 function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInput = $("input:visible:enabled:first");
-    if (firstInput.length > 0) {
+    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
+      return $.trim($(this).val()) === '';
+    }).first();    if (firstInput.length > 0) {
+
       firstInput.focus();
 
       var inputValue = firstInput.val();

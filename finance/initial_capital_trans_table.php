@@ -41,19 +41,28 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
+                        <?php if ($result) { ?>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             <?php endif; ?>
                         </div>
+                        <?php } ?>
+
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
             <table class="table table-striped" id="initial_capital_trans_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>
@@ -72,6 +81,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
 
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['transactionID'] ?></td>
                             <td scope="row"><?= $row['date'] ?></td>
                             <td scope="row"><?= $row2['unit'] ?></td>
@@ -109,6 +119,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Date</th>
                         <th scope="col">Currency</th>
@@ -120,6 +131,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                     </tr>
                 </tfoot>
             </table>
+            <?php } ?>
         </div>
 
     </div>
