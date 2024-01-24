@@ -1,26 +1,17 @@
 <?php
-$pageTitle = "Tax Setting";
+$pageTitle = "Tax";
+$isFinance = 1;
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-$tblName = TAX_SETT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/tax_setting.php';
-$deleteRedirectPage = $SITEURL . '/tax_setting_table.php';
-
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/tax.php';
+$result = getData('*', '', '', TAX_SETT, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -137,6 +128,10 @@ if (!$result) {
     </div>
     
     <script>
+         var page = "<?= $pageTitle ?>";
+         var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+         checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
