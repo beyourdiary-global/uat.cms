@@ -198,7 +198,7 @@ $menuList = array(
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
-                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '64'),
+                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/finance/brand_series_table.php', '64'),
                 ),
 
                 'pin' => array('15', '9', '50', '56', '64'),

@@ -112,8 +112,7 @@ define('L_PENDING','leave_pending');
 define('TAX_SETT','tex_setting');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
-define('TAX_SETT','tax_setting');
-define('BRD_SERIES','brand_series');
+
 
 //finance
 define('MERCHANT', 'merchant');
@@ -135,6 +134,7 @@ define('SHOPEE_WDL_TRANS','shopee_withdrawal_transactions');
 define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
+define('BRD_SERIES','brand_series');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
