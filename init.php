@@ -132,6 +132,7 @@ define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 define('FIN_PAY_TERMS', 'payment_terms');
+define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 
