@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Shopee Account";
+$pageTitle = "Brand";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -67,7 +67,7 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                         $row2 = $curr->fetch_assoc();
 
                         $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                        $row3 = $curr->fetch_assoc();
+                        $row3 = $country->fetch_assoc();
                         ?>
 
                         <tr>
