@@ -111,7 +111,6 @@ define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
 define('AGENT','agent');
 define('PROD_CATEGORY','product_category');
-define('BRD_SERIES','brand_series');
 
 //finance
 define('MERCHANT', 'merchant');
@@ -133,6 +132,7 @@ define('SHOPEE_WDL_TRANS','shopee_withdrawal_transactions');
 define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
+define('BRD_SERIES','brand_series');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 
