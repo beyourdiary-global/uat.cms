@@ -1428,7 +1428,7 @@ function preloader(additionalDelay, action) {
   });
 }
 
-function setAutofocus(action) {
+function setAutofocus(action) { //test
   if (action === "I" || action === "E") {
     var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
       return $.trim($(this).val()) === '';
