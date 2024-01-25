@@ -57,7 +57,7 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/agent_table.php', '62'),
+            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/finance/agent_table.php', '62'),
         ),
         'pin' => array('62')
     ),
