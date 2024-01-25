@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Product Category";
+$pageTitle = "Category";
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
