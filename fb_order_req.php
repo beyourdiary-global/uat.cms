@@ -46,12 +46,20 @@ if (!($dataID) && !($act)) {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
-    $for_acc = postSpaceFilter("for_meta_acc_hidden");
-    $for_trans_id = postSpaceFilter("for_trans_id");
-    $for_date = postSpaceFilter("for_date");
-    $for_pic = postSpaceFilter("for_pic_hidden");
-    $for_bank = postSpaceFilter("for_bank");
-    $for_amt = postSpaceFilter('for_amt');
+    $for_name = postSpaceFilter('for_name');
+    $for_link = postSpaceFilter('for_link');
+    $for_ctc = postSpaceFilter('for_contact');
+    $for_pic = postSpaceFilter('for_pic_hidden');
+    $for_country = postSpaceFilter('for_country_hidden');
+    $for_brand = postSpaceFilter('for_brand_hidden');
+    $for_series = postSpaceFilter('for_series_hidden');
+    $for_pkg = postSpaceFilter('for_pkg_hidden');
+    $for_fbpage = postSpaceFilter('for_fbpage_hidden');
+    $for_channel = postSpaceFilter('for_channel_hidden');
+    $for_pay = postSpaceFilter('for_pay_meth_hidden');
+    $for_rec_name = postSpaceFilter('for_rec_name');
+    $for_rec_ctc = postSpaceFilter('for_rec_ctc');
+    $for_rec_add = postSpaceFilter('for_rec_add');
     $for_remark = postSpaceFilter('for_remark');
     
     $for_attach = null;
@@ -96,39 +104,66 @@ if (post('actionBtn')) {
                 } else $err2 = "Only allow PNG, JPG, JPEG, SVG or PDF file";
             }
 
-            if (!$for_acc && $for_acc < 1) {
-                $acc_err = "Please specify the account.";
+            if (!$for_name) {
+                $name_err = "Name cannot be empty.";
                 break;
-            } else if (!$for_trans_id) {
-                $id_err = "Please specify the transaction ID.";
+            } else if (!$for_link) {
+                $link_err = "Facebook Link cannot be empty.";
                 break;
-            } else if (!$for_date) {
-                $date_err = "Please specify the date.";
+            } else if (!$for_ctc) {
+                $contact_err = "Contact cannot be empty.";
                 break;
             } else if (!$for_pic && $for_pic < 1) {
-                $pic_err = "Please specify the person-in-charge.";
+                $pic_err = "Sales Person-In-Charge cannot be empty.";
                 break;
-            } else if (!$for_amt) {
-                $amt_err = "Please specify the top-up amount.";
+            } else if (!$for_country && $for_country < 1) {
+                $country_err = "Country cannot be empty.";
+                break;
+            } else if (!$for_brand && $for_brand < 1) {
+                $brand_err = "Brand cannot be empty.";
+                break;
+            } else if (!$for_series && $for_series < 1) {
+                $series_err = "Series cannot be empty.";
+                break;
+            } else if (!$for_pkg && $for_pkg < 1) {
+                $pkg_err = "Package cannot be empty.";
+                break;
+            } else if (!$for_fbpage && $for_fbpage < 1) {
+                $fbpage_err = "Facebook Page cannot be empty.";
+                break;
+            } else if (!$for_channel && $for_channel < 1) {
+                $channel_err = "Channel cannot be empty.";
+                break;
+            } else if (!$for_pay && $for_pay < 1) {
+                $pay_err = "Payment Method cannot be empty.";
+                break;
+            } else if (!$for_rec_name) {
+                $rec_name_err = "Receiver Name cannot be empty.";
+                break;
+            } else if (!$for_rec_ctc) {
+                $rec_ctc_err = "Receiver Contact cannot be empty.";
+                break;
+            } else if (!$for_rec_add) {
+                $rec_add_err = "Receiver Address cannot be empty.";
                 break;
             } else if (!$for_attach) {
-                $desc_err = "Please attach the proof of payment.";
+                $desc_err = "Attachment cannot be empty.";
                 break;
             } else if ($action == 'addRecord') {
                 try {
                     //check values
-                    if ($for_acc) {
-                        array_push($newvalarr, $for_acc);
-                        array_push($datafield, 'account');
+                    if ($for_name) {
+                        array_push($newvalarr, $for_name);
+                        array_push($datafield, 'name');
                     }
-                    if ($for_trans_id) {
-                        array_push($newvalarr, $for_trans_id);
-                        array_push($datafield, 'transaction ID');
+                    if ($for_link) {
+                        array_push($newvalarr, $for_link);
+                        array_push($datafield, 'facebook link');
                     }
 
-                    if ($for_date) {
-                        array_push($newvalarr, $for_date);
-                        array_push($datafield, 'payment date');
+                    if ($for_ctc) {
+                        array_push($newvalarr, $for_ctc);
+                        array_push($datafield, 'contact');
                     }
 
                     if ($for_pic) {
@@ -136,9 +171,54 @@ if (post('actionBtn')) {
                         array_push($datafield, 'pic');
                     }
 
-                    if ($for_amt) {
-                        array_push($newvalarr, $for_amt);
-                        array_push($datafield, 'top-up amount');
+                    if ($for_country) {
+                        array_push($newvalarr, $for_country);
+                        array_push($datafield, 'country');
+                    }
+
+                    if ($for_brand) {
+                        array_push($newvalarr, $for_brand);
+                        array_push($datafield, 'brand');
+                    }
+
+                    if ($for_series) {
+                        array_push($newvalarr, $for_series);
+                        array_push($datafield, 'series');
+                    }
+
+                    if ($for_pkg) {
+                        array_push($newvalarr, $for_pkg);
+                        array_push($datafield, 'package');
+                    }
+
+                    if ($for_fbpage) {
+                        array_push($newvalarr, $for_fbpage);
+                        array_push($datafield, 'fb page');
+                    }
+
+                    if ($for_channel) {
+                        array_push($newvalarr, $for_channel);
+                        array_push($datafield, 'channel');
+                    }
+
+                    if ($for_pay) {
+                        array_push($newvalarr, $for_pay);
+                        array_push($datafield, 'payment method');
+                    }
+
+                    if ($for_rec_name) {
+                        array_push($newvalarr, $for_rec_name);
+                        array_push($datafield, 'receiver name');
+                    }
+
+                    if ($for_rec_ctc) {
+                        array_push($newvalarr, $for_rec_ctc);
+                        array_push($datafield, 'receiver contact');
+                    }
+
+                    if ($for_rec_add) {
+                        array_push($newvalarr, $for_rec_add);
+                        array_push($datafield, 'receiver address');
                     }
 
                     if ($for_attach) {
@@ -151,7 +231,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(meta_acc,transactionID,payment_date,pic,topup_amt,attachment,remark,create_by,create_date,create_time) VALUES ('$for_acc','$for_trans_id','$for_date','$for_pic','$for_amt','$for_attach','$for_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(name,fb_link,contact,sales_pic,country,brand,series,package,fb_page,channel,pay_method,ship_rec_name,ship_rec_add,ship_rec_contact,remark,attachment,create_by,create_date,create_time) VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_series','$for_pkg','$for_fbpage','$for_channel','$for_pay','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','$for_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -166,34 +246,88 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
-                    if ($row['meta_acc'] != $for_acc) {
-                        array_push($oldvalarr, $row['meta_acc']);
-                        array_push($chgvalarr, $for_acc);
-                        array_push($datafield, 'meta account');
+                    if ($row['name'] != $for_name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $for_name);
+                        array_push($datafield, 'name');
                     }
 
-                    if ($row['transactionID'] != $for_trans_id) {
-                        array_push($oldvalarr, $row['transactionID']);
-                        array_push($chgvalarr, $for_trans_id);
-                        array_push($datafield, 'transaction ID');
+                    if ($row['fb_link'] != $for_link) {
+                        array_push($oldvalarr, $row['fb_link']);
+                        array_push($chgvalarr, $fb_link);
+                        array_push($datafield, 'fb link');
                     }
 
-                    if ($row['payment_date'] != $for_date) {
-                        array_push($oldvalarr, $row['payment_date']);
-                        array_push($chgvalarr, $for_date);
-                        array_push($datafield, 'payment date');
+                    if ($row['contact'] != $for_ctc) {
+                        array_push($oldvalarr, $row['contact']);
+                        array_push($chgvalarr, $for_ctc);
+                        array_push($datafield, 'contact');
                     }
 
-                    if ($row['pic'] != $for_pic) {
-                        array_push($oldvalarr, $row['pic']);
+                    if ($row['sales_pic'] != $for_pic) {
+                        array_push($oldvalarr, $row['sales_pic']);
                         array_push($chgvalarr, $for_pic);
                         array_push($datafield, 'pic');
                     }
 
-                    if ($row['topup_amt'] != $for_amt) {
-                        array_push($oldvalarr, $row['topup_amt']);
-                        array_push($chgvalarr, $for_amt);
-                        array_push($datafield, 'topup_amt');
+                    if ($row['country'] != $for_country) {
+                        array_push($oldvalarr, $row['country']);
+                        array_push($chgvalarr, $for_country);
+                        array_push($datafield, 'country');
+                    }
+
+                    if ($row['brand'] != $for_brand) {
+                        array_push($oldvalarr, $row['brand']);
+                        array_push($chgvalarr, $for_brand);
+                        array_push($datafield, 'brand');
+                    }
+
+                    if ($row['series'] != $for_series) {
+                        array_push($oldvalarr, $row['series']);
+                        array_push($chgvalarr, $for_series);
+                        array_push($datafield, 'series');
+                    }
+
+                    if ($row['package'] != $for_pkg) {
+                        array_push($oldvalarr, $row['package']);
+                        array_push($chgvalarr, $for_pkg);
+                        array_push($datafield, 'package');
+                    }
+
+                    if ($row['fb_page'] != $for_fbpage) {
+                        array_push($oldvalarr, $row['fb_page']);
+                        array_push($chgvalarr, $for_fbpage);
+                        array_push($datafield, 'fb_page');
+                    }
+
+                    if ($row['channel'] != $for_channel) {
+                        array_push($oldvalarr, $row['channel']);
+                        array_push($chgvalarr, $for_channel);
+                        array_push($datafield, 'channel');
+                    }
+
+                    if ($row['pay_method'] != $for_pay) {
+                        array_push($oldvalarr, $row['pay_method']);
+                        array_push($chgvalarr, $for_pay);
+                        array_push($datafield, 'payment method');
+                    }
+
+                    if ($row['ship_rec_name'] != $for_rec_name) {
+                        array_push($oldvalarr, $row['ship_rec_name']);
+                        array_push($chgvalarr, $for_rec_name);
+                        array_push($datafield, 'shipping receiver name');
+                    }
+
+                    if ($row['ship_rec_contact'] != $for_rec_ctc) {
+                        array_push($oldvalarr, $row['ship_rec_contact']);
+                        array_push($chgvalarr, $for_rec_ctc);
+                        array_push($datafield, 'shipping receiver contact');
+                    }
+
+                    if ($row['ship_rec_add'] != $for_rec_add) {
+                        array_push($oldvalarr, $row['ship_rec_add']);
+                        array_push($chgvalarr, $for_rec_add);
+                        array_push($datafield, 'shipping receiver address');
                     }
 
                     $for_attach = isset($for_attach) ? $for_attach : '';
@@ -215,7 +349,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
-                        $query = "UPDATE " . $tblName  . " SET meta_acc = '$for_acc', transactionID = '$for_trans_id', payment_date = '$for_date', pic = '$for_pic', topup_amt = '$for_amt', remark ='$for_remark', attachment ='$for_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET name = '$for_name', fb_link = '$for_link', contact = '$for_ctc', sales_pic = '$for_pic', country = '$for_country', brand = '$for_brand', series = '$for_series', package = '$for_pkg', fb_page = '$for_fbpage', channel = '$for_channel', pay_method = '$for_pay', ship_rec_name = '$for_rec_name', ship_rec_add = '$for_rec_add', ship_rec_contact = '$for_rec_ctc', remark ='$for_remark', attachment ='$for_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
 
                     } else {
@@ -274,7 +408,7 @@ if (post('act') == 'D') {
             $for_trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $for_trans_id, $connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName , $dataID, $for_name, $connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -289,7 +423,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['transactionID'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -316,10 +450,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="pre-load-center">
+    <!-- <div class="pre-load-center">
         <div class="preloader"></div>
-    </div>
-    <div class="page-load-cover">
+    </div> -->
+    <!-- <div class="page-load-cover"> -->
         <div class="d-flex flex-column my-3 ms-3">
             <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
                                                                                                                     echo displayPageAction($act, $pageTitle);
@@ -580,12 +714,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     $echoVal = $row['fb_page'];
 
                                 if (isset($echoVal)) {
-                                    $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
-                                    if (!$brand_rst) {
-                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                    }
-                                    $brand_row = $brand_rst->fetch_assoc();
+                                    // $fbpage_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                                    // if (!$fbpage_rst) {
+                                    //     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    //     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    // }
+                                    // $brand_row = $brand_rst->fetch_assoc();
                                 }
                                 ?>
                                     <input class="form-control" type="text" name="for_fbpage" id="for_fbpage"
@@ -602,33 +736,33 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     <?php } ?>
                                 </div>
                                 <div class="col-md-4 mb-3 autocomplete">
-                                    <label class="form-label form_lbl" id="for_series_lbl" for="for_series">Channel<span
+                                    <label class="form-label form_lbl" id="for_channel_lbl" for="for_channel">Channel<span
                                             class="requireRed">*</span></label>
                                     <?php
                                 unset($echoVal);
 
-                                if (isset($row['series']))
-                                    $echoVal = $row['series'];
+                                if (isset($row['channel']))
+                                    $echoVal = $row['channel'];
 
                                 if (isset($echoVal)) {
-                                    $series_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
-                                    if (!$brand_rst) {
-                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                    }
-                                    $series_row = $series_rst->fetch_assoc();
+                                    // $series_rst = getData('name', "id = '$echoVal'", '', CHANNEL, $connect);
+                                    // if (!$brand_rst) {
+                                    //     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    //     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    // }
+                                    // $series_row = $series_rst->fetch_assoc();
                                 }
                                 ?>
-                                    <input class="form-control" type="text" name="for_series" id="for_series"
+                                    <input class="form-control" type="text" name="for_channel" id="for_channel"
                                         <?php if ($act == '') echo 'disabled' ?>
-                                        value="<?php echo !empty($echoVal) ? $series_row['name'] : ''  ?>">
-                                    <input type="hidden" name="for_series_hidden" id="for_series_hidden"
-                                        value="<?php echo (isset($row['series'])) ? $row['series'] : ''; ?>">
+                                        value="<?php echo !empty($echoVal) ? $channel_row['name'] : ''  ?>">
+                                    <input type="hidden" name="for_channel_hidden" id="for_channel_hidden"
+                                        value="<?php echo (isset($row['channel'])) ? $row['channel'] : ''; ?>">
 
 
-                                    <?php if (isset($series_err)) { ?>
+                                    <?php if (isset($channel_err)) { ?>
                                     <div id="err_msg">
-                                        <span class="mt-n1"><?php echo $series_err; ?></span>
+                                        <span class="mt-n1"><?php echo $channel_err; ?></span>
                                     </div>
                                     <?php } ?>
                                 </div>
@@ -642,7 +776,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     $echoVal = $row['pay_method'];
 
                                 if (isset($echoVal)) {
-                                    $pay_rst = getData('name', "id = '$echoVal'", '', FIN_PAY_METH, $connect);
+                                    $pay_rst = getData('name', "id = '$echoVal'", '', FIN_PAY_METH, $finance_connect);
                                     if (!$pay_rst) {
                                         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -793,7 +927,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </form>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 
     <?php
     /*
@@ -811,14 +945,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <script>
     var page = "<?= $pageTitle ?>";
     var action = "<?php echo isset($act) ? $act : ' '; ?>";
-    var managerAssignJSON = <?php echo isset($managerAssignJSON) ? $managerAssignJSON : '""' ?>;
 
     checkCurrentPage(page, action);
     centerAlignment("formContainer");
     setButtonColor();
     preloader(300, action);
 
-    // <?php include "./js/fb_order_req.js" ?>
+    <?php 
+    include "./js/fb_order_req.js" 
+    ?>
     </script>
 
 </body>
