@@ -74,6 +74,7 @@ if ($email && $password) {
                     generateDBData(META_ADS_ACC, $finance_connect);
                     generateDBData(COUNTRIES, $connect);
                     generateDBData(COURIER, $connect);
+                    generateDBData(PROD_CATEGORY, $connect);
                     
 
                     return header('Location: dashboard.php');

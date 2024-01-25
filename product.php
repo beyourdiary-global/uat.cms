@@ -96,7 +96,8 @@ if (post('actionBtn')) {
                 && isDuplicateRecord("cost", $prod_cost, $tblName, $connect, $dataID)
                 && isDuplicateRecord("currency_unit", $prod_cur_unit, $tblName, $connect, $dataID)
                 && isDuplicateRecord("barcode_status", $prod_barcode_status, $tblName, $connect, $dataID)
-                && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblName, $connect, $dataID);
+                && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblName, $connect, $dataID)
+                && isDuplicateRecord("prod_category", $prod_category, $tblName, $connect, $dataID);
 
             if ($check_duplicate_record) {
                 $err = "Duplicate record found for current " . $pageTitle;
@@ -147,10 +148,12 @@ if (post('actionBtn')) {
                         array_push($datafield, 'barcode_slot');
                     }
 
-                    if ($prod_category)
+                    if ($prod_category){
                         array_push($newvalarr, $prod_category);
+                        array_push($datafield, 'prod_category');
+                    }
 
-                    if ($prod_expire_date)
+                    if ($prod_expire_date){
 
                         array_push($newvalarr, $prod_expire_date);
                         array_push($datafield, 'expire_date');
@@ -446,9 +449,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="row">
-                    <div class="col-12 col-md-6">
                             <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="prod_category_lbl" for="prod_category">Product Category</label>
+                                <label class="form-label form_lbl" id="prod_category_lbl" for="prod_category">Category</label>
                                 <?php
                                 unset($echoVal);
 
@@ -600,6 +602,29 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 if ($(this).val() == '')
                     $('#' + $(this).attr('id') + '_hidden').val('');
             });
+        }
+
+        if (!($("#prod_category").attr('readonly'))) {
+            $("#prod_category").keyup(function() {
+                var param = {
+                    search: $(this).val(), 
+                    searchType: 'name', 
+                    elementID: $(this).attr('id'), 
+                    hiddenElementID: $(this).attr('id') + '_hidden', 
+                    dbTable: '<?= PROD_CATEGORY ?>' //
+                }
+                var arr = searchInput(param, '<?= $SITEURL ?>');
+            });
+            $("#prod_category").change(function() {
+                if ($(this).val() == '')
+                    $('#' + $(this).attr('id') + '_hidden').val('');
+            });
+
+            $("#prod_category_hidden").change(function() {
+                if ($("#prod_category_hidden").val() != '') {
+                    console.log(arr);
+                };
+            })
         }
 
         if (!($("#parent_prod").attr('readonly'))) {

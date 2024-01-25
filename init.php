@@ -109,9 +109,8 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
-define('TAX_SETT','tex_setting');
 define('PROD_CATEGORY','product_category');
-define('BRD_SERIES','brand_series');
+
 
 //finance
 define('MERCHANT', 'merchant');
@@ -134,6 +133,9 @@ define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 define('AGENT','agent');
+define('BRD_SERIES','brand_series');
+define('TAX_SETT','tax_setting');
+define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
