@@ -1,17 +1,16 @@
 <?php
-$pageTitle = "Tax Setting";
-
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-echo '<script>var page = "' . $pageTitle . '"; checkCurrentPage(page);</script>';
+$pageTitle = "Tax";
+$isFinance = 1;
+include_once '../menuHeader.php';
+include_once '../checkCurrentPagePin.php';
 
 $tblName = TAX_SETT;
 
 //Current Page Action And Data ID
-$dataID = !empty(input('id')) ? input('id') : post('id');
-$act = !empty(input('act')) ? input('act') : post('act');
-$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+$dataID = input('id');
+$act = input('act');
+$pageAction = getPageAction($act);
+
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/tax_setting_table.php';
@@ -23,55 +22,32 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-//Checking The Page ID , Action , Pin Access Exist Or Not
-if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
-    echo $redirectLink;
+if ($dataID) { //edit/remove/view
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
 
-//Get The Data From Database
-$rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
-
-//Checking Data Error When Retrieved From Database
-if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
-    $errorExist = 1;
-    $_SESSION['tempValConfirmBox'] = true;
-    $act = "F";
-}
-
-//Delete Data
-if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
-    $_SESSION['delChk'] = 1;
-}
-
-//View Data
-if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']) {
-
-    $_SESSION['viewChk'] = 1;
-
-    if (isset($errorExist)) {
-        $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
+    if ($rst != false && $rst->num_rows > 0) {
+        $dataExisted = 1;
+        $row = $rst->fetch_assoc();
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        // If $rst is false or no data found ($act==null)
+        $errorExist = 1;
+        $_SESSION['tempValConfirmBox'] = true;
+        $act = "F";
     }
+}
 
-    $log = [
-        'log_act' => $pageAction,
-        'cdate'   => $cdate,
-        'ctime'   => $ctime,
-        'uid'     => USER_ID,
-        'cby'     => USER_ID,
-        'act_msg' => $viewActMsg,
-        'page'    => $pageTitle,
-        'connect' => $connect,
-    ];
-
-    audit_log($log);
+if (!($dataID) && !($act)) {
+    echo '<script>
+    alert("Invalid action.");
+    window.location.href = "' . $redirect_page . '"; // Redirect to previous page
+    </script>';
 }
 
 //Edit And Add Data
 if (post('actionBtn')) {
 
     $action = post('actionBtn');
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
     switch ($action) {
         case 'addData':
@@ -81,8 +57,6 @@ if (post('actionBtn')) {
             $currentDataName = postSpaceFilter('currentDataName');
             $percentage = postSpaceFilter('percentage');
             $dataRemark = postSpaceFilter('currentDataRemark');
-
-            $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
@@ -115,13 +89,15 @@ if (post('actionBtn')) {
 
                     $query = "INSERT INTO " . $tblName . "(country,name,percentage,remark,create_by,create_date,create_time) VALUES ('$country','$currentDataName',$percentage,'$dataRemark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
-                    $dataID = $connect->insert_id;
+                    $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                     $act = "F";
                 }
             } else {
                 try {
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $row = $rst->fetch_assoc();
 
                     if ($row['country'] != $country) {
                         array_push($oldvalarr, $row['country']);
@@ -149,11 +125,15 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
+                    // convert into string
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET country = '$country', name ='$currentDataName', percentage = '$percentage', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
-                        $returnData = mysqli_query($connect, $query);
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
+                        $query = "UPDATE " . $tblName  . " SET country = '$country', name = '$currentDataName', percentage ='$percentage', remark ='$remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($finance_connect, $query);
+
                     } else {
                         $act = 'NC';
                     }
@@ -161,6 +141,8 @@ if (post('actionBtn')) {
                     $errorMsg = $e->getMessage();
                     $act = "F";
                 }
+
+                
             }
 
             // audit log
@@ -191,9 +173,9 @@ if (post('actionBtn')) {
 
             break;
 
-        case 'back':
-            echo $clearLocalStorage . ' ' . $redirectLink;
-            break;
+            case 'back':
+                echo $clearLocalStorage . ' ' . $redirectLink;
+                break;
     }
 }
 
@@ -238,7 +220,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="form-group autocomplete mb-3">
-                        <label class="form-label form" id="countryLabel" for="country">Tax Country</label>
+                        <label class="form-label form" id="countryLabel" for="country">Country</label>
                         <?php
                         $selectedCountry = isset($row['country']) ? $row['country'] : '';
     
@@ -260,7 +242,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="form-group mb-3">
                             <div class="row">
                                 <div class="col-sm">
-                                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Tax Name</label>
+                                    <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
                                     <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                     <div id="err_msg">
                                         <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
@@ -281,15 +263,39 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <?php
+                        switch ($act) {
+                            case 'I':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                break;
+                            case 'E':
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                break;
+                        }
+                        ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+    <?php
+    
+    if (isset($_SESSION['tempValConfirmBox'])) {
+        unset($_SESSION['tempValConfirmBox']);
+        echo $clearLocalStorage;
+        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+    }
+    ?>
+
     <script>
+
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);

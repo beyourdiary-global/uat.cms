@@ -1,27 +1,19 @@
 <?php
-$pageTitle = "Internal Consume";
+$pageTitle = "Downline Top Up Record";
 $isFinance = 1;
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = INTERNAL_CONSUME;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/internal_consume.php';
-$deleteRedirectPage = $SITEURL . '/finance/internal_consume_table.php';
+$redirect_page = $SITEURL . '/finance/downline_top_up_record.php';
+$result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
 
-$result = getData('*', '', '', $tblName, $finance_connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -69,9 +61,7 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col">PIC</th>
-                            <th scope="col">Date</th>
+                            <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
@@ -86,8 +76,8 @@ if (!$result) {
                         while ($row = $result->fetch_assoc()) {
                             if (!empty($row['id'])) {
 
-                                $picResult = getData('name', "id='" . $row['PIC'] . "'", '', USR_USER, $connect);
-                                $picRow = $picResult->fetch_assoc();
+                                $agentResult = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $connect);
+                                $agentRow = $picResult->fetch_assoc();
 
                                 $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                                 $brandRow = $brandResult->fetch_assoc();
@@ -97,9 +87,7 @@ if (!$result) {
                         ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $picRow['name'] ?></td>
-                                    <td scope="row"><?= $row['date'] ?></td>
+                                    <td scope="row"><?= $agentRow['name'] ?></td>
                                     <td scope="row"><?= $brandRow['name'] ?></td>
                                     <td scope="row"><?= $currRow['unit'] ?></td>
                                     <td scope="row"><?= $row['amount'] ?></td>
@@ -139,9 +127,7 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col">PIC</th>
-                            <th scope="col">Date</th>
+                            <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
