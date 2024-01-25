@@ -75,7 +75,7 @@ if ($email && $password) {
                     generateDBData(COUNTRIES, $connect);
                     generateDBData(COURIER, $connect);
                     //generateDBData(PROD_CATEGORY, $connect);
-                    
+  
 
                     return header('Location: dashboard.php');
                } else {
