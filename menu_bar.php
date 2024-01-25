@@ -105,7 +105,7 @@ $menuList = array(
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                     array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '61', '62', '67'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67', '62'),
 
 
             ),
