@@ -114,6 +114,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col">S/N</th>
                         <th scope="col">Year</th>
                         <th scope="col">Month</th>
                         <th scope="col">Attachment</th>
