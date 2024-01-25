@@ -32,22 +32,22 @@ $('.submitBtn').on('click', () => {
 
     if (($('#sa_country').val() === '' || $('#sa_country').val() === null || $('#sa_country')
             .val() === undefined)) {
-        id_chk = 0;
+        country_chk = 0;
         $("#sa_country").after(
-            '<span class="error-message sa-country-err">country is required!</span>');
+            '<span class="error-message sa-country-err">Country is required!</span>');
     } else {
         $(".sa-country-err").remove();
-        id_chk = 1;
+        country_chk = 1;
     }
 
     if (($('#sa_currency').val() === '' || $('#sa_currency').val() === null || $('#sa_currency')
             .val() === undefined)) {
-        id_chk = 0;
+        currency_chk = 0;
         $("#sa_currency").after(
-            '<span class="error-message sa-currency-err">currency is required!</span>');
+            '<span class="error-message sa-currency-err">Currency is required!</span>');
     } else {
         $(".sa-currency-err").remove();
-        id_chk = 1;
+        currency_chk = 1;
     }
 
     if ( name_chk == 1 && country_chk == 1 && currency_chk == 1)
