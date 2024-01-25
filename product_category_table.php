@@ -1,13 +1,13 @@
 <?php
-$pageTitle = "Product Category";
+$pageTitle = "Category";
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
 $tblName = PROD_CATEGORY;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
- 
-$_SESSION['act'] = ''; 
+
+$_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering

@@ -1,33 +1,24 @@
 <?php
 $pageTitle = "Brand Series";
+$isFinance = 1;
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-$tblName = BRD_SERIES;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/brand_series.php';
-$deleteRedirectPage = $SITEURL . '/brand_series_table.php';
-
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/brand_series.php';
+$result = getData('*', '', '', BRD_SERIES, $finance_connect);
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>

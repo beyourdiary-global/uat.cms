@@ -1,27 +1,17 @@
 <?php
-$pageTitle = "Agent";
+$pageTitle = "Tax";
+$isFinance = 1;
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-$tblName = AGENT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/agent.php';
-$deleteRedirectPage = $SITEURL . '/agent_table.php';
-
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/tax.php';
+$result = getData('*', '', '', TAX_SETT, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +35,6 @@ if (!$result) {
     </div>
 
     <div class="page-load-cover">
-
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
             <div class="col-12 col-md-8">
@@ -71,12 +60,10 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Country</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">Tax Country</th>
+                            <th scope="col">Tax Name</th>
+                            <th scope="col">Tax Percentage</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -88,14 +75,11 @@ if (!$result) {
                             if (!empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['brand'] ?></td>
-                                    <td scope="row"><?= $row['person_in_charge'] ?></td>
-                                    <td scope="row"><?= $row['contact'] ?></td>
-                                    <td scope="row"><?= $row['email'] ?></td>
+                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['country'] ?></td>
+                                    <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?= $row['percentage'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
-                                       
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -130,12 +114,10 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Country</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Tax Country</th>
+                            <th scope="col">Tax Name</th>
+                            <th scope="col">Tax Percentage</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
@@ -144,13 +126,12 @@ if (!$result) {
             </div>
         </div>
     </div>
-
+    
     <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ' '; ?>";
+         var page = "<?= $pageTitle ?>";
+         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-        checkCurrentPage(page, action);
+         checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
