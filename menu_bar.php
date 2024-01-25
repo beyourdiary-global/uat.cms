@@ -243,7 +243,7 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
-                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
+                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/finance/tax_table.php', '57'),
                 ),
                 'pin' => array('33', '57'),
             ),
@@ -261,7 +261,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63' ,'64','66')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63' ,'64','66','57')
 
     ),
     array(
