@@ -1449,6 +1449,7 @@ function setAutofocus(action) { //testing merge issue
         firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
           inputValue.length;
       }
+      var test = 1;
     }
   }
 }
