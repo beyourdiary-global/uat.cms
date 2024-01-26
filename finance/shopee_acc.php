@@ -82,6 +82,7 @@ if (post('actionBtn')) {
                     }
 
                     $query = "INSERT INTO " . $tblName  . "(name,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -271,9 +272,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
                 </div>
 
-                <div class="form-group autocomplete mb-3">
+                <div class="form-group mb-3">
                     <div class="row">
-                        <div class="col-md-6">
+                    <div class="col-md-12">
                             <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
                             <select class="form-select" id="sa_country" name="sa_country" <?php if ($act == '') echo 'disabled' ?>>
                             <option value="0" disabled selected>Select Country</option>
@@ -302,8 +303,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             <?php } ?>
         </div>
+        </div>
+        </div>
 
-        <div class="col-md-6">
+        <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-md-12">
             <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
             <select class="form-select" id="sa_currency" name="sa_currency" <?php if ($act == '') echo 'disabled' ?>>
                 <option value="0" disabled selected>Select Currency</option>
