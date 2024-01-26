@@ -1,3 +1,36 @@
+//autocomplete
+$(document).ready(function() {
+
+    if (!($("#sa_country").attr('disabled'))) {
+        $("#sa_country").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+        
+       
+    }
+    if (!($("#sa_currency").attr('disabled'))) {
+        $("#sa_currency").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'unit', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= CUR_UNIT ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+            console.log(hiddenElementID.val())
+        });
+    }
+})
+
+
 //jQuery form validation
 
 $("#sa_name").on("input", function() {
