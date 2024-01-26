@@ -84,9 +84,10 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Merchant', 'mdi storefront-outline', $SITEURL . '/finance/merchant_table.php', '36')
+                    array('Merchant', 'mdi storefront-outline', $SITEURL . '/finance/merchant_table.php', '36'),
+                    array('Credit Notes (Invoice)', 'mdi storefront-outline', $SITEURL . '/finance/cred_notes_inv_table.php', '70'),
                 ),
-                'pin' => array('36'),
+                'pin' => array('36','70'),
             ),
             array(
                 'Assets and Liabilities List',
@@ -138,7 +139,7 @@ $menuList = array(
 
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58','66', '67','68')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58','66', '67','68','70')
 
     ),
     array(
