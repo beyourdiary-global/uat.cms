@@ -36,15 +36,13 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
-$country_list_result = getData('*', '', '', COUNTRIES, $connect);
-$cur_list_result = getData('*', '', '', CUR_UNIT, $connect);
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
     $sa_name = postSpaceFilter("sa_name");
-    $sa_country = postSpaceFilter("sa_country");
-    $sa_currency = postSpaceFilter("sa_currency");
+    $sa_country = postSpaceFilter("sa_country_hidden");
+    $sa_currency = postSpaceFilter("sa_currency_hidden");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -82,7 +80,7 @@ if (post('actionBtn')) {
                     }
 
                     $query = "INSERT INTO " . $tblName  . "(name,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
-
+                    
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -170,8 +168,6 @@ if (post('actionBtn')) {
 
 
 if (post('act') == 'D') {
-    $id = post('id');
-    if ($id) {
         try {
             // take name
             $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
@@ -185,7 +181,6 @@ if (post('act') == 'D') {
             echo 'Message: ' . $e->getMessage();
         }
     }
-}
 
 //view
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
@@ -235,7 +230,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
+    <div id="SAformContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
             <form id="SAForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
@@ -273,63 +268,49 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
 
                 <div class="form-group mb-3">
-                    <div class="row">
-                    <div class="col-md-12">
-                            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
-                            <select class="form-select" id="sa_country" name="sa_country" <?php if ($act == '') echo 'disabled' ?>>
-                            <option value="0" disabled selected>Select Country</option>
-                        <?php
-                if ($country_list_result->num_rows >= 1) {
-                    $country_list_result->data_seek(0);
-                    while ($row3 = $country_list_result->fetch_assoc()) {
-                        $selected = "";
-                        if (isset($dataExisted, $row['country']) && (!isset($sa_country))) {
-                            $selected = $row['country'] == $row3['id'] ? "selected" : "";
-                        } else if (isset($sa_country)) {
-                            list($sa_country_id, $sa_country_name) = explode(':', $sa_country);
-                            $selected = $sa_country == $row3['id'] ? "selected" : "";
-                        }
-                        echo "<option value=\"" . $row3['id'] . "\" $selected>" . $row3['name'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=\"0\">None</option>";
+    <div class="row">
+        <div class="col-md-6 mb-3 autocomplete">
+            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country*</label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['country']))
+                $echoVal = $row['country'];
+
+            if (isset($echoVal)) {
+                $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
+                if (!$country_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                ?>
-            </select>
+                $country_row = $country_rst->fetch_assoc();
+                echo $country_row['name'];
+            }
+            ?>
 
-            <?php if (isset($country_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $country_err; ?></span>
-                </div>
-            <?php } ?>
-        </div>
-        </div>
+            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>" required>
+
+            <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
         </div>
 
-        <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
+        <div class="col-md-6 mb-3 autocomplete">
             <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
-            <select class="form-select" id="sa_currency" name="sa_currency" <?php if ($act == '') echo 'disabled' ?>>
-                <option value="0" disabled selected>Select Currency</option>
-                <?php
-                if ($cur_list_result->num_rows >= 1) {
-                    $cur_list_result->data_seek(0);
-                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                        $selected = "";
-                        if (isset($dataExisted, $row['currency']) && (!isset($sa_currency))) {
-                            $selected = $row['currency'] == $row2['id'] ? "selected" : "";
-                        } else if (isset($sa_curr)) {
-                            list($sa_currency_id, $sa_currency_unit) = explode(':', $sa_currency);
-                            $selected = $sa_currency == $row2['id'] ? "selected" : "";
-                        }
-                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=\"0\">None</option>";
+            <?php
+            unset($echoVal);
+            if (isset($row['currency']))
+                $echoVal = $row['currency'];
+
+            if (isset($echoVal)) {
+                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                if (!$currency_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                ?>
-            </select>
+                $currency_row = $currency_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
+            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
 
             <?php if (isset($currency_err)) { ?>
                 <div id="err_msg">
@@ -340,6 +321,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 </div>
 
+                        
 <div class="form-group mt-5 d-flex justify-content-center">
     <?php
     switch ($act) {
