@@ -64,8 +64,8 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                 <tbody>
                 <?php while ($row = $result->fetch_assoc()) { 
                         $currency = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+              
                         $row2 = $currency->fetch_assoc();
-
                         $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
                         $row3 = $country->fetch_assoc();
                         ?>
@@ -75,7 +75,8 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                             <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['name'] ?></td>
                             <td scope="row"><?= $row3['name'] ?></td>
-                            <td scope="row"><?= $row2['unit'] ?></td>
+                            <td scope="row"><?= isset($row2['unit']) ? $row2['unit'] : ''  ?>
+                            </td>
                             <td scope="row">
                             <div class="dropdown" style="text-align:center">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -120,16 +121,23 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 
 </body>
 
-<script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-    checkCurrentPage(page, action);
-   
+<script>
+    /**
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
     dropdownMenuDispFix();
 
+    /**
+      oufei 20231014
+      common.fun.js
+      function(id)
+      to resize table with bootstrap 5 classes
+    */
     datatableAlignment('shopee_acc_table');
+    
 </script>
-
 </html>
