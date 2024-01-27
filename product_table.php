@@ -88,7 +88,7 @@ if (!$result) {
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row">
-                                        <?php
+                                        <?php 
 
                                         $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
@@ -97,8 +97,9 @@ if (!$result) {
                                             echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                         }
                                         $rowCurUnit = $resultCurUnit->fetch_assoc();
-
-                                        echo $rowCurUnit['unit'] . ' ' . $row['cost'];
+                                        echo $data_curr_unit =isset($row2['unit']) ? $row2['unit'] : '';
+                                        echo $data_curr_unit['unit'] . ' ' . $row['cost'];
+                        
                                         ?>
                                     </td>
                                     <td scope="row">
