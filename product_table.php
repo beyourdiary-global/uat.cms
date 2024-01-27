@@ -97,8 +97,10 @@ if (!$result) {
                                             echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                         }
                                         $rowCurUnit = $resultCurUnit->fetch_assoc();
-                                        echo $data_curr_unit =isset($row2['unit']) ? $row2['unit'] : '';
-                                        echo $data_curr_unit['unit'] . ' ' . $row['cost'];
+                                        $data_curr_unit =isset($rowCurUnit['unit']) ? $rowCurUnit['unit'] : '';
+                                        $data_cost = isset($row['cost']) ? $row['cost'] : '';
+
+                                        echo $data_curr_unit. ' ' .$data_cost;
                         
                                         ?>
                                     </td>
@@ -112,7 +114,10 @@ if (!$result) {
                                         }
                                         $rowWeightUnit = $resultWeightUnit->fetch_assoc();
 
-                                        echo $row['weight'] . ' ' . $rowWeightUnit['unit'];
+                                        $data_weight = isset  ($row['weight']) ? $row['weight'] : '';
+                                        $data_unit = isset ($rowWeightUnit['unit']) ? $rowWeightUnit['unit'] : '';
+
+                                        echo $data_weight. ' ' .$data_unit; 
                                         ?>
                                     </td>
                                     <td scope="row">
