@@ -1428,7 +1428,7 @@ function preloader(additionalDelay, action) {
   });
 }
 
-function setAutofocus(action) { //test
+function setAutofocus(action) { //testing merge issue
   if (action === "I" || action === "E") {
     var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
       return $.trim($(this).val()) === '';
@@ -1449,6 +1449,7 @@ function setAutofocus(action) { //test
         firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
           inputValue.length;
       }
+      console.log('hello');
     }
   }
 }
