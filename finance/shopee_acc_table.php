@@ -75,7 +75,7 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                             <th scope="row"><?= $num++; ?></th>
                             <td scope="row"><?= $row['name'] ?></td>
                             <td scope="row"><?= $row3['name'] ?></td>
-                            <td scope="row"><? =$row2['unit'] ?>
+                            <td scope="row"><?= isset($row2['unit']) ? $row2['unit'] : ''  ?>
                             </td>
                             <td scope="row">
                             <div class="dropdown" style="text-align:center">
@@ -138,5 +138,6 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
       to resize table with bootstrap 5 classes
     */
     datatableAlignment('shopee_acc_table');
+    
 </script>
 </html>

@@ -253,7 +253,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                         <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php
+                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
                                     if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
                                         echo $row['name'];
                                         } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {
@@ -272,69 +272,67 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
 
                 <div class="form-group mb-3">
-                    <div class="row">
-                    <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
-                                <?php
+    <div class="row">
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
 
-                                unset($echoVal);
+            if (isset($row['country']))
+                $echoVal = $row['country'];
 
-                                if (isset($row['country']))
-                                    $echoVal = $row['country'];
+            if (isset($echoVal)) {
+                $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
+                if (!$country_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $country_row = $country_rst->fetch_assoc();
+                echo $country_row['name'];
+            }
+            ?>
 
-                                if (isset($echoVal)) {
-                                    $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
-                                    if (!$country_rst) {
-                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                    }
-                                    $country_row = $country_rst->fetch_assoc();
-                                    echo $country_row['name'];
-                                }
-                                ?>
+            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
 
-                                <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
+            <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
 
-                                <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
-                            
-                                <?php if (isset($country_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $country_err; ?></span>
-                                </div>
-                            <?php } ?>
-                            
-                            </div>
-                        </div>
-                    </div>
+            <?php if (isset($country_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $country_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
 
-                    <div class="col-md-6 mb-3 autocomplete">
-                            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
-                            <?php
-                            unset($echoVal);
+        
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
 
-                            if (isset($row['currency']))
-                                $echoVal = $row['currency'];
+            if (isset($row['currency']))
+                $echoVal = $row['currency'];
 
-                            if (isset($echoVal)) {
-                                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-                                if (!$currency_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                }
-                                $currency_row = $currency_rst->fetch_assoc();
-                            }
-                            ?>
-                            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
-                            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
+            if (isset($echoVal)) {
+                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                if (!$currency_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $currency_row = $currency_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
+            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
 
-                            <?php if (isset($currency_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $currency_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        </div>
-                    </div>
+            <?php if (isset($currency_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $currency_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
                         
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php
@@ -356,7 +354,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </div>
 
 <?php
-    /*
+   /*
         oufei 20231014
         common.fun.js
         function(title, subtitle, page name, ajax url path, redirect path, action)
@@ -368,8 +366,19 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
+
     <script>
-    <?php include "../js/shopee_acc.js" ?>
+        <?php include "../js/shopee_acc.js" ?>
+
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+        centerAlignment("formContainer");
+        setAutofocus(action);
+        setButtonColor();
+        preloader(300, action);
     </script>
 </body>
 </html>
