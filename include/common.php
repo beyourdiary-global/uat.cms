@@ -265,7 +265,9 @@ function isDuplicateRecordWithConditions($fields, $values, $tbl, $connect, $prim
 
 function tableExists($tableName, $conn) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
-    return $result && $result->num_rows > 0;
+    if(!$result)
+	return;
+	return $result && $result->num_rows > 0;
 }
 
 function getData($search_val, $val, $val2, $tbl, $conn)
