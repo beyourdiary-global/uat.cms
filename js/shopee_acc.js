@@ -1,5 +1,14 @@
+var page = "<?= $pageTitle ?>";
+var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+checkCurrentPage(page, action);
+setButtonColor();
+setAutofocus(action);
+preloader(300, action);
+
 //autocomplete
 $(document).ready(function() {
+    
 
     if (!($("#sa_country").attr('disabled'))) {
         $("#sa_country").keyup(function() {
