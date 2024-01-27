@@ -288,7 +288,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
                 $country_row = $country_rst->fetch_assoc();
-                echo $country_row['name'];
             }
             ?>
 
