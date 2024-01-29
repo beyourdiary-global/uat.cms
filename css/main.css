@@ -611,3 +611,12 @@ input {
     color: red !important;
 }
 
+@media(max-width: 575.98px) {
+    .invoice-edit .invoice-preview-card .invoice-calculations,.invoice-add .invoice-preview-card .invoice-calculations {
+        width:100%
+    }
+}
+
+.invoice-edit .invoice-preview-card .repeater-wrapper:not(:last-child),.invoice-add .invoice-preview-card .repeater-wrapper:not(:last-child) {
+    margin-bottom: 1.5rem
+}
