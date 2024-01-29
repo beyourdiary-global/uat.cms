@@ -805,6 +805,31 @@ function createSortingTable(tableid) {
   });
 }
 
+function createSortingMyLeaveTransactionTable(tableid) {
+  let table = new DataTable("#" + tableid, {
+    order: [[1, "asc"]],
+    autoWidth: false,
+    columnDefs: [
+      {
+        "searchable": false, "targets": [8]
+      }
+    ]
+  });
+}
+
+
+function createSortingLeaveTransactionTable(tableid) {
+  let table = new DataTable("#" + tableid, {
+    order: [[1, "asc"]],
+    autoWidth: false,
+    columnDefs: [
+      {
+        "searchable": false, "targets": [12]
+      }
+    ]
+  });
+}
+
 function setWidth(id, id2) {
   var one = document.getElementById(id);
   var two = document.getElementById(id2);
@@ -857,7 +882,7 @@ function centerAlignment(elementID) {
   $(window).on("load resize", () => {
     var form = $("#" + elementID);
 
-    if (window.matchMedia("(max-height: 950px)").matches) {
+    if (window.matchMedia("(max-height: 1200px)").matches) {
       if (form.hasClass("centered")) form.removeClass("centered");
 
       form.css("overflow", "auto");
@@ -923,6 +948,23 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     case "PC":
       var title = "Successful Change " + pagename;
       break;
+    case "LA":
+    case "LD":
+    case "LC":
+      var action;
+      if (act === 'LA') {
+        action = "approval";
+      } else if (act === 'LD') {
+        action = "declined";
+      } else if (act === 'LC') {
+        action = "Cancel";
+      }
+
+      var title = `Leave transaction ${action}`;
+      var title2 = `<span style="color:#FF9B44" class="mdi mdi-alert-circle-outline"></span> Confirm Action`;
+      var msg = [`This leave transaction cannot modify once it has been ${action}. Do you still want to proceed ?`];
+      var btn = "Confirm";
+      break;
     default:
       var title = "Error";
   }
@@ -937,7 +979,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       message += `<p class="mt-n3" style="text-align:center; font-weight:bold;">${msg[i]}</p>`;
   }
 
-  if (act == 'D') {
+  if (act == 'D' || act == 'LD' || act == 'LA' || act == 'LC') {
     var firstContent = title2;
   } else {
     var firstContent = title;
@@ -983,8 +1025,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         </div>
     </div>
     `;
-
-  if (act == "D") {
+  if (act == 'D' || act == 'LD' || act == 'LA' || act == 'LC') {
     const myModal = new bootstrap.Modal(modalElem, {
       keyboard: false,
       backdrop: "static",
@@ -1055,6 +1096,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       });
     } else console.log("Operation Cancelled.");
   }
+
 
   if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC" || act == "F" || act == "ErrMO") {
     const myModal2 = new bootstrap.Modal(modelResult, {
@@ -1127,7 +1169,7 @@ function dropdownMenuDispFix() {
 }
 
 //autocomplete
-function searchInput(param,siteURL) { 
+function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
@@ -1222,21 +1264,21 @@ function retrieveDBData(param, siteURL, callback) {
       url: siteURL + '/searchData.php',
       type: 'post',
       data: {
-          searchText: search,
-          searchType: type,
-          tblname: dbTable,
-          searchCol: col
+        searchText: search,
+        searchType: type,
+        tblname: dbTable,
+        searchCol: col
       },
       dataType: 'json',
-      success: (result) => {   
-          callback(result);      
+      success: (result) => {
+        callback(result);
       },
       error: function (xhr, status, error) {
         console.error('Error fetching data:', error);
         console.log('XHR Status:', status);
         console.log('XHR Response Text:', xhr.responseText);
         console.log('XHR Response JSON:', xhr.responseJSON);
-    }
+      }
     });
   }
 }
@@ -1360,6 +1402,8 @@ document.addEventListener("DOMContentLoaded", function () {
           'label[for="' + input.id + '"]'
         ).textContent;
 
+        labelContent = labelContent.replace(/\*/g, '');
+
         var alertMessage = document.createElement("span");
         alertMessage.textContent = labelContent + " is required!";
         alertMessage.style.color = "red";
@@ -1430,26 +1474,28 @@ function preloader(additionalDelay, action) {
 
 function setAutofocus(action) { //testing merge issue
   if (action === "I" || action === "E") {
-    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function() {
+    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly]), select:visible:enabled:not(:hidden,[readonly])").filter(function () {
       return $.trim($(this).val()) === '';
-    }).first();    if (firstInput.length > 0) {
+    }).first();
 
+    if (firstInput.length > 0) {
       firstInput.focus();
 
       var inputValue = firstInput.val();
-      var lastSpaceIndex = inputValue.lastIndexOf(" ");
+      if (inputValue) {
+        var lastSpaceIndex = inputValue.lastIndexOf(" ");
 
-      if (lastSpaceIndex !== -1) {
-        var input = firstInput.get(0);
-        var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
-        var cursorPosition =
-          lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
-        input.setSelectionRange(cursorPosition, cursorPosition);
-      } else {
-        firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
-          inputValue.length;
+        if (lastSpaceIndex !== -1) {
+          var input = firstInput.get(0);
+          var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
+          var cursorPosition = lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
+          input.setSelectionRange(cursorPosition, cursorPosition);
+        } else {
+          firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd = inputValue.length;
+        }
       }
       console.log('hello');
     }
   }
+
 }
