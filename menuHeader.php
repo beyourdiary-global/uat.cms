@@ -177,7 +177,7 @@
 <!-- Move the script block to the end of the body -->
 <script>
     function setButtonColor() {
-        var buttons = document.querySelectorAll('#actionBtn, #addBtn');
+        var buttons = document.querySelectorAll('#actionBtn, #addBtn,#backBtn');
 
         buttons.forEach(function(button) {
             button.style.backgroundColor = '<?php echo ($dataExisted ? $row['buttonColor'] : ''); ?>';
