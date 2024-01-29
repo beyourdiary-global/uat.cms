@@ -37,8 +37,10 @@ if ($action) {
             $meta = postSpaceFilter('meta');
             $barcode_prefix = postSpaceFilter('barcode_prefix');
             $barcode_next_number = postSpaceFilter('barcode_next_number');
-            $invoice_prefix = postSpaceFilter('invoice_prefix');
-            $invoice_next_number = postSpaceFilter('invoice_next_number');
+            $invoice_prefix_credit = postSpaceFilter('invoice_prefix_credit');
+            $invoice_next_number_credit = postSpaceFilter('invoice_next_number_credit');
+            $invoice_prefix_debit = postSpaceFilter('invoice_prefix_debit');
+            $invoice_next_number_debit = postSpaceFilter('invoice_next_number_debit');
 
             $datafield = $oldvalarr = $chgvalarr  = array();
 
@@ -52,7 +54,7 @@ if ($action) {
             }
 
             try {
-                $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'company_contact', 'company_email', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix', 'invoice_next_number'];
+                $fields = ['company_name', 'company_business_no', 'finance_year', 'company_address', 'company_contact', 'company_email', 'meta', 'barcode_prefix', 'barcode_next_number', 'invoice_prefix_credit', 'invoice_next_number_credit', 'invoice_prefix_debit', 'invoice_next_number_debit'];
 
                 foreach ($fields as $field) {
                     $postValue = postSpaceFilter($field);
@@ -67,7 +69,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 if ($oldvalarr && $chgvalarr) {
-                    $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', company_contact='$company_contact', company_email='$company_email', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix='$invoice_prefix', invoice_next_number='$invoice_next_number' WHERE id = '1'";
+                    $query = "UPDATE $tblName SET company_name='$company_name', company_business_no='$company_business_no', finance_year='$finance_year', company_address='$company_address', company_contact='$company_contact', company_email='$company_email', meta='$meta', barcode_prefix='$barcode_prefix', barcode_next_number='$barcode_next_number', invoice_prefix_credit='$invoice_prefix_credit', invoice_next_number_credit='$invoice_next_number_credit', invoice_prefix_debit='$invoice_prefix_debit', invoice_next_number_debit='$invoice_next_number_debit' WHERE id = '1'";
                     $returnData = mysqli_query($connect, $query);
                     $act = 'E';
                     generateDBData($tblName, $connect);
@@ -211,7 +213,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             </div>
 
                             <div class="col-sm">
-                                <label class="form-label" for="barcode_prefix">Barcode Perfix</label>
+                                <label class="form-label" for="barcode_prefix">Barcode Prefix</label>
                                 <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix"
                                     value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>"
                                     <?= $viewOnly ?>>
@@ -231,17 +233,36 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <div class="row">
                             <div class="col-sm">
-                                <label class="form-label" for="invoice_prefix">Invoice Perfix</label>
-                                <input class="form-control" type="text" name="invoice_prefix" id="invoice_prefix"
-                                    value="<?php if (isset($row['invoice_prefix'])) echo $row['invoice_prefix'] ?>"
+                                <label class="form-label" for="invoice_prefix_credit">Invoice Prefix (Credit Notes)</label>
+                                <input class="form-control" type="text" name="invoice_prefix_credit" id="invoice_prefix_credit"
+                                    value="<?php if (isset($row['invoice_prefix_credit'])) echo $row['invoice_prefix_credit'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
                             <div class="col-sm">
-                                <label class="form-label" for="invoice_next_number">Invoice Next Number</label>
-                                <input class="form-control" type="number" step="any" name="invoice_next_number"
-                                    id="invoice_next_number"
-                                    value="<?php if (isset($row['invoice_next_number'])) echo $row['invoice_next_number'] ?>"
+                                <label class="form-label" for="invoice_next_number_credit">Invoice Next Number (Credit Notes)</label>
+                                <input class="form-control" type="number" step="any" name="invoice_next_number_credit"
+                                    id="invoice_next_number_credit"
+                                    value="<?php if (isset($row['invoice_next_number_credit'])) echo $row['invoice_next_number_credit'] ?>"
+                                    <?= $viewOnly ?>>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-sm">
+                                <label class="form-label" for="invoice_prefix_debit">Invoice Prefix (Debit Notes)</label>
+                                <input class="form-control" type="text" name="invoice_prefix_debit" id="invoice_prefix_debit"
+                                    value="<?php if (isset($row['invoice_prefix_debit'])) echo $row['invoice_prefix_debit'] ?>"
+                                    <?= $viewOnly ?>>
+                            </div>
+
+                            <div class="col-sm">
+                                <label class="form-label" for="invoice_next_number_debit">Invoice Next Number (Debit Notes)</label>
+                                <input class="form-control" type="number" step="any" name="invoice_next_number_debit"
+                                    id="invoice_next_number_debit"
+                                    value="<?php if (isset($row['invoice_next_number_debit'])) echo $row['invoice_next_number_debit'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
