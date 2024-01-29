@@ -209,25 +209,25 @@ foreach ($arr as $item) {
                                         </li>
                                         <li>
                                             <div class="dropdown-item d-flex align-items-center py-1">
-                                                <input type="radio" id="pending" value="pending" name="filterLeave" />
+                                                <input type="radio" id="pending" value="Status:pending" name="filterLeave" />
                                                 <label for="pending" class="mb-0 ms-2">Pending</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="dropdown-item d-flex align-items-center py-1">
-                                                <input type="radio" id="approval" value="approval" name="filterLeave" />
+                                                <input type="radio" id="approval" value="Status:approval" name="filterLeave" />
                                                 <label for="approval" class="mb-0 ms-2">Approval</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="dropdown-item d-flex align-items-center py-1">
-                                                <input type="radio" id="declined" value="declined" name="filterLeave" />
+                                                <input type="radio" id="declined" value="Status:declined" name="filterLeave" />
                                                 <label for="declined" class="mb-0 ms-2">Declined</label>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="dropdown-item d-flex align-items-center py-1">
-                                                <input type="radio" id="cancel" value="cancel" name="filterLeave" />
+                                                <input type="radio" id="cancel" value="Status:cancel" name="filterLeave" />
                                                 <label for="cancel" class="mb-0 ms-2">Cancel</label>
                                             </div>
                                         </li>
@@ -242,7 +242,7 @@ foreach ($arr as $item) {
                                             echo '
                                             <li>
                                                 <div class="dropdown-item d-flex align-items-center py-1">
-                                                    <input type="radio" id="' . $value . '" value="' . $value . '" name="filterLeave" />
+                                                    <input type="radio" id="' . $value . '" value="Leave Type:' . $value . '" name="filterLeave" />
                                                     <label for="' . $value . '" class="mb-0 ms-2">' . $value . '</label>
                                                 </div>
                                             </li>
@@ -371,24 +371,41 @@ foreach ($arr as $item) {
         datatableAlignment('table');
         setButtonColor();
 
-        function resetFilter() {
-            var filterLeaveRadio = document.querySelector('input[name="filterLeave"]:checked');
-            var dataTable = $('#table').DataTable();
-
-            dataTable.search('').draw();
-            filterLeaveRadio.checked = false;
-        }
-
         function updateFilterValue() {
             var filterLeaveRadio = document.querySelector('input[name="filterLeave"]:checked');
             var filterValueDiv = document.querySelector("#table_filter input");
             var dataTable = $('#table').DataTable();
 
             if (filterLeaveRadio) {
-                dataTable.search(filterLeaveRadio.value).draw();
-                filterValueDiv.value = '';
+                var filterValueArray = filterLeaveRadio.value.split(':');
+
+                if (filterValueArray.length === 2) {
+                    var column = filterValueArray[0].trim();
+                    var value = filterValueArray[1].trim();
+
+                    var columnIndex = dataTable.columns().header().toArray().findIndex(function(th) {
+                        return th.textContent.trim() === column;
+                    });
+
+                    if (columnIndex !== -1) {
+                        dataTable.column(columnIndex).search(value).draw();
+                        if (filterValueDiv)
+                            filterValueDiv.value = '';
+                    }
+                }
             }
         }
+
+        function resetFilter() {
+            var filterLeaveRadio = document.querySelector('input[name="filterLeave"]:checked');
+            var dataTable = $('#table').DataTable();
+
+            dataTable.search('').columns().search('').draw();
+
+            if (filterLeaveRadio)
+                filterLeaveRadio.checked = false;
+        }
+
 
         document.addEventListener("DOMContentLoaded", function() {
             updateFilterValue();
