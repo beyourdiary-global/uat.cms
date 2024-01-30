@@ -181,7 +181,7 @@ foreach ($allLeaveTypeArr as $key => $value) {
                             <th class='text-nowrap' scope='col' width="200px">Used</th>
                         </tr>
                     </thead>
-
+ 
                     <tbody>
                         <?php
                         $x = 1;

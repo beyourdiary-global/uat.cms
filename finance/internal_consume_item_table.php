@@ -56,75 +56,81 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                     </div>
                 </div>
 
-                <table class="table table-striped" id="curr_bank_trans_table">
+                <table class="table table-striped" id="internal_consume_item_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Date</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Package</th>
-                            <th scope="col">Cost</th> 
-                            <th scope="col">Remark</th> 
+                            <th scope="col">Cost</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $usr = $pic->fetch_assoc();
+                            if (isset($row['id']) && !empty($row['id'])) {
 
-                            $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-                            $row2 = $brand->fetch_assoc();
+                                $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                                $usr = $pic->fetch_assoc();
 
-                            $package = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
-                            $row3 = $package->fetch_assoc();
+                                $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $row2 = $brand->fetch_assoc();
+
+                                $package = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                                $row3 = $package->fetch_assoc();
                         ?>
 
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <td scope="row"><?= $row['date'] ?></td>
-                                <td scope="row"><?= $usr['pic'] ?></td>
-                                <td scope="row"><?= $row2['brand'] ?></td>
-                                <td scope="row"><?= $row3['package'] ?></td>
-                                <td scope="row"><?= $row['cost'] ?></td>
-                                <td scope="row"><?= $row['remark'] ?></td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row"><?php if (isset($row['date'])) echo  $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['pic'])) echo  $usr['pic'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['brand'])) echo  $row2['brand'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['package'])) echo  $row3['package'] ?></td>
+                                    <td scope="row"><?php if (isset($row['cost'])) echo  $row['cost'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row">
+                                        <div class="dropdown" style="text-align:center">
+                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                <li>
+                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <?php }
+                        } ?>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Date</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Package</th>
-                            <th scope="col">Cost</th> 
-                            <th scope="col">Remark</th> 
+                            <th scope="col">Cost</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>

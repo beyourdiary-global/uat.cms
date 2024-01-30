@@ -73,19 +73,19 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['id'])) {
+                            if (isset($row['id']) && !empty($row['id'])) {
 
                                 $picResult = getData('name', "id='" . $row['PIC'] . "'", '', USR_USER, $connect);
                                 $picRow = $picResult->fetch_assoc();
                         ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <td scope="row"><?= $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
                                     <td scope="row"><?= $row['id'] ?></td>
-                                    <td scope="row"><?= $usr['name'] ?></td>
-                                    <td scope="row"><?= $row['amount'] ?></td>
-                                    <td scope="row"><?= $row['attachment'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
+                                    <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">

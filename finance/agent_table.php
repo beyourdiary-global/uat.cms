@@ -72,53 +72,54 @@ $result = getData('*', '', '', AGENT, $finance_connect);
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) {
 
-                            $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-                            $row2 = $curr->fetch_assoc();
-    
-                            $country = getData('country', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                            $row3 = $bank->fetch_assoc();
-    
-                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $usr = $pic->fetch_assoc();
-                        
+                                $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $row2 = $brand->fetch_assoc();
+
+                                $country = getData('country', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
+                                $row3 = $country->fetch_assoc();
+
+                                $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                                $usr = $pic->fetch_assoc();
+
                         ?>
-
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row2['brand'] ?></td>
-                                    <td scope="row"><?= $usr['person_in_charge'] ?></td>
-                                    <td scope="row"><?= $row['contact'] ?></td>
-                                    <td scope="row"><?= $row['email'] ?></td>
-                                    <td scope="row"><?= $row3['country'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/agent_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['brand'])) echo $row2['brand'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['person_in_charge'])) echo $usr['person_in_charge'] ?></td>
+                                    <td scope="row"><?php if (isset($row['contact'])) echo $row['contact'] ?></td>
+                                    <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['country'])) echo $row3['country'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row">
+                                        <div class="dropdown" style="text-align:center">
+                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                <li>
+                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/agent_table.php','D')">Delete</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <?php }
+                        } ?>
                     </tbody>
                     <tfoot>
                         <tr>

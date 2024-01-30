@@ -59,56 +59,57 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Invoice/Payment Date</th>
                         <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>                    
+                        <th scope="col">Top-up Amount</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) { 
-                        $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-                        $meta_acc = $metaQuery->fetch_assoc();
-                        $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                        $usr = $pic->fetch_assoc();
-                        ?>
-                        
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
-                            <td scope="row"><?= $meta_acc['accName']?></td>
-                            <td scope="row"><?= $row['transactionID'] ?></td>
-                            <td scope="row"><?= $row['payment_date'] ?></td>
-                            <td scope="row"><?= $usr['name'] ?></td>
-                            <td scope="row"><?= $row['topup_amt'] ?></td>
-                            <td scope="row"><?= $row['attachment'] ?></td>
-                            <td scope="row"><?= $row['remark'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                    <?php while ($row = $result->fetch_assoc()) {
+                        if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
+                            $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+                            $meta_acc = $metaQuery->fetch_assoc();
+                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                            $usr = $pic->fetch_assoc();
+                    ?>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row"><?php if (isset($meta_acc['accName'])) echo  $meta_acc['accName'] ?></td>
+                                <td scope="row"><?= $row['transactionID'] ?></td>
+                                <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
+                                <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
+                                <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
+                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                <td scope="row">
+                                    <div class="dropdown" style="text-align:center">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                            <li>
+                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
+                                                <?php endif; ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php }
+                    } ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -118,7 +119,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Invoice/Payment Date</th>
                         <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>                    
+                        <th scope="col">Top-up Amount</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>

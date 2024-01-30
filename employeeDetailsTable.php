@@ -777,59 +777,63 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                             $leaveApplyDateArr = array();
 
                                             while ($rowCurrentEmpLeaveApplication = $currentEmpLeaveApplicationResult->fetch_assoc()) {
+                                                if (isset($rowCurrentEmpLeaveApplication['id']) && !empty($rowCurrentEmpLeaveApplication['id'])) {
 
-                                                $resultLeaveType = getData('name', "id='" . $rowCurrentEmpLeaveApplication['leave_type'] . "'", '', L_TYPE, $connect);
+                                                    $resultLeaveType = getData('name', "id='" . $rowCurrentEmpLeaveApplication['leave_type'] . "'", '', L_TYPE, $connect);
 
-                                                if (!$resultLeaveType) {
-                                                    echo $errorRedirectLink;
-                                                }
+                                                    if (!$resultLeaveType) {
+                                                        echo $errorRedirectLink;
+                                                    }
 
-                                                $rowLeaveType = $resultLeaveType->fetch_assoc();
+                                                    $rowLeaveType = $resultLeaveType->fetch_assoc();
 
-                                                if (!empty($rowCurrentEmpLeaveApplication['leave_type'])) { ?>
-                                                    <?php
-                                                    array_push($leaveApplyDateArr, $rowCurrentEmpLeaveApplication['from_time'] . '->' . $rowCurrentEmpLeaveApplication['to_time']);
-                                                    ?>
-                                                    <tr>
-                                                        <th class="hideColumn" scope="col"><?= $rowCurrentEmpLeaveApplication['id']; ?></th>
-                                                        <th scope="col"><?= $numLeave++; ?></th>
-                                                        <th scope="col"><?= $rowLeaveType['name']; ?></th>
-                                                        <th scope="col"><?= $rowCurrentEmpLeaveApplication['from_time']; ?></th>
-                                                        <th scope="col"><?= $rowCurrentEmpLeaveApplication['to_time']; ?></th>
-                                                        <th scope="col"><?= $rowCurrentEmpLeaveApplication['numOfdays']; ?></th>
-                                                        <th scope="col"><?= $rowCurrentEmpLeaveApplication['remark']; ?></th>
-                                                        <td scope="row" class='text-nowrap'>
-                                                            <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
-                                                                <?php
-                                                                if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'pending')
-                                                                    $buttonColor = 'blue';
-                                                                else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'declined' || $rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'cancel')
-                                                                    $buttonColor = 'red';
-                                                                else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'approval')
-                                                                    $buttonColor = 'green';
-                                                                ?>
-                                                                <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $rowCurrentEmpLeaveApplication['leave_transaction_status'] ?>&nbsp;
-                                                            </button>
-                                                        </td>
-                                                        <td scope="row">
-                                                            <div class="dropdown" style="text-align:center">
-                                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                                                </a>
-                                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                                    <li>
-                                                                        <a class="dropdown-item" onclick="changeLeaveApplicationForm('editLeave');postLeaveID('<?= $rowCurrentEmpLeaveApplication['id']; ?>');" value="editLeave" data-bs-toggle="modal" name="leaveApplicationForm" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
-                                                                            Edit
-                                                                        </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>','','Leave Transcation','<?= $SITEURL ?>/leaveTransaction.php','','LC')">Cancel</a>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                    if (!empty($rowCurrentEmpLeaveApplication['leave_type'])) { ?>
+                                                        <?php
+                                                        array_push($leaveApplyDateArr, $rowCurrentEmpLeaveApplication['from_time'] . '->' . $rowCurrentEmpLeaveApplication['to_time']);
+                                                        ?>
+                                                        <tr>
+                                                            <th class="hideColumn" scope="col"><?= $rowCurrentEmpLeaveApplication['id']; ?></th>
+                                                            <th scope="col"><?= $numLeave++; ?></th>
+                                                            <th scope="col"><?php if (isset($rowLeaveType['name'])) echo $rowLeaveType['name']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['from_time'])) echo $rowCurrentEmpLeaveApplication['from_time']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['to_time'])) echo $rowCurrentEmpLeaveApplication['to_time']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['numOfdays'])) echo $rowCurrentEmpLeaveApplication['numOfdays']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['remark'])) echo $rowCurrentEmpLeaveApplication['remark']; ?></th>
+                                                            <td scope="row" class='text-nowrap'>
+                                                                <?php if (isset($rowCurrentEmpLeaveApplication['leave_transaction_status'])) { ?>
+                                                                    <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
+                                                                        <?php
+                                                                        if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'pending')
+                                                                            $buttonColor = 'blue';
+                                                                        else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'declined' || $rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'cancel')
+                                                                            $buttonColor = 'red';
+                                                                        else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'approval')
+                                                                            $buttonColor = 'green';
+                                                                        ?>
+                                                                        <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $rowCurrentEmpLeaveApplication['leave_transaction_status'] ?>&nbsp;
+                                                                    </button>
+                                                                <?php } ?>
+                                                            </td>
+                                                            <td scope="row">
+                                                                <div class="dropdown" style="text-align:center">
+                                                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                                                    </a>
+                                                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                                        <li>
+                                                                            <a class="dropdown-item" onclick="changeLeaveApplicationForm('editLeave');postLeaveID('<?= $rowCurrentEmpLeaveApplication['id']; ?>');" value="editLeave" data-bs-toggle="modal" name="leaveApplicationForm" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
+                                                                                Edit
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>','','Leave Transcation','<?= $SITEURL ?>/leaveTransaction.php','','LC')">Cancel</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
                                             <?php
+                                                    }
                                                 }
                                             }
                                             $leaveApplyDateArrJSON = json_encode($leaveApplyDateArr);
@@ -882,13 +886,13 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                     <?php
                                                     $leaveTypeArr = $currEmpLeaveApplyDays = array();
 
-                                                    $querySumOfCurrEmpLeave = 
-                                                    "SELECT leave_type, applicant, SUM(numOfdays) as totalDays
+                                                    $querySumOfCurrEmpLeave =
+                                                        "SELECT leave_type, applicant, SUM(numOfdays) as totalDays
                                                     FROM $leavePendingTblName
                                                     WHERE applicant = '$currEmpID' AND leave_transaction_status NOT IN ('declined', 'cancel')
                                                     GROUP BY leave_type, applicant;
                                                     ";
-                                                    
+
                                                     $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
                                                     $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
                                                     $resultEmpLeave_2 = getData('*', 'employeeID="' . $currEmpID . '"', '', EMPLEAVE, $connect);
@@ -1053,113 +1057,128 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
             </thead>
 
             <tbody>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <tr>
-                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                        <th class="text-center">
-                            <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
-                        </th>
-                        <th scope=" row"><?= $num++ ?></th>
-                        <?php if ($row['id'] === $currEmpID) { ?>
+                <?php while ($row = $result->fetch_assoc()) {
+                    if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                        <tr>
+                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th class="text-center">
+                                <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
+                            </th>
+                            <th scope=" row"><?= $num++ ?></th>
+                            <?php
+                            if (isset($row['id'])) {
+                                if ($row['id'] === $currEmpID) { ?>
 
-                            <td scope="row" class="text-center">
-                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
-                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
-                                        <i class="mdi mdi-format-list-bulleted"></i>
-                                    </button>
-                                </a>
+                                    <td scope="row" class="text-center">
+                                        <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                            <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
+                                                <i class="mdi mdi-format-list-bulleted"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+
+                                <?php } else { ?>
+
+                                    <td scope="row" class="text-center">
+                                        <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                            <button class="action_menu_btn" style="border:none;background:none;font-size:25px" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModalAccessDenial">
+                                                <i class="mdi mdi-cancel"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+
+                            <?php }
+                            } ?>
+
+                            <td scope="row"><?= $row['name'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['id_type'])) {
+
+                                    $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
+
+                                    while ($rowIDType = $resultIDType->fetch_assoc()) {
+                                        echo $rowIDType['name'];
+                                    }
+                                }
+                                ?>
+                            </td>
+                            <td scope="row"><?php if (isset($row['id_number'])) echo $row['id_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
+                            <td scope="row"><?php if (isset($row['gender'])) echo $row['gender'] ?></td>
+                            <td scope="row"><?php if (isset($row['date_of_birth'])) echo $row['date_of_birth'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['race_id'])) {
+                                    $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
+
+                                    while ($rowRace = $resultRace->fetch_assoc()) {
+                                        echo $rowRace['name'];
+                                    }
+                                }
+                                ?>
                             </td>
 
-                        <?php } else { ?>
+                            <td scope="row"><?= $row['residence_status'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['nationality'])) {
 
-                            <td scope="row" class="text-center">
-                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
-                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModalAccessDenial">
-                                        <i class="mdi mdi-cancel"></i>
-                                    </button>
-                                </a>
+                                    $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
+
+                                    while ($rowNationality = $resultNationality->fetch_assoc()) {
+                                        echo $rowNationality['name'];
+                                    }
+                                }
+                                ?>
                             </td>
+                            <td scope="row"><?php if (isset($row['phone_number'])) echo $row['phone_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['address_line_1'])) echo $row['address_line_1'] ?></td>
+                            <td scope="row"><?php if (isset($row['address_line_2'])) echo $row['address_line_2'] ?></td>
+                            <td scope="row"><?php if (isset($row['city'])) echo $row['city'] ?></td>
+                            <td scope="row"><?php if (isset($row['state'])) echo $row['state'] ?></td>
+                            <td scope="row"><?php if (isset($row['postcode'])) echo $row['postcode'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['marital_status'])) {
 
-                        <?php } ?>
+                                    $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
 
-                        <td scope="row"><?= $row['name'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
-
-                            while ($rowIDType = $resultIDType->fetch_assoc()) {
-                                echo $rowIDType['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['id_number'] ?></td>
-                        <td scope="row"><?= $row['email'] ?></td>
-                        <td scope="row"><?= $row['gender'] ?></td>
-                        <td scope="row"><?= $row['date_of_birth'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
-
-                            while ($rowRace = $resultRace->fetch_assoc()) {
-                                echo $rowRace['name'];
-                            }
-                            ?>
-                        </td>
-
-                        <td scope="row"><?= $row['residence_status'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
-
-                            while ($rowNationality = $resultNationality->fetch_assoc()) {
-                                echo $rowNationality['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['phone_number'] ?></td>
-                        <td scope="row"><?= $row['phone_number'] ?></td>
-                        <td scope="row"><?= $row['address_line_1'] ?></td>
-                        <td scope="row"><?= $row['address_line_2'] ?></td>
-                        <td scope="row"><?= $row['city'] ?></td>
-                        <td scope="row"><?= $row['state'] ?></td>
-                        <td scope="row"><?= $row['postcode'] ?></td>
-                        <td scope='row'>
-                            <?php
-
-                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
-
-                            while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
-                                echo $rowMrtSts['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['no_of_children'] ?></td>
-                        <td scope="row">
-                            <div class="dropdown" style="text-align:center">
-                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                    <li>
-                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
-                                        <?php endif; ?>
-                                    </li>
-                                    <li>
-                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                        <?php endif; ?>
-                                    </li>
-                                    <li>
-                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
-                                        <?php endif; ?>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                <?php } ?>
+                                    while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
+                                        echo $rowMrtSts['name'];
+                                    }
+                                }
+                                ?>
+                            </td>
+                            <td scope="row"><?php if (isset($row['no_of_children'])) echo $row['no_of_children'] ?></td>
+                            <td scope="row">
+                                <div class="dropdown" style="text-align:center">
+                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                        <li>
+                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
+                                            <?php endif; ?>
+                                        </li>
+                                        <li>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
+                                        </li>
+                                        <li>
+                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
+                                            <?php endif; ?>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                <?php }
+                } ?>
             </tbody>
 
             <tfoot>
