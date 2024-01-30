@@ -7,13 +7,20 @@ include_once '../checkCurrentPagePin.php';
 
 $tblName = SHOPEE_ACC;
 
-$dataID = input('id');
-$act = input('act');
-$pageAction = getPageAction($act);
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addAccount' : 'updAccount';
 
 $redirect_page = $SITEURL . '/finance/shopee_acc_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
+
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
 
 // to display data to input
 if ($dataID) { //edit/remove/view
@@ -37,6 +44,18 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
+
+if (!($dataID) && !($act)) {
+    echo '<script>
+    alert("Invalid action.");
+    window.location.href = "' . $redirect_page . '"; // Redirect to previous page
+    </script>';
+}
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
