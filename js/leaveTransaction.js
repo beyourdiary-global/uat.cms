@@ -1,10 +1,29 @@
 //Leave Application
 
 //Execute A Function By Using Event Listener
-$('#fromTime, #toTime').on('change', calculateNumberOfDays);
-$('#leaveType').on('change input click', checkLeaveCredit);
-$('#leaveApplicationApplyForm').on('change input click', validateAppFormSubmitBtn);
-$('#leaveType').on("change", updateRemainingLeaves);
+$('#fromTime, #toTime').on('change', function () {
+    validateDateTime("toTime", "toTimeError");
+    validateDateTime("fromTime", "fromTimeError");
+    calculateNumberOfDays();
+});
+
+$('#leaveType').on('change', function () {
+    calculateNumberOfDays();
+    checkLeaveCredit();
+    updateRemainingLeaves();
+});
+
+$('#actionBtn').on('click', function (event) {
+    var submitValid = validateAppFormSubmitBtn();
+
+    if (!submitValid) {
+        event.preventDefault();
+    }
+});
+
+$(window).on('load', function () {
+    validateAppFormSubmitBtn();
+});
 
 $(document).ready(function () {
     var codeExecutedBefore = localStorage.getItem('codeExecutedBefore');
@@ -13,11 +32,13 @@ $(document).ready(function () {
         calculateNumberOfDays();
         var currRemainingLeave = $('#remainingLeave').val();
         var currNumOfDays = $('#numOfdays').val();
+        var currLeaveType = $('#leaveType').val();
 
         if (currNumOfDays && currRemainingLeave) {
             var remainingLeave = parseFloat(currRemainingLeave) + parseFloat(currNumOfDays);
             $('#remainingLeave').val(remainingLeave);
             localStorage.setItem('editNumOfDays', currNumOfDays);
+            localStorage.setItem('currLeaveType', currLeaveType);
         }
 
         localStorage.setItem('codeExecutedBefore', true);
@@ -110,7 +131,7 @@ function checkLeaveCredit() {
 
         if (warningMsg.children().length === 0) {
             warningMsg.html('<div class="alert alert-danger fade show" role="alert">' +
-                '<p style="margin:0;text-align: center;">Leave Type You Selected Is Out Of Available Leave Credit </p>' +
+                '<p style="margin:0;">Leave Type You Selected Is Out Of Available Leave Credit </p>' +
                 '</div>');
 
             warningMsg.find('.alert').get(0).scrollIntoView();
@@ -172,17 +193,24 @@ function validateDateTime(inputId, errorId) {
 function calculateNumberOfDays() {
     var fromTime = $('#fromTime').val();
     var toTime = $('#toTime').val();
+    var currLeaveType = $('#leaveType').val();
 
     var currentTime = new Date();
     var fromTimeDate = new Date(fromTime);
     var toTimeDate = new Date(toTime);
     var adjustment = 0;
+    var leaveType;
 
     var warningMsg = $('.warning-msg');
 
-    if (localStorage.getItem('editNumOfDays')) {
+    if (localStorage.getItem('editNumOfDays'))
         adjustment = parseFloat(localStorage.getItem('editNumOfDays'));
-    }
+
+    if (localStorage.getItem('currLeaveType'))
+        leaveType = parseFloat(localStorage.getItem('currLeaveType'));
+
+    if (currLeaveType != leaveType)
+        adjustment = 0;
 
     if (fromTime && toTime && fromTimeDate > currentTime && toTimeDate > currentTime) {
         var fromDate = new Date(fromTime);
@@ -283,7 +311,6 @@ function validateAppFormSubmitBtn() {
         'validDateRange': [],
     };
 
-    var submitBtn = document.getElementById('actionBtn');
     var leaveType = document.getElementById('leaveType');
 
     leaveType.addEventListener('change', calculateNumberOfDays);
@@ -299,13 +326,7 @@ function validateAppFormSubmitBtn() {
             return condition === true;
         });
     });
-
-    if (!submitFormValid)
-        submitBtn.disabled = true;
-    else
-        submitBtn.disabled = false;
-
-    console.log(submitBtnBooleanArr);
+    return submitFormValid;
 }
 
 //Remove Keyword leaveType_
@@ -319,7 +340,6 @@ function removeLeaveTypePrefix(obj) {
     }
     return result;
 }
-
 
 $(document).ready(function () {
 

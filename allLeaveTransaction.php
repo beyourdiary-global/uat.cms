@@ -428,7 +428,7 @@ foreach ($arr as $item) {
             if (filterLeaveRadio)
                 filterLeaveRadio.checked = false;
         }
-        
+
         function updateFilterValue() {
             var filterLeaveRadio = document.querySelector('input[name="filterLeave"]:checked');
             var filterValueDiv = document.querySelector("#table_filter input");
@@ -459,6 +459,10 @@ foreach ($arr as $item) {
         document.addEventListener("DOMContentLoaded", function() {
             updateFilterValue();
             document.addEventListener("change", updateFilterValue);
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+            resetFilter();
         });
     </script>
 
