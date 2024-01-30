@@ -52,7 +52,7 @@ if (post('actionBtn')) {
                 $id_err = "Please specify the payment method name.";
                 break;
             } else if ($pmf_name && isDuplicateRecord("name", $pmf_name, $tblName,  $finance_connect, $dataID)) {
-                $id_err = "Duplicate record found for " . $pageTitle . " name.";
+                $name_err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
             } else if ($action == 'addPaymentMethod') {
                 try {

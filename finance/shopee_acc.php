@@ -29,6 +29,7 @@ if ($dataID) { //edit/remove/view
         $act = "F";
     }
 }
+
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -80,7 +81,7 @@ if (post('actionBtn')) {
                     }
 
                     $query = "INSERT INTO " . $tblName  . "(name,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
-                    
+
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -159,10 +160,13 @@ if (post('actionBtn')) {
             }
 
             break;
-
-        case 'back':
-            echo $clearLocalStorage . ' ' . $redirectLink;
-            break;
+            case 'back':
+                if ($action == 'addAccount' || $action == 'updAccount') {
+                    echo $clearLocalStorage . ' ' . $redirectLink;
+                } else {
+                    echo $redirectLink;
+                }
+                break;
     }
 }
 
@@ -249,7 +253,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                         <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php
+                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
                                     if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
                                         echo $row['name'];
                                         } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {
@@ -269,8 +273,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 <div class="form-group mb-3">
     <div class="row">
-        <div class="col-md-6 mb-3 autocomplete">
-            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country*</label>
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
@@ -288,15 +292,23 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             }
             ?>
 
-            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>" required>
+            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
 
             <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+
+            <?php if (isset($country_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $country_err; ?></span>
+                </div>
+            <?php } ?>
         </div>
 
-        <div class="col-md-6 mb-3 autocomplete">
+        
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
             <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
+
             if (isset($row['currency']))
                 $echoVal = $row['currency'];
 
@@ -322,43 +334,51 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </div>
 
                         
-<div class="form-group mt-5 d-flex justify-content-center">
-    <?php
-    switch ($act) {
-        case 'I':
-            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
-            break;
-        case 'E':
-            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
-            break;
-    }
-    ?>
-    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-</div>
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
+                    switch ($act) {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
+                            break;
+                    }
+                    ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
             </form>
         </div>
     </div>
 </div>
+
 <?php
-   
+   /*
+        oufei 20231014
+        common.fun.js
+        function(title, subtitle, page name, ajax url path, redirect path, action)
+        to show action dialog after finish certain action (eg. edit)
+    */
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
         echo $clearLocalStorage;
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
+
     <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
+        <?php include "../js/shopee_acc.js" ?>
 
-    checkCurrentPage(page, action);
-    setButtonColor();
-    setAutofocus(action);
-    preloader(300, action);
-    <?php include "../js/shopee_acc.js" ?>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+        centerAlignment("formContainer");
+        setAutofocus(action);
+        setButtonColor();
+        preloader(300, action);
     </script>
-
 </body>
-
 </html>

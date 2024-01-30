@@ -151,7 +151,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 try {
-                    $query = "INSERT INTO " . $leavePendingTblName . "(applicant,leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,remark,create_by,create_date,create_time)VALUES('$currEmpID','$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$managerApprover','$remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $leavePendingTblName . "(applicant,leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,leave_transaction_status,remark,create_by,create_date,create_time)VALUES('$currEmpID','$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$managerApprover','pending','$remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
 
                     if ($imgExist)
@@ -760,6 +760,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                 <th scope="col">To Day</th>
                                                 <th scope="col">Day Leave</th>
                                                 <th scope="col">Remark</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col" id="action_col">Action</th>
                                             </tr>
                                         </thead>
@@ -797,6 +798,19 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                         <th scope="col"><?= $rowCurrentEmpLeaveApplication['to_time']; ?></th>
                                                         <th scope="col"><?= $rowCurrentEmpLeaveApplication['numOfdays']; ?></th>
                                                         <th scope="col"><?= $rowCurrentEmpLeaveApplication['remark']; ?></th>
+                                                        <td scope="row" class='text-nowrap'>
+                                                            <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
+                                                                <?php
+                                                                if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'pending')
+                                                                    $buttonColor = 'blue';
+                                                                else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'declined' || $rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'cancel')
+                                                                    $buttonColor = 'red';
+                                                                else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'approval')
+                                                                    $buttonColor = 'green';
+                                                                ?>
+                                                                <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $rowCurrentEmpLeaveApplication['leave_transaction_status'] ?>&nbsp;
+                                                            </button>
+                                                        </td>
                                                         <td scope="row">
                                                             <div class="dropdown" style="text-align:center">
                                                                 <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -809,9 +823,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                                         </a>
                                                                     </li>
                                                                     <li>
-                                                                        <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>',['<?= $rowLeaveType['name'] ?>','<?= $rowCurrentEmpLeaveApplication['from_time'] . ' to ' .  $rowCurrentEmpLeaveApplication['to_time'] ?>'],'Leave Application','<?= $SITEURL ?>/leaveApplicationDelete.php','','D')">
-                                                                            Delete
-                                                                        </a>
+                                                                        <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>','','Leave Transcation','<?= $SITEURL ?>/leaveTransaction.php','','LC')">Cancel</a>
                                                                     </li>
                                                                 </ul>
                                                             </div>
@@ -834,6 +846,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                 <th scope="col">To Day</th>
                                                 <th scope="col">Num Day </th>
                                                 <th scope="col">Remark</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col" id="action_col">Action</th>
                                             </tr>
                                         </tfoot>
@@ -869,7 +882,13 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                     <?php
                                                     $leaveTypeArr = $currEmpLeaveApplyDays = array();
 
-                                                    $querySumOfCurrEmpLeave = "SELECT leave_type, applicant, SUM(numOfdays) as totalDays FROM $leavePendingTblName WHERE applicant = '$currEmpID' GROUP BY leave_type, applicant";
+                                                    $querySumOfCurrEmpLeave = 
+                                                    "SELECT leave_type, applicant, SUM(numOfdays) as totalDays
+                                                    FROM $leavePendingTblName
+                                                    WHERE applicant = '$currEmpID' AND leave_transaction_status NOT IN ('declined', 'cancel')
+                                                    GROUP BY leave_type, applicant;
+                                                    ";
+                                                    
                                                     $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
                                                     $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
                                                     $resultEmpLeave_2 = getData('*', 'employeeID="' . $currEmpID . '"', '', EMPLEAVE, $connect);
