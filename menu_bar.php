@@ -110,9 +110,9 @@ $menuList = array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL . '/finance/curr_bank_trans_table.php', '37'),
                     array('Investment Transaction', 'mdi storefront-outline', $SITEURL . '/finance/investment_trans_table.php', '40'),
                     array('Inventories Transaction', 'mdi storefront-outline', $SITEURL . '/finance/invtr_trans_table.php', '41'),
-                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '42'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '44'),
                     array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL . '/finance/other_creditor_trans_table.php', '43'),
-                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '46'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
@@ -128,13 +128,13 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
-                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
+                    array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '48'),
+                    array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '50'),
                     array('Shopee Account', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
                     array('Delivery Fees Claim Record', 'mdi storefront-outline', $SITEURL . '/finance/del_fees_claim_table.php', '66'),
 
                 ),
-                'pin' => array('46', '47', '48', '58', '66'),
+                'pin' => array('48', '50', '58', '66'),
             ),
             array(
                 'Income',
