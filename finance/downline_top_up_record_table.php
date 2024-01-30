@@ -1,27 +1,19 @@
 <?php
-$pageTitle = "Agent";
+$pageTitle = "Downline Top Up Record";
+$isFinance = 1;
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-$tblName = AGENT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/agent.php';
-$deleteRedirectPage = $SITEURL . '/agent_table.php';
+$redirect_page = $SITEURL . '/finance/downline_top_up_record.php';
+$result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
 
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
 ?>
 
 <!DOCTYPE html>
@@ -45,9 +37,7 @@ if (!$result) {
     </div>
 
     <div class="page-load-cover">
-
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
             <div class="col-12 col-md-8">
 
                 <div class="d-flex flex-column mb-3">
@@ -71,31 +61,38 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Name</th>
+                            <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Country</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (!empty($row['id'])) {
+
+                                $agentResult = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $connect);
+                                $agentRow = $picResult->fetch_assoc();
+
+                                $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $brandRow = $brandResult->fetch_assoc();
+
+                                $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                                $currRow = $currResult->fetch_assoc();
+                        ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['brand'] ?></td>
-                                    <td scope="row"><?= $row['person_in_charge'] ?></td>
-                                    <td scope="row"><?= $row['contact'] ?></td>
-                                    <td scope="row"><?= $row['email'] ?></td>
-                                    <td scope="row"><?= $row['country'] ?></td>
+                                    <td scope="row"><?= $agentRow['name'] ?></td>
+                                    <td scope="row"><?= $brandRow['name'] ?></td>
+                                    <td scope="row"><?= $currRow['unit'] ?></td>
+                                    <td scope="row"><?= $row['amount'] ?></td>
                                     <td scope="row"><?= $row['remark'] ?></td>
-                                       
+                                    <td scope="row"><?= $row['attachment'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -114,7 +111,7 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $picRow['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -130,14 +127,13 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Name</th>
+                            <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Country</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -157,6 +153,7 @@ if (!$result) {
         datatableAlignment('table');
         setButtonColor();
     </script>
+
 </body>
 
 </html>

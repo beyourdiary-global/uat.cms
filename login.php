@@ -77,7 +77,8 @@ if ($email && $password) {
                     generateDBData(BRD_SERIES, $connect);
                     generateDBData(PKG, $connect);
                     generateDBData(FIN_PAY_METH, $finance_connect);
-                    
+                    generateDBData(PROD_CATEGORY, $connect);
+  
 
                     return header('Location: dashboard.php');
                } else {

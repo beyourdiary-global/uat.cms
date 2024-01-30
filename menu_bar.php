@@ -42,6 +42,18 @@ $menuList = array(
         'pin' => array('4', '5', '34')
     ),
     array(
+        'Leave Transcation',
+        'mdi mdi-account-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('My Leave Transcation', '', $SITEURL . '/myLeaveTransaction.php', '67'),
+            array('Approval Leave Transcation', '', $SITEURL . '/approvalLeaveTransaction.php', '68'),
+            array('All Leave Transcation', '', $SITEURL . '/allLeaveTransaction.php', '69'),
+        ),
+        'pin' => array('67', '68', '69')
+    ),
+    array(
         'Customer',
         'mdi mdi-account-outline',
         'javascript:void(0)',
@@ -57,7 +69,7 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/agent_table.php', '62'),
+            array('Agent', 'mdi mdi-information-outline', $SITEURL . '/finance/agent_table.php', '62'),
         ),
         'pin' => array('62')
     ),
@@ -115,7 +127,7 @@ $menuList = array(
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                     array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '61', '62', '67'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67', '62'),
 
 
             ),
@@ -131,7 +143,7 @@ $menuList = array(
                     array('Delivery Fees Claim Record', 'mdi storefront-outline', $SITEURL . '/finance/del_fees_claim_table.php', '66'),
 
                 ),
-                'pin' => array('46','47','48','58','66'),
+                'pin' => array('46', '47', '48', '58', '66'),
             ),
             array(
                 'Income',
@@ -140,14 +152,15 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
-                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/shopee_withdrawal_transactions_table.php', '51')
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/shopee_withdrawal_transactions_table.php', '51'),
+                    array('Downline Top Up Record', 'mdi storefront-outline', $SITEURL . '/finance/downline_top_up_record_table.php', '68'),
                 ),
-                'pin' => array('49','51'),
-            ),       
+                'pin' => array('49', '51', '68'),
+            ),
 
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58','66', '67')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68')
 
     ),
     array(
@@ -208,7 +221,7 @@ $menuList = array(
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
-                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '64'),
+                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/finance/brand_series_table.php', '64'),
                 ),
 
                 'pin' => array('15', '9', '50', '56', '64'),
@@ -252,7 +265,7 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Payment Method', 'mdi mdi-contactless-payment-circle', $SITEURL . '/payment_method_table.php', '33'),
-                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/tax_setting_table.php', '57'),
+                    array('Tax Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/finance/tax_table.php', '57'),
                 ),
                 'pin' => array('33', '57'),
             ),
@@ -270,7 +283,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63' ,'64','66','69')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63', '64', '65', '66', '67', '68', '69')
 
     ),
     array(

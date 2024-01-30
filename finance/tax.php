@@ -1,23 +1,30 @@
 <?php
-$pageTitle = "Shopee Account";
+$pageTitle = "Tax";
 $isFinance = 1;
-
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = SHOPEE_ACC;
+$tblName = TAX_SETT;
 
-$dataID = input('id');
-$act = input('act');
-$pageAction = getPageAction($act);
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
-$redirect_page = $SITEURL . '/finance/shopee_acc_table.php';
+
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
+$redirect_page = $SITEURL . '/finance/tax_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
-// to display data to input
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
+
+
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -30,6 +37,12 @@ if ($dataID) { //edit/remove/view
     }
 }
 
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
+
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -37,52 +50,57 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
-
+//Edit And Add Data
 if (post('actionBtn')) {
+
     $action = post('actionBtn');
 
-    $sa_name = postSpaceFilter("sa_name");
-    $sa_country = postSpaceFilter("sa_country_hidden");
-    $sa_currency = postSpaceFilter("sa_currency_hidden");
+    $tax_country = postSpaceFilter('tax_country_hidden');
+    $name = postSpaceFilter('name');
+    $percentage = postSpaceFilter('percentage');
+    $dataRemark = postSpaceFilter('currentDataRemark');
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
     switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
-
-            if (!$sa_name) {
-                $name_err = "Please specify the account name.";
+        case 'addData':
+        case 'updData':
+            
+            if (!$tax_country) {
+                $country_err = "Please specify the country.";
                 break;
-            } else if (!$sa_country) {
-                $country_err = "Please specify the account country.";
+            } else if (!$name) {
+                $name_err = "Please specify the tax name.";
                 break;
-            } else if (!$sa_currency) {
-                $currency_err = "Please specify the account currency.";
+            } else if (!$percentage) {
+                $percentage_err = "Please specify the percentage.";
                 break;
-            } else if ($action == 'addAccount') {
+            } else if ($action == 'addData') {
                 try {
 
-                    // check value
+                     // check value
 
-                    if ($sa_name) {
-                        array_push($newvalarr, $sa_name);
-                        array_push($datafield, 'name');
-                    }
-
-                    if ($sa_country) {
-                        array_push($newvalarr, $sa_country);
+                    if ($tax_country) {
+                        array_push($newvalarr, $tax_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($sa_currency) {
-                        array_push($newvalarr, $sa_currency);
-                        array_push($datafield, 'currency');
+                    if ($name) {
+                        array_push($newvalarr, $name);
+                        array_push($datafield, 'name');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(name,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+                    if ($percentage) {
+                        array_push($newvalarr, $percentage);
+                        array_push($datafield, 'percentage');
+                    }
 
-                    // Execute the query
+                    if ($dataRemark) {
+                        array_push($newvalarr, $dataRemark);
+                        array_push($datafield, 'remark');
+                    }
+
+                    $query = "INSERT INTO " . $tblName . "(country,name,percentage,remark,create_by,create_date,create_time) VALUES ('$tax_country','$name',$percentage,'$dataRemark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
@@ -91,28 +109,33 @@ if (post('actionBtn')) {
                 }
             } else {
                 try {
-                    // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
                     $row = $rst->fetch_assoc();
 
-                    // check value
-
-                    if ($row['name'] != $sa_name) {
-                        array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $sa_name);
-                        array_push($datafield, 'name');
-                    }
-
-                    if ($row['country'] != $sa_country) {
+                    if ($row['country'] != $tax_country) {
                         array_push($oldvalarr, $row['country']);
-                        array_push($chgvalarr, $sa_country);
+                        array_push($chgvalarr, $tax_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($row['currency'] != $sa_currency) {
-                        array_push($oldvalarr, $row['currency']);
-                        array_push($chgvalarr, $sa_currency);
-                        array_push($datafield, 'currency');
+                    if ($row['name'] != $name) {
+                        array_push($oldvalarr, $row['name']);
+                        array_push($chgvalarr, $name);
+                        array_push($datafield, 'name');
+                    }
+
+
+                    if ($row['percentage'] != $percentage) {
+                        array_push($oldvalarr, $row['percentage']);
+                        array_push($chgvalarr, $percentage);
+                        array_push($datafield, 'percentage');
+                    }
+
+
+                    if ($row['remark'] != $dataRemark) {
+                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
+                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                        array_push($datafield, 'remark');
                     }
 
                     // convert into string
@@ -120,10 +143,10 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name',country = '$sa_country',currency = '$sa_currency' update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
+                        $query = "UPDATE " . $tblName  . " SET country = '$tax_country', name = '$name', percentage ='$percentage', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-                
+
                     } else {
                         $act = 'NC';
                     }
@@ -131,6 +154,8 @@ if (post('actionBtn')) {
                     $errorMsg = $e->getMessage();
                     $act = "F";
                 }
+
+                
             }
 
             // audit log
@@ -158,10 +183,10 @@ if (post('actionBtn')) {
                 }
                 audit_log($log);
             }
-
+        
             break;
             case 'back':
-                if ($action == 'addAccount' || $action == 'updAccount') {
+                if ($action == 'addData' || $action == 'upData') {
                     echo $clearLocalStorage . ' ' . $redirectLink;
                 } else {
                     echo $redirectLink;
@@ -169,7 +194,7 @@ if (post('actionBtn')) {
                 break;
     }
 }
-
+    
 
 if (post('act') == 'D') {
         try {
@@ -179,7 +204,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $sa_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName , $dataID, $name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -188,13 +213,13 @@ if (post('act') == 'D') {
 
 //view
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
-    $acc_name = isset($dataExisted) ? $row['name'] : '';
+    $name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $acc_name . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $name . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -212,12 +237,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 }
 ?>
 
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="../css/main.css">
-
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <body>
@@ -234,9 +259,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         </div>
 
-    <div id="SAformContainer" class="container d-flex justify-content-center">
+    <div id="TAXformContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="SAForm" method="post" action="" enctype="multipart/form-data">
+            <form id="TAXForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
@@ -249,32 +274,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                 </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                        <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
-                                    if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
-                                        echo $row['name'];
-                                        } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {
-                                            echo $sa_name;
-                                            } else {
-                                                echo '';
-                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
-        
-                            <?php if (isset($name_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $name_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="form-group mb-3">
+    <div class="form-group mb-3">
     <div class="row">
-        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
+        <div class="form-group autocomplete col-md-12">
+            <label class="form-label form_lbl" id="tax_country_lbl" for="tax_country">Country<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
@@ -292,9 +296,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             }
             ?>
 
-            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
+            <input class="form-control" type="text" name="tax_country" id="tax_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
 
-            <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+            <input type="hidden" name="tax_country_hidden" id="tax_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
 
             <?php if (isset($country_err)) { ?>
                 <div id="err_msg">
@@ -302,46 +306,61 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             <?php } ?>
         </div>
+    </div>
+    </div>
 
-        
-        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
-            <?php
-            unset($echoVal);
+    <div class="form-group mb-3">
+    <div class="row">
+        <div class="form-group mb-3 col-md-6">
+            <label class="form-label form_lbl" id="name_lbl" for="name">Tax Name<span class="requireRed">*</span></label>
+            <input class="form-control" type="text" name="name" id="name" value="<?php 
+                    if (isset($dataExisted) && isset($row['name']) && !isset($name)) {
+                        echo $row['name'];
+                    } else if (isset($dataExisted) && isset($row['name']) && isset($name)) {
+                        echo $name;
+                    } else {
+                        echo '';
+                    } ?>" <?php if ($act == '') echo 'disabled' ?>>
 
-            if (isset($row['currency']))
-                $echoVal = $row['currency'];
-
-            if (isset($echoVal)) {
-                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-                if (!$currency_rst) {
-                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                }
-                $currency_row = $currency_rst->fetch_assoc();
-            }
-            ?>
-            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
-            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
-
-            <?php if (isset($currency_err)) { ?>
+            <?php if (isset($name_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $currency_err; ?></span>
+                    <span class="mt-n1"><?php echo $name_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+
+        <div class="form-group mb-3 col-md-6">
+            <label class="form-label form_lbl" id="percentage_lbl" for="percentage">Percentage<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" name="percentage" id="percentage" value="<?php 
+                    if (isset($dataExisted) && isset($row['percentage']) && !isset($percentage)) {
+                        echo $row['percentage'];
+                    } else if (isset($dataExisted) && isset($row['percentage']) && isset($percentage)) {
+                        echo $percentage;
+                    } else {
+                        echo '';
+                    } ?>" <?php if ($act == '') echo 'disabled' ?>>
+
+            <?php if (isset($percentage_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $percentage_err; ?></span>
                 </div>
             <?php } ?>
         </div>
     </div>
-</div>
 
-                        
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" for="currentDataRemark_lbl"><?php echo $pageTitle ?> Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
+
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php
                     switch ($act) {
                         case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addData">Add Tax</button>';
                             break;
                         case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updData">Edit Tax</button>';
                             break;
                     }
                     ?>
@@ -352,14 +371,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         </div>
     </div>
 </div>
-
-<?php
-   /*
-        oufei 20231014
-        common.fun.js
-        function(title, subtitle, page name, ajax url path, redirect path, action)
-        to show action dialog after finish certain action (eg. edit)
-    */
+    <?php
+    
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
         echo $clearLocalStorage;
@@ -368,7 +381,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
 
     <script>
-        <?php include "../js/shopee_acc.js" ?>
+
 
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
@@ -379,6 +392,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         setAutofocus(action);
         setButtonColor();
         preloader(300, action);
+        <?php include "../js/tax.js" ?>
     </script>
+
 </body>
+
 </html>
