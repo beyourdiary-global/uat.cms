@@ -112,7 +112,11 @@ foreach ($arr as $item) {
 
                                             $annualLeave = "leaveType_" . $annualLeaveID;
 
-                                            echo $annualLeaveBalanceRow[$annualLeave] . " Day";
+                                            if ($annualLeaveBalanceRow[$annualLeave])
+                                                echo $annualLeaveBalanceRow[$annualLeave] . " Day";
+                                            else
+                                                echo "0 Day";
+
                                             ?>
                                         </span>
                                     </div>

@@ -817,7 +817,6 @@ function createSortingMyLeaveTransactionTable(tableid) {
   });
 }
 
-
 function createSortingLeaveTransactionTable(tableid) {
   let table = new DataTable("#" + tableid, {
     order: [[1, "asc"]],
@@ -882,7 +881,7 @@ function centerAlignment(elementID) {
   $(window).on("load resize", () => {
     var form = $("#" + elementID);
 
-    if (window.matchMedia("(max-height: 1200px)").matches) {
+    if (window.matchMedia("(max-height: 1250px)").matches) {
       if (form.hasClass("centered")) form.removeClass("centered");
 
       form.css("overflow", "auto");
@@ -1173,13 +1172,14 @@ function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
-  var type = param["searchType"];
-  var dbTable = param["dbTable"];
+  var type = param["searchType"]; 
+  var dbTable = param["dbTable"]; 
   if (param["addSelection"]) {
     var addSelection = param["addSelection"];
   }
 
   if (search != "") {
+    console.log(siteURL);
     $.ajax({
       url: siteURL + "/getSearch.php",
       type: "post",
@@ -1190,6 +1190,7 @@ function searchInput(param, siteURL) {
       },
       dataType: "json",
       success: (result) => {
+        console.log(result);
         // create div
         if (
           !(
@@ -1472,9 +1473,9 @@ function preloader(additionalDelay, action) {
   });
 }
 
-function setAutofocus(action) { //testing merge issue
+function setAutofocus(action) { 
   if (action === "I" || action === "E") {
-    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly]), select:visible:enabled:not(:hidden,[readonly])").filter(function () {
+    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function () {
       return $.trim($(this).val()) === '';
     }).first();
 
@@ -1494,7 +1495,6 @@ function setAutofocus(action) { //testing merge issue
           firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd = inputValue.length;
         }
       }
-      console.log('hello');
     }
   }
 
