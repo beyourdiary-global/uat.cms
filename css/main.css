@@ -493,7 +493,7 @@ input {
     text-align: center !important;
 }
 
-#actionBtn {
+#actionBtn,#backBtn {
     box-shadow: 0 0 !important;
     font-weight: bold;
     font-size: 18px;
@@ -611,6 +611,10 @@ input {
     color: red !important;
 }
 
+.requiredRed{
+    color: red !important;
+}
+
 @media(max-width: 575.98px) {
     .invoice-edit .invoice-preview-card .invoice-calculations,.invoice-add .invoice-preview-card .invoice-calculations {
         width:100%
@@ -620,3 +624,4 @@ input {
 .invoice-edit .invoice-preview-card .repeater-wrapper:not(:last-child),.invoice-add .invoice-preview-card .repeater-wrapper:not(:last-child) {
     margin-bottom: 1.5rem
 }
+
