@@ -114,10 +114,10 @@ $menuList = array(
                     array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
-                    array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
+                    array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '33'),
                     array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67', '62'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '33', '62'),
 
 
             ),
@@ -211,10 +211,10 @@ $menuList = array(
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
-                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/finance/brand_series_table.php', '64'),
+                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '74'),
                 ),
 
-                'pin' => array('15', '9', '50', '56', '64'),
+                'pin' => array('15', '9', '50', '56', '74'),
 
             ),
             array(
@@ -273,7 +273,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63', '64', '65', '66', '67', '68', '69')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '60', '63', '74', '65', '66', '67', '68', '69')
 
     ),
     array(

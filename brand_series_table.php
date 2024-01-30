@@ -1,24 +1,32 @@
 <?php
 $pageTitle = "Brand Series";
-$isFinance = 1;
-include '../menuHeader.php';
-include '../checkCurrentPagePin.php';
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
+$tblName = BRD_SERIES;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
+
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/brand_series.php';
-$result = getData('*', '', '', BRD_SERIES, $finance_connect);
+$redirect_page = $SITEURL . '/brand_series.php';
+$deleteRedirectPage = $SITEURL . '/brand_series_table.php';
+
+$result = getData('*', '', '', $tblName, $connect);
+
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <script>
@@ -61,6 +69,7 @@ $result = getData('*', '', '', BRD_SERIES, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Remark</th>
@@ -74,8 +83,9 @@ $result = getData('*', '', '', BRD_SERIES, $finance_connect);
                             if (!empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-
+                                    <th scope="row"><?= $num++ ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
+                                   
                                     <td scope="row">
                                         <?php
                                         if (!empty($row['brand'])) {
@@ -88,13 +98,17 @@ $result = getData('*', '', '', BRD_SERIES, $finance_connect);
                                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                             }
                                             $rowBrand = $resultBrand->fetch_assoc();
+                                            $data_name =isset($rowBrand['name']) ? $rowBrand['name'] : '';
+                                            $data_brand = isset($row['brand']) ? $row['brand'] : '';
 
-                                            echo $rowBrand['name'];
+
+                                            echo $data_name. ' ' .$data_brand;
                                         }
                                         ?>
                                     </td>
+
                                     <td scope="row"><?= $row['remark'] ?></td>
-                                   
+                                    
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -129,6 +143,7 @@ $result = getData('*', '', '', BRD_SERIES, $finance_connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Remark</th>
