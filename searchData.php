@@ -8,10 +8,17 @@ $searchText = mysqli_real_escape_string($connect, $_POST['searchText']);
 $searchType = $_POST['searchType'];
 $searchCol = $_POST['searchCol'];
 $tblname = $_POST['tblname'];
+$isFinance = $_POST['isFin'];
+
+if ($isFinance) {
+    $db = $finance_connect;
+} else {
+    $db = $connect;
+}
 
 // Build the query dynamically
-$query = "SELECT $searchType FROM $tblname WHERE `$searchCol` = '$searchText'";
-$result = mysqli_query($connect, $query);
+$query = "SELECT $searchType FROM $tblname WHERE `$searchCol` = '$searchText' AND `status` = 'A' ";
+$result = mysqli_query($db, $query);
 
 if ($result) {
     // Fetch the result as an associative array
