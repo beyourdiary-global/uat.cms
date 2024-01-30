@@ -1172,13 +1172,14 @@ function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
-  var type = param["searchType"];
-  var dbTable = param["dbTable"];
+  var type = param["searchType"]; 
+  var dbTable = param["dbTable"]; 
   if (param["addSelection"]) {
     var addSelection = param["addSelection"];
   }
 
   if (search != "") {
+    console.log(siteURL);
     $.ajax({
       url: siteURL + "/getSearch.php",
       type: "post",
@@ -1189,6 +1190,7 @@ function searchInput(param, siteURL) {
       },
       dataType: "json",
       success: (result) => {
+        console.log(result);
         // create div
         if (
           !(
