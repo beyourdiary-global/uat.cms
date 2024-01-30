@@ -638,7 +638,7 @@ if ($action) {
 
                         <div class="text-center mt-5">
                             <?php if ($act) { ?>
-                                <button class="btn btn-rounded btn-primary mx-2 mb-2" style="opacity:1; cursor:pointer;" name="actionBtn" id="actionBtn" value="<?= $actionBtnValue ?>">Submit</button>
+                                <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="<?= $actionBtnValue ?>">Submit</button>
                             <?php } ?>
                             <button class="btn btn-rounded btn-primary mx-2 mb-2" value="back" name="actionBtn" id="backBtn">Back</button>
                         </div>

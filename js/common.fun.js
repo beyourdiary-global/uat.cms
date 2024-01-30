@@ -817,7 +817,6 @@ function createSortingMyLeaveTransactionTable(tableid) {
   });
 }
 
-
 function createSortingLeaveTransactionTable(tableid) {
   let table = new DataTable("#" + tableid, {
     order: [[1, "asc"]],
@@ -882,7 +881,7 @@ function centerAlignment(elementID) {
   $(window).on("load resize", () => {
     var form = $("#" + elementID);
 
-    if (window.matchMedia("(max-height: 1200px)").matches) {
+    if (window.matchMedia("(max-height: 1250px)").matches) {
       if (form.hasClass("centered")) form.removeClass("centered");
 
       form.css("overflow", "auto");
@@ -1494,7 +1493,6 @@ function setAutofocus(action) { //testing merge issue
           firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd = inputValue.length;
         }
       }
-      console.log('hello');
     }
   }
 
