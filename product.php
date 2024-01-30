@@ -83,7 +83,7 @@ if (post('actionBtn')) {
             $prod_cur_unit = postSpaceFilter('prod_cur_unit_hidden');
             $prod_barcode_status = postSpaceFilter('prod_barcode_status') == 'Yes' ? 'Yes' : 'No';
             $prod_barcode_slot = $prod_barcode_status == 'Yes' ? postSpaceFilter('prod_barcode_slot') : '';
-            $prod_category = postSpaceFilter('prod_category');
+            $prod_category = postSpaceFilter('prod_category_hidden');
             $prod_expire_date = postSpaceFilter('prod_expire_date');
             $parent_prod = postSpaceFilter('parent_prod_hidden');
 
@@ -164,7 +164,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'parent_product');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,product_category,expire_date,parent_product,create_by,create_date,create_time) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_category,'$prod_expire_date','$parent_prod','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,prod_category,expire_date,parent_product,create_by,create_date,create_time) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_category,'$prod_expire_date','$parent_prod','" . USER_ID . "',curdate(),curtime())";
 
 
                     $returnData = mysqli_query($connect, $query);
@@ -223,8 +223,8 @@ if (post('actionBtn')) {
                         array_push($datafield, 'barcode_slot');
                     }
 
-                    if ($row['product_category'] != $prod_category) {
-                        array_push($oldvalarr, $row['product_category']);
+                    if ($row['prod_category'] != $prod_category) {
+                        array_push($oldvalarr, $row['prod_category']);
                         array_push($chgvalarr, $prod_category);
                     }
 
@@ -243,7 +243,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot',product_category ='$prod_category', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot',prod_category ='$prod_category', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -464,7 +464,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                     }
                                     $product_row = $product_rst->fetch_assoc();
-                                }
+                                } 
                                 ?>
                                 <input class="form-control" type="text" name="prod_category" id="prod_category" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_row['name'] : ''  ?>">
                                 <input type="hidden" name="prod_category_hidden" id="prod_category_hidden" value="<?php echo (isset($row['prod_category'])) ? $row['prod_category'] : ''; ?>">
@@ -605,26 +605,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         }
 
         if (!($("#prod_category").attr('readonly'))) {
-            $("#prod_category").keyup(function() {
+            $("#prod_category").keyup(function() { 
                 var param = {
                     search: $(this).val(), 
                     searchType: 'name', 
                     elementID: $(this).attr('id'), 
                     hiddenElementID: $(this).attr('id') + '_hidden', 
-                    dbTable: '<?= PROD_CATEGORY ?>' //
-                }
-                var arr = searchInput(param, '<?= $SITEURL ?>');
-            });
+                    dbTable: '<?= PROD_CATEGORY ?>'
+                } 
+                
+        
+
+                searchInput(param, '<?= $SITEURL ?>'); 
+            }); 
             $("#prod_category").change(function() {
                 if ($(this).val() == '')
                     $('#' + $(this).attr('id') + '_hidden').val('');
             });
-
-            $("#prod_category_hidden").change(function() {
-                if ($("#prod_category_hidden").val() != '') {
-                    console.log(arr);
-                };
-            })
         }
 
         if (!($("#parent_prod").attr('readonly'))) {
