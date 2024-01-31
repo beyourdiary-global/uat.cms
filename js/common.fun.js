@@ -1259,7 +1259,7 @@ function retrieveDBData(param, siteURL, callback) {
   var type = param["searchType"];
   var dbTable = param["dbTable"];
   var col = param["searchCol"];
-  var fin = param["isFin"];
+  var fin = param["isFin"]; //test
 
   if (search != "") {
     $.ajax({
