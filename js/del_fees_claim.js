@@ -1,4 +1,5 @@
 //autocomplete
+var currentCourierValue = $("#dfc_courier_hidden").val();
 $(document).ready(function () {
 
     if (!($("#dfc_courier").attr('disabled'))) {
@@ -29,7 +30,7 @@ $(document).ready(function () {
     }
 
     //calculation for delivery fee
-    $("#dfc_courier").change(calculateTax);
+    $("#dfc_courier").change(emptyFields);
 
     $("#dfc_subtotal").on('keyup', calculateTax);
     $("#dfc_total").on('keyup', calculateTax);
@@ -88,7 +89,7 @@ $('.submitBtn').on('click', () => {
         $(".dfc-sub-err").remove();
         subtotal_chk = 1;
     }
-    if (($('#dfc_tax').val() == '' || $('#dfc_tax').val() == '0.00' || $('#dfc_subtotal').val() === null || $('#dfc_tax')
+    if (($('#dfc_tax').val() == '' || $('#dfc_tax').val() == '0' || $('#dfc_subtotal').val() === null || $('#dfc_tax')
         .val() === undefined)) {
         tax_chk = 0;
         $("#dfc_tax").after(
@@ -151,6 +152,8 @@ function calculateTax() {
                     handleTaxSettingData(result);
                 });
 
+            } else {
+                handleTaxSettingData(null);
             }
         } else {
             console.error('Error retrieving Courier data');
@@ -161,16 +164,20 @@ function calculateTax() {
         if (result && result.length > 0) {
             tax = result[0]['percentage'];
         }
+        console.log('tax: ', tax, '%');
+        console.log('curr value: ', currentCourierValue);
+
         var taxAmount = 0.00;
         var subtotal = parseFloat($subtotalInput.val()) || 0;
         var total = parseFloat($totalInput.val()) || 0;
         $taxInput.val(taxAmount.toFixed(2));
+
         if ($totalInput.is(':focus')) {
             // User is editing Total, calculate Subtotal and update Tax
             var calculatedSubtotal = total / (1 + tax / 100);
             $subtotalInput.val(calculatedSubtotal.toFixed(2));
 
-            var taxAmount = total - (total / (1 + tax / 100));
+            var taxAmount = total - calculatedSubtotal;
             $taxInput.val(taxAmount.toFixed(2));
         }
 
@@ -179,11 +186,20 @@ function calculateTax() {
             // User is editing Subtotal, calculate Total and update Tax
             var calculatedTotal = subtotal + (subtotal * tax) / 100;
             $totalInput.val(calculatedTotal.toFixed(2));
-
             $taxInput.val(taxAmount.toFixed(2));
         }
     }
+}
 
+function emptyFields() {
+    var $subtotalInput = $("#dfc_subtotal");
+    var $totalInput = $("#dfc_total");
+    var $taxInput = $("#dfc_tax");
 
+    // Empty the fields when courier changes
+    $subtotalInput.val('');
+    $totalInput.val('');
+    $taxInput.val('');
 
+    currentCourierValue = $("#dfc_courier_hidden").val();
 }
