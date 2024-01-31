@@ -15,25 +15,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/leaveTransaction.php';
 
 //Current Employee ID 
-$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
-
-if (!$userResult) {
-    echo $errorRedirectLink;
-}
-
-$userRow = $userResult->fetch_assoc();
-if (isset($userRow['name']))
-    $userName = $userRow['name'];
-
-$empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-
-if (!$empResult) {
-    echo $errorRedirectLink;
-}
-
-$empRow = $empResult->fetch_assoc();
-if (isset($empRow['id']))
-    $currEmpID = $empRow['id'];
+if (isRecordExist('employee_personal_info', 'id', USER_ID, $connect)) 
+    $currEmpID = USER_ID;
+ else 
+    $empIDExistError = true;
 
 $result = getData('*', '', '', $tblName, $connect);
 
@@ -56,6 +41,13 @@ foreach ($arr as $item) {
     $allLeaveTypeArr[$id] = $name;
 }
 
+//All User ID
+$userArr = array();
+
+$userResult = getData('id', '', '', USR_USER, $connect);
+while ($userRow = $userResult->fetch_assoc()) {
+    array_push($userArr, $userRow['id']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -122,27 +114,30 @@ foreach ($arr as $item) {
                                             </thead>
                                             <?php
                                             $empNum = 1;
+
                                             $empResult = getData('*', '', '', EMPPERSONALINFO, $connect);
-                                            while ($empRow = $empResult->fetch_assoc()) { ?>
-                                                <tbody>
-                                                    <tr>
-                                                        <th class="hideColumn" scope="row"><?= $empRow['id'] ?></th>
-                                                        <td scope="row"><?= $empNum++ ?></td>
-                                                        <td scope="row">
-                                                            <?php if (isset($empRow['name'])) echo $empRow['name'] ?>
-                                                        </td>
-                                                        <td scope="row">
-                                                            <?php if (isset($empRow['id'])) { ?>
-                                                                <div class="text-center">
-                                                                    <button class="roundedSelectionBtn text-capitalize text-start px-3" style="font-size: 14px;">
-                                                                        <a class="" href="<?= $redirect_page . "?act=" . $act_1 . "&empID=" . $empRow['id'] ?>&page=allleave">Select</span>
-                                                                    </button>
-                                                                </div>
-                                                            <?php } ?>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            <?php } ?>
+                                            while ($empRow = $empResult->fetch_assoc()) {
+                                                if (in_array($empRow['id'], $userArr) && isset($empRow['name'], $empRow['id']) && !empty($empRow['name'])) { ?>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th class="hideColumn" scope="row"><?= $empRow['id'] ?></th>
+                                                            <td scope="row"><?= $empNum++ ?></td>
+                                                            <td scope="row">
+                                                                <?php if (isset($empRow['name'])) echo $empRow['name'] ?>
+                                                            </td>
+                                                            <td scope="row">
+                                                                <?php if (isset($empRow['id'])) { ?>
+                                                                    <div class="text-center">
+                                                                        <button class="roundedSelectionBtn text-capitalize text-start px-3" style="font-size: 14px;">
+                                                                            <a class="" href="<?= $redirect_page . "?act=" . $act_1 . "&empID=" . $empRow['id'] ?>&page=allleave">Select</span>
+                                                                        </button>
+                                                                    </div>
+                                                                <?php } ?>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                            <?php }
+                                            } ?>
 
                                             <tfoot>
                                                 <tr>
@@ -266,122 +261,122 @@ foreach ($arr as $item) {
 
                     <tbody>
                         <?php
-                        while ($row = $result->fetch_assoc()) { ?>
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num++; ?></th>
-                                <?php
-                                $leaveTypeResult = getData('name', 'id="' . $row['leave_type']  . '"',  '', L_TYPE, $connect);
-                                $leaveTypeRow = $leaveTypeResult->fetch_assoc();
-                                ?>
-                                <td scope="row" class='text-nowrap'>
+                        while ($row = $result->fetch_assoc()) {
+
+                            $userResult = getData('name', 'id="' .  $row['applicant'] . '"', '', EMPPERSONALINFO, $connect);
+                            $userRow = $userResult->fetch_assoc();
+
+                            if (isset($userRow['name']) && in_array($row['applicant'], $userArr) && isset($row['applicant'], $row['id']) && !empty($row['applicant'])) { ?>
+
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
                                     <?php
-                                    $userResult = getData('name', 'id="' .  $row['applicant'] . '"', '', EMPPERSONALINFO, $connect);
-                                    $userRow = $userResult->fetch_assoc();
-                                    if (isset($userRow['name']))
-                                        echo  $userRow['name'];
+                                    $leaveTypeResult = getData('name', 'id="' . $row['leave_type']  . '"',  '', L_TYPE, $connect);
+                                    $leaveTypeRow = $leaveTypeResult->fetch_assoc();
                                     ?>
-                                </td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($leaveTypeRow['name'])) echo $leaveTypeRow['name'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['from_time'])) echo $row['from_time'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['to_time'])) echo $row['to_time'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['numOfdays'])) echo $row['numOfdays'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                <td scope="row" class='text-nowrap'>
-                                    <div class="d-flex flex-nowrap">
-                                        <?php
-                                        if (isset($row['pending_approver']) && $row['pending_approver']) {
-                                            $pendingApprover =  explode(',', $row['pending_approver']);
-                                            foreach ($pendingApprover as $value) {
-                                                $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
-                                                $userRow = $userResult->fetch_assoc();
-                                                if (isset($userRow['name']))
-                                                    echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                </td>
-
-                                <td scope="row" class='text-nowrap'>
-                                    <div class="d-flex flex-nowrap">
-                                        <?php
-                                        if (isset($row['success_approver']) && $row['success_approver']) {
-                                            $pendingApprover =  explode(',', $row['success_approver']);
-                                            foreach ($pendingApprover as $value) {
-                                                $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
-                                                $userRow = $userResult->fetch_assoc();
-                                                if (isset($userRow['name']))
-                                                    echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                </td>
-
-                                <td scope="row" class='text-nowrap'>
-                                    <div class="d-flex flex-nowrap">
-                                        <?php
-                                        if (isset($row['reject_approver']) && $row['reject_approver']) {
-                                            $pendingApprover =  explode(',', $row['reject_approver']);
-                                            foreach ($pendingApprover as $value) {
-                                                $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
-                                                $userRow = $userResult->fetch_assoc();
-                                                if (isset($userRow['name']))
-                                                    echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                </td>
-
-                                <td scope="row" class='text-nowrap'>
-                                    <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
-                                        <?php if (isset($row['leave_transaction_status'])) { ?>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($userRow['name'])) echo  $userRow['name']; ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($leaveTypeRow['name'])) echo $leaveTypeRow['name'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['from_time'])) echo $row['from_time'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['to_time'])) echo $row['to_time'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['numOfdays'])) echo $row['numOfdays'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row" class='text-nowrap'>
+                                        <div class="d-flex flex-nowrap">
                                             <?php
-                                            if ($row['leave_transaction_status'] == 'pending')
-                                                $buttonColor = 'blue';
-                                            else if ($row['leave_transaction_status'] == 'declined' || $row['leave_transaction_status'] == 'cancel')
-                                                $buttonColor = 'red';
-                                            else if ($row['leave_transaction_status'] == 'approval')
-                                                $buttonColor = 'green';
+                                            if (isset($row['pending_approver']) && $row['pending_approver']) {
+                                                $pendingApprover =  explode(',', $row['pending_approver']);
+                                                foreach ($pendingApprover as $value) {
+                                                    $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
+                                                    $userRow = $userResult->fetch_assoc();
+                                                    if (isset($userRow['name']))
+                                                        echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
+                                                }
+                                            }
                                             ?>
-                                            <span class="mdi mdi-record-circle-outline" id="leaveTransactionStatus" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $row['leave_transaction_status'] ?>&nbsp;
-                                        <?php } ?>
-                                    </button>
-                                </td>
-
-                                <td scope="row">
-                                    <?php if (isset($row['applicant'], $row['id'])) { ?>
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . "&empID=" . $row['applicant'] ?>&page=allleave">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-
-                                                <?php if ($row['leave_transaction_status'] === 'pending') { ?>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 . "&empID=" . $row['applicant'] ?>&page=allleave">Edit</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Cancel", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?php echo $pageTitle ?>','<?= $redirect_page ?>','','LC')">Cancel</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                <?php } ?>
-                                            </ul>
                                         </div>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php }  ?>
+                                    </td>
+
+                                    <td scope="row" class='text-nowrap'>
+                                        <div class="d-flex flex-nowrap">
+                                            <?php
+                                            if (isset($row['success_approver']) && $row['success_approver']) {
+                                                $pendingApprover =  explode(',', $row['success_approver']);
+                                                foreach ($pendingApprover as $value) {
+                                                    $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
+                                                    $userRow = $userResult->fetch_assoc();
+                                                    if (isset($userRow['name']))
+                                                        echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                    </td>
+
+                                    <td scope="row" class='text-nowrap'>
+                                        <div class="d-flex flex-nowrap">
+                                            <?php
+                                            if (isset($row['reject_approver']) && $row['reject_approver']) {
+                                                $pendingApprover =  explode(',', $row['reject_approver']);
+                                                foreach ($pendingApprover as $value) {
+                                                    $userResult = getData('name', 'id="' . $value . '"', '', USR_USER, $connect);
+                                                    $userRow = $userResult->fetch_assoc();
+                                                    if (isset($userRow['name']))
+                                                        echo '<div class="border py-1 px-3 mb-1 me-2 rounded-pill text-center">' . $userRow['name'] . '</div>';
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                    </td>
+
+                                    <td scope="row" class='text-nowrap'>
+                                        <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
+                                            <?php if (isset($row['leave_transaction_status'])) { ?>
+                                                <?php
+                                                if ($row['leave_transaction_status'] == 'pending')
+                                                    $buttonColor = 'blue';
+                                                else if ($row['leave_transaction_status'] == 'declined' || $row['leave_transaction_status'] == 'cancel')
+                                                    $buttonColor = 'red';
+                                                else if ($row['leave_transaction_status'] == 'approval')
+                                                    $buttonColor = 'green';
+                                                ?>
+                                                <span class="mdi mdi-record-circle-outline" id="leaveTransactionStatus" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $row['leave_transaction_status'] ?>&nbsp;
+                                            <?php } ?>
+                                        </button>
+                                    </td>
+
+                                    <td scope="row">
+                                        <?php if (isset($row['applicant'], $row['id'])) { ?>
+                                            <div class="dropdown" style="text-align:center">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                    <li>
+                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . "&empID=" . $row['applicant'] ?>&page=allleave">View</a>
+                                                        <?php endif; ?>
+                                                    </li>
+
+                                                    <?php if ($row['leave_transaction_status'] === 'pending') { ?>
+                                                        <li>
+                                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 . "&empID=" . $row['applicant'] ?>&page=allleave">Edit</a>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                        <li>
+                                                            <?php if (isActionAllowed("Cancel", $pinAccess)) : ?>
+                                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?php echo $pageTitle ?>','<?= $redirect_page ?>','','LC')">Cancel</a>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                        <?php }
+                        } ?>
                     </tbody>
 
                     <tfoot>

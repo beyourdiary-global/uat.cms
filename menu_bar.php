@@ -24,7 +24,7 @@ $menuList = array(
     array(
         'Dashboard',                    // pagename
         'mdi mdi-view-dashboard',       // icon class
-        $SITEURL . '/dashboard.php',                // page
+        $SITEURL . '/dashboard.php',    // page
         'n',                            // check whether is a dropdown
         'expand' => array(),            // dropdown list item
         'pin' => array('0')             // action
@@ -85,6 +85,16 @@ $menuList = array(
         'pin' => array('20', '21')
     ),
     array(
+        'Orders',
+        'mdi mdi-cart-variant',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Facebook Order Request', 'mdi mdi-shopping', $SITEURL . '/fb_order_req_table.php', '69'),
+        ),
+        'pin' => array('69')
+    ),
+    array(
         'Finance',
         'mdi mdi-finance',
         'javascript:void(0)',
@@ -109,15 +119,15 @@ $menuList = array(
                     array('Current Bank Account Transaction', 'mdi storefront-outline', $SITEURL . '/finance/curr_bank_trans_table.php', '37'),
                     array('Investment Transaction', 'mdi storefront-outline', $SITEURL . '/finance/investment_trans_table.php', '40'),
                     array('Inventories Transaction', 'mdi storefront-outline', $SITEURL . '/finance/invtr_trans_table.php', '41'),
-                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '42'),
+                    array('Sundry Debtors Transaction', 'mdi storefront-outline', $SITEURL . '/finance/sundry_debt_trans_table.php', '44'),
                     array('Other Creditor Transaction', 'mdi storefront-outline', $SITEURL . '/finance/other_creditor_trans_table.php', '43'),
-                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '44'),
+                    array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '46'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                     array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67', '62'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '46', '51', '67', '62'),
 
 
             ),

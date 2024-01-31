@@ -84,7 +84,7 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++ ?></th>
@@ -104,9 +104,8 @@ if (!$result) {
                                     </td>
                                     <td scope="row">
                                         <?php
-                                        if (!empty($row['brand'])) {
+                                        if (!empty($row['brand']) && isset($row['brand'])) {
 
-                                        
                                             $resultBrand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
 
                                             if (!$resultBrand) {
@@ -121,7 +120,7 @@ if (!$result) {
                                     </td>
                                     <td scope="row">
                                         <?php
-                                        if (!empty($row['cost_curr'])) {
+                                        if (!empty($row['cost_curr']) && isset($row['cost_curr'])) {
                                             $resultCurUnit2 = getData('unit', "id='" . $row['cost_curr'] . "'", '', CUR_UNIT, $connect);
 
                                             if (!$resultCurUnit2) {
@@ -136,8 +135,10 @@ if (!$result) {
                                     </td>
                                     <td scope="row">
                                         <?php
-                                        $prod_list = explode(",", $row['product']);
-                                        echo sizeOf($prod_list);
+                                        if (isset($row['product'])) {
+                                            $prod_list = explode(",", $row['product']);
+                                            echo sizeOf($prod_list);
+                                        }
                                         ?>
                                     </td>
                                     <td scope="row">
