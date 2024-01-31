@@ -282,67 +282,70 @@ foreach ($arr as $item) {
 
                     <tbody>
                         <?php
-                        while ($row = $result->fetch_assoc()) { ?>
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num++; ?></th>
-                                <?php
-                                $leaveTypeResult = getData('name', 'id="' . $row['leave_type']  . '"',  '', L_TYPE, $connect);
-                                $leaveTypeRow = $leaveTypeResult->fetch_assoc();
-                                ?>
-                                <td scope="row" class='text-nowrap'><?php if (isset($leaveTypeRow['name'])) echo $leaveTypeRow['name'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['from_time'])) echo $row['from_time'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['to_time'])) echo $row['to_time'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['numOfdays'])) echo $row['numOfdays'] ?></td>
-                                <td scope="row" class='text-nowrap'><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                <td scope="row" class='text-nowrap'>
-                                    <?php if (isset($row['leave_transaction_status'])) { ?>
-                                        <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
-                                            <?php
-                                            if ($row['leave_transaction_status'] == 'pending')
-                                                $buttonColor = 'blue';
-                                            else if ($row['leave_transaction_status'] == 'declined' || $row['leave_transaction_status'] == 'cancel')
-                                                $buttonColor = 'red';
-                                            else if ($row['leave_transaction_status'] == 'approval')
-                                                $buttonColor = 'green';
-                                            ?>
-                                            <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $row['leave_transaction_status'] ?>&nbsp;
-                                        </button>
-                                    <?php } ?>
-                                </td>
+                        while ($row = $result->fetch_assoc()) {
+                            if (isset($row['applicant'], $row['id']) && !empty($row['applicant'])) { ?>
 
-                                <td scope="row">
-                                    <?php if (isset($row['applicant'], $row['id'])) { ?>
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
+                                    <?php
+                                    $leaveTypeResult = getData('name', 'id="' . $row['leave_type']  . '"',  '', L_TYPE, $connect);
+                                    $leaveTypeRow = $leaveTypeResult->fetch_assoc();
+                                    ?>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($leaveTypeRow['name'])) echo $leaveTypeRow['name'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['from_time'])) echo $row['from_time'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['to_time'])) echo $row['to_time'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['numOfdays'])) echo $row['numOfdays'] ?></td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row" class='text-nowrap'>
+                                        <?php if (isset($row['leave_transaction_status'])) { ?>
+                                            <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
+                                                <?php
+                                                if ($row['leave_transaction_status'] == 'pending')
+                                                    $buttonColor = 'blue';
+                                                else if ($row['leave_transaction_status'] == 'declined' || $row['leave_transaction_status'] == 'cancel')
+                                                    $buttonColor = 'red';
+                                                else if ($row['leave_transaction_status'] == 'approval')
+                                                    $buttonColor = 'green';
+                                                ?>
+                                                <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $row['leave_transaction_status'] ?>&nbsp;
+                                            </button>
+                                        <?php } ?>
+                                    </td>
 
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
+                                    <td scope="row">
+                                        <?php if (isset($row['applicant'], $row['id'])) { ?>
 
-                                                <?php if ($row['leave_transaction_status'] === 'pending') { ?>
+                                            <div class="dropdown" style="text-align:center">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                                     <li>
-                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
                                                         <?php endif; ?>
                                                     </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Cancel", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?php echo $pageTitle ?>','<?= $redirect_page ?>','','LC')">Cancel</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                <?php } ?>
-                                            </ul>
-                                        </div>
-                                    <?php } ?>
-                                </td>
-                            </tr>
-                        <?php }  ?>
+
+                                                    <?php if ($row['leave_transaction_status'] === 'pending') { ?>
+                                                        <li>
+                                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                        <li>
+                                                            <?php if (isActionAllowed("Cancel", $pinAccess)) : ?>
+                                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?php echo $pageTitle ?>','<?= $redirect_page ?>','','LC')">Cancel</a>
+                                                            <?php endif; ?>
+                                                        </li>
+                                                    <?php } ?>
+                                                </ul>
+                                            </div>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+                        <?php }
+                        }  ?>
                     </tbody>
 
                     <tfoot>

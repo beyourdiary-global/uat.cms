@@ -54,11 +54,11 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2><?php echo $pageTitle ?></h2>
                             <?php if ($result) { ?>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
-                                <?php endif; ?>
-                            </div>
+                                <div class="mt-auto mb-auto">
+                                    <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                        <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                                    <?php endif; ?>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -69,85 +69,85 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                 } else {
                 ?>
 
-                <table class="table table-striped" id="table">
-                    <thead>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Merchant Name</th>
-                            <th scope="col">Merchant Business No</th>
-                            <th scope="col">Merchant Contact</th>
-                            <th scope="col">Merchant Email</th>
-                            <th scope="col">Merchant Address</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Person In Charge Contact</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                        </tr>
-                    </thead>
+                    <table class="table table-striped" id="table">
+                        <thead>
+                            <tr>
+                                <th class="hideColumn" scope="col">ID</th>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Merchant Name</th>
+                                <th scope="col">Merchant Business No</th>
+                                <th scope="col">Merchant Contact</th>
+                                <th scope="col">Merchant Email</th>
+                                <th scope="col">Merchant Address</th>
+                                <th scope="col">Person In Charge</th>
+                                <th scope="col">Person In Charge Contact</th>
+                                <th scope="col">Remark</th>
+                                <th scope="col" id="action_col" width="100px">Action</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                        <?php
-                        while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
-                                <tr>
-                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['business_no'] ?></td>
-                                    <td scope="row"><?= $row['contact'] ?></td>
-                                    <td scope="row"><?= $row['email'] ?></td>
-                                    <td scope="row"><?= $row['address'] ?></td>
-                                    <td scope="row"><?= $row['person_in_charges'] ?></td>
-                                    <td scope="row"><?= $row['person_in_charges_contact'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                        <?php
+                        <tbody>
+                            <?php
+                            while ($row = $result->fetch_assoc()) {
+                                if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                                    <tr>
+                                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                        <th scope="row"><?= $num++; ?></th>
+                                        <td scope="row"><?= $row['name'] ?></td>
+                                        <td scope="row"><?php if (isset($row['business_no'])) echo $row['business_no'] ?></td>
+                                        <td scope="row"><?php if (isset($row['contact'])) echo $row['contact'] ?></td>
+                                        <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
+                                        <td scope="row"><?php if (isset($row['address'])) echo $row['address'] ?></td>
+                                        <td scope="row"><?php if (isset($row['person_in_charges'])) echo $row['person_in_charges'] ?></td>
+                                        <td scope="row"><?php if (isset($row['person_in_charges_contact'])) echo $row['person_in_charges_contact'] ?></td>
+                                        <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                        <td scope="row">
+                                            <div class="dropdown" style="text-align:center">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                    <li>
+                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                    <li>
+                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                    <li>
+                                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                            <?php
+                                }
                             }
-                        }
-                        ?>
-                    </tbody>
+                            ?>
+                        </tbody>
 
-                    <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Merchant Name</th>
-                            <th scope="col">Merchant Business No</th>
-                            <th scope="col">Merchant Contact</th>
-                            <th scope="col">Merchant Email</th>
-                            <th scope="col">Merchant Address</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Person In Charge Contact</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        <tfoot>
+                            <tr>
+                                <th class="hideColumn" scope="col">ID</th>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Merchant Name</th>
+                                <th scope="col">Merchant Business No</th>
+                                <th scope="col">Merchant Contact</th>
+                                <th scope="col">Merchant Email</th>
+                                <th scope="col">Merchant Address</th>
+                                <th scope="col">Person In Charge</th>
+                                <th scope="col">Person In Charge Contact</th>
+                                <th scope="col">Remark</th>
+                                <th scope="col" id="action_col">Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 <?php } ?>
             </div>
         </div>

@@ -79,7 +79,7 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) {
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) {
 
                                 $resultAccessGroup = getData('name', "id='" . $row['access_id'] . "'", '', USR_GRP, $connect);
                                 if (!$resultAccessGroup) {

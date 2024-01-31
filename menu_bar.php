@@ -24,7 +24,7 @@ $menuList = array(
     array(
         'Dashboard',                    // pagename
         'mdi mdi-view-dashboard',       // icon class
-        $SITEURL . '/dashboard.php',                // page
+        $SITEURL . '/dashboard.php',    // page
         'n',                            // check whether is a dropdown
         'expand' => array(),            // dropdown list item
         'pin' => array('0')             // action
