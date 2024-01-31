@@ -35,7 +35,7 @@ if ($dataID) {
 
 //Delete Leave Application
 if ($act == 'D') {
-    deleteRecord('leave_pending', $dataID, $leavePendingResult['numOfdays'], $connect, $connect, $cdate, $ctime, 'Leave Application');
+    deleteRecord($leavePendingTblName, '', $dataID, $leavePendingResult['numOfdays'], $connect, $connect, $cdate, $ctime, 'Leave Transaction');
     $_SESSION['delChk'] = 1;
 }
 

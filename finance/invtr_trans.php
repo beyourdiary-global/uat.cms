@@ -327,7 +327,7 @@ if (post('actionBtn')) {
 
 if ($act == 'D') {
     //SET the record status to 'D'
-    deleteRecord($tblName, $dataID, $row['transactionID'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '',$dataID, $row['transactionID'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 

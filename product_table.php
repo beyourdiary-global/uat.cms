@@ -82,42 +82,41 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row">
-                                        <?php 
+                                        <?php
+                                        if (isset($row['currency_unit'])) {
 
-                                        $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                                            $resultCurUnit = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
-                                        if (!$resultCurUnit) {
-                                            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                            echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            if (!$resultCurUnit) {
+                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            }
+                                            $rowCurUnit = $resultCurUnit->fetch_assoc();
+
+                                            echo $rowCurUnit['unit'] . ' ' . $row['cost'];
                                         }
-                                        $rowCurUnit = $resultCurUnit->fetch_assoc();
-                                        $data_curr_unit =isset($rowCurUnit['unit']) ? $rowCurUnit['unit'] : '';
-                                        $data_cost = isset($row['cost']) ? $row['cost'] : '';
-
-                                        echo $data_curr_unit. ' ' .$data_cost;
-                        
                                         ?>
                                     </td>
                                     <td scope="row">
                                         <?php
-                                        $resultWeightUnit = getData('unit', "id='" . $row['weight_unit'] . "'", '', WGT_UNIT, $connect);
+                                        if (isset($row['weight_unit'])) {
 
-                                        if (!$resultWeightUnit) {
-                                            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                            echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            $resultWeightUnit = getData('unit', "id='" . $row['weight_unit'] . "'", '', WGT_UNIT, $connect);
+
+                                            if (!$resultWeightUnit) {
+                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                            }
+                                            $rowWeightUnit = $resultWeightUnit->fetch_assoc();
+
+                                            echo $row['weight'] . ' ' . $rowWeightUnit['unit'];
                                         }
-                                        $rowWeightUnit = $resultWeightUnit->fetch_assoc();
-
-                                        $data_weight = isset  ($row['weight']) ? $row['weight'] : '';
-                                        $data_unit = isset ($rowWeightUnit['unit']) ? $rowWeightUnit['unit'] : '';
-
-                                        echo $data_weight. ' ' .$data_unit; 
                                         ?>
                                     </td>
                                     <td scope="row">

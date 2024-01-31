@@ -37,7 +37,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['epf_rate'] . "%", $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '', $dataID, $row['epf_rate'] . "%", $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
