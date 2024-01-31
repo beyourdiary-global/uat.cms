@@ -161,6 +161,7 @@ function calculateTax() {
         if (result && result.length > 0) {
             tax = result[0]['percentage'];
         }
+        console.log('tax: ',tax, '%');
         var taxAmount = 0.00;
         var subtotal = parseFloat($subtotalInput.val()) || 0;
         var total = parseFloat($totalInput.val()) || 0;
