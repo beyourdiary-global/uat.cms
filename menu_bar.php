@@ -85,6 +85,16 @@ $menuList = array(
         'pin' => array('20', '21')
     ),
     array(
+        'Orders',
+        'mdi mdi-cart-variant',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Facebook Order Request', 'mdi mdi-shopping', $SITEURL . '/fb_order_req_table.php', '69'),
+        ),
+        'pin' => array('69')
+    ),
+    array(
         'Finance',
         'mdi mdi-finance',
         'javascript:void(0)',

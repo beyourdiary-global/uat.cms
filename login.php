@@ -74,6 +74,9 @@ if ($email && $password) {
                     generateDBData(META_ADS_ACC, $finance_connect);
                     generateDBData(COUNTRIES, $connect);
                     generateDBData(COURIER, $connect);
+                    generateDBData(BRD_SERIES, $connect);
+                    generateDBData(PKG, $connect);
+                    generateDBData(FIN_PAY_METH, $finance_connect);
                     generateDBData(PROD_CATEGORY, $connect);
   
 
