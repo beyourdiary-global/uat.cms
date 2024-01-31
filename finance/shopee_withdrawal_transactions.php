@@ -7,28 +7,21 @@ include_once '../checkCurrentPagePin.php';
 
 $tblName = SHOPEE_WDL_TRANS;
 
-//Current Page Action And Data ID
-$dataID = !empty(input('id')) ? input('id') : post('id');
-$act = !empty(input('act')) ? input('act') : post('act');
-$actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
+$dataID = input('id');
+$act = input('act');
+$pageAction = getPageAction($act);
+$allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
-//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
+
 $redirect_page = $SITEURL . '/finance/shopee_withdrawal_transactions_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-
-//Check a current page pin is exist or not
-$pageAction = getPageAction($act);
-$pageActionTitle = $pageAction . " " . $pageTitle;
-$pinAccess = checkCurrentPin($connect, $pageTitle);
-
-//Attachment
-$allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
 $img_path = '../' . img_server . 'finance/shopee_withdrawal_transactions/';
 if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
+
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
@@ -51,6 +44,7 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
@@ -58,12 +52,14 @@ if (post('actionBtn')) {
     $swt_id = postSpaceFilter("swt_id");
     $swt_amt = postSpaceFilter('swt_amt');
     $swt_pic = postSpaceFilter("swt_pic_hidden");
+
     $swt_attach = null;
     if (isset($_FILES["swt_attach"]) && $_FILES["swt_attach"]["size"] != 0) {
         $swt_attach = $_FILES["swt_attach"]["name"];
     } elseif (isset($_POST['existing_attachment'])) {
         $swt_attach = $_POST['existing_attachment'];
     }
+
     $swt_remark = postSpaceFilter('swt_remark');
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -75,7 +71,7 @@ if (post('actionBtn')) {
                 // move file
                 $swt_file_name = $_FILES["swt_attach"]["name"];
                 $swt_file_tmp_name = $_FILES["swt_attach"]["tmp_name"];
-                $img_ext = pathinfo($coh_file_name, PATHINFO_EXTENSION);
+                $img_ext = pathinfo($swt_file_name, PATHINFO_EXTENSION);
                 $img_ext_lc = strtolower($img_ext);
 
                 if (in_array($img_ext_lc, $allowed_ext)) {
@@ -257,7 +253,7 @@ if (post('act') == 'D') {
             $dataID = $row['id'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName ,'', $dataID, '',$finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName , $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -269,8 +265,11 @@ if (post('act') == 'D') {
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
     $_SESSION['viewChk'] = 1;
 
+    
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
+    } else {
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -323,15 +322,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <div class="row">
                 <div class="col-12 col-md-6">
                     <div class="form-group mb-3">
-                        <label class="form-label" id="swt_date" for="swt_date">Withdrawal Date<span class="requireRed">*</span></label>
-                        <input class="form-control" type="date" name="swt_date" id="swt_date" value="<?php echo (isset($row['swt_date'])) ? $row['swt_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
+                        <label class="form-label" id="swt_date" for="swt_date">Withdrawal Date*</span></label>
+                        <input class="form-control" type="date" name="swt_date" id="swt_date" value="<?php echo (isset($row['swt_date'])) ? $row['swt_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <div class="form-group mb-3">
-                        <label class="form-label" id="swt_id" for="swt_id">Withdrawal ID<span class="requireRed">*</span></label>
-                        <input class="form-control" type="text" name="swt_id" id="swt_id" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $swt_id_row['ID'] : ''  ?>" required>
+                        <label class="form-label" id="swt_id" for="swt_id">Withdrawal ID*</span></label>
+                        <input class="form-control" type="text" name="swt_id" id="swt_id" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $swt_id_row['ID'] : ''  ?>">
                     </div>
                 </div>
             </div>
@@ -339,8 +338,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <div class="row">
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
-            <label class="form-label" for="swt_amount">Withdrawal Amount (SGD)<span class="requireRed">*</span></label>
-            <input class="form-control" type="text" name="swt_amount" id="swt_amount" value="<?php if (isset($row['swt_amount'])) echo $row['swt_amount'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'swt_amountErrorMsg')">
+            <label class="form-label" for="swt_amount">Withdrawal Amount (SGD)*</span></label>
+            <input class="form-control" type="number" name="swt_amount" id="swt_amount" value="<?php if (isset($row['swt_amount'])) echo $row['swt_amount'] ?>" <?php if ($act == '') echo 'readonly' ?>>
 
             <div id="swt_amountErrorMsg" class="error-message">
                 <span class="mt-n1"></span>
@@ -348,76 +347,103 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         </div>
     </div>
 
-    <div class="col-12 col-md-6">
-        <div class="form-group mb-3">
-            <label class="form-label form_" id="swt_pic" for="swt_pic">Person-In-Charge<span class="requireRed">*</span></label>
-            <?php
-            unset($echoVal);
+    <div class="col-md-6 mb-3 autocomplete">
+        <label class="form-label form_lbl" id="swt_pic_lbl" for="swt_pic">Person-In-Charge*</span></label>
+        <?php
+        unset($echoVal);
 
-            if (isset($row['pic']))
-                $echoVal = $row['pic'];
+        if (isset($row['pic']))
+            $echoVal = $row['pic'];
 
-            if (isset($echoVal)) {
-                $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
-                if (!$user_rst) {
-                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                }
-                $user_row = $user_rst->fetch_assoc();
+        if (isset($echoVal)) {
+            $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+            if (!$user_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            ?>
-            <input class="form-control" type="text" name="swt_pic" id="swt_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
-            <input type="hidden" name="swt_pic_hidden" id="swt_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+            $user_row = $user_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="swt_pic" id="swt_pic" <?php if ($act == '') echo 'disabled' ?>
+            value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
+        <input type="hidden" name="swt_pic_hidden" id="swt_pic_hidden"
+            value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
 
-            <?php if (isset($pic_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $pic_err; ?></span>
-                </div>
-            <?php } ?>
-        </div>
+        <?php if (isset($pic_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $pic_err; ?></span>
+            </div>
+        <?php } ?>
     </div>
 </div>
 
-            <div class="form-group mb-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="form-label form" id="attachment" for="attachment">Attachment</label>
-                                <input class="form-control" type="file" name="attachment" id="attachment" value="" <?php if ($act == '') echo 'disabled' ?>>
-                                <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                                    <div id="err_msg">
-                                        <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                                    </div>
-                                    <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
-                                <?php } ?>
+<div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form_lbl" id="swt_attach_lbl" for="swt_attach">Attachment*</label>
+                            <input class="form-control" type="file" name="swt_attach" id="swt_attach"
+                                <?php if ($act == '') echo 'disabled' ?>>
+                            
+                            <?php if (isset($row['attachment']) && $row['attachment']) { ?>
+                            <div id="err_msg">
+                                <span
+                                    class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
                             </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                    <?php
-                                    $attachmentSrc = '';
-                                    if (isset($row['attachment']))
-                                        $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
-                                    ?>
-                                    <img id="attach_preview" name="attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                    <input type="hidden" name="attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
-                                </div>
+                            <input type="hidden" name="existing_attachment"
+                                value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                            <?php } ?>
+
+                            <?php if (isset($attach_err)) { ?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $attach_err; ?></span>
+                            </div>
+                            <?php } ?>
+
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                <?php
+                                $attachmentSrc = '';
+
+                                if (isset($dataExisted) && isset($row['attachment']) && !isset($swt_attach)) {
+                                    $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
+                                } else if (isset($swt_attach)) {
+                                    $attachmentSrc = $img_path . $swt_attach;
+                                }
+                                ?>
+                                <img id="swt_attach_preview" name="swt_attach_preview"
+                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                <input type="hidden" name="swt_attachmentValue" id="swt_attachmentValue"
+                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
                             </div>
                         </div>
                     </div>
+                </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label form" for="currentDataRemark">Remark</label>
-                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                        <label class="form-label form" for="swt_remark">Remark</label>
+                        <textarea class="form-control" name="swt_remark" id="swt_remark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
-                    </div>
+                    <?php
+                    switch ($act) {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                            break;
+                    }
+                    ?>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
+                        value="back">Back</button>
+                </div>
                 </form>
             </div>
         </div>
     </div>
-<script>
+
     <?php
    
     if (isset($_SESSION['tempValConfirmBox'])) {
@@ -432,7 +458,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         var action = "<?php echo isset($act) ? $act : ''; ?>";
 
         checkCurrentPage(page, action);
-
+        setAutofocus(action);
         <?php include "../js/shopee_withdrawal_transactions.js" ?>
     </script>
 
