@@ -6,7 +6,7 @@ include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
 $tblName = DEL_FEES_CLAIM;
-
+var_dump($_POST);
 $dataID = input('id');
 $act = input('act');
 $pageAction = getPageAction($act);
