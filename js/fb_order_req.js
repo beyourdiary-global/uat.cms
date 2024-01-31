@@ -186,7 +186,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
         link_chk = 0;
         $("#for_link").after(
-            '<span class="error-message for-link-err">Transaction ID is required!</span>');
+            '<span class="error-message for-link-err">Facebook Link is required!</span>');
     } else {
         $(".for-link-err").remove();
         link_chk = 1;

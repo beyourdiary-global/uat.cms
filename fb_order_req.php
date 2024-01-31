@@ -405,7 +405,6 @@ if (post('act') == 'D') {
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
-            $for_trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
             deleteRecord($tblName , $dataID, $for_name, $connect, $connect, $cdate, $ctime, $pageTitle);
