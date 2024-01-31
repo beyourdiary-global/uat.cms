@@ -39,7 +39,7 @@ if ($dataID) { //edit/remove/view
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '',$dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -204,7 +204,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName , '',$dataID, $name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();

@@ -157,7 +157,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $pmf_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName ,'', $dataID, $pmf_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             generateDBData(FIN_PAY_METH, $finance_connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {

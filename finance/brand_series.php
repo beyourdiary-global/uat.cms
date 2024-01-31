@@ -59,7 +59,6 @@ if (post('actionBtn')) {
             } else if (!$brand && $brand < 1) {
                 $brand_err = "Please specify the brand.";
                 break;
-
             } else if ($action == 'addTransaction') {
                 try {
 
@@ -95,7 +94,7 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
-                    
+
                     if ($row['name'] != $currentDataName) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $currentDataName);
@@ -119,10 +118,9 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET name = '$currentDataName', brand = '$brand', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-
                     } else {
                         $act = 'NC';
                     }
@@ -171,13 +169,13 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $dataID, '', $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -223,37 +221,35 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 
     <div class="page-load-cover">
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-            echo displayPageAction($act, $pageTitle);
-            ?>
-        </p>
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                        echo displayPageAction($act, $pageTitle);
+                                                                                                                        ?>
+            </p>
 
-    </div>
+        </div>
 
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="ICIForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, $pageTitle);
-                        ?>
-                    </h2>
-                </div>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="ICIForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                            echo displayPageAction($act, $pageTitle);
+                            ?>
+                        </h2>
+                    </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group mb-3">
                                 <label class="form-label form_lbl" for="currentDataName_lbl"><?php echo $pageTitle ?>
                                     Name</label>
-                                <input class="form-control" type="text" name="currentDataName" id="currentDataName"
-                                    value="<?php if (isset($row['name'])) echo $row['name'] ?>"
-                                    <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
                                     <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
                                 </div>
@@ -261,71 +257,69 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
 
                         <div class="col-12 col-md-6">
-                        <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
-        <select class="form-select" id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
-            <option value="0" disabled selected>Select Brand</option>
-            <?php
-            if ($brand_list_result->num_rows >= 1) {
-                $brand_list_result->data_seek(0);
-                while ($row2 = $brand_list_result->fetch_assoc()) {
-                    $selected = "";
-                    if (isset($dataExisted, $row['brand']) && !isset($brand)) {
-                        $selected = $row['brand'] == $row2['id'] ? " selected" : "";
-                    } else if (isset($brand)) {
-                        $selected = $brand == $row2['id'] ? " selected" : "";
-                    }
-                    echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
-            }
-            ?>
-        </select>
+                            <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
+                            <select class="form-select" id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
+                                <option value="0" disabled selected>Select Brand</option>
+                                <?php
+                                if ($brand_list_result->num_rows >= 1) {
+                                    $brand_list_result->data_seek(0);
+                                    while ($row2 = $brand_list_result->fetch_assoc()) {
+                                        $selected = "";
+                                        if (isset($dataExisted, $row['brand']) && !isset($brand)) {
+                                            $selected = $row['brand'] == $row2['id'] ? " selected" : "";
+                                        } else if (isset($brand)) {
+                                            $selected = $brand == $row2['id'] ? " selected" : "";
+                                        }
+                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"0\">None</option>";
+                                }
+                                ?>
+                            </select>
 
-        <?php if (isset($brand_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $brand_err; ?></span>
-            </div>
-        <?php } ?>
-    </div>
+                            <?php if (isset($brand_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $brand_err; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
 
-                    <div class="form-group mb-3">
-                        <label class="form-label form_lbl" for="currentDataRemark_lbl"><?php echo $pageTitle ?> Remark</label>
-                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3"
-                            <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                    </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label form_lbl" for="currentDataRemark_lbl"><?php echo $pageTitle ?> Remark</label>
+                            <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                        </div>
 
-                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                        <?php
-                    switch ($act) {
-                        case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
-                            break;
-                        case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
-                            break;
-                    }
-                    ?>
-                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
-                            id="actionBtn" value="back">Back</button>
-                    </div>
+                        <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                            <?php
+                            switch ($act) {
+                                case 'I':
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                    break;
+                                case 'E':
+                                    echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                    break;
+                            }
+                            ?>
+                            <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        </div>
                 </form>
             </div>
         </div>
     </div>
 
-<script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
+    <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-    checkCurrentPage(page, action);
-    setButtonColor();
-    preloader(300, action);
+        checkCurrentPage(page, action);
+        setButtonColor();
+        preloader(300, action);
     </script>
 </body>
 <script>
-<?php include './js/brand_series.js'; ?>
+    <?php include './js/brand_series.js'; ?>
 </script>
 
 
