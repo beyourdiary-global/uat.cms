@@ -13,6 +13,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/finance/agent.php';
 $deleteRedirectPage = $SITEURL . '/finance/agent_table.php';
 $result = getData('*', '', '', AGENT, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +27,7 @@ $result = getData('*', '', '', AGENT, $finance_connect);
 </head>
 
 <script>
+    preloader(300);
     $(document).ready(() => {
         createSortingTable('agent_table');
     });
@@ -30,9 +35,14 @@ $result = getData('*', '', '', AGENT, $finance_connect);
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -72,7 +82,7 @@ $result = getData('*', '', '', AGENT, $finance_connect);
                             $row2 = $brand->fetch_assoc();
     
                             $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                        $usr = $pic->fetch_assoc();
+                            $usr = $pic->fetch_assoc();
                         
                             $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
                             $row3 = $country->fetch_assoc();
@@ -82,8 +92,8 @@ $result = getData('*', '', '', AGENT, $finance_connect);
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= $row['name'] ?></td>
-                                <td scope="row"><?= isset($row2['name']) ? $row2['name'] : ''  ?>
-                                <td scope="row"><?= isset($usr['name']) ? $usr['name'] : ''  ?>
+                                <td scope="row"><?= isset($row2['name']) ? $row2['name'] : ''  ?></td>
+                                <td scope="row"><?= isset($usr['name']) ? $usr['name'] : ''  ?></td>
                                 <td scope="row"><?= $row['contact'] ?></td>
                                 <td scope="row"><?= $row['email'] ?></td>
                                 <td scope="row"><?= $row3['name'] ?></td>
@@ -105,9 +115,9 @@ $result = getData('*', '', '', AGENT, $finance_connect);
                                             <?php endif; ?>
                                         </li>
                                         <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_acc_table.php','D')">Delete</a>
-                                            <?php endif; ?>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                    <?php endif; ?>
                                     </li>
                                 </ul>
                             </div>
@@ -135,10 +145,7 @@ $result = getData('*', '', '', AGENT, $finance_connect);
 </body>
 
 <script>
-       var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-        checkCurrentPage(page, action);
 
     dropdownMenuDispFix();
     datatableAlignment('agent_table');
