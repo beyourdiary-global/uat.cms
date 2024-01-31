@@ -15,25 +15,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/leaveTransaction.php';
 
 //Current Employee ID 
-$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
-
-if (!$userResult) {
-    echo $errorRedirectLink;
-}
-
-$userRow = $userResult->fetch_assoc();
-if (isset($userRow['name']))
-    $userName = $userRow['name'];
-
-$empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-
-if (!$empResult) {
-    echo $errorRedirectLink;
-}
-
-$empRow = $empResult->fetch_assoc();
-if (isset($empRow['id']))
-    $currEmpID = $empRow['id'];
+if (isRecordExist('employee_personal_info', 'id', USER_ID, $connect)) 
+    $currEmpID = USER_ID;
+ else 
+    $empIDExistError = true;
 
 $result = getData('*', '', '', $tblName, $connect);
 
@@ -56,6 +41,13 @@ foreach ($arr as $item) {
     $allLeaveTypeArr[$id] = $name;
 }
 
+//All User ID
+$userArr = array();
+
+$userResult = getData('id', '', '', USR_USER, $connect);
+while ($userRow = $userResult->fetch_assoc()) {
+    array_push($userArr, $userRow['id']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -122,9 +114,10 @@ foreach ($arr as $item) {
                                             </thead>
                                             <?php
                                             $empNum = 1;
+
                                             $empResult = getData('*', '', '', EMPPERSONALINFO, $connect);
                                             while ($empRow = $empResult->fetch_assoc()) {
-                                                if (isset($empRow['name'], $empRow['id']) && !empty($empRow['name'])) { ?>
+                                                if (in_array($empRow['id'], $userArr) && isset($empRow['name'], $empRow['id']) && !empty($empRow['name'])) { ?>
                                                     <tbody>
                                                         <tr>
                                                             <th class="hideColumn" scope="row"><?= $empRow['id'] ?></th>
@@ -269,7 +262,11 @@ foreach ($arr as $item) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (isset($row['applicant'], $row['id']) && !empty($row['applicant'])) { ?>
+
+                            $userResult = getData('name', 'id="' .  $row['applicant'] . '"', '', EMPPERSONALINFO, $connect);
+                            $userRow = $userResult->fetch_assoc();
+
+                            if (isset($userRow['name']) && in_array($row['applicant'], $userArr) && isset($row['applicant'], $row['id']) && !empty($row['applicant'])) { ?>
 
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
@@ -278,14 +275,7 @@ foreach ($arr as $item) {
                                     $leaveTypeResult = getData('name', 'id="' . $row['leave_type']  . '"',  '', L_TYPE, $connect);
                                     $leaveTypeRow = $leaveTypeResult->fetch_assoc();
                                     ?>
-                                    <td scope="row" class='text-nowrap'>
-                                        <?php
-                                        $userResult = getData('name', 'id="' .  $row['applicant'] . '"', '', EMPPERSONALINFO, $connect);
-                                        $userRow = $userResult->fetch_assoc();
-                                        if (isset($userRow['name']))
-                                            echo  $userRow['name'];
-                                        ?>
-                                    </td>
+                                    <td scope="row" class='text-nowrap'><?php if (isset($userRow['name'])) echo  $userRow['name']; ?></td>
                                     <td scope="row" class='text-nowrap'><?php if (isset($leaveTypeRow['name'])) echo $leaveTypeRow['name'] ?></td>
                                     <td scope="row" class='text-nowrap'><?php if (isset($row['from_time'])) echo $row['from_time'] ?></td>
                                     <td scope="row" class='text-nowrap'><?php if (isset($row['to_time'])) echo $row['to_time'] ?></td>

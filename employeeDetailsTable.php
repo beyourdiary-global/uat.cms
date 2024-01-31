@@ -56,32 +56,22 @@ if ($dataID) {
 }
 
 //Current Employee ID 
-$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
+if (isRecordExist($tblName, 'id', USER_ID, $connect))
+    $currEmpID = USER_ID;
+else
+    $empIDExistError = true;
 
-if (!$userResult) {
-    echo $errorRedirectLink;
+if (isset($currEmpID)) {
+
+    //Manager Approver
+    $resultManagerApprover = getData('managers_for_leave_approval', 'employee_id="' . $currEmpID . '"', '', 'employee_info', $connect);
+
+    if (!$resultManagerApprover) {
+        echo $errorRedirectLink;
+    }
+    $rowManagerApprover = $resultManagerApprover->fetch_assoc();
+    $managerApprover = $rowManagerApprover['managers_for_leave_approval'];
 }
-
-$userRow = $userResult->fetch_assoc();
-$userName = $userRow['name'];
-
-$empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-if (!$empResult) {
-    echo $errorRedirectLink;
-}
-
-$empRow = $empResult->fetch_assoc();
-$currEmpID = $empRow['id'];
-
-//Manager Approver
-$resultManagerApprover = getData('managers_for_leave_approval', 'employee_id="' . $currEmpID . '"', '', 'employee_info', $connect);
-
-if (!$resultManagerApprover) {
-    echo $errorRedirectLink;
-}
-$rowManagerApprover = $resultManagerApprover->fetch_assoc();
-$managerApprover = $rowManagerApprover['managers_for_leave_approval'];
-
 
 //Leave Application Edit,Delete,Add
 
@@ -699,12 +689,13 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                 <!-- Leave Application -->
                 <div class="mb-1">
-                    <div class="mb-sm-0 m-2">
-                        <a class="btn btn-sm btn-rounded btn-primary" style="width:240px" onclick="changeLeaveApplicationForm('addLeave')" value="addLeave" data-bs-toggle="modal" name="leaveApplicationForm" id="addBtn" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
-                            <i class="mdi mdi-thermometer-plus"></i> Add Leave Application
-                        </a>
-                    </div>
-
+                    <?php if (isset($currEmpID)) { ?>
+                        <div class="mb-sm-0 m-2">
+                            <a class="btn btn-sm btn-rounded btn-primary" style="width:240px" onclick="changeLeaveApplicationForm('addLeave')" value="addLeave" data-bs-toggle="modal" name="leaveApplicationForm" id="addBtn" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
+                                <i class="mdi mdi-thermometer-plus"></i> Add Leave Application
+                            </a>
+                        </div>
+                    <?php } ?>
                     <!--Invalid pop up box when employee id no exist-->
                     <div class="modal fade" id="invalidEmpIDModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
@@ -1067,7 +1058,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                             <th scope=" row"><?= $num++ ?></th>
                             <?php
                             if (isset($row['id'])) {
-                                if ($row['id'] === $currEmpID) { ?>
+                                if ((isset($currEmpID)) && $row['id'] === $currEmpID) { ?>
 
                                     <td scope="row" class="text-center">
                                         <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
