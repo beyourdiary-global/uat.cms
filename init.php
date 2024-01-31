@@ -138,6 +138,7 @@ define('BRD_SERIES','brand_series');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 define('SHOPEE_ACC', 'shopee_account');
+define('FB_ORDER_REQ', 'facebook_order_request');
 
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);

@@ -78,34 +78,36 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row">
                                         <?php
-                                        $pin_arr = explode(",", $row['pins']);
-                                        $pinname_arr = array();
-                                        foreach ($pin_arr as $val) {
-                                            $pinname_result = getData('name', "id='$val'", '', PIN, $connect);
-                                            if (!$pinname_result) {
-                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                        if(isset($row['pins'])){
+                                            $pin_arr = explode(",", $row['pins']);
+                                            $pinname_arr = array();
+                                            foreach ($pin_arr as $val) {
+                                                $pinname_result = getData('name', "id='$val'", '', PIN, $connect);
+                                                if (!$pinname_result) {
+                                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                }
+                                                $pinname_row = $pinname_result->fetch_assoc();
+                                                if ($pinname_row) {
+                                                    array_push($pinname_arr, $pinname_row['name']);
+                                                } else {
+                                                    $pinname_arr = '';
+                                                }
                                             }
-                                            $pinname_row = $pinname_result->fetch_assoc();
-                                            if ($pinname_row) {
-                                                array_push($pinname_arr, $pinname_row['name']);
-                                            } else {
-                                                $pinname_arr = '';
+                                            if (!empty($pinname_arr)) {
+                                                echo implodeWithComma($pinname_arr);
                                             }
-                                        }
-                                        if (!empty($pinname_arr)) {
-                                            echo implodeWithComma($pinname_arr);
                                         }
                                         ?>
                                     </td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">

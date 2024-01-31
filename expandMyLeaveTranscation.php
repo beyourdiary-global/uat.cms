@@ -17,23 +17,10 @@ $redirect_page = $SITEURL . '/employeeDetails.php';
 $errorRedirectLink = "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script><script>location.href ='$SITEURL/dashboard.php';</script>";
 
 //Current Employee ID 
-$userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
-
-if (!$userResult) {
+if (!isRecordExist('employee_personal_info', 'id', USER_ID, $connect))
     echo $errorRedirectLink;
-}
-
-$userRow = $userResult->fetch_assoc();
-$userName = $userRow['name'];
-
-$empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-
-if (!$empResult) {
-    echo $errorRedirectLink;
-}
- 
-$empRow = $empResult->fetch_assoc();
-$currEmpID = $empRow['id'];
+else
+    $currEmpID = USER_ID;
 
 //Array
 $combinedLeaveArr = $balanceLeaveTransactionArr = $allLeaveTypeArr = $successLeaveTransactionArr = $pendingLeaveTransactionArr  = $leaveBalance = $leaveUsed = $arr1 = $arr2 = $arr3 = $arr4 = array();

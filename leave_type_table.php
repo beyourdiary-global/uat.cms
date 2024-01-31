@@ -132,70 +132,75 @@ if (post('l_status_option')) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()) {  ?>
-                            <?php $leave_status = $row['leave_status']; ?>
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num;
-                                                $num++ ?></th>
-                                <td scope="row"><?= $row['name'] ?></td>
-                                <td scope="row"><?= $row['num_of_days'] . ' Days' ?></td>
-                                <td scope="row">
-                                    <div class="dropdown">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="leaveStatusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button class="roundedSelectionBtn">
-                                                <span class="mdi mdi-record-circle-outline" style="<?php echo ($leave_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
-                                                <?php
-                                                switch ($leave_status) {
-                                                    case 'Active':
-                                                        echo 'Active';
-                                                        break;
-                                                    case 'Inactive':
-                                                        echo 'Inactive';
-                                                        break;
-                                                    default:
-                                                        echo 'Error';
-                                                }
-                                                ?>
-                                            </button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="leaveStatusMenu">
-                                            <li>
-                                                <a class="dropdown-item" id="activeOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Active')"><span class="mdi mdi-record-circle-outline" style="color:#008000"></span> Active</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" id="inactiveOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Inactive')"><span class="mdi mdi-record-circle-outline" style="color:#ff0000"></span> Inactive</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td scope="row" style="text-transform: uppercase;"><?= $row['auto_assign'] ?></td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_type_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
+                        <?php while ($row = $result->fetch_assoc()) {
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++ ?></th>
+                                    <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['num_of_days'])) echo $row['num_of_days'] . ' Days' ?></td>
+                                    <td scope="row">
+                                        <?php
+                                        if (isset($row['leave_status'])) {
+                                            $leave_status = $row['leave_status'];
+                                        ?>
+                                            <div class="dropdown">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="leaveStatusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button class="roundedSelectionBtn">
+                                                        <span class="mdi mdi-record-circle-outline" style="<?php echo ($leave_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
+                                                        <?php
+                                                        switch ($leave_status) {
+                                                            case 'Active':
+                                                                echo 'Active';
+                                                                break;
+                                                            case 'Inactive':
+                                                                echo 'Inactive';
+                                                                break;
+                                                            default:
+                                                                echo 'Error';
+                                                        }
+                                                        ?>
+                                                    </button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="leaveStatusMenu">
+                                                    <li>
+                                                        <a class="dropdown-item" id="activeOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Active')"><span class="mdi mdi-record-circle-outline" style="color:#008000"></span> Active</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" id="inactiveOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Inactive')"><span class="mdi mdi-record-circle-outline" style="color:#ff0000"></span> Inactive</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        <?php } ?>
+                                    </td>
+                                    <td scope="row" style="text-transform: uppercase;"><?php if (isset($row['auto_assign'])) echo $row['auto_assign'] ?></td>
+                                    <td scope="row">
+                                        <div class="dropdown" style="text-align:center">
+                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                <li>
+                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/leave_type_table.php','D')">Delete</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <?php }
+                        } ?>
                     </tbody>
                     <tfoot>
                         <tr>

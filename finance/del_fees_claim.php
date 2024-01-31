@@ -189,7 +189,7 @@ if (post('act') == 'D') {
 
         $dataID = $row['id'];
         //SET the record status to 'D'
-        deleteRecord($tblName , $dataID, $dfc_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+        deleteRecord($tblName, '', $dataID, $dfc_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
         generateDBData(META_ADS_ACC, $finance_connect);
         $_SESSION['delChk'] = 1;
     } catch (Exception $e) {
@@ -345,7 +345,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                                                                                             } else {
                                                                                                                 echo '';
                                                                                                             } ?>"
-                                    <?php echo 'readonly' ?>>
+                                    <?php if ($act == '') echo 'disabled' ?>>
                                 <?php if (isset($tax_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $tax_err; ?></span>
