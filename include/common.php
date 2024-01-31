@@ -261,12 +261,30 @@ function isDuplicateRecordWithConditions($fields, $values, $tbl, $connect, $prim
 	return $result && mysqli_fetch_assoc($result)['count'] > 0;
 }
 
+function isRecordExist($tblName, $idType, $id, $connect)
+{
+	$idType = mysqli_real_escape_string($connect, $idType);
+	$id = mysqli_real_escape_string($connect, $id);
+
+	$query = "SELECT COUNT(*) AS record_count FROM $tblName WHERE $idType = '$id'";
+	$result = mysqli_query($connect, $query);
+
+	if ($result) {
+		$row = mysqli_fetch_assoc($result);
+		$recordCount = $row['record_count'];
+
+		return $recordCount > 0;
+	} else {
+		return false;
+	}
+}
 
 
-function tableExists($tableName, $conn) {
-    $result = $conn->query("SHOW TABLES LIKE '$tableName'");
-    if(!$result)
-	return;
+function tableExists($tableName, $conn)
+{
+	$result = $conn->query("SHOW TABLES LIKE '$tableName'");
+	if (!$result)
+		return;
 	return $result && $result->num_rows > 0;
 }
 
