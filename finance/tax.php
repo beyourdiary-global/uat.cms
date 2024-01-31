@@ -102,6 +102,7 @@ if (post('actionBtn')) {
 
                     $query = "INSERT INTO " . $tblName . "(country,name,percentage,remark,create_by,create_date,create_time) VALUES ('$tax_country','$name',$percentage,'$dataRemark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -204,8 +205,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , '',$dataID, $name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
-            $_SESSION['delChk'] = 1;
+           
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
