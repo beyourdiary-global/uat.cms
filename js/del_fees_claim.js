@@ -151,6 +151,8 @@ function calculateTax() {
                     handleTaxSettingData(result);
                 });
 
+            } else {
+                handleTaxSettingData(null);
             }
         } else {
             console.error('Error retrieving Courier data');
