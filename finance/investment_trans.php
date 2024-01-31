@@ -405,7 +405,7 @@ if (post('act') == 'D') {
             $trans_id = $row['transactionID'];
             $_SESSION['delChk'] = 1;
             //SET the record status to 'D'
-            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '',$row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
