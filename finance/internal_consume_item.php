@@ -73,7 +73,6 @@ if (post('actionBtn')) {
             } else if (!$ici_cost) {
                 $cost_err = "Please specify the cost.";
                 break;
-
             } else if ($action == 'addTransaction') {
                 try {
 
@@ -124,7 +123,7 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
-                    
+
                     if ($row['date'] != $ici_date) {
                         array_push($oldvalarr, $row['date']);
                         array_push($chgvalarr, $ici_date);
@@ -166,10 +165,9 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET ici_date = '$ici_date', pic = '$ici_pic', brand = '$ici_brand', package = '$ici_package', cost = '$ici_cost', remark ='$ici_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-
                     } else {
                         $act = 'NC';
                     }
@@ -218,13 +216,13 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $dataID, '', $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -270,155 +268,153 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 
     <div class="page-load-cover">
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-            echo displayPageAction($act, $pageTitle);
-            ?>
-        </p>
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                        echo displayPageAction($act, $pageTitle);
+                                                                                                                        ?>
+            </p>
 
-    </div>
-
-    <div id="formContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="ICIForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, $pageTitle);
-                        ?>
-                    </h2>
-                </div>
-
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
-
-                <div class="row">
-
-                <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="ici_date_label" for="ici_date">Date<span class="requireRed">*</span></label>
-        <input class="form-control" type="date" name="ici_date" id="ici_date" value="<?php
-                if (isset($dataExisted) && isset($row['date']) && !isset($ici_date)) {
-                    echo $row['date'];
-                } else if (isset($ici_date)) {
-                    echo $ici_date;
-                } else {
-                    echo date('Y-m-d');
-                }
-                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
-        <?php if (isset($date_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $date_err; ?></span>
-            </div>
-        <?php } ?>
-    </div>
-
-    <div class="col-md-6 mb-3 autocomplete">
-        <label class="form-label form_lbl" id="ici_pic_lbl" for="ici_pic">Person-In-Charge<span class="requireRed">*</span></label>
-        <?php
-        unset($echoVal);
-
-        if (isset($row['pic']))
-            $echoVal = $row['pic'];
-
-        if (isset($echoVal)) {
-            $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
-            if (!$user_rst) {
-                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-            }
-            $user_row = $user_rst->fetch_assoc();
-        }
-        ?>
-        <input class="form-control" type="text" name="ici_pic" id="ici_pic" <?php if ($act == '') echo 'disabled' ?>
-            value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
-        <input type="hidden" name="ici_pic_hidden" id="ici_pic_hidden"
-            value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
-
-        <?php if (isset($pic_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $pic_err; ?></span>
-            </div>
-        <?php } ?>
-    </div>
-</div>
-
-<div class="row">
-<div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="ici_brand_lbl" for="ici_brand">Brand<span class="requireRed">*</span></label>
-        <select class="form-select" id="ici_brand" name="ici_brand" <?php if ($act == '') echo 'disabled' ?>>
-            <option value="0" disabled selected>Select Brand</option>
-            <?php
-            if ($brand_list_result->num_rows >= 1) {
-                $brand_list_result->data_seek(0);
-                while ($row2 = $brand_list_result->fetch_assoc()) {
-                    $selected = "";
-                    if (isset($dataExisted, $row['brand']) && !isset($ici_brand)) {
-                        $selected = $row['brand'] == $row2['id'] ? " selected" : "";
-                    } else if (isset($ici_brand)) {
-                        $selected = $ici_brand == $row2['id'] ? " selected" : "";
-                    }
-                    echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
-            }
-            ?>
-        </select>
-
-        <?php if (isset($brand_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $brand_err; ?></span>
-            </div>
-        <?php } ?>
-    </div>
-
-    <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="ici_package_lbl" for="ici_package">Package<span class="requireRed">*</span></label>
-        <select class="form-select" id="ici_package" name="ici_package" <?php if ($act == '') echo 'disabled' ?>>
-            <option value="0" disabled selected>Select Package</option>
-            <?php
-            if ($package_list_result->num_rows >= 1) {
-                $package_list_result->data_seek(0);
-                while ($row2 = $package_list_result->fetch_assoc()) {
-                    $selected = "";
-                    if (isset($dataExisted, $row['package']) && !isset($ici_package)) {
-                        $selected = $row['package'] == $row2['id'] ? " selected" : "";
-                    } else if (isset($ici_package)) {
-                        $selected = $ici_package == $row2['id'] ? " selected" : "";
-                    }
-                    echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
-            }
-            ?>
-        </select>
-
-        <?php if (isset($package_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $package_err; ?></span>
-            </div>
-        <?php } ?>
-    </div>
-</div>
-
-<div class="col-md-6">
-    <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span class="requireRed">*</span></label>
-    <input class="form-control" type="text" name="ici_cost" id="ici_cost" <?php if ($act == '') echo 'disabled' ?>>
-    <?php if (isset($cost_err)) { ?>
-        <div id="err_msg">
-            <span class="mt-n1"><?php echo $cost_err; ?></span>
         </div>
-    <?php } ?>
-</div>
 
-<div class="form-group mb-3" style="margin-top: 10px;">
-    <label class="form-label form_lbl" id="ici_remark_lbl" for="ici_remark">Remark</label>
-    <textarea class="form-control" name="ici_remark" id="ici_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>>
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="ICIForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                            echo displayPageAction($act, $pageTitle);
+                            ?>
+                        </h2>
+                    </div>
+
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form_lbl" id="ici_date_label" for="ici_date">Date<span class="requireRed">*</span></label>
+                            <input class="form-control" type="date" name="ici_date" id="ici_date" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['date']) && !isset($ici_date)) {
+                                                                                                                echo $row['date'];
+                                                                                                            } else if (isset($ici_date)) {
+                                                                                                                echo $ici_date;
+                                                                                                            } else {
+                                                                                                                echo date('Y-m-d');
+                                                                                                            }
+                                                                                                            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+                            <?php if (isset($date_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                        <div class="col-md-6 mb-3 autocomplete">
+                            <label class="form-label form_lbl" id="ici_pic_lbl" for="ici_pic">Person-In-Charge<span class="requireRed">*</span></label>
+                            <?php
+                            unset($echoVal);
+
+                            if (isset($row['pic']))
+                                $echoVal = $row['pic'];
+
+                            if (isset($echoVal)) {
+                                $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                                if (!$user_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $user_row = $user_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="ici_pic" id="ici_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
+                            <input type="hidden" name="ici_pic_hidden" id="ici_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+
+                            <?php if (isset($pic_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $pic_err; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form_lbl" id="ici_brand_lbl" for="ici_brand">Brand<span class="requireRed">*</span></label>
+                            <select class="form-select" id="ici_brand" name="ici_brand" <?php if ($act == '') echo 'disabled' ?>>
+                                <option value="0" disabled selected>Select Brand</option>
+                                <?php
+                                if ($brand_list_result->num_rows >= 1) {
+                                    $brand_list_result->data_seek(0);
+                                    while ($row2 = $brand_list_result->fetch_assoc()) {
+                                        $selected = "";
+                                        if (isset($dataExisted, $row['brand']) && !isset($ici_brand)) {
+                                            $selected = $row['brand'] == $row2['id'] ? " selected" : "";
+                                        } else if (isset($ici_brand)) {
+                                            $selected = $ici_brand == $row2['id'] ? " selected" : "";
+                                        }
+                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"0\">None</option>";
+                                }
+                                ?>
+                            </select>
+
+                            <?php if (isset($brand_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $brand_err; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form_lbl" id="ici_package_lbl" for="ici_package">Package<span class="requireRed">*</span></label>
+                            <select class="form-select" id="ici_package" name="ici_package" <?php if ($act == '') echo 'disabled' ?>>
+                                <option value="0" disabled selected>Select Package</option>
+                                <?php
+                                if ($package_list_result->num_rows >= 1) {
+                                    $package_list_result->data_seek(0);
+                                    while ($row2 = $package_list_result->fetch_assoc()) {
+                                        $selected = "";
+                                        if (isset($dataExisted, $row['package']) && !isset($ici_package)) {
+                                            $selected = $row['package'] == $row2['id'] ? " selected" : "";
+                                        } else if (isset($ici_package)) {
+                                            $selected = $ici_package == $row2['id'] ? " selected" : "";
+                                        }
+                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
+                                    }
+                                } else {
+                                    echo "<option value=\"0\">None</option>";
+                                }
+                                ?>
+                            </select>
+
+                            <?php if (isset($package_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $package_err; ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span class="requireRed">*</span></label>
+                        <input class="form-control" type="text" name="ici_cost" id="ici_cost" <?php if ($act == '') echo 'disabled' ?>>
+                        <?php if (isset($cost_err)) { ?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $cost_err; ?></span>
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                    <div class="form-group mb-3" style="margin-top: 10px;">
+                        <label class="form-label form_lbl" id="ici_remark_lbl" for="ici_remark">Remark</label>
+                        <textarea class="form-control" name="ici_remark" id="ici_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?>
     </textarea>
-</div>
+                    </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php
@@ -452,8 +448,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
 
-<?php
-   /*
+    <?php
+    /*
         oufei 20231014
         common.fun.js
         function(title, subtitle, page name, ajax url path, redirect path, action)

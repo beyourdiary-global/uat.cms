@@ -1,4 +1,5 @@
 //autocomplete
+var currentCourierValue = $("#dfc_courier_hidden").val();
 $(document).ready(function () {
 
     if (!($("#dfc_courier").attr('disabled'))) {
@@ -29,7 +30,7 @@ $(document).ready(function () {
     }
 
     //calculation for delivery fee
-    $("#dfc_courier").change(calculateTax);
+    $("#dfc_courier").change(emptyFields);
 
     $("#dfc_subtotal").on('keyup', calculateTax);
     $("#dfc_total").on('keyup', calculateTax);
@@ -124,58 +125,60 @@ function calculateTax() {
 
     var paramTaxable = {
         search: $("#dfc_courier_hidden").val(),
-        searchCol: 'courierID',
+        searchCol: 'id',
         searchType: '*',
         dbTable: '<?= COURIER ?>',
+        isFin: 0,
     };
 
     retrieveDBData(paramTaxable, '<?= $SITEURL ?>', function (result) {
         handleCourierData(result);
-        console.log(result[0]);
     });
-
     function handleCourierData(result) {
         if (result && result.length > 0) {
             var taxable = result[0]['taxable'];
             country = result[0]['country'];
 
             if (taxable == 'Y') {
-                console.log(country);
                 var paramTaxSetting = {
                     search: country,
                     searchCol: 'country',
                     searchType: '*',
                     dbTable: '<?= TAX_SETT ?>',
+                    isFin: 1,
                 };
 
                 retrieveDBData(paramTaxSetting, '<?= $SITEURL ?>', function (result) {
                     handleTaxSettingData(result);
                 });
+
             } else {
-                //if taxable is 'N', tax = 0.00
                 handleTaxSettingData(null);
             }
         } else {
             console.error('Error retrieving Courier data');
         }
     }
-
     function handleTaxSettingData(result) {
         var tax = 0.00;
         if (result && result.length > 0) {
             tax = result[0]['percentage'];
+            console.log('tax: ', tax, '%');
         }
+        
+        console.log('curr value: ', currentCourierValue);
 
         var taxAmount = 0.00;
         var subtotal = parseFloat($subtotalInput.val()) || 0;
         var total = parseFloat($totalInput.val()) || 0;
         $taxInput.val(taxAmount.toFixed(2));
+
         if ($totalInput.is(':focus')) {
             // User is editing Total, calculate Subtotal and update Tax
             var calculatedSubtotal = total / (1 + tax / 100);
             $subtotalInput.val(calculatedSubtotal.toFixed(2));
 
-            var taxAmount = total - (total / (1 + tax / 100));
+            var taxAmount = total - calculatedSubtotal;
             $taxInput.val(taxAmount.toFixed(2));
         }
 
@@ -184,9 +187,20 @@ function calculateTax() {
             // User is editing Subtotal, calculate Total and update Tax
             var calculatedTotal = subtotal + (subtotal * tax) / 100;
             $totalInput.val(calculatedTotal.toFixed(2));
-
             $taxInput.val(taxAmount.toFixed(2));
         }
     }
+}
 
+function emptyFields() {
+    var $subtotalInput = $("#dfc_subtotal");
+    var $totalInput = $("#dfc_total");
+    var $taxInput = $("#dfc_tax");
+
+    // Empty the fields when courier changes
+    $subtotalInput.val('');
+    $totalInput.val('');
+    $taxInput.val('');
+
+    currentCourierValue = $("#dfc_courier_hidden").val();
 }

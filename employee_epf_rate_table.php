@@ -79,12 +79,12 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['epf_rate'])) { ?>
+                            if (isset($row['epf_rate'], $row['id']) && !empty($row['epf_rate'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['epf_rate'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">

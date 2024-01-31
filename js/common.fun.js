@@ -1259,6 +1259,7 @@ function retrieveDBData(param, siteURL, callback) {
   var type = param["searchType"];
   var dbTable = param["dbTable"];
   var col = param["searchCol"];
+  var fin = param["isFin"]; //test
 
   if (search != "") {
     $.ajax({
@@ -1268,7 +1269,8 @@ function retrieveDBData(param, siteURL, callback) {
         searchText: search,
         searchType: type,
         tblname: dbTable,
-        searchCol: col
+        searchCol: col,
+        isFin: fin,
       },
       dataType: 'json',
       success: (result) => {

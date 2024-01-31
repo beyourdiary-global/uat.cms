@@ -179,7 +179,7 @@ foreach ($arr as $item) {
                             <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
-
+ 
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {

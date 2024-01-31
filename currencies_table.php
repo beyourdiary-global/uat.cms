@@ -81,7 +81,7 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['id'])) {
+                            if (isset($row['id']) && !empty($row['id'])) { 
 
                                 $resultDeUnit = getData('unit', "id='" . $row['default_currency_unit'] . "'", '', CUR_UNIT, $connect);
                                 $resultExUnit = getData('unit', "id='" . $row['exchange_currency_unit'] . "'", '', CUR_UNIT, $connect);
@@ -98,10 +98,10 @@ if (!$result) {
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $rowDeUnit['unit'] ?></td>
-                                    <td scope="row"><?= $row['exchange_currency_rate'] ?></td>
-                                    <td scope="row"><?= $rowExUnit['unit'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($rowDeUnit['unit'])) echo  $rowDeUnit['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['exchange_currency_rate'])) echo  $row['exchange_currency_rate'] ?></td>
+                                    <td scope="row"><?php if (isset($rowExUnit['unit'])) echo  $rowExUnit['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
