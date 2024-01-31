@@ -493,7 +493,7 @@ input {
     text-align: center !important;
 }
 
-#actionBtn {
+#actionBtn,#backBtn {
     box-shadow: 0 0 !important;
     font-weight: bold;
     font-size: 18px;
@@ -611,3 +611,6 @@ input {
     color: red !important;
 }
 
+.requiredRed{
+    color: red !important;
+}

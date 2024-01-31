@@ -52,7 +52,7 @@ if (post('actionBtn')) {
                 $id_err = "Please specify the payment method name.";
                 break;
             } else if ($pmf_name && isDuplicateRecord("name", $pmf_name, $tblName,  $finance_connect, $dataID)) {
-                $id_err = "Duplicate record found for " . $pageTitle . " name.";
+                $name_err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
             } else if ($action == 'addPaymentMethod') {
                 try {
@@ -293,6 +293,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     var action = "<?php echo isset($act) ? $act : ''; ?>";
 
     checkCurrentPage(page, action);
+    setButtonColor();
+    setAutofocus(action);
+    preloader(300, action);
     </script>
 
 </body>

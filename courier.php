@@ -90,6 +90,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(courierID,name,country,taxable,create_by,create_date,create_time) VALUES ('$courier_id','$courier_name','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
+                    generateDBData(COURIER, $connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -134,6 +135,7 @@ if (post('actionBtn')) {
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET courierID = '$courier_id',name = '$courier_name',country = '$courier_country',taxable = '$courier_tax', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
+                        generateDBData(COURIER, $connect);
                     } else {
                         $act = 'NC';
                     }
@@ -189,6 +191,7 @@ if (post('act') == 'D') {
             $dataID = $row['id'];
             //SET the record status to 'D'
             deleteRecord($tblName , $dataID, $courier_id, $connect, $connect, $cdate, $ctime, $pageTitle);
+            generateDBData(COURIER, $connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -258,7 +261,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                             <label class="form-label form_lbl" id="courier_id_lbl" for="courier_id">Courier
-                                ID</label>
+                                ID<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_id" id="courier_id" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['courierID']) && !isset($courier_id)) {
                                                                                                             echo $row['courierID'];
@@ -281,7 +284,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                             <label class="form-label form_lbl" id="courier_name_lbl" for="courier_name">Courier
-                                Name</label>
+                                Name<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_name" id="courier_name" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['name']) && !isset($courier_name)) {
                                                                                                                 echo $row['name'];

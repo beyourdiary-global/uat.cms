@@ -58,88 +58,98 @@ $result = getData('*', '', '', INVTR_TRANS, $finance_connect);
                     </div>
                 </div>
 
-                <table class="table table-striped" id="invtr_trans_table">
-                    <thead>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Transaction ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Merchant</th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Unit Price</th>
-                            <th scope="col">Bal Qty</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Attachment</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result->fetch_assoc()) {
-                            $merchant = getData('name', "id='" . $row['merchantID'] . "'", '', MERCHANT, $finance_connect);
-                            $row2 = $merchant->fetch_assoc();
-                            $item = getData('name', "id='" . $row['itemID'] . "'", '', PROD, $connect);
-                            $row3 = $item->fetch_assoc();
+                <?php
+                if (!$result) {
+                    echo '<div class="text-center"><h4>No Result!</h4></div>';
+                } else {
+                ?>
 
-                        ?>
-
+                    <table class="table table-striped" id="invtr_trans_table">
+                        <thead>
                             <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?= $row['transactionID'] ?></td>
-                                <td scope="row"><?= $row['date'] ?></td>
-                                <td scope="row"><?= $row2['name'] ?></td>
-                                <td scope="row"><?= $row3['name'] ?></td>
-                                <td scope="row"><?= $row['unit_price'] ?></td>
-                                <td scope="row"><?= $row['bal_qty'] ?></td>
-                                <td scope="row"><?= $row['amount'] ?></td>
-                                <td scope="row"><?= $row['attachment'] ?></td>
-                                <td scope="row"><?= $row['remark'] ?></td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/invtr_trans_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
+                                <th class="hideColumn" scope="col">ID</th>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Transaction ID</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Merchant</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Bal Qty</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Attachment</th>
+                                <th scope="col">Remark</th>
+                                <th scope="col" id="action_col" width="100px">Action</th>
                             </tr>
-                        <?php } ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Transaction ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Merchant</th>
-                            <th scope="col">Item</th>
-                            <th scope="col">Unit Price</th>
-                            <th scope="col">Bal Qty</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Attachment</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php while ($row = $result->fetch_assoc()) {
+                                if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
+
+                                    $merchant = getData('name', "id='" . $row['merchantID'] . "'", '', MERCHANT, $finance_connect);
+                                    $row2 = $merchant->fetch_assoc();
+                                    $item = getData('name', "id='" . $row['itemID'] . "'", '', PROD, $connect);
+                                    $row3 = $item->fetch_assoc();
+
+                            ?>
+
+                                    <tr>
+                                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                        <th scope="row"><?= $num++; ?></th>
+                                        <td scope="row"><?= $row['transactionID'] ?></td>
+                                        <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
+                                        <td scope="row"><?php if (isset($row2['name'])) echo $row2['name'] ?></td>
+                                        <td scope="row"><?php if (isset($row3['name'])) echo $row3['name'] ?></td>
+                                        <td scope="row"><?php if (isset($row['unit_price'])) echo $row['unit_price'] ?></td>
+                                        <td scope="row"><?php if (isset($row['bal_qty'])) echo $row['bal_qty'] ?></td>
+                                        <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
+                                        <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                        <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                        <td scope="row">
+                                            <div class="dropdown" style="text-align:center">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                    <li>
+                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                    <li>
+                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                    <li>
+                                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/invtr_trans_table.php','D')">Delete</a>
+                                                        <?php endif; ?>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                            <?php }
+                            } ?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="hideColumn" scope="col">ID</th>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Transaction ID</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Merchant</th>
+                                <th scope="col">Item</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Bal Qty</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Attachment</th>
+                                <th scope="col">Remark</th>
+                                <th scope="col" id="action_col">Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                <?php } ?>
             </div>
         </div>
     </div>

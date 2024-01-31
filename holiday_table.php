@@ -81,13 +81,13 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $date = date("j M Y", strtotime($row['date'])) ?></td>
-                                    <td scope="row"><?= $day = date("l", strtotime($row['date'])) ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo $date = date("j M Y", strtotime($row['date'])) ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo $day = date("l", strtotime($row['date'])) ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">

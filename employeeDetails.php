@@ -362,7 +362,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/employeeDetails.css">
 </head>
 
-<body>
+<body> 
     <div class="pre-load-center">
         <div class="preloader"></div>
     </div>
@@ -445,7 +445,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <div class="col-sm-4 mb-2">
                                         <div>
                                             <label class="form-label" id="emailLbl" for="employeeEmail">Email <span class="requireRed">*</span></label>
-                                            <input class="form-control" type="text" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" >
+                                            <input class="form-control" type="text" style="border-color: none;" name="employeeEmail" id="employeeEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" >
                                         </div>
                                         <span id="emailMsg1"></span>
                                     </div>

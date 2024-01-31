@@ -151,7 +151,7 @@ if ($action) {
                 $_SESSION['tempValConfirmBox'] = true;
 
                 try {
-                    $query = "INSERT INTO " . $leavePendingTblName . "(applicant,leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,remark,create_by,create_date,create_time)VALUES('$currEmpID','$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$managerApprover','$remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $leavePendingTblName . "(applicant,leave_type,from_time,to_time,numOfdays,remainingLeave,attachment,pending_approver,leave_transaction_status,remark,create_by,create_date,create_time)VALUES('$currEmpID','$leaveType','$fromTime','$toTime','$numOfdays','$remainingLeave','$leaveAttachment','$managerApprover','pending','$remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
 
                     if ($imgExist)
@@ -534,7 +534,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
 <script>
     //Wait for all css,html,js file fully loader than display a content
-    preloader(500);
+    preloader(600);
 
     $(document).ready(() => {
         createSortingTable('employeeDetailsTable');
@@ -551,6 +551,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
             <div class="col-12 col-md-8">
 
+                <!-- Employee Details Table Title -->
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
                         <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
@@ -558,230 +559,225 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
-                            <h2><?php echo $pageTitle  ?></h2>
+                            <h2><?php echo $pageTitle ?></h2>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex flex-column flex-nowrap mb-1">
-                    <!--Leave Assign-->
-                    <div class="row">
-                        <div class="col-12 d-sm-flex flex-wrap">
-                            <div class="mb-sm-0 m-2">
-                                <button class="btn btn-sm btn-rounded btn-primary " type="button" name="leaveAssignBtn" id="addBtn" style="width:240px">
+                <div class="overflow-auto" id="buttonContainer">
+                    <div class="d-flex flex-nowrap">
+                        <!-- Leave Assign -->
+                        <div class="mb-1">
+                            <div class="m-2">
+                                <button class="btn btn-sm btn-rounded btn-primary" type="button" name="leaveAssignBtn" id="addBtn" style="width:240px">
                                     <i class="mdi mdi-book-edit-outline"></i> Leave Assign
                                 </button>
-
-                                <!-- Modal -->
-
-                                <!-- First modal -->
-                                <div class="modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <?php
-                                            if (empty($_COOKIE['employeeID']))
-                                                echo '<div class="modal-header alert-danger">';
-                                            else
-                                                echo '<div class="modal-header bg-info text-white">';
-
-                                            ?>
-                                            <h5 class="modal-title" id="staticBackdropLabel">Leave Assign</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <?php if (!empty($_COOKIE['employeeID'])) {
-                                                $employeeArr = explode(',', $_COOKIE['employeeID']);
-
-                                                echo "<h4>Employee Selected</h4>";
-
-                                                for ($i = 0; $i < sizeof($employeeArr); $i++) {
-                                                    $resultEmp = getData('*', "id=$employeeArr[$i]", '', EMPPERSONALINFO, $connect);
-
-                                                    if ($resultEmp) {
-                                                        $empName = $resultEmp->fetch_assoc();
-                                                        echo ($i + 1) . ". " . $empName['name'] . "<br>";
-                                                    }
-                                                }
-                                            } else {
-                                                echo "<h4 class='text-center'>No Employee Selected</h4>";
-                                            }
-                                            ?>
-                                        </div>
-
-                                        <?php if (!empty($_COOKIE['employeeID'])) { ?>
-                                            <div class="modal-footer d-flex justify-content-center">
-                                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" value="assign" id="assignLeaveBtn">Assign Leave</button>
-                                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" value="unassign" id="unassignLeaveBtn">Unassign Leave</button>
-                                            </div>
-                                        <?php } ?>
-
-                                    </div>
-                                </div>
                             </div>
 
-                            <!-- Second modal -->
-                            <div class="modal" id="secondModal" data-bs-backdrop=" static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <!-- First modal -->
+                            <div class="modal" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <div class="modal-header bg-info text-white">
-                                            <h5 class="modal-title" id="staticBackdropLabel">Leave Assign</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-
-                                            <?php
-
-                                            $autoAsignType = $_COOKIE['assignType'];
-
-                                            if (!empty($autoAsignType)) {
-                                                $leaveAvailable = true;
-                                                $resultLeave = getData('*', "auto_assign = 'yes' AND leave_status = 'Active'", '', L_TYPE, $connect);
-
-                                                if ($resultLeave->num_rows != 0) {
-
-                                                    echo '<h4 class="text-capitalize">Select a leave to ' . $autoAsignType . '</h4>';
-
-                                                    while ($rowLeave = $resultLeave->fetch_assoc()) {
-                                                        echo "<input class='leaveAssignCheck' type='checkbox' value='" . $rowLeave['id'] . "'> " . $rowLeave['name'] . "<br>";
-                                                    }
-                                                } else {
-                                                    echo "<h4 class='text-center'>No Leave Available</h4>";
-                                                }
-                                            }
-                                            ?>
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <!-- Add a hidden input field to store the button value -->
-                                            <form id="secondModalForm" method="post">
-                                                <input type="hidden" name="leaveAssign" id="leaveAssignInput">
-                                                <?php
-                                                if (isset($leaveAvailable)) {
-                                                    echo '<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" id="leaveAssignCheckBtn">Submit</button>';
-                                                }
-                                                ?>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Third modal -->
-                            <div class="modal" id="thirdModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-
-                                    <div class="modal-content">
                                         <?php
-                                        if (empty($_COOKIE['leaveTypeSelect']) || isset($errorMsg))
-                                            echo '<div class="modal-header alert alert-danger">';
+                                        if (empty($_COOKIE['employeeID']))
+                                            echo '<div class="modal-header alert-danger">';
                                         else
-                                            echo '<div class="modal-header alert alert-success">';
-
+                                            echo '<div class="modal-header bg-info text-white">';
                                         ?>
-                                        <h5 class="modal-title">Leave Assign</h5>
-                                        <button class="btn-close completeLeaveAssign" type="button" data-bs-dismiss="modal"></button>
-                                    </div>
-
-                                    <div class="modal-body text-center">
-                                        <?php
-                                        if (empty($_COOKIE['leaveTypeSelect']))
-                                            echo '<p >No Leave Selected </p>';
-                                        else if (isset($errorMsg))
-                                            echo '<p class="text-capitalize">An error occurred please try again later</p>';
-                                        else
-                                            echo '<p class="text-capitalize">Successfully ' . $assignType . ' Leave To Selected Employee</p>';
-                                        ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                    </div>
-                    <!--Leave Assign-->
-
-                    <!--Leave Application-->
-                    <div class="row">
-                        <div class="mb-sm-0 m-2">
-                            <a class="btn btn-sm btn-rounded btn-primary" style="width:240px" onclick="changeLeaveApplicationForm('addLeave')" value="addLeave" data-bs-toggle="modal" name="leaveApplicationForm" id="addBtn" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
-                                <i class="mdi mdi-thermometer-plus"></i> Add Leave Application
-                            </a>
-                        </div>
-
-                        <!--Invalid pop up box when employee id no exist-->
-                        <div class="modal fade" id="invalidEmpIDModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-                                        <div class="text-end">
-                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div class="text-center mt-3">
-                                            <h5>Employee ID No Exist,Kindly Try Again Later After Register Account At Employee Table </h5>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--Acceess Denial-->
-                        <div class="modal fade" id="leaveApplicationTableModalAccessDenial" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title text-danger" id="exampleModalToggleLabel">Access Denial</h5>
+                                        <h5 class="modal-title" id="staticBackdropLabel">Leave Assign</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body text-center">
-                                        You Don't Have Permission To View This Employee Leave Application Table
+
+                                    <div class="modal-body">
+                                        <?php if (!empty($_COOKIE['employeeID'])) {
+                                            $employeeArr = explode(',', $_COOKIE['employeeID']);
+
+                                            echo "<h4>Employee Selected</h4>";
+
+                                            for ($i = 0; $i < sizeof($employeeArr); $i++) {
+                                                $resultEmp = getData('*', "id=$employeeArr[$i]", '', EMPPERSONALINFO, $connect);
+
+                                                if ($resultEmp) {
+                                                    $empName = $resultEmp->fetch_assoc();
+                                                    echo ($i + 1) . ". " . $empName['name'] . "<br>";
+                                                }
+                                            }
+                                        } else {
+                                            echo "<h4 class='text-center'>No Employee Selected</h4>";
+                                        }
+                                        ?>
+                                    </div>
+
+                                    <?php if (!empty($_COOKIE['employeeID'])) { ?>
+                                        <div class="modal-footer d-flex justify-content-center">
+                                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" value="assign" id="assignLeaveBtn">Assign Leave</button>
+                                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" value="unassign" id="unassignLeaveBtn">Unassign Leave</button>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second modal -->
+                        <div class="modal" id="secondModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-info text-white">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Leave Assign</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <?php
+
+                                        if (isset($_COOKIE['assignType']))
+                                            $autoAsignType = $_COOKIE['assignType'];
+
+                                        if (!empty($autoAsignType)) {
+                                            $leaveAvailable = true;
+                                            $resultLeave = getData('*', "auto_assign = 'yes' AND leave_status = 'Active'", '', L_TYPE, $connect);
+
+                                            if ($resultLeave->num_rows != 0) {
+
+                                                echo '<h4 class="text-capitalize">Select a leave to ' . $autoAsignType . '</h4>';
+
+                                                while ($rowLeave = $resultLeave->fetch_assoc()) {
+                                                    echo "<input class='leaveAssignCheck' type='checkbox' value='" . $rowLeave['id'] . "'> " . $rowLeave['name'] . "<br>";
+                                                }
+                                            } else {
+                                                echo "<h4 class='text-center'>No Leave Available</h4>";
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <!-- Add a hidden input field to store the button value -->
+                                        <form id="secondModalForm" method="post">
+                                            <input type="hidden" name="leaveAssign" id="leaveAssignInput">
+                                            <?php
+                                            if (isset($leaveAvailable)) {
+                                                echo '<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-dismiss="modal" id="leaveAssignCheckBtn">Submit</button>';
+                                            }
+                                            ?>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!--Leave Application Table-->
-                        <div class="modal fade modal-xl" id="leaveApplicationTableModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
+                        <!-- Third modal -->
+                        <div class="modal" id="thirdModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <div class="modal-body">
-                                        <div class="text-end">
-                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
+                                    <?php
+                                    if (empty($_COOKIE['leaveTypeSelect']) || isset($errorMsg))
+                                        echo '<div class="modal-header alert alert-danger">';
+                                    else
+                                        echo '<div class="modal-header alert alert-success">';
 
-                                        <div>
-                                            <h4 class="text-center mb-4">Leave Pending Approved</h4>
-                                        </div>
+                                    ?>
+                                    <h5 class="modal-title">Leave Assign</h5>
+                                    <button class="btn-close completeLeaveAssign" type="button" data-bs-dismiss="modal"></button>
+                                </div>
 
-                                        <table class="table table-striped" id="leaveApplicationTable">
-                                            <thead>
-                                                <tr>
-                                                    <th class="hideColumn" scope="col">ID</th>
-                                                    <th scope="col">S/N</th>
-                                                    <th scope="col">Leave Type</th>
-                                                    <th scope="col">From Day</th>
-                                                    <th scope="col">To Day</th>
-                                                    <th scope="col">Day Leave</th>
-                                                    <th scope="col">Remark</th>
-                                                    <th scope="col" id="action_col">Action</th>
-                                                </tr>
-                                            </thead>
+                                <div class="modal-body text-center">
+                                    <?php
+                                    if (empty($_COOKIE['leaveTypeSelect']))
+                                        echo '<p >No Leave Selected </p>';
+                                    else if (isset($errorMsg))
+                                        echo '<p class="text-capitalize">An error occurred please try again later</p>';
+                                    else
+                                        echo '<p class="text-capitalize">Successfully ' . $assignType . ' Leave To Selected Employee</p>';
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                            <tbody>
-                                                <?php
-                                                $currentEmpLeaveApplicationResult = getData('*', 'applicant="' . $currEmpID . '"', '', $leavePendingTblName, $connect);
+                <!-- Leave Application -->
+                <div class="mb-1">
+                    <div class="mb-sm-0 m-2">
+                        <a class="btn btn-sm btn-rounded btn-primary" style="width:240px" onclick="changeLeaveApplicationForm('addLeave')" value="addLeave" data-bs-toggle="modal" name="leaveApplicationForm" id="addBtn" href="<?php echo (isset($currEmpID) ? '#leaveApplicationModal' : '#invalidEmpIDModal') ?>" role="button">
+                            <i class="mdi mdi-thermometer-plus"></i> Add Leave Application
+                        </a>
+                    </div>
 
-                                                if (!$currentEmpLeaveApplicationResult) {
-                                                    echo $errorRedirectLink;
-                                                }
+                    <!--Invalid pop up box when employee id no exist-->
+                    <div class="modal fade" id="invalidEmpIDModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="text-end">
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
 
-                                                $numLeave = 1;
-                                                $leaveApplyDateArr = array();
+                                    <div class="text-center mt-3">
+                                        <h5>Employee ID No Exist,Kindly Try Again Later After Register Account At Employee Table </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                                while ($rowCurrentEmpLeaveApplication = $currentEmpLeaveApplicationResult->fetch_assoc()) {
+                    <!--Acceess Denial-->
+                    <div class="modal fade" id="leaveApplicationTableModalAccessDenial" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-danger" id="exampleModalToggleLabel">Access Denial</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    You Don't Have Permission To View This Employee Leave Application Table
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Leave Application Table-->
+                    <div class="modal fade modal-xl" id="leaveApplicationTableModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="text-end">
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="text-center mb-4">Leave Pending Approved</h4>
+                                    </div>
+
+                                    <table class="table table-striped" id="leaveApplicationTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="hideColumn" scope="col">ID</th>
+                                                <th scope="col">S/N</th>
+                                                <th scope="col">Leave Type</th>
+                                                <th scope="col">From Day</th>
+                                                <th scope="col">To Day</th>
+                                                <th scope="col">Day Leave</th>
+                                                <th scope="col">Remark</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col" id="action_col">Action</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <?php
+                                            $currentEmpLeaveApplicationResult = getData('*', 'applicant="' . $currEmpID . '"', '', $leavePendingTblName, $connect);
+
+                                            if (!$currentEmpLeaveApplicationResult) {
+                                                echo $errorRedirectLink;
+                                            }
+
+                                            $numLeave = 1;
+                                            $leaveApplyDateArr = array();
+
+                                            while ($rowCurrentEmpLeaveApplication = $currentEmpLeaveApplicationResult->fetch_assoc()) {
+                                                if (isset($rowCurrentEmpLeaveApplication['id']) && !empty($rowCurrentEmpLeaveApplication['id'])) {
 
                                                     $resultLeaveType = getData('name', "id='" . $rowCurrentEmpLeaveApplication['leave_type'] . "'", '', L_TYPE, $connect);
 
@@ -798,11 +794,26 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                         <tr>
                                                             <th class="hideColumn" scope="col"><?= $rowCurrentEmpLeaveApplication['id']; ?></th>
                                                             <th scope="col"><?= $numLeave++; ?></th>
-                                                            <th scope="col"><?= $rowLeaveType['name']; ?></th>
-                                                            <th scope="col"><?= $rowCurrentEmpLeaveApplication['from_time']; ?></th>
-                                                            <th scope="col"><?= $rowCurrentEmpLeaveApplication['to_time']; ?></th>
-                                                            <th scope="col"><?= $rowCurrentEmpLeaveApplication['numOfdays']; ?></th>
-                                                            <th scope="col"><?= $rowCurrentEmpLeaveApplication['remark']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowLeaveType['name'])) echo $rowLeaveType['name']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['from_time'])) echo $rowCurrentEmpLeaveApplication['from_time']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['to_time'])) echo $rowCurrentEmpLeaveApplication['to_time']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['numOfdays'])) echo $rowCurrentEmpLeaveApplication['numOfdays']; ?></th>
+                                                            <th scope="col"><?php if (isset($rowCurrentEmpLeaveApplication['remark'])) echo $rowCurrentEmpLeaveApplication['remark']; ?></th>
+                                                            <td scope="row" class='text-nowrap'>
+                                                                <?php if (isset($rowCurrentEmpLeaveApplication['leave_transaction_status'])) { ?>
+                                                                    <button class="roundedSelectionBtn text-capitalize text-start" style="font-size: 13px; width:88px;">
+                                                                        <?php
+                                                                        if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'pending')
+                                                                            $buttonColor = 'blue';
+                                                                        else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'declined' || $rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'cancel')
+                                                                            $buttonColor = 'red';
+                                                                        else if ($rowCurrentEmpLeaveApplication['leave_transaction_status'] == 'approval')
+                                                                            $buttonColor = 'green';
+                                                                        ?>
+                                                                        <span class="mdi mdi-record-circle-outline" style="color:<?= $buttonColor ?>;"></span>&nbsp;<?= $rowCurrentEmpLeaveApplication['leave_transaction_status'] ?>&nbsp;
+                                                                    </button>
+                                                                <?php } ?>
+                                                            </td>
                                                             <td scope="row">
                                                                 <div class="dropdown" style="text-align:center">
                                                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -815,201 +826,205 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                                                                             </a>
                                                                         </li>
                                                                         <li>
-                                                                            <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>',['<?= $rowLeaveType['name'] ?>','<?= $rowCurrentEmpLeaveApplication['from_time'] . ' to ' .  $rowCurrentEmpLeaveApplication['to_time'] ?>'],'Leave Application','<?= $SITEURL ?>/leaveApplicationDelete.php','','D')">
-                                                                                Delete
-                                                                            </a>
+                                                                            <a class="dropdown-item" onclick="leave_application_dlt_btn();confirmationDialog('<?= $rowCurrentEmpLeaveApplication['id'] ?>','','Leave Transcation','<?= $SITEURL ?>/leaveTransaction.php','','LC')">Cancel</a>
                                                                         </li>
                                                                     </ul>
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                <?php
+                                            <?php
                                                     }
                                                 }
-                                                $leaveApplyDateArrJSON = json_encode($leaveApplyDateArr);
-                                                ?>
+                                            }
+                                            $leaveApplyDateArrJSON = json_encode($leaveApplyDateArr);
+                                            ?>
 
-                                            </tbody>
+                                        </tbody>
 
-                                            <tfoot>
-                                                <tr>
-                                                    <th class="hideColumn" scope="col">ID</th>
-                                                    <th scope="col">S/N</th>
-                                                    <th scope="col">Leave Type</th>
-                                                    <th scope="col">From Day</th>
-                                                    <th scope="col">To Day</th>
-                                                    <th scope="col">Num Day </th>
-                                                    <th scope="col">Remark</th>
-                                                    <th scope="col" id="action_col">Action</th>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!--Leave Application Form-->
-                        <div class="modal fade" id="leaveApplicationModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body">
-
-                                        <div class="text-end">
-                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div>
-                                            <h4 class="text-center" id="leaveApplicationFormTitle">Add Leave</h4>
-                                        </div>
-
-                                        <form id="leaveApplicationApplyForm" action="" method="post" enctype="multipart/form-data" novalidate>
-                                            <div class="mt-5">
-
-                                                <span class="warning-msg"></span>
-                                                <span class="warning-msg-date"></span>
-
-                                                <div class="form-group  mb-2">
-                                                    <label class="form-label" for="leaveType">Leave Type <span class="requiredRed">*</span></label>
-                                                    <select class="form-select" id="leaveType" name="leaveType" required>
-                                                        <?php
-                                                        $leaveTypeArr = $currEmpLeaveApplyDays = array();
-
-                                                        $querySumOfCurrEmpLeave = "SELECT leave_type, applicant, SUM(numOfdays) as totalDays FROM $leavePendingTblName WHERE applicant = '$currEmpID' GROUP BY leave_type, applicant";
-                                                        $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
-                                                        $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
-                                                        $resultEmpLeave_2 = getData('*', 'employeeID="' . $currEmpID . '"', '', EMPLEAVE, $connect);
-                                                        $resultEmpLeave_3 = mysqli_query($connect, $querySumOfCurrEmpLeave);
-
-                                                        if (!$resultEmpLeave_1 || !$resultEmpLeave_2 || !$resultEmpLeave_3) {
-                                                            echo $errorRedirectLink;
-                                                        } else {
-
-                                                            $columns = $resultEmpLeave_1->fetch_all(MYSQLI_ASSOC);
-
-                                                            foreach ($columns as $column) {
-                                                                if (preg_match('/leaveType_(\d+)/', $column['Field'], $matches)) {
-                                                                    $extractNumber = $matches[1];
-                                                                    array_push($leaveTypeArr, $extractNumber);
-                                                                }
-                                                            }
-
-                                                            if ($resultEmpLeave_3->num_rows > 0) {
-                                                                while ($row1 = $resultEmpLeave_3->fetch_assoc()) {
-                                                                    $currEmpLeaveApplyDays["leaveType_" . $row1["leave_type"]] = $row1["totalDays"];
-                                                                }
-                                                            }
-
-                                                            $rowEmpLeave =  $resultEmpLeave_2->fetch_assoc();
-
-                                                            foreach ($currEmpLeaveApplyDays as $key => $value) {
-                                                                if (isset($rowEmpLeave[$key])) {
-                                                                    $rowEmpLeave[$key] -= $value;
-                                                                }
-                                                            }
-
-                                                            $empLeaveJSONArr = json_encode($rowEmpLeave);
-                                                        }
-
-                                                        echo "<option value disabled selected>Select Leave</option>";
-
-                                                        $leaveTypeID = implodeWithComma($leaveTypeArr);
-
-                                                        $resultLeave = getData('*', 'id IN (' . $leaveTypeID . ')', '', L_TYPE, $connect);
-
-                                                        if (!$resultLeave) {
-                                                            echo $errorRedirectLink;
-                                                        }
-
-                                                        while ($rowLeave = $resultLeave->fetch_assoc()) {
-                                                            if ($rowLeave['leave_status'] === 'Active') {
-                                                                $selected = isset($rowLeavePending['leave_type']) && $rowLeave['id'] == $rowLeavePending['leave_type'] ? "selected" : "";
-                                                                echo "<option value='{$rowLeave['id']}' $selected>{$rowLeave['name']}</option>";
-                                                            }
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-
-                                                <div class="form-group mb-2">
-                                                    <label class="form-label" for="fromTime">From <span class="requiredRed">*</span></label>
-                                                    <input class="form-control" type="datetime-local" step="1" name="fromTime" id="fromTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['from_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['from_time'])) : ''; ?>">
-                                                    <span id="fromTimeError" class="error" style="color:#ff0000"></span>
-                                                </div>
-
-                                                <div class="form-group mb-2">
-                                                    <label class="form-label" for="toTime">To <span class="requiredRed">*</span></label>
-                                                    <input class="form-control" type="datetime-local" step="1" name="toTime" id="toTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['to_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['to_time'])) : ''; ?>">
-                                                    <span id="toTimeError" class="error" style="color:#ff0000"></span>
-                                                </div>
-
-                                                <div class="form-group mb-2">
-                                                    <label class="form-label" for="numOfdays">Number Of Days</label>
-                                                    <input class="form-control" type="number" step="any" name="numOfdays" id="numOfdays" readonly required autocomplete="off">
-                                                </div>
-
-                                                <div class="form-group mb-2">
-                                                    <label class="form-label" for="remainingLeave">Remaining Leaves</label>
-                                                    <input class="form-control" type="number" step="any" name="remainingLeave" id="remainingLeave" readonly required autocomplete="off">
-                                                </div>
-
-                                                <div class="form-group mb-2">
-                                                    <label class="form-label" for="leaveAttachment">Attachment <span class="requiredRed">*</span></label>
-                                                    <input class="form-control" type="file" accept="image/*" name="leaveAttachment" id="leaveAttachment" required autocomplete="off" value="<?php echo (isset($rowLeavePending['attachment']) ? $rowLeavePending['attachment'] : ''); ?>">
-
-                                                    <div class="d-flex justify-content-center mt-3">
-
-                                                        <?php
-                                                        $attachmentPath = isset($rowLeavePending['attachment']) ? $rowLeavePending['attachment'] : '';
-
-                                                        if (!empty($attachmentPath)) {
-                                                            $src = $SITEURL . ATCH . '\pending_leave\\' . $attachmentPath;
-                                                        } else {
-                                                            $src = '';
-                                                        }
-                                                        ?>
-
-                                                        <img id="leaveAttachmenetImg" name="leaveAttachmenetImg" src="<?php echo $src; ?>" class="img-thumbnail">
-                                                        <?php if (isset($rowLeavePending['attachment'])) { ?>
-                                                            <input type="hidden" id="leaveAttachmenetImgValue" name="leaveAttachmenetImgValue" value="<?= $rowLeavePending['attachment'] ?>">
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label" for="remark">Remark</label>
-                                                    <textarea class="form-control" name="remark" id="remark" rows="3"><?php if (isset($rowLeavePending['remark'])) echo $rowLeavePending['remark'] ?></textarea>
-                                                </div>
-                                            </div>
-
-                                            <div class="text-center mt-5">
-                                                <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="">Submit</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!-- Modal -->
+                                        <tfoot>
+                                            <tr>
+                                                <th class="hideColumn" scope="col">ID</th>
+                                                <th scope="col">S/N</th>
+                                                <th scope="col">Leave Type</th>
+                                                <th scope="col">From Day</th>
+                                                <th scope="col">To Day</th>
+                                                <th scope="col">Num Day </th>
+                                                <th scope="col">Remark</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col" id="action_col">Action</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--Leave Application-->
 
-                    <!--Add New Employee-->
-                    <div class="row">
-                        <div class="mb-sm-0 m-2">
-                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>" style="width:240px">
-                                    <i class="mdi mdi-account-plus-outline"></i> Add <?php echo $pageTitle ?>
-                                </a>&nbsp;
-                            <?php endif; ?>
+                    <!--Leave Application Form-->
+                    <div class="modal fade" id="leaveApplicationModal" data-bs-backdrop='static' aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">
+
+                                    <div class="text-end">
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="text-center" id="leaveApplicationFormTitle">Add Leave</h4>
+                                    </div>
+
+                                    <form id="leaveApplicationApplyForm" action="" method="post" enctype="multipart/form-data" novalidate>
+                                        <div class="mt-5">
+
+                                            <span class="warning-msg"></span>
+                                            <span class="warning-msg-date"></span>
+
+                                            <div class="form-group  mb-2">
+                                                <label class="form-label" for="leaveType">Leave Type <span class="requiredRed">*</span></label>
+                                                <select class="form-select" id="leaveType" name="leaveType" required>
+                                                    <?php
+                                                    $leaveTypeArr = $currEmpLeaveApplyDays = array();
+
+                                                    $querySumOfCurrEmpLeave =
+                                                        "SELECT leave_type, applicant, SUM(numOfdays) as totalDays
+                                                    FROM $leavePendingTblName
+                                                    WHERE applicant = '$currEmpID' AND leave_transaction_status NOT IN ('declined', 'cancel')
+                                                    GROUP BY leave_type, applicant;
+                                                    ";
+
+                                                    $queryEmpLeave = "SHOW COLUMNS FROM " . EMPLEAVE;
+                                                    $resultEmpLeave_1 = mysqli_query($connect, $queryEmpLeave);
+                                                    $resultEmpLeave_2 = getData('*', 'employeeID="' . $currEmpID . '"', '', EMPLEAVE, $connect);
+                                                    $resultEmpLeave_3 = mysqli_query($connect, $querySumOfCurrEmpLeave);
+
+                                                    if (!$resultEmpLeave_1 || !$resultEmpLeave_2 || !$resultEmpLeave_3) {
+                                                        echo $errorRedirectLink;
+                                                    } else {
+
+                                                        $columns = $resultEmpLeave_1->fetch_all(MYSQLI_ASSOC);
+
+                                                        foreach ($columns as $column) {
+                                                            if (preg_match('/leaveType_(\d+)/', $column['Field'], $matches)) {
+                                                                $extractNumber = $matches[1];
+                                                                array_push($leaveTypeArr, $extractNumber);
+                                                            }
+                                                        }
+
+                                                        if ($resultEmpLeave_3->num_rows > 0) {
+                                                            while ($row1 = $resultEmpLeave_3->fetch_assoc()) {
+                                                                $currEmpLeaveApplyDays["leaveType_" . $row1["leave_type"]] = $row1["totalDays"];
+                                                            }
+                                                        }
+
+                                                        $rowEmpLeave =  $resultEmpLeave_2->fetch_assoc();
+
+                                                        foreach ($currEmpLeaveApplyDays as $key => $value) {
+                                                            if (isset($rowEmpLeave[$key])) {
+                                                                $rowEmpLeave[$key] -= $value;
+                                                            }
+                                                        }
+
+                                                        $empLeaveJSONArr = json_encode($rowEmpLeave);
+                                                    }
+
+                                                    echo "<option value disabled selected>Select Leave</option>";
+
+                                                    $leaveTypeID = implodeWithComma($leaveTypeArr);
+
+                                                    $resultLeave = getData('*', 'id IN (' . $leaveTypeID . ')', '', L_TYPE, $connect);
+
+                                                    if (!$resultLeave) {
+                                                        echo $errorRedirectLink;
+                                                    }
+
+                                                    while ($rowLeave = $resultLeave->fetch_assoc()) {
+                                                        if ($rowLeave['leave_status'] === 'Active') {
+                                                            $selected = isset($rowLeavePending['leave_type']) && $rowLeave['id'] == $rowLeavePending['leave_type'] ? "selected" : "";
+                                                            echo "<option value='{$rowLeave['id']}' $selected>{$rowLeave['name']}</option>";
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="fromTime">From <span class="requiredRed">*</span></label>
+                                                <input class="form-control" type="datetime-local" step="1" name="fromTime" id="fromTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['from_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['from_time'])) : ''; ?>">
+                                                <span id="fromTimeError" class="error" style="color:#ff0000"></span>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="toTime">To <span class="requiredRed">*</span></label>
+                                                <input class="form-control" type="datetime-local" step="1" name="toTime" id="toTime" min='2000-01-01T00:00' max='3000-12-31T23:59' required autocomplete="off" value="<?php echo isset($rowLeavePending['to_time']) ? date('Y-m-d H:i:s', strtotime($rowLeavePending['to_time'])) : ''; ?>">
+                                                <span id="toTimeError" class="error" style="color:#ff0000"></span>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="numOfdays">Number Of Days</label>
+                                                <input class="form-control" type="number" step="any" name="numOfdays" id="numOfdays" readonly required autocomplete="off" value="<?php echo (isset($rowLeavePending['numOfdays'])) ? $rowLeavePending['numOfdays'] : '0' ?>">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="remainingLeave">Remaining Leaves</label>
+                                                <input class="form-control" type="number" step="any" name="remainingLeave" id="remainingLeave" readonly required autocomplete="off" value="<?php echo (isset($rowLeavePending['remainingLeave'])) ? $rowLeavePending['remainingLeave'] : '0' ?>">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label class="form-label" for="leaveAttachment">Attachment <span class="requiredRed">*</span></label>
+                                                <input class="form-control" type="file" accept="image/*" name="leaveAttachment" id="leaveAttachment" required autocomplete="off" value="<?php echo (isset($rowLeavePending['attachment']) ? $rowLeavePending['attachment'] : ''); ?>">
+
+                                                <div class="d-flex justify-content-center mt-3">
+
+                                                    <?php
+                                                    $attachmentPath = isset($rowLeavePending['attachment']) ? $rowLeavePending['attachment'] : '';
+
+                                                    if (!empty($attachmentPath)) {
+                                                        $src = $SITEURL . ATCH . '\pending_leave\\' . $attachmentPath;
+                                                    } else {
+                                                        $src = '';
+                                                    }
+                                                    ?>
+
+                                                    <img id="leaveAttachmenetImg" name="leaveAttachmenetImg" src="<?php echo $src; ?>" class="img-thumbnail">
+                                                    <?php if (isset($rowLeavePending['attachment'])) { ?>
+                                                        <input type="hidden" id="leaveAttachmenetImgValue" name="leaveAttachmenetImgValue" value="<?= $rowLeavePending['attachment'] ?>">
+                                                    <?php } ?>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label class="form-label" for="remark">Remark</label>
+                                                <textarea class="form-control" name="remark" id="remark" rows="3"><?php if (isset($rowLeavePending['remark'])) echo $rowLeavePending['remark'] ?></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center mt-5">
+                                            <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Modal -->
+                            </div>
                         </div>
                     </div>
-                    <!--Add New Employee-->
                 </div>
 
+                <!-- Add New Employee -->
+                <div class="mb-1">
+                    <div class="mb-sm-0 m-2">
+                        <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>" style="width:240px">
+                                <i class="mdi mdi-account-plus-outline"></i> Add <?php echo $pageTitle ?>
+                            </a>&nbsp;
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
 
+
+        <!-- Employee Details Table -->
         <table class="table table-striped" id="employeeDetailsTable">
             <thead>
                 <tr>
@@ -1040,115 +1055,132 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
                     <th scope="col" id="action_col" width="100px">Action</th>
                 </tr>
             </thead>
+
             <tbody>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <tr>
-                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                        <th class="text-center">
-                            <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
-                        </th>
-                        <th scope=" row"><?= $num++ ?></th>
-                        <?php if ($row['id'] === $currEmpID) { ?>
+                <?php while ($row = $result->fetch_assoc()) {
+                    if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                        <tr>
+                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                            <th class="text-center">
+                                <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
+                            </th>
+                            <th scope=" row"><?= $num++ ?></th>
+                            <?php
+                            if (isset($row['id'])) {
+                                if ($row['id'] === $currEmpID) { ?>
 
-                            <td scope="row" class="text-center">
-                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
-                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
-                                        <i class="mdi mdi-format-list-bulleted"></i>
-                                    </button>
-                                </a>
+                                    <td scope="row" class="text-center">
+                                        <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                            <button class="action_menu_btn" style="border:none;background:none;font-size:25px" value="editLeave" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModal">
+                                                <i class="mdi mdi-format-list-bulleted"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+
+                                <?php } else { ?>
+
+                                    <td scope="row" class="text-center">
+                                        <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
+                                            <button class="action_menu_btn" style="border:none;background:none;font-size:25px" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModalAccessDenial">
+                                                <i class="mdi mdi-cancel"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+
+                            <?php }
+                            } ?>
+
+                            <td scope="row"><?= $row['name'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['id_type'])) {
+
+                                    $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
+
+                                    while ($rowIDType = $resultIDType->fetch_assoc()) {
+                                        echo $rowIDType['name'];
+                                    }
+                                }
+                                ?>
+                            </td>
+                            <td scope="row"><?php if (isset($row['id_number'])) echo $row['id_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
+                            <td scope="row"><?php if (isset($row['gender'])) echo $row['gender'] ?></td>
+                            <td scope="row"><?php if (isset($row['date_of_birth'])) echo $row['date_of_birth'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['race_id'])) {
+                                    $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
+
+                                    while ($rowRace = $resultRace->fetch_assoc()) {
+                                        echo $rowRace['name'];
+                                    }
+                                }
+                                ?>
                             </td>
 
-                        <?php } else { ?>
+                            <td scope="row"><?= $row['residence_status'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['nationality'])) {
 
-                            <td scope="row" class="text-center">
-                                <a class="text-reset me-3 " href="#" id="leaveStatusMenu" role="button" aria-expanded="false">
-                                    <button class="action_menu_btn" style="border:none;background:none;font-size:25px" name="leaveApplicationForm" data-bs-toggle="modal" href="#leaveApplicationTableModalAccessDenial">
-                                        <i class="mdi mdi-cancel"></i>
-                                    </button>
-                                </a>
+                                    $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
+
+                                    while ($rowNationality = $resultNationality->fetch_assoc()) {
+                                        echo $rowNationality['name'];
+                                    }
+                                }
+                                ?>
                             </td>
+                            <td scope="row"><?php if (isset($row['phone_number'])) echo $row['phone_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?></td>
+                            <td scope="row"><?php if (isset($row['address_line_1'])) echo $row['address_line_1'] ?></td>
+                            <td scope="row"><?php if (isset($row['address_line_2'])) echo $row['address_line_2'] ?></td>
+                            <td scope="row"><?php if (isset($row['city'])) echo $row['city'] ?></td>
+                            <td scope="row"><?php if (isset($row['state'])) echo $row['state'] ?></td>
+                            <td scope="row"><?php if (isset($row['postcode'])) echo $row['postcode'] ?></td>
+                            <td scope='row'>
+                                <?php
+                                if (isset($row['marital_status'])) {
 
-                        <?php } ?>
+                                    $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
 
-                        <td scope="row"><?= $row['name'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultIDType = getData('*', 'id = ' . $row['id_type'], '', ID_TYPE, $connect);
-
-                            while ($rowIDType = $resultIDType->fetch_assoc()) {
-                                echo $rowIDType['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['id_number'] ?></td>
-                        <td scope="row"><?= $row['email'] ?></td>
-                        <td scope="row"><?= $row['gender'] ?></td>
-                        <td scope="row"><?= $row['date_of_birth'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultRace = getData('*', 'id = ' . $row['race_id'], '', RACE, $connect);
-
-                            while ($rowRace = $resultRace->fetch_assoc()) {
-                                echo $rowRace['name'];
-                            }
-                            ?>
-                        </td>
-
-                        <td scope="row"><?= $row['residence_status'] ?></td>
-                        <td scope='row'>
-                            <?php
-                            $resultNationality = getData('*', 'id = ' . $row['nationality'], '', 'countries', $connect);
-
-                            while ($rowNationality = $resultNationality->fetch_assoc()) {
-                                echo $rowNationality['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['phone_number'] ?></td>
-                        <td scope="row"><?= $row['phone_number'] ?></td>
-                        <td scope="row"><?= $row['address_line_1'] ?></td>
-                        <td scope="row"><?= $row['address_line_2'] ?></td>
-                        <td scope="row"><?= $row['city'] ?></td>
-                        <td scope="row"><?= $row['state'] ?></td>
-                        <td scope="row"><?= $row['postcode'] ?></td>
-                        <td scope='row'>
-                            <?php
-
-                            $resultMrtSts = getData('*', 'id = ' . $row['marital_status'], '', MRTL_STATUS, $connect);
-
-                            while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
-                                echo $rowMrtSts['name'];
-                            }
-                            ?>
-                        </td>
-                        <td scope="row"><?= $row['no_of_children'] ?></td>
-                        <td scope="row">
-                            <div class="dropdown" style="text-align:center">
-                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                    <li>
-                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
-                                        <?php endif; ?>
-                                    </li>
-                                    <li>
-                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                            <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                        <?php endif; ?>
-                                    </li>
-                                    <li>
-                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
-                                        <?php endif; ?>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                <?php } ?>
+                                    while ($rowMrtSts = $resultMrtSts->fetch_assoc()) {
+                                        echo $rowMrtSts['name'];
+                                    }
+                                }
+                                ?>
+                            </td>
+                            <td scope="row"><?php if (isset($row['no_of_children'])) echo $row['no_of_children'] ?></td>
+                            <td scope="row">
+                                <div class="dropdown" style="text-align:center">
+                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                        <li>
+                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] ?>">View</a>
+                                            <?php endif; ?>
+                                        </li>
+                                        <li>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?php echo $redirect_page ?>?id=<?php echo $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
+                                        </li>
+                                        <li>
+                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['id_number'] ?>','<?= $row['email'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/employeeDetailsTable.php','D')">Delete</a>
+                                            <?php endif; ?>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                <?php }
+                } ?>
             </tbody>
+
             <tfoot>
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
@@ -1181,7 +1213,9 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
         </table>
     </div>
     </div>
+    </div>
 </body>
+
 <script>
     //Initial Page And Action Value
     var page = "<?= $pageTitle ?>";

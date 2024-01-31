@@ -238,32 +238,58 @@ function isDuplicateRecord($fieldName, $fieldValue, $tbl, $connect, $primaryKeyV
 	}
 }
 
+//example: isDuplicateRecordWithConditions(['month', 'year'], [$btb_month, $btb_year], $tblName, $finance_connect, $dataID)
+function isDuplicateRecordWithConditions($fields, $values, $tbl, $connect, $primaryKeyValue)
+{
+	if (count($fields) !== count($values) || empty($fields)) {
+		return false; // Invalid input, return false
+	}
+
+	$conditions = array_combine($fields, $values);
+	$conditions += ['status' => 'A']; // Add 'status' condition
+	if ($primaryKeyValue) $conditions['id !='] = $primaryKeyValue; // Exclude current record if editing
+
+	$whereClause = implode(' AND ', array_map(
+		fn ($key, $value) => "`$key` = '" . mysqli_real_escape_string($connect, $value) . "'",
+		array_keys($conditions),
+		$conditions
+	));
+
+	$query = "SELECT COUNT(*) as count FROM `$tbl` WHERE $whereClause";
+	$result = mysqli_query($connect, $query);
+
+	return $result && mysqli_fetch_assoc($result)['count'] > 0;
+}
+
+
+
 function tableExists($tableName, $conn) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
-    return $result && $result->num_rows > 0;
+    if(!$result)
+	return;
+	return $result && $result->num_rows > 0;
 }
 
 function getData($search_val, $val, $val2, $tbl, $conn)
 {
 	if (!tableExists($tbl, $conn)) {
-        // Display "NO RESULT" message or handle it as needed
-        return false;
-    } else {
+		// Display "NO RESULT" message or handle it as needed
+		return false;
+	} else {
 		$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
 		//Checking a status is available in data field or not then check a val is exist or not
 		if ($statusAvailable) {
-			$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE $val AND status = 'A'";
+			$chk_val = $val == '' ? "WHERE status = 'A' " : "WHERE  status = 'A' AND $val ";
 		} else {
 			$chk_val = $val == '' ? "" : "WHERE $val";
 		}
 
 		//combine together to process a query
 		$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
-
 		$result = $conn->query($query);
 	}
-	
+
 	if (empty($result) && $result->num_rows == 0)
 		return false;
 	else
@@ -318,6 +344,15 @@ function audit_log($data = array())
 				break;
 			case 'check':
 				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, user_id, action_message, create_date, create_time, create_by) VALUES ('9', '$page', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'approval':
+				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('10', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'declined':
+				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('11', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
+				break;
+			case 'cancel':
+				$query = "INSERT INTO " . AUDIT_LOG . " (log_action, screen_type, query_record, query_table, user_id, action_message, create_date, create_time, create_by) VALUES ('12', '$page', \"$query_rec\", '$query_table', '$uid', '$act_msg', '$cdate', '$ctime', '$cby')";
 				break;
 		}
 
@@ -661,7 +696,7 @@ function actMsgLog($id, $datafield = array(), $newvalarr = array(), $oldvalarr =
 {
 	$action = strtolower($action);
 
-	$actMsg = USER_NAME . (empty($errorMsg) ? " " : " fail to ") . $action . "  the data [ <b> ID = ".$id." </b> ]";
+	$actMsg = USER_NAME . (empty($errorMsg) ? " " : " fail to ") . $action . "  the data [ <b> ID = " . $id . " </b> ]";
 
 	switch ($action) {
 		case 'add':
@@ -751,19 +786,21 @@ function insertNewMerchant($merchantName, $userId, $financeConnect)
 	return false;
 }
 
-function monthStringToNumber($monthString) {
-    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return array_search($monthString, $monthArray) + 1;
+function monthStringToNumber($monthString)
+{
+	$monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	return array_search($monthString, $monthArray) + 1;
 }
 
-function monthNumberToString($monthNumber) {
-    $monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
-    // Check if the monthNumber is valid
-    if ($monthNumber >= 1 && $monthNumber <= 12) {
-        return $monthArray[$monthNumber - 1];
-    } else {
-        // Handle invalid monthNumber
-        return false;
-    }
+function monthNumberToString($monthNumber)
+{
+	$monthArray = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+	// Check if the monthNumber is valid
+	if ($monthNumber >= 1 && $monthNumber <= 12) {
+		return $monthArray[$monthNumber - 1];
+	} else {
+		// Handle invalid monthNumber
+		return false;
+	}
 }

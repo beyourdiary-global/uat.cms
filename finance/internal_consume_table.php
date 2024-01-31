@@ -1,10 +1,11 @@
 <?php
-$pageTitle = "Tax Setting";
+$pageTitle = "Internal Consume";
+$isFinance = 1;
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-$tblName = TAX_SETT;
+$tblName = INTERNAL_CONSUME;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
@@ -12,10 +13,10 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/tax_setting.php';
-$deleteRedirectPage = $SITEURL . '/tax_setting_table.php';
+$redirect_page = $SITEURL . '/finance/internal_consume.php';
+$deleteRedirectPage = $SITEURL . '/finance/internal_consume_table.php';
 
-$result = getData('*', '', '', $tblName, $connect);
+$result = getData('*', '', '', $tblName, $finance_connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -45,7 +46,6 @@ if (!$result) {
 
     <div class="page-load-cover">
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
             <div class="col-12 col-md-8">
 
                 <div class="d-flex flex-column mb-3">
@@ -70,25 +70,41 @@ if (!$result) {
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Tax Country</th>
-                            <th scope="col">Tax Name</th>
-                            <th scope="col">Tax Percentage</th>
+                            <th scope="col">PIC</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['id']) && !empty($row['id'])) {
+
+                                $picResult = getData('name', "id='" . $row['PIC'] . "'", '', USR_USER, $connect);
+                                $picRow = $picResult->fetch_assoc();
+
+                                $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $brandRow = $brandResult->fetch_assoc();
+
+                                $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                                $currRow = $currResult->fetch_assoc();
+                        ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['country'] ?></td>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['percentage'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($picRow['name'])) echo $picRow['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($brandRow['name'])) echo $brandRow['name'] ?></td>
+                                    <td scope="row"><?php if (isset($currRow['unit'])) echo $currRow['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -107,7 +123,7 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $picRow['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -123,26 +139,35 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Tax Country</th>
-                            <th scope="col">Tax Name</th>
-                            <th scope="col">Tax Percentage</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">PIC</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
     </div>
-    
+
     <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+        checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
         datatableAlignment('table');
         setButtonColor();
     </script>
+
 </body>
 
 </html>

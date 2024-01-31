@@ -41,88 +41,100 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
-                        <div class="mt-auto mb-auto">
-                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
-                            <?php endif; ?>
-                        </div>
+                        <?php if ($result) { ?>
+                            <div class="mt-auto mb-auto">
+                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
+                                <?php endif; ?>
+                            </div>
+                        <?php } ?>
+
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
-            <table class="table table-striped" id="initial_capital_trans_table">
-                <thead>
-                    <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Currency</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Remark</th>
-                        <th scope="col">Attachment</th>
-                        <th scope="col" id="action_col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
-                        $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
-                        $row2 = $curr->fetch_assoc();
-                    ?>
-
+                <table class="table table-striped" id="initial_capital_trans_table">
+                    <thead>
                         <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
-                            <td scope="row"><?= $row['transactionID'] ?></td>
-                            <td scope="row"><?= $row['date'] ?></td>
-                            <td scope="row"><?= $row2['unit'] ?></td>
-                            <td scope="row"><?= $row['amount'] ?></td>
-                            <td scope="row"><?= $row['description'] ?></td>
-                            <td scope="row"><?= $row['remark'] ?></td>
-                            <td scope="row"><?= $row['attachment'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/initial_capital_trans_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Remark</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col">Action</th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Currency</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Remark</th>
-                        <th scope="col">Attachment</th>
-                        <th scope="col" id="action_col">Action</th>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()) {
+                            if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
+
+                                $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                                $row2 = $curr->fetch_assoc();
+                        ?>
+
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row"><?= $row['transactionID'] ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
+                                    <td scope="row"><?php if (isset($row['description'])) echo $row['description'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                    <td scope="row">
+                                        <div class="dropdown" style="text-align:center">
+                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                                <li>
+                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                                <li>
+                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/initial_capital_trans_table.php','D')">Delete</a>
+                                                    <?php endif; ?>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                        <?php }
+                        } ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Transaction ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Remark</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col" id="action_col">Action</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            <?php } ?>
         </div>
 
     </div>
