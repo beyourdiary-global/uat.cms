@@ -63,40 +63,40 @@ $result = getData('*', '', '', EXPENSE_TYPE, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) {
-                    ?>
-
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <th scope="row"><?= $num++; ?></th>
-                            <td scope="row"><?= $row['name'] ?></td>
-                            <td scope="row"><?= $row['code'] ?></td>
-                            <td scope="row"><?= $row['remark'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['code'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/meta_ads_acc_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                        if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row"><?= $row['name'] ?></td>
+                                <td scope="row"><?php if (isset($row['code'])) echo $row['code'] ?></td>
+                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                <td scope="row">
+                                    <div class="dropdown" style="text-align:center">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                            <li>
+                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['code'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/meta_ads_acc_table.php','D')">Delete</a>
+                                                <?php endif; ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php }
+                    } ?>
                 </tbody>
                 <tfoot>
                     <tr>

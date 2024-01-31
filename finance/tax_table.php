@@ -11,21 +11,27 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/tax.php';
+$deleteRedirectPage = $SITEURL . '/finance/tax_table.php';
 $result = getData('*', '', '', TAX_SETT, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
+
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('table');
+        createSortingTable('tax_table');
     });
 </script>
 
@@ -36,8 +42,8 @@ $result = getData('*', '', '', TAX_SETT, $finance_connect);
 
     <div class="page-load-cover">
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
             <div class="col-12 col-md-8">
+
 
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
@@ -49,14 +55,14 @@ $result = getData('*', '', '', TAX_SETT, $finance_connect);
                             <h2><?php echo $pageTitle ?></h2>
                             <div class="mt-auto mb-auto">
                                 <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Tax </a>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <table class="table table-striped" id="table">
+                <table class="table table-striped" id="tax_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
@@ -72,14 +78,15 @@ $result = getData('*', '', '', TAX_SETT, $finance_connect);
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) {
+                        ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['country'] ?></td>
+                                    <td scope="row"><?php if (isset($row['country'])) echo $row['country'] ?></td>
                                     <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['percentage'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['percentage'])) echo $row['percentage'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -105,12 +112,10 @@ $result = getData('*', '', '', TAX_SETT, $finance_connect);
                                         </div>
                                     </td>
                                 </tr>
-                        <?php
-                            }
+                        <?php }
                         }
                         ?>
                     </tbody>
-
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
@@ -126,12 +131,12 @@ $result = getData('*', '', '', TAX_SETT, $finance_connect);
             </div>
         </div>
     </div>
-    
-    <script>
-         var page = "<?= $pageTitle ?>";
-         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-         checkCurrentPage(page, action);
+    <script>
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+        checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes

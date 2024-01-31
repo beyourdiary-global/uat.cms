@@ -190,7 +190,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $courier_id, $connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $dataID, $courier_id, $connect, $connect, $cdate, $ctime, $pageTitle);
             generateDBData(COURIER, $connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
@@ -261,7 +261,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                             <label class="form-label form_lbl" id="courier_id_lbl" for="courier_id">Courier
-                                ID</label>
+                                ID<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_id" id="courier_id" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['courierID']) && !isset($courier_id)) {
                                                                                                             echo $row['courierID'];
@@ -284,7 +284,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                             <label class="form-label form_lbl" id="courier_name_lbl" for="courier_name">Courier
-                                Name</label>
+                                Name<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_name" id="courier_name" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['name']) && !isset($courier_name)) {
                                                                                                                 echo $row['name'];
