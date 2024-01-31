@@ -11,6 +11,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/shopee_acc.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_acc_table.php';
 $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 ?>
 
