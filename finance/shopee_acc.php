@@ -103,6 +103,7 @@ if (post('actionBtn')) {
 
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -197,9 +198,7 @@ if (post('act') == 'D') {
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
-            //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $sa_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
-            $_SESSION['delChk'] = 1;
+           
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
