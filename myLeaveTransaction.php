@@ -109,7 +109,7 @@ if (isRecordExist('employee_personal_info', 'id', USER_ID, $connect)) {
 
                                                 $annualLeave = "leaveType_" . $annualLeaveID;
 
-                                                if ($annualLeaveBalanceRow[$annualLeave])
+                                                if (isset($annualLeaveBalanceRow[$annualLeave]))
                                                     echo $annualLeaveBalanceRow[$annualLeave] . " Day";
                                                 else
                                                     echo "0 Day";
