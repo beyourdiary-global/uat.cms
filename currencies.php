@@ -64,7 +64,7 @@ if ($pageAction != 'Add') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $rowDeUnit['unit'] . "->" . $rowExUnit['unit'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '', $dataID, $rowDeUnit['unit'] . "->" . $rowExUnit['unit'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 

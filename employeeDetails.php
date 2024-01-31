@@ -43,9 +43,10 @@ if ($dataID) {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblnameOne, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
-    deleteRecord($tblnameTwo, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
-    deleteRecord(EMPLEAVE, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+
+    deleteRecord($tblnameOne, '', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblnameTwo, 'employee_id', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord(EMPLEAVE, 'employeeID', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
 
     try {
         $query =  "UPDATE " . L_PENDING . " SET leave_transaction_status = 'cancel' WHERE applicant = " . $dataID;
