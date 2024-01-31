@@ -163,8 +163,9 @@ function calculateTax() {
         var tax = 0.00;
         if (result && result.length > 0) {
             tax = result[0]['percentage'];
+            console.log('tax: ', tax, '%');
         }
-        console.log('tax: ', tax, '%');
+        
         console.log('curr value: ', currentCourierValue);
 
         var taxAmount = 0.00;
