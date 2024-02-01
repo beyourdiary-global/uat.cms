@@ -703,8 +703,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         var action = "<?php echo isset($act) ? $act : ''; ?>";
 
         checkCurrentPage(page, action);
-        centerAlignment("formContainer");
         setButtonColor();
+        setAutofocus(action);
         preloader(300, action);
     </script>
 
