@@ -44,9 +44,9 @@ $('.submitBtn').on('click', () => {
     //event.preventDefault();
     var date_chk = 0;
     var id_chk = 0;
-    var pic_chk = 0;
-    var id_chk = 0;
     var amt_chk = 0;
+    var pic_chk = 0;
+    
 
 
     if (($('#swt_date').val() === '' || $('#swt_date').val() === null || $('#swt_date')

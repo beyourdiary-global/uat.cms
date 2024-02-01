@@ -12,7 +12,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/shopee_withdrawal_transactions.php';
-$deleteRedirectPage = $SITEURL . '/finance/internal_consume_table.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_withdrawal_transactions_table.php';
 $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
 ?>
 
@@ -45,7 +45,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Account </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -56,19 +56,20 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
+                            <th scope="col">Withdrawal Amount</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th> 
-                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
+                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
 
                         <?php while ($row = $result->fetch_assoc()) {    
+                           
                                $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
                                $usr = $pic->fetch_assoc();
                                 
@@ -78,7 +79,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['id'])) echo $row['id'] ?></td>
+                                    <td scope="row"><?php if (isset($row['swt_id'])) echo $row['swt_id'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
@@ -107,25 +108,26 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                     <li>
                                         <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
                                         <a class="dropdown-item"
-                                            onclick="confirmationDialog('<?= $row['id'] ?>','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_acc_table.php','D')">Delete</a>
+                                            onclick="confirmationDialog('<?= $row['id'] ?>','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_withdrawal_transactions_table.php','D')">Delete</a>
                                         <?php endif; ?>
                                     </li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
-                    <?php } ?>
+                    <?php }
+                     ?>
                 </tbody>
                 <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
+                            <th scope="col">Withdrawal Amount</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th>       
-                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
+                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -134,11 +136,6 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
         </body>
 
     <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-        checkCurrentPage(page, action);
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
