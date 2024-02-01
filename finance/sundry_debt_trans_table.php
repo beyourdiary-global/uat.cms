@@ -167,7 +167,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                                                     <li>
                                                         <?php if (isActionAllowed("Delete", $pinAccess)): ?>
                                                             <a class="dropdown-item"
-                                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/curr_bank_trans_table.php','D')">Delete</a>
+                                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/sundry_debt_trans_table.php','D')">Delete</a>
                                                         <?php endif; ?>
                                                     </li>
                                                 </ul>
