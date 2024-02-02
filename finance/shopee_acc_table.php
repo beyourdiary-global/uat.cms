@@ -13,6 +13,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/finance/shopee_acc.php';
 $deleteRedirectPage = $SITEURL . '/finance/shopee_acc_table.php';
 $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +27,7 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 </head>
 
 <script>
+    preloader(300);
     $(document).ready(() => {
         createSortingTable('shopee_acc_table');
     });
@@ -30,9 +35,14 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -93,9 +103,9 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                                                 <?php endif; ?>
                                             </li>
                                             <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
@@ -143,6 +153,7 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
       to resize table with bootstrap 5 classes
     */
     datatableAlignment('shopee_acc_table');
+    setButtonColor();
 </script>
 
 </html>

@@ -50,13 +50,6 @@ if ($act == 'D') {
     $_SESSION['delChk'] = 1;
 }
 
-if (!($dataID) && !($act)) {
-    echo '<script>
-    alert("Invalid action.");
-    window.location.href = "' . $redirect_page . '"; // Redirect to previous page
-    </script>';
-}
-
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
@@ -140,10 +133,11 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name',country = '$sa_country',currency = '$sa_currency' update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
+                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name', country = '$sa_country', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-                
+
+                     
                     } else {
                         $act = 'NC';
                     }
@@ -152,6 +146,7 @@ if (post('actionBtn')) {
                     $act = "F";
                 }
             }
+
 
             // audit log
             if (isset($query)) {
@@ -199,9 +194,6 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
 
-            //SET the record status to 'D'
-            deleteRecord($tblName ,'', $dataID, $sa_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
-            $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
