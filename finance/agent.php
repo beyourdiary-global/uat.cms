@@ -39,7 +39,7 @@ if ($dataID) { //edit/remove/view
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '',$dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -49,6 +49,8 @@ if (!($dataID) && !($act)) {
     window.location.href = "' . $redirect_page . '"; // Redirect to previous page
     </script>';
 }
+
+
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
@@ -87,7 +89,7 @@ if (post('actionBtn')) {
                 break;
             } else if ($action == 'addData') {
                 try {
-                    
+                 
                     //check values
 
                     if ($name) {
@@ -128,6 +130,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(name,brand,pic,contact,email,country,remark,create_by,create_date,create_time) VALUES ('$name','$agt_brand','$agt_pic','$contact','$email','$agt_country','$remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -239,8 +242,6 @@ if (post('actionBtn')) {
 
 
 if (post('act') == 'D') {
-    $id = post('id');
-    if ($id) {
         try {
             // take name
             $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
@@ -255,7 +256,7 @@ if (post('act') == 'D') {
             echo 'Message: ' . $e->getMessage();
         }
     }
-}
+
 
 //view
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
