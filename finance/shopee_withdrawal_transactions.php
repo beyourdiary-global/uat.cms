@@ -29,7 +29,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -40,7 +40,6 @@ if ($dataID) { //edit/remove/view
         $_SESSION['tempValConfirmBox'] = true;
         $act = "F";
     }
-    
 }
 
 if (!($dataID) && !($act)) {
@@ -52,7 +51,7 @@ if (!($dataID) && !($act)) {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName,'', $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '',$dataID, $row['swt_id'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -210,22 +209,24 @@ if (post('actionBtn')) {
                     }
 
                      // convert into string
-                     $oldval = implode(",", $oldvalarr);
-                     $chgval = implode(",", $chgvalarr);
-                     $_SESSION['tempValConfirmBox'] = true;
- 
-                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
-                         $query = "UPDATE " . $tblName  . " SET date = '$swt_date', swt_id = '$swt_id', amt = '$swt_amt', pic = '$swt_pic', attachment ='$swt_attach', remark ='$swt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
-                         $returnData = mysqli_query($finance_connect, $query);
- 
-                     } else {
-                         $act = 'NC';
-                     }
-                 } catch (Exception $e) {
-                     $errorMsg = $e->getMessage();
-                     $act = "F";
-                 }
-             }
+                    $oldval = implode(",", $oldvalarr);
+                    $chgval = implode(",", $chgvalarr);
+                    $_SESSION['tempValConfirmBox'] = true;
+
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
+                        $query = "UPDATE " . $tblName  . " SET date = '$swt_date', swt_id = '$swt_id', amount = '$swt_amt', pic = '$swt_pic', attachment = '$swt_attach', remark ='$swt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($finance_connect, $query);
+
+                     
+                    } else {
+                        $act = 'NC';
+                    }
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+                    $act = "F";
+                }
+            }
+
             // audit log
             if (isset($query)) {
 
@@ -265,34 +266,29 @@ if (post('actionBtn')) {
 }
 
 if (post('act') == 'D') {
-    $id = post('id');
-    if ($id) {
-        try {
-            // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
-            $row = $rst->fetch_assoc();
+    try {
+        // take name
+        $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
+        $row = $rst->fetch_assoc();
 
-            $dataID = $row['id'];
-
-            //SET the record status to 'D'
-            deleteRecord($tblName ,'', $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
-            $_SESSION['delChk'] = 1;
-        } catch (Exception $e) {
-            echo 'Message: ' . $e->getMessage();
-        }
+        $dataID = $row['id'];
+        
+        //SET the record status to 'D'
+        deleteRecord($tblName, $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+        $_SESSION['delChk'] = 1;
+    } catch (Exception $e) {
+        echo 'Message: ' . $e->getMessage();
     }
 }
 
 //view
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
-    $swt_id = isset($dataExisted) ? $row['id'] : '';
     $_SESSION['viewChk'] = 1;
 
-    
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] </b>.";
     }
 
     $log = [
@@ -347,76 +343,66 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                     </div>
 
-            <div class="row">
-                <div class="col-12 col-md-6">
-                    <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="swt_date_label" for="swt_date">Withdrawal Date<span
-                                        class="requireRed">*</span></label>
-                                <input class="form-control" type="date" name="swt_date" id="swt_date" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['date']) && !isset($swt_date)) {
-                                                                                                                echo $row['date'];
-                                                                                                            } else if (isset($swt_date)) {
-                                                                                                                echo $swt_date;
-                                                                                                            } else {
-                                                                                                                echo date('Y-m-d');
-                                                                                                            }
-                                                                                                            ?>"
-                                    placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
-                                    <?php if ($act == '') echo 'disabled' ?>>
-                                <?php if (isset($date_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $date_err; ?></span>
-                                </div>
-                                <?php } ?>
-
-                            </div>
-                        </div>
-
-
-                <div class="col-12 col-md-6">
-                    <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="swt_id_lbl" for="swt_id">Withdrawal ID<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="swt_id" id="swt_id" value="<?php 
-                                    if (isset($dataExisted) && isset($row['name']) && !isset($swt_id)) {
-                                        echo $row['name'];
-                                        } else if (isset($dataExisted) && isset($row['swt_id']) && isset($swt_id)) {
-                                            echo $swt_id;
-                                            } else {
-                                                echo '';
-                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
-        
-                            <?php if (isset($swt_id)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $swt_id; ?></span>
-                                </div>
-                            <?php } ?>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
+                    <div class="row">
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
-        <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount(SGD)<span
-                                        class="requireRed">*</span></label>
-                                <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
-                                                                                                            echo $row['amount'];
-                                                                                                        } else if (isset($swt_amt)) {
-                                                                                                            echo $swt_amt;
-                                                                                                        }
-                                                                                                        ?>"
-                                    <?php if ($act == '') echo 'disabled' ?>>
-                                <?php if (isset($amt_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $amt_err; ?></span>
-                                </div>
-                                <?php } ?>
-                            </div>
-                        
+            <label class="form-label form_lbl" id="swt_date_label" for="swt_date">Withdrawal Date<span class="requireRed">*</span></label>
+            <input class="form-control" type="date" name="swt_date" id="swt_date" value="<?php
+                if (isset($dataExisted) && isset($row['date']) && !isset($swt_date)) {
+                    echo $row['date'];
+                } else if (isset($swt_date)) {
+                    echo $swt_date;
+                } else {
+                    echo date('Y-m-d');
+                }
+            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($date_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
     </div>
 
-    <div class="col-md-6 mb-3 autocomplete">
+    <div class="col-12 col-md-6">
+        <div class="form-group mb-3">
+            <label class="form-label form_lbl" id="swt_id_lbl" for="swt_id">Withdrawal ID<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" name="swt_id" id="swt_id" value="<?php
+                if (isset($dataExisted) && isset($row['swt_id']) && !isset($swt_id)) {
+                    echo $row['swt_id'];
+                } else if (isset($swt_id)) {
+                    echo $swt_id;
+                }
+            ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($swt_id_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $swt_id_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="form-group mb-3">
+            <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount(SGD)<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
+                if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
+                    echo $row['amount'];
+                } else if (isset($swt_amt)) {
+                    echo $swt_amt;
+                }
+            ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($amt_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $amt_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 mb-3 autocomplete">
         <label class="form-label form_lbl" id="swt_pic_lbl" for="swt_pic">Person-In-Charge*<span class="requireRed"></span></label>
         <?php
         unset($echoVal);
@@ -445,6 +431,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <?php } ?>
     </div>
 </div>
+
 
 <div class="form-group">
                     <div class="row">
@@ -490,7 +477,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label form" for="swt_remark">Remark</label>
+                        <label class="form-label form_lbl" for="swt_remark">Remark</label>
                         <textarea class="form-control" name="swt_remark" id="swt_remark" rows="3" 
                         <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
