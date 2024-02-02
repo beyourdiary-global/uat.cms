@@ -94,10 +94,9 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
                                     <li>
-                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                        <a class="dropdown-item"
-                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                        <?php endif; ?>
+                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                            <?php endif; ?>
                                     </li>
                                     <li>
                                         <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
@@ -106,10 +105,9 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                         <?php endif; ?>
                                     </li>
                                     <li>
-                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                        <a class="dropdown-item"
-                                            onclick="confirmationDialog('<?= $row['id'] ?>','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_withdrawal_transactions_table.php','D')">Delete</a>
-                                        <?php endif; ?>
+                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['swt_id'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                    <?php endif; ?>
                                     </li>
                                 </ul>
                             </div>

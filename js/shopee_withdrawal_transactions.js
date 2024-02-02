@@ -53,7 +53,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
         date_chk = 0;
         $("#swt_date").after(
-            '<span class="error-message coh-date-err">Date is required!</span>');
+            '<span class="error-message swt-date-err">Date is required!</span>');
     } else {
         $(".swt-date-err").remove();
         date_chk = 1;
