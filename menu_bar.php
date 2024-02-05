@@ -60,8 +60,19 @@ $menuList = array(
         'y',
         'expand' => array(
             array('Customer Info', 'mdi mdi-information-outline', $SITEURL . '/customerInfoTable.php', '38'),
+            array('Facebook Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/fb_cust_deals_table.php', '75'),
         ),
-        'pin' => array('38')
+        'pin' => array('38','75')
+    ),
+    array(
+        'Orders',
+        'mdi mdi-cart-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
+        ),
+        'pin' => array('69')
     ),
     array(
         'Distributor',
@@ -115,7 +126,7 @@ $menuList = array(
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
-                    array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
+                    array('Internal Consume Ticket/Credit', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_ticket_credit_table.php', '62'),
                 ),
                 'pin' => array('37', '40', '41', '42', '43', '44', '45', '46', '51', '67', '62'),
 
@@ -283,7 +294,7 @@ $menuList = array(
                 'pin' => array('76'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '64', '65', '66', '67', '68', '69','72','76')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '64', '65', '66', '67', '68', '69','72','75','76')
     ),
     array(
         'Audit Log',

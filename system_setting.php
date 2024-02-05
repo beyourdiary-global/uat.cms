@@ -144,16 +144,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="company_name">Company Name</label>
                                 <input class="form-control" type="text" name="company_name" id="company_name"
                                     value="<?php if (isset($row['company_name'])) echo $row['company_name'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="company_business_no">Company Business No</label>
                                 <input class="form-control" type="text" name="company_business_no"
                                     id="company_business_no"
@@ -161,7 +161,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="finance_year">Finance Year</label>
                                 <input class="form-control" type="date" name="finance_year" id="finance_year"
                                     value="<?php if (isset($row['finance_year'])) echo $row['finance_year'] ?>"
@@ -181,15 +181,15 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="company_contact">Company Contact</label>
                                 <input class="form-control" type="text" name="company_contact" id="company_contact"
                                     value="<?php if (isset($row['company_contact'])) echo $row['company_contact'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="company_email">Company Email</label>
                                 <input class="form-control" type="text" name="company_email" id="company_email"
                                     value="<?php if (isset($row['company_email'])) echo $row['company_email'] ?>"
@@ -206,20 +206,20 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <div class="row">
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="meta">Meta</label>
                                 <input class="form-control" type="text" name="meta" id="meta"
                                     value="<?php if (isset($row['meta'])) echo $row['meta'] ?>" <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="barcode_prefix">Barcode Prefix</label>
                                 <input class="form-control" type="text" name="barcode_prefix" id="barcode_prefix"
                                     value="<?php if (isset($row['barcode_prefix'])) echo $row['barcode_prefix'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="barcode_next_number">Barcode Next Number</label>
                                 <input class="form-control" type="number" step="any" name="barcode_next_number"
                                     id="barcode_next_number"
@@ -230,16 +230,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="invoice_prefix_credit">Invoice Prefix (Credit Notes)</label>
                                 <input class="form-control" type="text" name="invoice_prefix_credit" id="invoice_prefix_credit"
                                     value="<?php if (isset($row['invoice_prefix_credit'])) echo $row['invoice_prefix_credit'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="invoice_next_number_credit">Invoice Next Number (Credit Notes)</label>
                                 <input class="form-control" type="number" step="any" name="invoice_next_number_credit"
                                     id="invoice_next_number_credit"
@@ -249,16 +249,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         </div>
                     </div>
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="invoice_prefix_debit">Invoice Prefix (Debit Notes)</label>
                                 <input class="form-control" type="text" name="invoice_prefix_debit" id="invoice_prefix_debit"
                                     value="<?php if (isset($row['invoice_prefix_debit'])) echo $row['invoice_prefix_debit'] ?>"
                                     <?= $viewOnly ?>>
                             </div>
 
-                            <div class="col-sm">
+                            <div class="col-sm mb-3">
                                 <label class="form-label" for="invoice_next_number_debit">Invoice Next Number (Debit Notes)</label>
                                 <input class="form-control" type="number" step="any" name="invoice_next_number_debit"
                                     id="invoice_next_number_debit"

@@ -78,12 +78,6 @@ if (post('actionBtn')) {
             } else if (!$agt_pic && $agt_pic < 1) {
                 $pic_err = "Please specify the person-in-charge.";
                 break;
-            } else if (!$contact) {
-                $ontact_err = "Please specify the contact.";
-                break;
-            } else if (!$email) {
-                $email_err = "Please specify the email.";
-                break;
             } else if (!$agt_country) {
                 $country_err = "Please specify the country.";
                 break;
