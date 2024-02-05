@@ -78,7 +78,7 @@ $result = getData('*', '', '', COURIER, $connect);
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?php if (isset($row['courierID'])) echo $row['courierID'] ?></td>
+                                    <td scope="row"><?php if (isset($row['id'])) echo $row['id'] ?></td>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row"><?php if (isset($countries['nicename'])) echo $countries['nicename'] ?></td>
                                     <td scope="row"><?php if (isset($row['taxable'])) {
@@ -102,7 +102,7 @@ $result = getData('*', '', '', COURIER, $connect);
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['courierID'] ?>','<?= $row['name'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/other_creditor_trans_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $countries['nicename'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/courier_table.php','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
