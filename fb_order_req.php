@@ -760,7 +760,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_channel_lbl" for="for_channel">Channel<span
                                         class="requireRed">*</span></label>
-                                        <?php
+                                <?php
                                 unset($echoVal);
 
                                 if (isset($row['channel']))

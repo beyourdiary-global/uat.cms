@@ -137,7 +137,7 @@ define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 define('SHOPEE_ACC', 'shopee_account');
 define('FB_ORDER_REQ', 'facebook_order_request');
-
+define('FB_PAGE_ACC', 'facebook_page_account');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
