@@ -1,8 +1,9 @@
 <?php
 $pageTitle = "Facebook Order Request";
+$isFinance = 1;
 
-include_once 'menuHeader.php';
-include_once 'checkCurrentPagePin.php';
+include_once '../menuHeader.php';
+include_once '../checkCurrentPagePin.php';
 
 $tblName = FB_ORDER_REQ;
 
@@ -12,11 +13,11 @@ $pageAction = getPageAction($act);
 $allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
 
-$redirect_page = $SITEURL . '/fb_order_req_table.php';
+$redirect_page = $SITEURL . '/finance/fb_order_req_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
-$img_path = '../' . img_server . 'fb_order_req/';
+$img_path = '../' . img_server . 'finance/fb_order_req/';
 if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
@@ -989,7 +990,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         preloader(300, action);
 
         <?php
-        include "./js/fb_order_req.js"
+        include "../js/fb_order_req.js"
             ?>
     </script>
 
