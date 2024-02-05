@@ -12,6 +12,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/downline_top_up_record.php';
+$deleteRedirectPage = $SITEURL . '/finance/downline_top_up_record_table.php';
 $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
 
 ?>
@@ -20,7 +21,7 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+<link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>
@@ -61,12 +62,13 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
@@ -76,23 +78,21 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                         while ($row = $result->fetch_assoc()) {
                             if (isset($row['id']) && !empty($row['id'])) {
 
-                                $agentResult = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $connect);
-                                $agentRow = $picResult->fetch_assoc();
-
-                                $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-                                $brandRow = $brandResult->fetch_assoc();
+                                $agent = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $finance_connect);
+                                $row3 = $agent->fetch_assoc();
 
                                 $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
                                 $currRow = $currResult->fetch_assoc();
                         ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <td scope="row"><?php if (isset($agentRow['name'])) echo  $agentRow['name'] ?></td>
-                                    <td scope="row"><?php if (isset($brandRow['name'])) echo  $brandRow['name'] ?></td>
+                                    <td scope="row"><?= $num++ ?></td>
+                                    <td scope="row"><?= isset($row3['name']) ? $row3['name'] : '' ?></td>
+                                    <td scope="row"><?php if (isset($row['name'])) echo  $row['name'] ?></td>
                                     <td scope="row"><?php if (isset($currRow['unit'])) echo  $currRow['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo  $row['amount'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo  $row['remark'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo  $row['attachment'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo  $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -110,8 +110,8 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                                     <?php endif; ?>
                                                 </li>
                                                 <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $picRow['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -127,12 +127,13 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </tfoot>
@@ -152,6 +153,8 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
         //to resize table with bootstrap 5 classes
         datatableAlignment('table');
         setButtonColor();
+
+        
     </script>
 
 </body>

@@ -110,14 +110,14 @@ define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
 define('PROD_CATEGORY','product_category');
-
+define('BRD_SERIES','brand_series');
 
 //finance
 define('MERCHANT', 'merchant');
 define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
 define('INVTR_TRANS', 'asset_inventories_transaction');
 define('INV_TRANS', 'asset_investment_transaction');
-define('SD_TRANS', 'asset_sundry_debtors_transaction');
+define('SD_TRANS', 'asset_sundry_debtors_transactions');
 define('META_ADS_ACC', 'meta_ads_account');
 define('CAONHD', 'asset_cash_on_hand_transaction');
 define('INITCA_TRANS', 'asset_initial_capital_transaction');
@@ -134,12 +134,11 @@ define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 define('CRED_NOTES_INV', 'credit_notes_invoice');
 define('AGENT','agent');
-define('BRD_SERIES','brand_series');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 define('SHOPEE_ACC', 'shopee_account');
 define('FB_ORDER_REQ', 'facebook_order_request');
-
+define('FB_PAGE_ACC', 'facebook_page_account');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

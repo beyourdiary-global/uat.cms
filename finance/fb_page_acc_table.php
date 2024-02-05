@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Shopee Account";
+$pageTitle = "Facebook Page Account";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,13 +10,9 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/shopee_acc.php';
-$deleteRedirectPage = $SITEURL . '/finance/shopee_acc_table.php';
-$result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/fb_page_acc.php';
+$deleteRedirectPage = $SITEURL . '/finance/fb_page_acc_table.php';
+$result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -27,22 +23,16 @@ if (!$result) {
 </head>
 
 <script>
-    preloader(300);
     $(document).ready(() => {
-        createSortingTable('shopee_acc_table');
+        createSortingTable('fb_page_acc_table');
     });
 </script>
 
 <body>
 
-<div class="pre-load-center">
-        <div class="preloader"></div>
-    </div>
+    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-    <div class="page-load-cover">
-        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-            <div class="col-12 col-md-8">
-
+        <div class="col-12 col-md-8">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -61,35 +51,29 @@ if (!$result) {
                 </div>
             </div>
 
-            <table class="table table-striped" id="shopee_acc_table">
+            <table class="table table-striped" id="fb_page_acc_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Account Name</th>
-                        <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
-
-                            $currency = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
-
-                            $row2 = $currency->fetch_assoc();
-                            $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                            $row3 = $country->fetch_assoc();
+                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {                           
                     ?>
 
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
-                                <td scope="row"><?= isset($row3['name']) ? $row3['name'] : '' ?></td>
-                                <td scope="row"><?= isset($row2['unit']) ? $row2['unit'] : '' ?>
+                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?>
+                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?>
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
@@ -103,9 +87,9 @@ if (!$result) {
                                                 <?php endif; ?>
                                             </li>
                                             <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
@@ -124,8 +108,8 @@ if (!$result) {
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
-                        <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
@@ -152,8 +136,7 @@ if (!$result) {
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('shopee_acc_table');
-    setButtonColor();
+    datatableAlignment('fb_page_acc_table');
 </script>
 
 </html>

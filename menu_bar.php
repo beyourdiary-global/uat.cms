@@ -24,7 +24,7 @@ $menuList = array(
     array(
         'Dashboard',                    // pagename
         'mdi mdi-view-dashboard',       // icon class
-        $SITEURL . '/dashboard.php',    // page
+        $SITEURL . '/dashboard.php',                // page
         'n',                            // check whether is a dropdown
         'expand' => array(),            // dropdown list item
         'pin' => array('0')             // action
@@ -49,9 +49,9 @@ $menuList = array(
         'expand' => array(
             array('My Leave Transcation', '', $SITEURL . '/myLeaveTransaction.php', '67'),
             array('Approval Leave Transcation', '', $SITEURL . '/approvalLeaveTransaction.php', '68'),
-            array('All Leave Transcation', '', $SITEURL . '/allLeaveTransaction.php', '69'),
+            array('All Leave Transcation', '', $SITEURL . '/allLeaveTransaction.php', '72'),
         ),
-        'pin' => array('67', '68', '69')
+        'pin' => array('67', '68', '72')
     ),
     array(
         'Customer',
@@ -83,16 +83,6 @@ $menuList = array(
             array('Package', 'mdi mdi-package', $SITEURL . '/package_table.php', '21'),
         ),
         'pin' => array('20', '21')
-    ),
-    array(
-        'Orders',
-        'mdi mdi-cart-variant',
-        'javascript:void(0)',
-        'y',
-        'expand' => array(
-            array('Facebook Order Request', 'mdi mdi-shopping', $SITEURL . '/fb_order_req_table.php', '69'),
-        ),
-        'pin' => array('69')
     ),
     array(
         'Finance',
@@ -128,7 +118,7 @@ $menuList = array(
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                     array('Internal Consume', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_table.php', '62'),
                 ),
-                'pin' => array('37', '40', '41', '42', '43', '44', '45', '51', '67', '62'),
+                'pin' => array('37', '40', '41', '42', '43', '44', '45', '46', '51', '67', '62'),
 
 
             ),
@@ -222,10 +212,10 @@ $menuList = array(
                     array('Brand', 'mdi mdi-label-outline', $SITEURL . '/brand_table.php', '9'),
                     array('Courier Account', 'mdi mdi-label-outline', $SITEURL . '/courier_table.php', '50'),
                     array('Category', 'mdi mdi-label-outline', $SITEURL . '/product_category_table.php', '56'),
-                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/finance/brand_series_table.php', '64'),
+                    array('Brand Series', 'mdi mdi-label-outline', $SITEURL . '/brand_series_table.php', '74'),
                 ),
 
-                'pin' => array('15', '9', '50', '56', '64'),
+                'pin' => array('15', '9', '50', '56', '74'),
 
             ),
             array(
@@ -282,10 +272,19 @@ $menuList = array(
                 ),
                 'pin' => array('47', '60', '63'),
             ),
+
+            array(
+                'Social Administration  Setting',
+                'mdi mdi-account-wrench-outline',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Facebook Page Account', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fb_page_acc_table.php', '76'),
+                ),
+                'pin' => array('76'),
+            ),
         ),
-
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '64', '65', '66', '67', '68', '69')
-
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '64', '65', '66', '67', '68', '69','72','76')
     ),
     array(
         'Audit Log',
