@@ -220,7 +220,7 @@ if (post('actionBtn')) {
                     if ($sdt_remark)
                     array_push($newvalarr, $sdt_remark);
 
-                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_attach','$sdt_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_remark','$sdt_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -452,7 +452,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <body>
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>"><?=$pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        echo displayPageAction($act, 'Transaction');
+        echo displayPageAction($act, $pageTitle);
         ?></p>
 
     </div>
@@ -463,7 +463,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                            echo displayPageAction($act, 'Transaction');
+                            echo displayPageAction($act, $pageTitle);
                         ?>
                     </h2>
                 </div>
@@ -572,7 +572,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <div class="col-md-6  mb-3">
                             <label class="form-label form_lbl" id="sdt_amt_lbl" for="sdt_amt">Amount<span
                                     class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sdt_amt" id="sdt_amt" value="<?php 
+                            <input class="form-control" type="number" step="0.01" name="sdt_amt" id="sdt_amt" value="<?php 
                                 if (isset($dataExisted) && isset($row['amount']) && !isset($sdt_amt)){
                                     echo $row['amount'];
                                 }else if (isset($sdt_amt)) {

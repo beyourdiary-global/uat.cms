@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Internal Consume";
+$pageTitle = "Internal Consume Ticket/Credit";
 $isFinance = 1;
 
 include '../menuHeader.php';
@@ -13,8 +13,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/internal_consume.php';
-$deleteRedirectPage = $SITEURL . '/finance/internal_consume_table.php';
+$redirect_page = $SITEURL . '/finance/internal_consume_ticket_credit.php';
+$deleteRedirectPage = $SITEURL . '/finance/internal_consume_ticket_credit_table.php';
 
 $result = getData('*', '', '', $tblName, $finance_connect);
 

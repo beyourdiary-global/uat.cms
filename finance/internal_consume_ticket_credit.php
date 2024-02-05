@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Internal Consume";
+$pageTitle = "Internal Consume Ticket/Credit";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
@@ -13,7 +13,7 @@ $act = !empty(input('act')) ? input('act') : post('act');
 $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
-$redirect_page = $SITEURL . '/finance/internal_consume_table.php';
+$redirect_page = $SITEURL . '/finance/internal_consume_ticket_credit_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -25,7 +25,7 @@ $pinAccess = checkCurrentPin($connect, $pageTitle);
 //Attachment
 $allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
-$img_path = '../' . img_server . 'finance/internal_consume/';
+$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
 if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
@@ -291,7 +291,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-md-6 mb-2 autocomplete">
+                            <div class="col-md-6 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="pic_lbl" for="pic">Person-In-Charge<span class="requireRed">*</span></label>
                                 <?php
                                 unset($echoVal);
@@ -312,16 +312,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 <input type="hidden" name="pic_hidden" id="pic_hidden" value="<?php echo (isset($row['PIC'])) ? $row['PIC'] : ''; ?>">
                             </div>
 
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label form_lbl" id="date_label" for="date">Date<span class="requireRed">*</span></label>
                                 <input class="form-control" type="date" required name="date" id="date" value="<?php echo (isset($row['date']) ? $row['date'] : '') ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
                             </div>
                         </div>
-                    </div>
+                    
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
                                 <select class="form-select" required id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
                                     <?php
@@ -344,7 +344,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-2">
+                            
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit<span class="requireRed">*</span></label>
                                 <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
                                     <?php
@@ -367,7 +368,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-2">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="ampunt_lbl" for="amount">Amount<span class="requireRed">*</span></label>
                                 <input class="form-control" type="number" step="any" name="amount" id="amount" value="<?php echo (isset($row['amount']) ? $row['amount'] : '') ?>" <?php if ($act == '') echo 'disabled' ?>>
                             </div>
@@ -379,9 +380,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                                 <label class="form-label form_lbl" id="attachment_lbl" for="attachment">Attachment</label>
                                 <input class="form-control" type="file" name="attachment" id="attachment" value="" <?php if ($act == '') echo 'disabled' ?>>
                                 <?php if (isset($row['attachment']) && $row['attachment']) { ?>
@@ -391,7 +392,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                                 <?php } ?>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <div class="d-flex justify-content-center justify-content-md-end px-4">
                                     <?php
                                     $attachmentSrc = '';

@@ -81,6 +81,7 @@ if ($email && $password) {
                     generateDBData(AGENT, $finance_connect);
                     // generateDBData(CHANNEL, $connect);
                     generateDBData(FB_PAGE_ACC, $finance_connect);
+                    
 
                     return header('Location: dashboard.php');
                } else {
