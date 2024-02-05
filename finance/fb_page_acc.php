@@ -60,15 +60,20 @@ if (!($dataID) && !($act)) {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    switch ($action) {
+        case 'addAccount':
+        case 'updAccount':
+
     $fb_name = postSpaceFilter("fb_name");
     $fb_des = postSpaceFilter("fb_des");
     $fb_remark = postSpaceFilter("fb_remark");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
+    if (isDuplicateRecord("name", $fb_name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
 
             if (!$fb_name) {
                 $name_err = "Please specify the account name.";
