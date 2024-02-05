@@ -6,7 +6,7 @@ include 'checkCurrentPagePin.php';
 
 $tblName = PROD_CATEGORY;
 
-///Current Page Action And Data ID
+//Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
 $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
@@ -192,7 +192,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <div class="page-load-cover">
-
         <div class="d-flex flex-column my-3 ms-3">
             <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
                 <?php echo $pageActionTitle ?>
@@ -228,17 +227,18 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 </form>
             </div>
         </div>
-</body>
-<script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
+    </div>
 
-    checkCurrentPage(page, action);
-    centerAlignment("formContainer");
-    setButtonColor();
-    preloader(300);
-</script>
+    <script>
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+        centerAlignment("formContainer");
+        setButtonColor();
+        preloader(300, action);
+    </script>
 
 </body>
 
