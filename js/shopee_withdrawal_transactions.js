@@ -44,16 +44,16 @@ $('.submitBtn').on('click', () => {
     //event.preventDefault();
     var date_chk = 0;
     var id_chk = 0;
-    var pic_chk = 0;
-    var id_chk = 0;
     var amt_chk = 0;
+    var pic_chk = 0;
+    
 
 
     if (($('#swt_date').val() === '' || $('#swt_date').val() === null || $('#swt_date')
             .val() === undefined)) {
         date_chk = 0;
         $("#swt_date").after(
-            '<span class="error-message coh-date-err">Date is required!</span>');
+            '<span class="error-message swt-date-err">Date is required!</span>');
     } else {
         $(".swt-date-err").remove();
         date_chk = 1;

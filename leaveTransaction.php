@@ -52,25 +52,10 @@ if ($dataID) {
 }
 
 //Current Employee ID 
-if (!input('empID')) {
-    $userResult = getData('name', 'id="' . USER_ID . '"', '', USR_USER, $connect);
-
-    if (!$userResult) {
-        echo $errorRedirectLink;
-    }
-
-    $userRow = $userResult->fetch_assoc();
-    $userName = $userRow['name'];
-
-    $empResult = getData('*', 'name="' . $userName  . '"',  '', EMPPERSONALINFO, $connect);
-    if (!$empResult) {
-        echo $errorRedirectLink;
-    }
-
-    $empRow = $empResult->fetch_assoc();
-    $currEmpID = $empRow['id'];
-} else
+if (input('empID')) {
     $currEmpID = input('empID');
+} else
+    $currEmpID = USER_ID;
 
 //Manager Approver
 $resultManagerApprover = getData('managers_for_leave_approval', 'employee_id="' . $currEmpID . '"', '', 'employee_info', $connect);
@@ -638,7 +623,9 @@ if ($action) {
 
                         <div class="text-center mt-5">
                             <?php if ($act) { ?>
-                                <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="<?= $actionBtnValue ?>">Submit</button>
+                                <div>
+                                    <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="<?= $actionBtnValue ?>">Submit</button>
+                                </div>
                             <?php } ?>
                             <button class="btn btn-rounded btn-primary mx-2 mb-2" value="back" name="actionBtn" id="backBtn">Back</button>
                         </div>

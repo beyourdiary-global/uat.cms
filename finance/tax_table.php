@@ -77,13 +77,17 @@ if (!$result) {
 
                     <tbody>
                         <?php
-                        while ($row = $result->fetch_assoc()) {
+                         while ($row = $result->fetch_assoc()) {
                             if (isset($row['name'], $row['id']) && !empty($row['name'])) {
+    
+                                $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
+                                $row3 = $country->fetch_assoc();
                         ?>
+    
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?php if (isset($row['country'])) echo $row['country'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['name'])) echo $row3['name'] ?></td>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['percentage'])) echo $row['percentage'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
