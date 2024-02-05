@@ -789,7 +789,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <?php
         include "./js/fb_cust_deals.js"
-            ?>
+        ?>
     </script>
 
 </body>

@@ -64,7 +64,7 @@ $(document).ready(function() {
                 searchType: 'name', // column of the table
                 elementID: $(this).attr('id'), // id of the input
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input fcb storing the value
-                dbTable: '<?= FB_PAGE ?>', // json filename (generated when login)
+                dbTable: '<?= FB_PAGE_ACC ?>', // json filename (generated when login)
             }
             searchInput(param, '<?= $SITEURL ?>');
         });
