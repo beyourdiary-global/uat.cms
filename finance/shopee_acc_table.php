@@ -68,7 +68,7 @@ if (!$result) {
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
@@ -125,7 +125,7 @@ if (!$result) {
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>

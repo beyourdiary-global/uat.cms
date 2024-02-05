@@ -21,6 +21,13 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
+function isDuplicateAccountName($name, $tblName, $finance_connect) {
+    $query = "SELECT COUNT(*) as count FROM $tblName WHERE name = '$name'";
+    $result = mysqli_query($finance_connect, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['count'] > 0;
+}
+
 
 // to display data to input
 if ($dataID) { //edit/remove/view
@@ -73,6 +80,10 @@ if (post('actionBtn')) {
                 $currency_err = "Please specify the account currency.";
                 break;
             } else if ($action == 'addAccount') {
+                if (isDuplicateAccountName($sa_name, $tblName, $finance_connect)) {
+                    $name_err = "Account name already exists. Please choose a different name.";
+                    break;
+                }
                 try {
 
                     // check value
@@ -107,7 +118,10 @@ if (post('actionBtn')) {
                     // take old value
                     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
-
+                    if (isDuplicateAccountName($sa_name, $tblName, $finance_connect)) {
+                        $name_err = "Account name already exists. Please choose a different name.";
+                        break;
+                    }
                     // check value
 
                     if ($row['name'] != $sa_name) {
@@ -317,7 +331,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         
         <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency Unit<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
