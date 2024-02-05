@@ -79,6 +79,9 @@ if ($email && $password) {
                     generateDBData(FIN_PAY_METH, $finance_connect);
                     generateDBData(PROD_CATEGORY, $connect);
                     generateDBData(AGENT, $finance_connect);
+                    generateDBData(FB_PAGE_ACC, $finance_connect);
+                    //generateDBData(CHANNEL, $finance_connect);
+                    
 
                     return header('Location: dashboard.php');
                } else {
