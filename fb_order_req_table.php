@@ -90,10 +90,12 @@ $result = getData('*', '', '', FB_ORDER_REQ, $connect);
                         $q5 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
                         $package = $q5->fetch_assoc();
 
-                        $q6 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
+                        //fb page
+                        $q6 = getData('name', "id='" . $row['fb_page'] . "'", '', FB_PAGE_ACC, $finance_connect);
                         $fb_page = $q6->fetch_assoc();
 
-                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', USR_USER, $connect);
+                        //channel
+                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANNEL, $connect);
                         $channel = $q7->fetch_assoc();
 
                         $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
