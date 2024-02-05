@@ -71,6 +71,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <th scope="col">Subtotal</th>
                             <th scope="col">Tax</th>
                             <th scope="col">Total</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
@@ -94,6 +95,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                                     <td scope="row"><?php if (isset($row['subtotal'])) echo  $row['subtotal'] ?></td>
                                     <td scope="row"><?php if (isset($row['tax'])) echo  $row['tax'] ?></td>
                                     <td scope="row"><?php if (isset($row['total'])) echo  $row['total'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo  $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,6 +133,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <th scope="col">Subtotal</th>
                             <th scope="col">Tax</th>
                             <th scope="col">Total</th>
+                            <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
