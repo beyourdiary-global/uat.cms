@@ -21,14 +21,6 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-function isDuplicateAccountName($name, $tblName, $finance_connect) {
-    $query = "SELECT COUNT(*) as count FROM $tblName WHERE name = '$name'";
-    $result = mysqli_query($finance_connect, $query);
-    $row = mysqli_fetch_assoc($result);
-    return $row['count'] > 0;
-}
-
-
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
@@ -60,16 +52,20 @@ if ($act == 'D') {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    switch ($action) {
+        case 'addAccount':
+        case 'updAccount':
+
     $sa_name = postSpaceFilter("sa_name");
     $sa_country = postSpaceFilter("sa_country_hidden");
     $sa_currency = postSpaceFilter("sa_currency_hidden");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
-
+    if (isDuplicateRecord("name", $sa_name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
             if (!$sa_name) {
                 $name_err = "Please specify the account name.";
                 break;
@@ -79,11 +75,7 @@ if (post('actionBtn')) {
             } else if (!$sa_currency) {
                 $currency_err = "Please specify the account currency.";
                 break;
-            } else if ($action == 'addAccount') {
-                if (isDuplicateAccountName($sa_name, $tblName, $finance_connect)) {
-                    $name_err = "Account name already exists. Please choose a different name.";
-                    break;
-                }
+            } else if ($action == 'addAccount') { 
                 try {
 
                     // check value
