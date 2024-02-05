@@ -64,6 +64,16 @@ $menuList = array(
         'pin' => array('38')
     ),
     array(
+        'Orders',
+        'mdi mdi-cart-outline',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
+        ),
+        'pin' => array('69')
+    ),
+    array(
         'Distributor',
         'mdi mdi-account-outline',
         'javascript:void(0)',
