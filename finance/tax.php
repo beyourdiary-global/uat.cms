@@ -22,6 +22,12 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
+function isDuplicateCountry($country, $tblName, $finance_connect) {
+    $query = "SELECT COUNT(*) as count FROM $tblName WHERE country = '$country'";
+    $result = mysqli_query($finance_connect, $query);
+    $row = mysqli_fetch_assoc($result);
+    return $row['count'] > 0;
+}
 
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
@@ -65,6 +71,11 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addData':
         case 'updData':
+
+            if (isDuplicateCountry($tax_country, $tblName, $finance_connect)) {
+                $country_err = "Country already exists.";
+                break;
+            }
             
             if (!$tax_country) {
                 $country_err = "Please specify the country.";
@@ -113,6 +124,11 @@ if (post('actionBtn')) {
                     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
                     $row = $rst->fetch_assoc();
 
+                    if (isDuplicateCountry($tax_country, $tblName, $finance_connect)) {
+                        $country_err = "Country already exists.";
+                        break;
+                    }
+                    
                     if ($row['country'] != $tax_country) {
                         array_push($oldvalarr, $row['country']);
                         array_push($chgvalarr, $tax_country);
