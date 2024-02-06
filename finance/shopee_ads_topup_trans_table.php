@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Facebook Ads Top Up Transaction";
+$pageTitle = "Shopee Ads Top Up Transaction";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,8 +10,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fb_ads_topup_trans.php';
-$result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
+$redirect_page = $SITEURL . '/finance/shopee_ads_topup_trans.php';
+$result = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('fb_ads_topup_trans_table');
+        createSortingTable('shopee_ads_topup_trans_table');
     });
 </script>
 
@@ -50,39 +50,45 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 </div>
             </div>
 
-            <table class="table table-striped" id="fb_ads_topup_trans_table">
+            <table class="table table-striped" id="shopee_ads_topup_trans_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
+                        <th scope="col">Shopee Account</th>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Currency</th>
                         <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col">GST (%)</th>
+                        <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) {
-                        if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
-                            $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-                            $meta_acc = $metaQuery->fetch_assoc();
-                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $usr = $pic->fetch_assoc();
+                        if (isset($row['orderID'], $row['id']) && !empty($row['orderID'])) {
+                            $q1 = getData('*', "id='" . $row['shopee_acc'] . "'", 'LIMIT 1', SHOPEE_ACC, $finance_connect);
+                            $shopee_acc = $q1->fetch_assoc();
+                            $q2 = getData('unit', "id='" . $row['currency'] . "'", 'LIMIT 1', CUR_UNIT, $connect);
+                            $curr = $q2->fetch_assoc();
+                            $q3 = getData('name', "id='" . $row['pay_meth'] . "'", 'LIMIT 1', FIN_PAY_METH, $finance_connect);
+                            $pay = $q3->fetch_assoc();
                     ?>
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?php if (isset($meta_acc['accName'])) echo  $meta_acc['accName'] ?></td>
-                                <td scope="row"><?= $row['transactionID'] ?></td>
+                                <td scope="row"><?php if (isset($shopee_acc['name'])) echo  $shopee_acc['name'] ?></td>
+                                <td scope="row"><?= $row['orderID'] ?></td>
                                 <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
-                                <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
+                                <td scope="row"><?php if (isset($curr['unit'])) echo $curr['unit'] ?></td>
                                 <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
+                                <td scope="row"><?php if (isset($row['subtotal'])) echo  $row['subtotal'] ?></td>
+                                <td scope="row"><?php if (isset($row['gst'])) echo  $row['gst'] ?></td>
+                                <td scope="row"><?php if (isset($pay['name'])) echo  $pay['name'] ?></td>
                                 <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -101,7 +107,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_ads_topup_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['shopee_acc'] ?>','<?= $row['orderID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_ads_topup_trans_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -115,12 +121,14 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
+                        <th scope="col">Shopee Account</th>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Currency</th>
                         <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col">GST (%)</th>
+                        <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -146,7 +154,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_ads_topup_trans_table');
+    datatableAlignment('shopee_ads_topup_trans_table');
 </script>
 
 </html>

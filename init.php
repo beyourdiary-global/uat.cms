@@ -138,6 +138,7 @@ define('AGENT','agent');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 define('SHOPEE_ACC', 'shopee_account');
+define('SHOPEE_ADS_TOPUP', 'shopee_ads_topup_transaction');
 define('FB_ORDER_REQ', 'facebook_order_request');
 define('FB_PAGE_ACC', 'facebook_page_account');
 // define('CHANNEL', 'channel');
