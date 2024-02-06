@@ -190,7 +190,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName, '', $dataID, $courier_id, $connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $id, $courier_id, $connect, $connect, $cdate, $ctime, $pageTitle);
             generateDBData(COURIER, $connect);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
