@@ -13,6 +13,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/finance/fb_page_acc.php';
 $deleteRedirectPage = $SITEURL . '/finance/fb_page_acc_table.php';
 $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +27,7 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
 </head>
 
 <script>
+    preloader(300);
     $(document).ready(() => {
         createSortingTable('fb_page_acc_table');
     });
@@ -30,9 +35,14 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -65,14 +75,14 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {                           
+                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
                     ?>
 
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
-                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?>
+                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?></td>
                                 <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?>
                                 </td>
                                 <td scope="row">
@@ -87,13 +97,13 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
                                                 <?php endif; ?>
                                             </li>
                                             <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_acc_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_page_acc_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -107,7 +117,7 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Account Name</th>
+                        <th scope="col">Name</th>
                         <th scope="col">Description</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
@@ -137,6 +147,7 @@ $result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
       to resize table with bootstrap 5 classes
     */
     datatableAlignment('fb_page_acc_table');
+    setButtonColor();
 </script>
 
 </html>
