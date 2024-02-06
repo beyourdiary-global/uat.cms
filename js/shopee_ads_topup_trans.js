@@ -203,12 +203,12 @@ function calculateTax() {
     retrieveDBData(paramTaxable, '<?= $SITEURL ?>', function (result) {
         getTaxPercentage(result);
         getCurrency(result);
-        $("#sat_curr_hidden").val(result[0]['currency']);
+        $("#sat_curr_hidden").val(result[0]['currency_unit']);
     });
 
     function getCurrency(result) {
         if (result && result.length > 0) {
-            curr = result[0]['currency'];
+            curr = result[0]['currency_unit'];
 
                 var paramCurr = {
                     search: curr,
