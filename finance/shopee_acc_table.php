@@ -77,7 +77,7 @@ if (!$result) {
                     while ($row = $result->fetch_assoc()) {
                         if (isset($row['name'], $row['id']) && !empty($row['name'])) {
 
-                            $currency = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                            $currency = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
                             $row2 = $currency->fetch_assoc();
                             $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
