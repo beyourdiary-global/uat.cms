@@ -101,7 +101,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
         pic_chk = 0;
         $("#agt_pic").after(
-            '<span class="error-message agt-pic-err">PIC is required!</span>');
+            '<span class="error-message agt-pic-err">Person-In-Charge is required!</span>');
     } else {
         $(".agt-pic-err").remove();
         pic_chk = 1;
