@@ -55,6 +55,10 @@ if (!($dataID) && !($act)) {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    switch ($action) {
+        case 'addData':
+        case 'updData':
+
     $name = postSpaceFilter("name");
     $agt_brand = postSpaceFilter("agt_brand_hidden");
     $agt_pic = postSpaceFilter("agt_pic_hidden");
@@ -65,10 +69,16 @@ if (post('actionBtn')) {
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addData':
-        case 'updData':
-        
+    if ($email && !isEmail($email)) {
+        $email_err = "Wrong email format!";
+        $error = 1;
+        break;
+    }
+
+    if (isDuplicateRecord("name", $name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
              if (!$name) {
                 $name_err = "Please specify the name.";
                 break;
@@ -316,7 +326,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                      <div class="form-group mb-3">
     <div class="row">
         <div class="form-group mb-3 col-md-6">
-            <label class="form-label form_lbl" id="name_lbl" for="name">Agent Name*</span></label>
+            <label class="form-label form_lbl" id="name_lbl" for="name">Name*</span></label>
             <input class="form-control" type="text" name="name" id="name" value="<?php 
                     if (isset($dataExisted) && isset($row['name']) && !isset($name)) {
                         echo $row['name'];
@@ -410,17 +420,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <div class="row">
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
-            <label class="form-label form_lbl" id="email" for="email">Email</label>
-            <input class="form-control" type="text" name="email" id="email" value="<?php echo (isset($row['email'])) ? $row['email'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?>>
-            <div id="err_msg">
-                <span class="mt-n1"><?php if (isset($email_err)) echo $email_err; ?></span>
-            </div>
+            <label class="form-label form_lbl" id="email_lbl" for="email">Email</label>
+            <input class="form-control" type="text" name="email" id="email" value="<?php
+                if (isset($dataExisted) && isset($row['email']) && !isset($email)) {
+                    echo $row['email'];
+                } else if (isset($dataExisted) && isset($row['email']) && isset($mrcht_email)) {
+                    echo $email;
+                } else {
+                    echo '';
+                }
+            ?>" <?php if ($act == '') echo 'readonly' ?>>
+            <?php if (isset($email_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $email_err; ?></span>
+                </div>
+            <?php } ?>
         </div>
     </div>
 
     <div class="col-12 col-md-6">
-    <div class="row">
-        <div class="form-group autocomplete col-md-12">
+        <div class="form-group autocomplete">
             <label class="form-label form_lbl" id="agt_country_lbl" for="agt_country">Country*</span></label>
             <?php
             unset($echoVal);
@@ -450,7 +469,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
     </div>
-</div>    
+</div>
+</div>
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" for="remark_form_lbl"><?php echo $pageTitle ?> Remark</label>
                         <textarea class="form-control" name="remark" id="remark" rows="3"
