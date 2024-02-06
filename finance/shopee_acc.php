@@ -21,7 +21,6 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
@@ -53,16 +52,20 @@ if ($act == 'D') {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    switch ($action) {
+        case 'addAccount':
+        case 'updAccount':
+
     $sa_name = postSpaceFilter("sa_name");
     $sa_country = postSpaceFilter("sa_country_hidden");
     $sa_currency = postSpaceFilter("sa_currency_hidden");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
-
+    if (isDuplicateRecord("name", $sa_name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
             if (!$sa_name) {
                 $name_err = "Please specify the account name.";
                 break;
@@ -72,7 +75,7 @@ if (post('actionBtn')) {
             } else if (!$sa_currency) {
                 $currency_err = "Please specify the account currency.";
                 break;
-            } else if ($action == 'addAccount') {
+            } else if ($action == 'addAccount') { 
                 try {
 
                     // check value
@@ -107,7 +110,10 @@ if (post('actionBtn')) {
                     // take old value
                     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
-
+                    if (isDuplicateAccountName($sa_name, $tblName, $finance_connect)) {
+                        $name_err = "Account name already exists. Please choose a different name.";
+                        break;
+                    }
                     // check value
 
                     if ($row['name'] != $sa_name) {
@@ -317,7 +323,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         
         <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency Unit<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
