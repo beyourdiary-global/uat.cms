@@ -54,7 +54,7 @@ $result = getData('*', '', '', OCR_TRANS, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col">S/N</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Transaction ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">Date</th>
