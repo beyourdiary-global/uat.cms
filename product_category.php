@@ -208,7 +208,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
+                        <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name*</label>
                         <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                         <div id="err_msg">
                             <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
