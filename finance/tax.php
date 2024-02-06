@@ -116,11 +116,6 @@ if (post('actionBtn')) {
                 try {
                     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
                     $row = $rst->fetch_assoc();
-
-                    if (isDuplicateCountry($tax_country, $tblName, $finance_connect)) {
-                        $country_err = "Country already exists.";
-                        break;
-                    }
                     
                     if ($row['country'] != $tax_country) {
                         array_push($oldvalarr, $row['country']);
