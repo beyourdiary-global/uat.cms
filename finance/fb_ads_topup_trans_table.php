@@ -101,7 +101,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_ads_topup_trans_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>

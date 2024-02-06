@@ -21,7 +21,6 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
@@ -53,16 +52,20 @@ if ($act == 'D') {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    switch ($action) {
+        case 'addAccount':
+        case 'updAccount':
+
     $sa_name = postSpaceFilter("sa_name");
     $sa_country = postSpaceFilter("sa_country_hidden");
     $sa_currency = postSpaceFilter("sa_currency_hidden");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
-
+    if (isDuplicateRecord("name", $sa_name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
             if (!$sa_name) {
                 $name_err = "Please specify the account name.";
                 break;
@@ -72,7 +75,7 @@ if (post('actionBtn')) {
             } else if (!$sa_currency) {
                 $currency_err = "Please specify the account currency.";
                 break;
-            } else if ($action == 'addAccount') {
+            } else if ($action == 'addAccount') { 
                 try {
 
                     // check value
@@ -89,10 +92,10 @@ if (post('actionBtn')) {
 
                     if ($sa_currency) {
                         array_push($newvalarr, $sa_currency);
-                        array_push($datafield, 'currency');
+                        array_push($datafield, 'currency_unit');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(name,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(name,country,currency_unit,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
 
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
@@ -122,10 +125,10 @@ if (post('actionBtn')) {
                         array_push($datafield, 'country');
                     }
 
-                    if ($row['currency'] != $sa_currency) {
-                        array_push($oldvalarr, $row['currency']);
+                    if ($row['currency_unit'] != $sa_currency) {
+                        array_push($oldvalarr, $row['currency_unit']);
                         array_push($chgvalarr, $sa_currency);
-                        array_push($datafield, 'currency');
+                        array_push($datafield, 'currency_unit');
                     }
 
                     // convert into string
@@ -134,7 +137,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
-                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name', country = '$sa_country', currency = '$sa_currency', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name', country = '$sa_country', currency_unit = '$sa_currency', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
                      
@@ -317,12 +320,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         
         <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency Unit<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
-            if (isset($row['currency']))
-                $echoVal = $row['currency'];
+            if (isset($row['currency_unit']))
+                $echoVal = $row['currency_unit'];
 
             if (isset($echoVal)) {
                 $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
@@ -334,7 +337,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             }
             ?>
             <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
-            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
+            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
             <?php if (isset($currency_err)) { ?>
                 <div id="err_msg">

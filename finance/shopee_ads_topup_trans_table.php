@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Facebook Page Account";
+$pageTitle = "Shopee Ads Top Up Transaction";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,13 +10,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fb_page_acc.php';
-$deleteRedirectPage = $SITEURL . '/finance/fb_page_acc_table.php';
-$result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/shopee_ads_topup_trans.php';
+$result = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -27,22 +22,16 @@ if (!$result) {
 </head>
 
 <script>
-    preloader(300);
     $(document).ready(() => {
-        createSortingTable('fb_page_acc_table');
+        createSortingTable('shopee_ads_topup_trans_table');
     });
 </script>
 
 <body>
 
-<div class="pre-load-center">
-        <div class="preloader"></div>
-    </div>
+    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-    <div class="page-load-cover">
-        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-            <div class="col-12 col-md-8">
-
+        <div class="col-12 col-md-8">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -54,37 +43,52 @@ if (!$result) {
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Account </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table class="table table-striped" id="fb_page_acc_table">
+            <table class="table table-striped" id="shopee_ads_topup_trans_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Shopee Account</th>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Currency</th>
+                        <th scope="col">Top-up Amount</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col">GST (%)</th>
+                        <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    while ($row = $result->fetch_assoc()) {
-                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
+                    <?php while ($row = $result->fetch_assoc()) {
+                        if (isset($row['orderID'], $row['id']) && !empty($row['orderID'])) {
+                            $q1 = getData('*', "id='" . $row['shopee_acc'] . "'", 'LIMIT 1', SHOPEE_ACC, $finance_connect);
+                            $shopee_acc = $q1->fetch_assoc();
+                            $q2 = getData('unit', "id='" . $row['currency'] . "'", 'LIMIT 1', CUR_UNIT, $connect);
+                            $curr = $q2->fetch_assoc();
+                            $q3 = getData('name', "id='" . $row['pay_meth'] . "'", 'LIMIT 1', FIN_PAY_METH, $finance_connect);
+                            $pay = $q3->fetch_assoc();
                     ?>
-
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
-                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?></td>
-                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?>
-                                </td>
+                                <td scope="row"><?php if (isset($shopee_acc['name'])) echo  $shopee_acc['name'] ?></td>
+                                <td scope="row"><?= $row['orderID'] ?></td>
+                                <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
+                                <td scope="row"><?php if (isset($curr['unit'])) echo $curr['unit'] ?></td>
+                                <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
+                                <td scope="row"><?php if (isset($row['subtotal'])) echo  $row['subtotal'] ?></td>
+                                <td scope="row"><?php if (isset($row['gst'])) echo  $row['gst'] ?></td>
+                                <td scope="row"><?php if (isset($pay['name'])) echo  $pay['name'] ?></td>
+                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -97,13 +101,13 @@ if (!$result) {
                                                 <?php endif; ?>
                                             </li>
                                             <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
+                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                                <?php endif; ?>
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_page_acc_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['shopee_acc'] ?>','<?= $row['orderID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_ads_topup_trans_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -117,8 +121,14 @@ if (!$result) {
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Shopee Account</th>
+                        <th scope="col">Order ID</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Currency</th>
+                        <th scope="col">Top-up Amount</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col">GST (%)</th>
+                        <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -129,8 +139,6 @@ if (!$result) {
     </div>
 
 </body>
-
-
 <script>
     /**
   oufei 20231014
@@ -146,8 +154,7 @@ if (!$result) {
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_page_acc_table');
-    setButtonColor();
+    datatableAlignment('shopee_ads_topup_trans_table');
 </script>
 
 </html>
