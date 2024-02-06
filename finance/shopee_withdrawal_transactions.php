@@ -55,9 +55,13 @@ if ($act == 'D') {
     $_SESSION['delChk'] = 1;
 }
 
+
 if (post('actionBtn')) {
     $action = post('actionBtn');
-
+    switch ($action) {
+        case 'addTransaction':
+        case 'updTransaction':
+            
     $swt_date = postSpaceFilter("swt_date");
     $swt_id = postSpaceFilter("swt_id");
     $swt_amt = postSpaceFilter('swt_amt');
@@ -74,9 +78,10 @@ if (post('actionBtn')) {
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addTransaction':
-        case 'updTransaction':
+    if (isDuplicateRecord("swt_id", $swt_id, $tblName,  $finance_connect, $dataID)) {
+        $swt_id_err = "Duplicate record found for " . $pageTitle . " withdrawal ID.";
+        break;
+    }
 
             if ($_FILES["swt_attach"]["size"] != 0) {
                 // move file
@@ -436,7 +441,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label form_lbl" id="swt_attach_lbl" for="swt_attach">Attachment*</label>
+                            <label class="form-label form_lbl" id="swt_attach_lbl" for="swt_attach">Attachment<span class="requireRed"></span>*</label>
                             <input class="form-control" type="file" name="swt_attach" id="swt_attach"
                                 <?php if ($act == '') echo 'disabled' ?>>
                             

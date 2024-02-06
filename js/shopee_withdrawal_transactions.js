@@ -38,6 +38,10 @@ $("#swt_pic").on("input", function() {
     $(".swt-pic-err").remove();
 });
 
+$("#swt_attach").on("input", function() {
+    $(".swt-attach-err").remove();
+});
+
 
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
@@ -46,7 +50,7 @@ $('.submitBtn').on('click', () => {
     var id_chk = 0;
     var amt_chk = 0;
     var pic_chk = 0;
-    
+    var attach_chk = 0;
 
 
     if (($('#swt_date').val() === '' || $('#swt_date').val() === null || $('#swt_date')
@@ -63,7 +67,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
         id_chk = 0;
         $("#swt_id").after(
-            '<span class="error-message swt-id-err">ID is required!</span>');
+            '<span class="error-message swt-id-err">Withdrawal ID is required!</span>');
     } else {
         $(".swt-id-err").remove();
         id_chk = 1;
@@ -74,7 +78,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
         amt_chk = 0;
         $("#swt_amt").after(
-            '<span class="error-message coh-amt-err">Amount is required!</span>');
+            '<span class="error-message coh-amt-err">Amount(SGD) is required!</span>');
     } else {
         $(".swt-amt-err").remove();
         amt_chk = 1;
@@ -90,8 +94,15 @@ $('.submitBtn').on('click', () => {
         pic_chk = 1;
     }
 
+    
+    if ($('#swt_attach').prop('files').length > 0 || $('#swt_attachmentValue').val() !== '') {
+        attach_chk = 1;
+    } else {
+        attach_chk = 0;
+        $("#swt_attach").after('<span class="error-message swt-attach-err">Attachment is required!</span>');
+    }
 
-    if (date_chk == 1 && id_chk == 1 && amt_chk == 1 && pic_chk == 1)
+    if (date_chk == 1 && id_chk == 1 && amt_chk == 1 && pic_chk == 1 && attach_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
