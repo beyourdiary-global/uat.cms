@@ -241,7 +241,9 @@ function calculateTax() {
 
                 retrieveDBData(paramTaxSetting, '<?= $SITEURL ?>', function (result) {
                     console.log(result);
-                    tax_perc = parseFloat(result[0]['percentage']);
+                    if (!(result[0]['percentage'] == undefined || result[0]['percentage'] == null)) {
+                        tax_perc = parseFloat(result[0]['percentage']);
+                    }
                     GSTInput.val(tax_perc.toFixed(2)); //set  GST to tax percentage from tax settings table based on country
                     handleTaxSettingData(result);
                 });
