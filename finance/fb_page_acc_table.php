@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Facebook Ads Top Up Transaction";
+$pageTitle = "Facebook Page Account";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,8 +10,13 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fb_ads_topup_trans.php';
-$result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
+$redirect_page = $SITEURL . '/finance/fb_page_acc.php';
+$deleteRedirectPage = $SITEURL . '/finance/fb_page_acc_table.php';
+$result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,16 +27,22 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 </head>
 
 <script>
+    preloader(300);
     $(document).ready(() => {
-        createSortingTable('fb_ads_topup_trans_table');
+        createSortingTable('fb_page_acc_table');
     });
 </script>
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -43,46 +54,37 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Account </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table class="table table-striped" id="fb_ads_topup_trans_table">
+            <table class="table table-striped" id="fb_page_acc_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
-                        if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
-                            $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-                            $meta_acc = $metaQuery->fetch_assoc();
-                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $usr = $pic->fetch_assoc();
+                    <?php
+                    while ($row = $result->fetch_assoc()) {
+                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
                     ?>
+
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?php if (isset($meta_acc['accName'])) echo  $meta_acc['accName'] ?></td>
-                                <td scope="row"><?= $row['transactionID'] ?></td>
-                                <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
-                                <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
-                                <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
-                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
+                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?></td>
+                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?>
+                                </td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -95,13 +97,13 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                                 <?php endif; ?>
                                             </li>
                                             <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
+                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
+                                            <?php endif; ?>
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_ads_topup_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_page_acc_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -115,12 +117,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -131,6 +129,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
     </div>
 
 </body>
+
+
 <script>
     /**
   oufei 20231014
@@ -146,7 +146,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_ads_topup_trans_table');
+    datatableAlignment('fb_page_acc_table');
+    setButtonColor();
 </script>
 
 </html>

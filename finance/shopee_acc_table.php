@@ -68,7 +68,7 @@ if (!$result) {
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
@@ -77,7 +77,7 @@ if (!$result) {
                     while ($row = $result->fetch_assoc()) {
                         if (isset($row['name'], $row['id']) && !empty($row['name'])) {
 
-                            $currency = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                            $currency = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
 
                             $row2 = $currency->fetch_assoc();
                             $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
@@ -125,7 +125,7 @@ if (!$result) {
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>

@@ -56,6 +56,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
                             <th scope="col">Withdrawal Amount</th>
@@ -78,6 +79,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
 
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
                                     <td scope="row"><?php if (isset($row['swt_id'])) echo $row['swt_id'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
@@ -119,6 +121,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                 <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
                             <th scope="col">Withdrawal Amount</th>

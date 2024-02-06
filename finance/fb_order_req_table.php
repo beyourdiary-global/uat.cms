@@ -1,7 +1,9 @@
 <?php
 $pageTitle = "Facebook Order Request";
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
+$isFinance = 1;
+
+include_once '../menuHeader.php';
+include_once '../checkCurrentPagePin.php';
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
@@ -9,8 +11,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/fb_order_req.php';
-$result = getData('*', '', '', FB_ORDER_REQ, $connect);
+$redirect_page = $SITEURL . '/finance/fb_order_req.php';
+$result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +42,21 @@ $result = getData('*', '', '', FB_ORDER_REQ, $connect);
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
+                        <?php if ($result) {?>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Request </a>
                             <?php endif; ?>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
+            <?php
+            if (!$result) {
+                echo '<div class="text-center"><h4>No Result!</h4></div>';
+            } else {
+            ?>
 
             <table class="table table-striped" id="fb_order_req_table">
                 <thead>
@@ -90,10 +99,12 @@ $result = getData('*', '', '', FB_ORDER_REQ, $connect);
                         $q5 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
                         $package = $q5->fetch_assoc();
 
-                        $q6 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
+                        //fb page
+                        $q6 = getData('name', "id='" . $row['fb_page'] . "'", '', FB_PAGE_ACC, $finance_connect);
                         $fb_page = $q6->fetch_assoc();
 
-                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', USR_USER, $connect);
+                        //channel
+                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANNEL, $connect);
                         $channel = $q7->fetch_assoc();
 
                         $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
@@ -165,6 +176,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $connect);
                     </tr>
                 </tfoot>
             </table>
+            <?php } ?>
         </div>
 
     </div>

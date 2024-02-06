@@ -111,6 +111,8 @@ define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
 define('PROD_CATEGORY','product_category');
 define('BRD_SERIES','brand_series');
+define('FB_CUST_DEALS', 'customer_facebook_deals_transaction');
+define('URBAN_CUST_REG', 'urbanism_customer_register_info');
 
 //finance
 define('MERCHANT', 'merchant');
@@ -136,8 +138,10 @@ define('AGENT','agent');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
 define('SHOPEE_ACC', 'shopee_account');
+define('SHOPEE_ADS_TOPUP', 'shopee_ads_topup_transaction');
 define('FB_ORDER_REQ', 'facebook_order_request');
-
+define('FB_PAGE_ACC', 'facebook_page_account');
+// define('CHANNEL', 'channel');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

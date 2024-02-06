@@ -22,7 +22,6 @@ $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 
-
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
 
@@ -54,6 +53,10 @@ if (!($dataID) && !($act)) {
 if (post('actionBtn')) {
 
     $action = post('actionBtn');
+   
+    switch ($action) {
+        case 'addData':
+        case 'updData':
 
     $tax_country = postSpaceFilter('tax_country_hidden');
     $name = postSpaceFilter('name');
@@ -62,10 +65,11 @@ if (post('actionBtn')) {
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    switch ($action) {
-        case 'addData':
-        case 'updData':
-            
+    if (isDuplicateRecord("country", $tax_country, $tblName,  $finance_connect, $dataID)) {
+        $country_err = "Duplicate record found for " . $pageTitle . " country.";
+        break;
+    }
+
             if (!$tax_country) {
                 $country_err = "Please specify the country.";
                 break;
@@ -112,7 +116,7 @@ if (post('actionBtn')) {
                 try {
                     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
                     $row = $rst->fetch_assoc();
-
+                    
                     if ($row['country'] != $tax_country) {
                         array_push($oldvalarr, $row['country']);
                         array_push($chgvalarr, $tax_country);
