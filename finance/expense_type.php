@@ -171,7 +171,7 @@ if (post('act') == 'D') {
 
             $dataID = $row['id'];
             //SET the record status to 'D'
-            deleteRecord($tblName, $dataID, $et, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '',$dataID, $et, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -214,89 +214,98 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Expense Type');
-                                                                                                                    ?></p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="CBAFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                    echo displayPageAction($act, 'Expense Type');
+                                                                                                                    ?>
+            </p>
+
+        </div>
+
+        <div id="CBAFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
                         echo displayPageAction($act, 'Expense Type');
                         ?>
-                    </h2>
-                </div>
+                        </h2>
+                    </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="et_name_lbl" for="et_name">Name</label>
-                            <input class="form-control" type="text" name="et_name" id="et_name" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label form_lbl" id="et_name_lbl" for="et_name">Name</label>
+                                <input class="form-control" type="text" name="et_name" id="et_name" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['name']) && !isset($et_name)) {
                                                                                                             echo $row['name'];
                                                                                                         } else if (isset($dataExisted) && isset($row['name']) && isset($et_name)) {
                                                                                                             echo $et_name;
                                                                                                         } else {
                                                                                                             echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($name_err)) { ?>
+                                                                                                        } ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($name_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $name_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="et_code_lbl" for="et_code">Code</label>
-                            <input class="form-control" type="text" name="et_code" id="et_code" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label form_lbl" id="et_code_lbl" for="et_code">Code</label>
+                                <input class="form-control" type="text" name="et_code" id="et_code" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['code']) && !isset($et_code)) {
                                                                                                             echo $row['code'];
                                                                                                         } else if (isset($dataExisted) && isset($row['code']) && isset($et_code)) {
                                                                                                             echo $et_code;
                                                                                                         } else {
                                                                                                             echo '';
-                                                                                                        } ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($code_err)) { ?>
+                                                                                                        } ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($code_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $code_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label class="form-label form_lbl" id="et_remark_lbl" for="et_remark">Remark</label>
-                            <input class="form-control" type="text" name="et_remark" id="et_remark" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="form-label form_lbl" id="et_remark_lbl" for="et_remark">Remark</label>
+                                <input class="form-control" type="text" name="et_remark" id="et_remark" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['remark']) && !isset($et_remark)) {
                                                                                                                 echo $row['remark'];
                                                                                                             } else if (isset($dataExisted) && isset($row['remark']) && isset($et_remark)) {
                                                                                                                 echo $et_remark;
                                                                                                             } else {
                                                                                                                 echo '';
-                                                                                                            } ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                            } ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
 
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
                     switch ($act) {
                         case 'I':
                             echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addExpenseType">Add Expense Type</button>';
@@ -306,9 +315,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <?php
@@ -325,13 +336,16 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-        checkCurrentPage(page, action);
-        
-        <?php include "../js/expense_type.js" ?>
+    checkCurrentPage(page, action);
+    setButtonColor();
+    setAutofocus(action);
+    preloader(300, action);
+
+    <?php include "../js/expense_type.js" ?>
     </script>
 
 </body>

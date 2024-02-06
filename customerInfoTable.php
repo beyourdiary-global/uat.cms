@@ -81,12 +81,12 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['name'] . " " . $row['last_name'] ?></td>
-                                    <td scope="row"><?= $row['email'] ?></td>
+                                    <td scope="row"><?php if (isset($row['name'],$row['last_name'])) echo $row['name'] . " " . $row['last_name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
                                     <?php
                                     $resultPhoneCode = getData('*', 'id="' . $row['phone_country'] . '"', '', 'countries', $connect);
 
@@ -96,9 +96,9 @@ if (!$result) {
                                     }
                                     $rowPhoneCode = $resultPhoneCode->fetch_assoc()
                                     ?>
-                                    <td scope="row"><?= $rowPhoneCode['phonecode'] . $row['phone_number'] ?></td>
-                                    <td scope="row"><?= $row['gender'] ?></td>
-                                    <td scope="row"><?= $row['birthday'] ?></td>
+                                    <td scope="row"><?php if (isset($rowPhoneCode['phonecode'], $row['phone_number'])) echo $rowPhoneCode['phonecode'] . $row['phone_number'] ?></td>
+                                    <td scope="row"><?php if (isset($row['gender'])) echo$row['gender'] ?></td>
+                                    <td scope="row"><?php if (isset($row['birthday'])) echo $row['birthday'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">

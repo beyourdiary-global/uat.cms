@@ -7,13 +7,19 @@ include_once '../checkCurrentPagePin.php';
 
 $tblName = SHOPEE_ACC;
 
-$dataID = input('id');
-$act = input('act');
-$pageAction = getPageAction($act);
+//Current Page Action And Data ID
+$dataID = !empty(input('id')) ? input('id') : post('id');
+$act = !empty(input('act')) ? input('act') : post('act');
+$actionBtnValue = ($act === 'I') ? 'addAccount' : 'updAccount';
 
 $redirect_page = $SITEURL . '/finance/shopee_acc_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
+
+//Check a current page pin is exist or not
+$pageAction = getPageAction($act);
+$pageActionTitle = $pageAction . " " . $pageTitle;
+$pinAccess = checkCurrentPin($connect, $pageTitle);
 
 // to display data to input
 if ($dataID) { //edit/remove/view
@@ -29,6 +35,7 @@ if ($dataID) { //edit/remove/view
         $act = "F";
     }
 }
+
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -36,24 +43,31 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName,'', $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
+
 if (post('actionBtn')) {
     $action = post('actionBtn');
-
-    $sa_name = postSpaceFilter("sa_name");
-    $sa_country = postSpaceFilter("sa_country");
-    $sa_currency = postSpaceFilter("sa_currency");
-
-    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
     switch ($action) {
         case 'addAccount':
         case 'updAccount':
 
+    $sa_name = postSpaceFilter("sa_name");
+    $sa_country = postSpaceFilter("sa_country_hidden");
+    $sa_currency = postSpaceFilter("sa_currency_hidden");
+
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+
+    if (isDuplicateRecord("name", $sa_name, $tblName,  $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+        break;
+    }
             if (!$sa_name) {
                 $name_err = "Please specify the account name.";
-                break;
-            } else if ($sa_name && isDuplicateRecord("accName", $sa_name, $tblName,  $finance_connect, $dataID)) {
-                $name_err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
             } else if (!$sa_country) {
                 $country_err = "Please specify the account country.";
@@ -61,7 +75,7 @@ if (post('actionBtn')) {
             } else if (!$sa_currency) {
                 $currency_err = "Please specify the account currency.";
                 break;
-            } else if ($action == 'addAccount') {
+            } else if ($action == 'addAccount') { 
                 try {
 
                     // check value
@@ -78,13 +92,14 @@ if (post('actionBtn')) {
 
                     if ($sa_currency) {
                         array_push($newvalarr, $sa_currency);
-                        array_push($datafield, 'currency');
+                        array_push($datafield, 'currency_unit');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(accName,country,currency,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(name,country,currency_unit,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
-                    generateDBData(SHOPEE_ACC, $finance_connect);
+                    $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -98,22 +113,22 @@ if (post('actionBtn')) {
 
                     // check value
 
-                    if ($row['accName'] != $sa_name) {
-                        array_push($oldvalarr, $row['accName']);
+                    if ($row['name'] != $sa_name) {
+                        array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $sa_name);
                         array_push($datafield, 'name');
                     }
 
-                    if ($row['country'] != $sa_Country) {
+                    if ($row['country'] != $sa_country) {
                         array_push($oldvalarr, $row['country']);
-                        array_push($chgvalarr, $sa_Country);
+                        array_push($chgvalarr, $sa_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($row['currency'] != $sa_Currency) {
-                        array_push($oldvalarr, $row['currency']);
-                        array_push($chgvalarr, $sa_Currency);
-                        array_push($datafield, 'currency');
+                    if ($row['currency_unit'] != $sa_currency) {
+                        array_push($oldvalarr, $row['currency_unit']);
+                        array_push($chgvalarr, $sa_currency);
+                        array_push($datafield, 'currency_unit');
                     }
 
                     // convert into string
@@ -121,10 +136,11 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET accName = '$sa_name',country = '$sa_Country',currency = '$sa_Currency' update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
+                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name', country = '$sa_country', currency_unit = '$sa_currency', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-                        generateDBData(SHOPEE_ACC, $finance_connect);
+
+                     
                     } else {
                         $act = 'NC';
                     }
@@ -133,6 +149,7 @@ if (post('actionBtn')) {
                     $act = "F";
                 }
             }
+
 
             // audit log
             if (isset($query)) {
@@ -161,36 +178,33 @@ if (post('actionBtn')) {
             }
 
             break;
-
-        case 'back':
-            echo $clearLocalStorage . ' ' . $redirectLink;
-            break;
+            case 'back':
+                if ($action == 'addAccount' || $action == 'updAccount') {
+                    echo $clearLocalStorage . ' ' . $redirectLink;
+                } else {
+                    echo $redirectLink;
+                }
+                break;
     }
 }
 
 
 if (post('act') == 'D') {
-    $id = post('id');
-    if ($id) {
         try {
             // take name
             $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
-            //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $sa_name, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
-            generateDBData(SHOPEE_ACC, $finance_connect);
-            $_SESSION['delChk'] = 1;
+
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
         }
     }
-}
 
 //view
 if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($_SESSION['delChk'] != 1)) {
-    $acc_name = isset($dataExisted) ? $row['accName'] : '';
+    $acc_name = isset($dataExisted) ? $row['name'] : '';
     $_SESSION['viewChk'] = 1;
 
     if (isset($errorExist)) {
@@ -223,20 +237,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-            echo displayPageAction($act, 'Account');
-            ?></p>
-
+<div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="CBAFormContainer" class="container d-flex justify-content-center">
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                echo displayPageAction($act, $pageTitle);
+                 ?>
+            </p>
+
+        </div>
+
+    <div id="SAformContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="CBAForm" method="post" action="" enctype="multipart/form-data">
+            <form id="SAForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                        echo displayPageAction($act, 'Account');
+                        echo displayPageAction($act, $pageTitle);
                         ?>
                     </h2>
                 </div>
@@ -249,10 +269,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="row">
                         <div class="col-md-12">
                         <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php
-                                    if (isset($dataExisted) && isset($row['accName']) && !isset($sa_name)) {
-                                        echo $row['accName'];
-                                        } else if (isset($dataExisted) && isset($row['accName']) && isset($sa_name)) {
+                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
+                                    if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
+                                        echo $row['name'];
+                                        } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {
                                             echo $sa_name;
                                             } else {
                                                 echo '';
@@ -267,30 +287,29 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
                 </div>
 
-                <div class="form-group autocomplete mb-3">
+                <div class="form-group mb-3">
     <div class="row">
-        <div class="col-md-6">
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
             <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
-            <select class="form-select" id="sa_country" name="sa_country" <?php if ($act == '') echo 'disabled' ?>>
-                <option value="0" disabled selected>Country</option>
-                <?php
-                if ($cur_list_result->num_rows >= 1) {
-                    $cur_list_result->data_seek(0);
-                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                        $selected = "";
-                        if (isset($dataExisted, $row['country']) && (!isset($sa_country))) {
-                            $selected = $row['country'] == $row2['id'] ? "selected" : "";
-                        } else if (isset($sa_country)) {
-                            list($sa_country_id, $sa_countryunit) = explode(':', $sa_country);
-                            $selected = $sa_country == $row2['id'] ? "selected" : "";
-                        }
-                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=\"0\">None</option>";
+            <?php
+            unset($echoVal);
+
+            if (isset($row['country']))
+                $echoVal = $row['country'];
+
+            if (isset($echoVal)) {
+                $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
+                if (!$country_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                ?>
-            </select>
+                $country_row = $country_rst->fetch_assoc();
+            }
+            ?>
+
+            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
+
+            <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
 
             <?php if (isset($country_err)) { ?>
                 <div id="err_msg">
@@ -299,28 +318,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
 
-        <div class="col-md-6">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency<span class="requireRed">*</span></label>
-            <select class="form-select" id="sa_currency" name="sa_currency" <?php if ($act == '') echo 'disabled' ?>>
-                <option value="0" disabled selected>Currency</option>
-                <?php
-                if ($cur_list_result->num_rows >= 1) {
-                    $cur_list_result->data_seek(0);
-                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                        $selected = "";
-                        if (isset($dataExisted, $row['currency']) && (!isset($sa_currency))) {
-                            $selected = $row['currency'] == $row2['id'] ? "selected" : "";
-                        } else if (isset($sa_curr)) {
-                            list($sa_currency_id, $sa_currency_unit) = explode(':', $sa_currency);
-                            $selected = $sa_currency == $row2['id'] ? "selected" : "";
-                        }
-                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=\"0\">None</option>";
+        
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency Unit<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['currency_unit']))
+                $echoVal = $row['currency_unit'];
+
+            if (isset($echoVal)) {
+                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                if (!$currency_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                ?>
-            </select>
+                $currency_row = $currency_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
+            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
             <?php if (isset($currency_err)) { ?>
                 <div id="err_msg">
@@ -331,31 +348,40 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 </div>
 
-<div class="form-group mt-5 d-flex justify-content-center">
-    <?php
-    switch ($act) {
-        case 'I':
-            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
-            break;
-        case 'E':
-            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
-            break;
-    }
-    ?>
-    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-</div>
-
+                        
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
+                    switch ($act) {
+                        case 'I':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
+                            break;
+                        case 'E':
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
+                            break;
+                    }
+                    ?>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
             </form>
         </div>
     </div>
-    <?php
-    
+</div>
+
+<?php
+   /*
+        oufei 20231014
+        common.fun.js
+        function(title, subtitle, page name, ajax url path, redirect path, action)
+        to show action dialog after finish certain action (eg. edit)
+    */
     if (isset($_SESSION['tempValConfirmBox'])) {
         unset($_SESSION['tempValConfirmBox']);
         echo $clearLocalStorage;
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
+
     <script>
         <?php include "../js/shopee_acc.js" ?>
 
@@ -364,8 +390,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         var action = "<?php echo isset($act) ? $act : ''; ?>";
 
         checkCurrentPage(page, action);
+        centerAlignment("formContainer");
+        setAutofocus(action);
+        setButtonColor();
+        preloader(300, action);
     </script>
-
 </body>
-
 </html>

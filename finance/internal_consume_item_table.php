@@ -1,40 +1,31 @@
 <?php
-$pageTitle = "Tax Setting";
+$pageTitle = "Internal Consume Item";
+$isFinance = 1;
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-$tblName = TAX_SETT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/tax_setting.php';
-$deleteRedirectPage = $SITEURL . '/tax_setting_table.php';
-
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/internal_consume_item.php';
+$result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('table');
+        createSortingTable('internal_consume_item_table');
     });
 </script>
 
@@ -58,37 +49,50 @@ if (!$result) {
                             <h2><?php echo $pageTitle ?></h2>
                             <div class="mt-auto mb-auto">
                                 <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Item </a>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <table class="table table-striped" id="table">
+                <table class="table table-striped" id="internal_consume_item_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Tax Country</th>
-                            <th scope="col">Tax Name</th>
-                            <th scope="col">Tax Percentage</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Package</th>
+                            <th scope="col">Cost</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        <?php
-                        while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                        <?php while ($row = $result->fetch_assoc()) {
+                            if (isset($row['id']) && !empty($row['id'])) {
+
+                                $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                                $usr = $pic->fetch_assoc();
+
+                                $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $row2 = $brand->fetch_assoc();
+
+                                $package = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                                $row3 = $package->fetch_assoc();
+                        ?>
+
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['country'] ?></td>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?= $row['percentage'] ?></td>
-                                    <td scope="row"><?= $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['date'])) echo  $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['pic'])) echo  $usr['pic'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['brand'])) echo  $row2['brand'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['package'])) echo  $row3['package'] ?></td>
+                                    <td scope="row"><?php if (isset($row['cost'])) echo  $row['cost'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -107,26 +111,25 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
-                        <?php
-                            }
-                        }
-                        ?>
+                        <?php }
+                        } ?>
                     </tbody>
-
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
-                            <th scope="col">Tax Country</th>
-                            <th scope="col">Tax Name</th>
-                            <th scope="col">Tax Percentage</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Package</th>
+                            <th scope="col">Cost</th>
                             <th scope="col">Remark</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
@@ -135,14 +138,18 @@ if (!$result) {
             </div>
         </div>
     </div>
-    
-    <script>
-        //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-        dropdownMenuDispFix();
-        //to resize table with bootstrap 5 classes
-        datatableAlignment('table');
-        setButtonColor();
-    </script>
 </body>
+<script>
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ' '; ?>";
+
+    checkCurrentPage(page, action);
+    /* function(void) : to solve the issue of dropdown menu displaying inside the table when table class include table-responsive */
+    dropdownMenuDispFix();
+    /* function(id): to resize table with bootstrap 5 classes */
+    datatableAlignment('internal_consume_item_table');
+    setButtonColor();
+</script>
 
 </html>

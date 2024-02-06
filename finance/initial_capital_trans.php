@@ -279,7 +279,7 @@ if (post('act') == 'D') {
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName, $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName,'', $row_id, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -322,40 +322,48 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </head>
 
 <body>
-    <div class="d-flex flex-column my-3 ms-3">
-        <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
-                                                                                                                    ?>
-        </p>
-
+    <div class="pre-load-center">
+        <div class="preloader"></div>
     </div>
 
-    <div id="INITCAFormContainer" class="container d-flex justify-content-center">
-        <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="INITCAForm" method="post" action="" enctype="multipart/form-data">
-                <div class="form-group mb-5">
-                    <h2>
-                        <?php
-                        echo displayPageAction($act, 'Transaction');
+    <div class="page-load-cover">
+        <div class="d-flex flex-column my-3 ms-3">
+            <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
+                                                                                                                    echo displayPageAction($act, $pageTitle);
+                                                                                                                    ?>
+            </p>
+
+        </div>
+
+        <div id="INITCAFormContainer" class="container d-flex justify-content-center">
+            <div class="col-6 col-md-6 formWidthAdjust">
+                <form id="INITCAForm" method="post" action="" enctype="multipart/form-data">
+                    <div class="form-group mb-5">
+                        <h2>
+                            <?php
+                        echo displayPageAction($act, $pageTitle);
                         ?>
-                    </h2>
-                </div>
+                        </h2>
+                    </div>
 
-                <div id="err_msg" class="mb-3">
-                    <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
-                </div>
+                    <div id="err_msg" class="mb-3">
+                        <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_trans_id_lbl" for="initca_trans_id">Transaction
-                                ID</label>
-                            <p>
-                                <input class="form-control" type="text" name="initca_trans_id" id="initca_trans_id" disabled value="<?php echo $trans_id ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_date_label" for="initca_date">Date<span class="requireRed">*</span></label>
-                            <input class="form-control" type="date" name="initca_date" id="initca_date" value="<?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="initca_trans_id_lbl"
+                                    for="initca_trans_id">Transaction
+                                    ID</label>
+                                <p>
+                                    <input class="form-control" type="text" name="initca_trans_id" id="initca_trans_id"
+                                        disabled value="<?php echo $trans_id ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="initca_date_label" for="initca_date">Date<span
+                                        class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="initca_date" id="initca_date" value="<?php
                                                                                                                 if (isset($dataExisted) && isset($row['date']) && !isset($initca_date)) {
                                                                                                                     echo $row['date'];
                                                                                                                 } else if (isset($initca_date)) {
@@ -363,25 +371,29 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                                                                                                 } else {
                                                                                                                     echo date('Y-m-d');
                                                                                                                 }
-                                                                                                                ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($date_err)) { ?>
+                                                                                                                ?>"
+                                    placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $date_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
 
+                            </div>
                         </div>
+
                     </div>
 
-                </div>
-
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_currency_lbl" for="initca_currency">Currency<span class="requireRed">*</span></label>
-                            <select class="form-select" id="initca_currency" name="initca_currency" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Currency</option>
-                                <?php
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="initca_currency_lbl"
+                                    for="initca_currency">Currency<span class="requireRed">*</span></label>
+                                <select class="form-select" id="initca_currency" name="initca_currency"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                    <option value="0" disabled selected>Select Currency</option>
+                                    <?php
                                 if ($cur_list_result->num_rows >= 1) {
                                     $cur_list_result->data_seek(0);
                                     while ($row2 = $cur_list_result->fetch_assoc()) {
@@ -398,87 +410,98 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo "<option value=\"0\">None</option>";
                                 }
                                 ?>
-                            </select>
+                                </select>
 
-                            <?php if (isset($curr_err)) { ?>
+                                <?php if (isset($curr_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $curr_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
 
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_amt_lbl" for="initca_amt">Amount<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="initca_amt" id="initca_amt" value="<?php
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="initca_amt_lbl" for="initca_amt">Amount<span
+                                        class="requireRed">*</span></label>
+                                <input class="form-control" type="number" name="initca_amt" id="initca_amt" value="<?php
                                                                                                                 if (isset($dataExisted) && isset($row['amount']) && !isset($initca_amt)) {
                                                                                                                     echo $row['amount'];
                                                                                                                 } else if (isset($initca_amt)) {
                                                                                                                     echo $initca_amt;
                                                                                                                 }
-                                                                                                                ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($amt_err)) { ?>
+                                                                                                                ?>"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($amt_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $amt_err; ?></span>
                                 </div>
-                            <?php } ?>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="initca_desc_lbl" for="initca_desc">Description*</label>
-                    <input class="form-control" type="text" name="initca_desc" id="initca_desc" value="<?php
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="initca_desc_lbl" for="initca_desc">Description*</label>
+                        <input class="form-control" type="text" name="initca_desc" id="initca_desc" value="<?php
                                                                                                         if (isset($dataExisted) && isset($row['description']) && !isset($initca_desc)) {
                                                                                                             echo $row['description'];
                                                                                                         } else if (isset($initca_desc)) {
                                                                                                             echo $initca_desc;
                                                                                                         }
-                                                                                                        ?>" <?php if ($act == '') echo 'disabled' ?>>
-                    <?php if (isset($desc_err)) { ?>
+                                                                                                        ?>"
+                            <?php if ($act == '') echo 'disabled' ?>>
+                        <?php if (isset($desc_err)) { ?>
                         <div id="err_msg">
                             <span class="mt-n1"><?php echo $desc_err; ?></span>
                         </div>
-                    <?php } ?>
-                </div>
+                        <?php } ?>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="initca_remark_lbl" for="initca_remark">Remark</label>
-                    <textarea class="form-control" name="initca_remark" id="initca_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
-                </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label form_lbl" id="initca_remark_lbl" for="initca_remark">Remark</label>
+                        <textarea class="form-control" name="initca_remark" id="initca_remark" rows="3"
+                            <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                    </div>
 
-                <div class="form-group mb-3">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label form_lbl" id="initca_attach_lbl" for="initca_attach">Attachment</label>
-                            <input class="form-control" type="file" name="initca_attach" id="initca_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
-                            <?php if (isset($err2)) { ?>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label form_lbl" id="initca_attach_lbl"
+                                    for="initca_attach">Attachment</label>
+                                <input class="form-control" type="file" name="initca_attach" id="initca_attach" value=""
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($err2)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1"><?php echo $err2; ?></span>
                                 </div>
-                            <?php } ?>
-                            <?php if (isset($row['attachment']) && $row['attachment']) { ?>
+                                <?php } ?>
+                                <?php if (isset($row['attachment']) && $row['attachment']) { ?>
                                 <div id="err_msg">
-                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                    <span
+                                        class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
                                 </div>
-                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
-                            <?php } ?>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="d-flex justify-content-center justify-content-md-end px-4">
-                                <?php
+                                <input type="hidden" name="existing_attachment"
+                                    value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-center justify-content-md-end px-4">
+                                    <?php
                                 $attachmentSrc = '';
                                 if (isset($row['attachment']))
                                     $attachmentSrc = ($row['attachment'] == '' || $row['attachment'] == NULL) ? '' : $img_path . $row['attachment'];
                                 ?>
-                                <img id="initca_attach_preview" name="initca_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="initca_attachmentValue" value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                    <img id="initca_attach_preview" name="initca_attach_preview"
+                                        src="<?php echo $attachmentSrc; ?>" class="img-thumbnail"
+                                        alt="Attachment Preview">
+                                    <input type="hidden" name="initca_attachmentValue"
+                                        value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
+                    <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
+                        <?php
                     switch ($act) {
                         case 'I':
                             echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
@@ -488,9 +511,11 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
-                </div>
-            </form>
+                        <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn"
+                            id="actionBtn" value="back">Back</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <?php
@@ -507,13 +532,18 @@ if (($row_id) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-        <?php include "../js/init_cap_trans.js" ?>
+    <?php include "../js/init_cap_trans.js" ?>
 
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
+    //Initial Page And Action Value
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
+    var page = "<?= $pageTitle ?>";
+    var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-        checkCurrentPage(page, action);
+    checkCurrentPage(page, action);
+    setButtonColor();
+    setAutofocus(action);
+    preloader(300, action);
     </script>
 
 </body>

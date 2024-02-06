@@ -11,7 +11,12 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/shopee_acc.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_acc_table.php';
 $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +27,7 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 </head>
 
 <script>
+    preloader(300);
     $(document).ready(() => {
         createSortingTable('shopee_acc_table');
     });
@@ -29,9 +35,14 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div class="pre-load-center">
+        <div class="preloader"></div>
+    </div>
 
-        <div class="col-12 col-md-8">
+    <div class="page-load-cover">
+        <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+            <div class="col-12 col-md-8">
+
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -54,54 +65,67 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()) {
+                    <?php
+                    while ($row = $result->fetch_assoc()) {
+                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
+
+                            $currency = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+
+                            $row2 = $currency->fetch_assoc();
+                            $country = getData('name', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
+                            $row3 = $country->fetch_assoc();
                     ?>
 
-                        <tr>
-                            <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                            <td scope="row"><?= $row['accName'] ?></td>
-                            <td scope="row"><?= $row['country'] ?></td>
-                            <td scope="row"><?= $row['currency'] ?></td>
-                            <td scope="row">
-                                <div class="dropdown" style="text-align:center">
-                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                        <li>
-                                            <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                            <?php endif; ?>
-                                        </li>
-                                        <li>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
+                                <td scope="row"><?= isset($row3['name']) ? $row3['name'] : '' ?></td>
+                                <td scope="row"><?= isset($row2['unit']) ? $row2['unit'] : '' ?>
+                                </td>
+                                <td scope="row">
+                                    <div class="dropdown" style="text-align:center">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                            <li>
+                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
+                                                <?php endif; ?>
+                                            </li>
+                                            <li>
                                             <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
                                                 <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
                                             <?php endif; ?>
-                                        </li>
-                                        <li>
-                                            <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['accName'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_acc_table.php','D')">Delete</a>
-                                            <?php endif; ?>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                                            </li>
+                                            <li>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_acc_table.php','D')">Delete</a>
+                                                <?php endif; ?>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                    <?php }
+                    } ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
-                        <th scope="col">Currency</th>
+                        <th scope="col">Currency Unit</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
@@ -112,16 +136,24 @@ $result = getData('*', '', '', SHOPEE_ACC, $finance_connect);
 
 </body>
 
-<script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
-    checkCurrentPage(page, action);
-   
+<script>
+    /**
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
     dropdownMenuDispFix();
 
+    /**
+      oufei 20231014
+      common.fun.js
+      function(id)
+      to resize table with bootstrap 5 classes
+    */
     datatableAlignment('shopee_acc_table');
+    setButtonColor();
 </script>
 
 </html>

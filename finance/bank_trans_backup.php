@@ -25,11 +25,13 @@ if (!file_exists($img_path)) {
 $defaultDate = new DateTime();
 // Set the date to the previous month
 $defaultDate->modify('-1 month');
+$defaultYear = $defaultDate->format('Y');
+$defaultMonth = $defaultDate->format('M');
 
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -57,12 +59,14 @@ if (post('actionBtn')) {
     $month = postSpaceFilter('btb_month');
     $btb_month = monthStringToNumber($month);
 
-    
+    $enteredDate = new DateTime($btb_year . '-' . $btb_month);
+    $currentDate = new DateTime();
+
     $btb_attach = null;
     if (isset($_FILES["btb_attach"]) && $_FILES["btb_attach"]["size"] != 0) {
         $btb_attach = $_FILES["btb_attach"]["name"];
-    } elseif (isset($_POST['existing_attachment'])) {
-        $btb_attach = $_POST['existing_attachment'];
+    } elseif (isset($_POST['btb_attachmentValue'])) {
+        $btb_attach = $_POST['btb_attachmentValue'];
     }
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -80,20 +84,20 @@ if (post('actionBtn')) {
                 if (in_array($img_ext_lc, $allowed_ext)) {
                     $highestNumber = 0;
                     $files = glob($img_path . $btb_month . '_' . $btb_year . '_*.' . $img_ext);
-                    
+
                     foreach ($files as $file) {
                         $filename = basename($file);
-                        
+
                         // Adjust the regex to match the new file naming convention
                         if (preg_match('/' . preg_quote($btb_year . '_' . $btb_month, '/') . '_(\d+)\.' . preg_quote($img_ext, '/') . '$/', $filename, $matches)) {
                             $number = (int)$matches[1];
                             $highestNumber = max($highestNumber, $number);
                         }
                     }
-                
+
                     $unique_id = $highestNumber + 1;
                     $new_file_name = $btb_year . '_' . $btb_month . '_' . $unique_id . '.' . $img_ext_lc;
-                
+
                     // Move the uploaded file
                     if (move_uploaded_file($btb_file_tmp_name, $img_path . $new_file_name)) {
                         $btb_attach = $new_file_name; // Update $btb_attach with the new filename
@@ -103,14 +107,23 @@ if (post('actionBtn')) {
                 } else {
                     $err2 = "Only allow PNG, JPG, JPEG, SVG or PDF file";
                 }
-                
             }
 
             if (!$btb_year) {
                 $year_err = "Please specify the year.";
                 break;
+            } else if (!$month) {
+                $attach_err = "Please specify the year.";
+                break;
             } else if (!$btb_attach) {
                 $attach_err = "Please attach the file.";
+                break;
+            } else if ($enteredDate > $currentDate) {
+                $month_err = $year_err = "Entered date must be less than the current date.";
+                break;
+            } else if ($btb_year && $btb_month && isDuplicateRecordWithConditions(['month', 'year'], [$btb_month, $btb_year], $tblName, $finance_connect, $dataID)) {
+                $month_err = "Duplicate record found for " . $pageTitle . " Month.";
+                $year_err = "Duplicate record found for " . $pageTitle . " Year.";
                 break;
             } else if ($action == 'addTransaction') {
                 try {
@@ -140,7 +153,7 @@ if (post('actionBtn')) {
             } else {
                 try {
                     // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
                     $row = $rst->fetch_assoc();
 
                     // check value
@@ -168,10 +181,9 @@ if (post('actionBtn')) {
                     $chgval = implode(",", $chgvalarr);
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                        
+                    if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET year = '$btb_year', month = '$btb_month', attachment ='$btb_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
-
                     } else {
                         $act = 'NC';
                     }
@@ -221,13 +233,13 @@ if (post('act') == 'D') {
     if ($id) {
         try {
             // take name
-            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName , $finance_connect);
+            $rst = getData('*', "id = '$id'", 'LIMIT 1', $tblName, $finance_connect);
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName , $dataID, $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $dataID, $dataID, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -271,7 +283,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <body>
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-                                                                                                                    echo displayPageAction($act, 'Transaction');
+                                                                                                                    echo displayPageAction($act, $pageTitle);
                                                                                                                     ?>
         </p>
 
@@ -283,29 +295,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                        echo displayPageAction($act, 'Transaction');
+                        echo displayPageAction($act, $pageTitle);
                         ?>
                     </h2>
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
 
-                            <label class="form-label form_lbl" id="btb_year_label" for="btb_year">Year<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="btb_year_label" for="btb_year">Year<span class="requireRed">*</span></label>
                             <div class="input-group date">
                                 <input class="form-control" type="text" name="btb_year" id="btb_year" value="<?php
-                                                                                if (isset($dataExisted) && isset($row['year']) && !isset($btb_year)) {
-                                                                                    echo $row['year'];
-                                                                                } else if (isset($btb_year)) {
-                                                                                    echo $btb_year;
-                                                                                } else {
-                                                                                    $defaultYear = $defaultDate->format('Y');
-                                                                                    echo $defaultYear;
-                                                                                }
-                                                                                ?>"
-                                    <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                                if (isset($dataExisted) && isset($row['year']) && !isset($btb_year)) {
+                                                                                                                    echo $row['year'];
+                                                                                                                } else if (isset($btb_year)) {
+                                                                                                                    echo $btb_year;
+                                                                                                                } else {
+                                                                                                                    echo $defaultYear;
+                                                                                                                }
+                                                                                                                ?>" <?php if ($act == '') echo 'disabled' ?>>
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <i class="fa-regular fa-calendar"></i>
@@ -313,29 +322,25 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 </div>
                             </div>
                             <?php if (isset($year_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $year_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $year_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
 
-                            <label class="form-label form_lbl" id="btb_month_label" for="btb_month">Month<span
-                                    class="requireRed">*</span></label>
+                            <label class="form-label form_lbl" id="btb_month_label" for="btb_month">Month<span class="requireRed">*</span></label>
                             <div class="input-group date">
                                 <input class="form-control" type="text" name="btb_month" id="btb_month" value="<?php
-                                                                                                            if (isset($dataExisted) && isset($row['month']) && !isset($btb_month)) {
-                                                                                                                echo monthNumberToString($row['month']);
-                                                                                                            } else if (isset($btb_month)) {
-                                                                                                                echo $btb_month;
-                                                                                                            } else {
-                                                                                                                // Get the default month in the format "m"
-                                                                                                                $defaultMonth = $defaultDate->format('M');
-                                                                                                                echo $defaultMonth;
-                                                                                                            }
-                                                                                                            ?>"
-                                    <?php if ($act == '') echo 'disabled' ?>>
+                                                                                                                if (isset($dataExisted) && isset($row['month']) && !isset($btb_month)) {
+                                                                                                                    echo monthNumberToString($row['month']);
+                                                                                                                } else if (isset($btb_month)) {
+                                                                                                                    echo $btb_month;
+                                                                                                                } else {
+                                                                                                                    echo $defaultMonth;
+                                                                                                                }
+                                                                                                                ?>" <?php if ($act == '') echo 'disabled' ?>>
                                 <div class="input-group-append">
                                     <span class="input-group-text">
                                         <i class="fa-regular fa-calendar"></i>
@@ -343,9 +348,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 </div>
                             </div>
                             <?php if (isset($month_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $month_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $month_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
@@ -353,30 +358,27 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label form_lbl" id="btb_attach_lbl" for="btb_attach">Attachment*</label>
-                            <input class="form-control" type="file" name="btb_attach" id="btb_attach"
-                                <?php if ($act == '') echo 'disabled' ?>>
+                            <input class="form-control" type="file" name="btb_attach" id="btb_attach" <?php if ($act == '') echo 'disabled' ?>>
 
                             <?php if (isset($row['attachment']) && $row['attachment']) { ?>
-                            <div id="err_msg">
-                                <span
-                                    class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
-                            </div>
-                            <input type="hidden" name="existing_attachment"
-                                value="<?php echo htmlspecialchars($row['attachment']); ?>">
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo "Current Attachment: " . htmlspecialchars($row['attachment']); ?></span>
+                                </div>
+                                <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                             <?php } ?>
 
                             <?php if (isset($attach_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $attach_err; ?></span>
-                            </div>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $attach_err; ?></span>
+                                </div>
                             <?php } ?>
 
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-center justify-content-md-end px-4">
                                 <?php
                                 $attachmentSrc = '';
@@ -387,10 +389,14 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     $attachmentSrc = $img_path . $btb_attach;
                                 }
                                 ?>
-                                <img id="btb_attach_preview" name="btb_attach_preview"
-                                    src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
-                                <input type="hidden" name="btb_attachmentValue" id="btb_attachmentValue"
-                                    value="<?php if (isset($row['attachment'])) echo $row['attachment']; ?>">
+                                <img id="btb_attach_preview" name="btb_attach_preview" src="<?php echo $attachmentSrc; ?>" class="img-thumbnail" alt="Attachment Preview">
+                                <input type="hidden" name="btb_attachmentValue" id="btb_attachmentValue" value="<?php if (isset($dataExisted) && isset($row['attachment']) && !isset($btb_attach)) {
+                                                                                                                    echo $row['attachment'];
+                                                                                                                } else if (isset($btb_month)) {
+                                                                                                                    echo $btb_attach;
+                                                                                                                }
+
+                                                                                                                ?>">
                             </div>
                         </div>
                     </div>
@@ -407,8 +413,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             break;
                     }
                     ?>
-                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn"
-                        value="back">Back</button>
+                    <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
         </div>
@@ -427,7 +432,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-    <?php include "../js/bank_trans_backup.js" ?>
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
+
+        checkCurrentPage(page, action);
+        setButtonColor();
+        setAutofocus(action);
+        preloader(300, action);
+
+        <?php include "../js/bank_trans_backup.js" ?>
     </script>
 
 </body>

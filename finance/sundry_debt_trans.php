@@ -220,7 +220,7 @@ if (post('actionBtn')) {
                     if ($sdt_remark)
                     array_push($newvalarr, $sdt_remark);
 
-                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_attach','$sdt_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(transactionID,type,payment_date,debtors,amount,prev_amt,final_amt,description,remark,attachment,create_by,create_date,create_time) VALUES ('$trans_id','$sdt_type','$sdt_date','$sdt_debtors','$sdt_amt','$sdt_prev_amt','$sdt_final_amt','$sdt_desc','$sdt_remark','$sdt_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -407,7 +407,7 @@ if (post('act') == 'D') {
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName, $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '',$dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -452,7 +452,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <body>
     <div class="d-flex flex-column my-3 ms-3">
         <p><a href="<?= $redirect_page ?>"><?=$pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php
-        echo displayPageAction($act, 'Transaction');
+        echo displayPageAction($act, $pageTitle);
         ?></p>
 
     </div>
@@ -463,7 +463,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-5">
                     <h2>
                         <?php
-                            echo displayPageAction($act, 'Transaction');
+                            echo displayPageAction($act, $pageTitle);
                         ?>
                     </h2>
                 </div>
@@ -472,7 +472,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
                         <div class="col-md-4">
                             <label class="form-label form_lbl" id="sdt_trans_id_lbl" for="sdt_trans_id">Transaction
@@ -481,7 +481,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <input class="form-control" type="text" name="sdt_trans_id" id="sdt_trans_id" disabled
                                     value="<?php echo $trans_id ?>">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label form_lbl" id="sdt_type_label" for="sdt_type">Type
                                 <span class="requireRed">*</span></label>
                             <select class="form-select" name="sdt_type" id="sdt_type" required
@@ -512,7 +512,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             </div>
                             <?php } ?>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label form_lbl" id="sdt_date_label" for="sdt_date">Payment Date<span
                                     class="requireRed">*</span></label>
                             <input class="form-control" type="date" name="sdt_date" id="sdt_date" value="<?php 
@@ -536,9 +536,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6 autocomplete">
+                        <div class="col-md-6 mb-3 autocomplete">
                             <label class="form-label form_lbl" id="sdt_debtors_lbl" for="sdt_debtors">Debtors<span
                                     class="requireRed">*</span></label>
                             <?php
@@ -569,10 +569,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6  mb-3">
                             <label class="form-label form_lbl" id="sdt_amt_lbl" for="sdt_amt">Amount<span
                                     class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sdt_amt" id="sdt_amt" value="<?php 
+                            <input class="form-control" type="number" step="0.01" name="sdt_amt" id="sdt_amt" value="<?php 
                                 if (isset($dataExisted) && isset($row['amount']) && !isset($sdt_amt)){
                                     echo $row['amount'];
                                 }else if (isset($sdt_amt)) {
@@ -588,7 +588,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
                         <div id="SDT_CreateMerchant" hidden>
                             <div class="form-group mb-3">
@@ -629,9 +629,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                 </div>
 
-                <div class="form-group mb-3">
+                <div class="form-group">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6  mb-3">
                             <label class="form-label form_lbl" id="sdt_attach_lbl" for="sdt_attach">Attachment</label>
                             <input class="form-control" type="file" name="sdt_attach" id="sdt_attach" value=""
                                 <?php if ($act == '') echo 'disabled' ?>>
@@ -649,7 +649,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 value="<?php echo htmlspecialchars($row['attachment']); ?>">
                             <?php } ?>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-center justify-content-md-end px-4">
                                 <?php
                                 $attachmentSrc = '';
@@ -703,8 +703,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         var action = "<?php echo isset($act) ? $act : ''; ?>";
 
         checkCurrentPage(page, action);
-        centerAlignment("formContainer");
         setButtonColor();
+        setAutofocus(action);
         preloader(300, action);
     </script>
 

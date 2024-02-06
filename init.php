@@ -109,14 +109,17 @@ define('CUS_INFO','customer_info');
 define('TAG','tag');
 define('EMPLEAVE','employee_leave');
 define('L_PENDING','leave_pending');
-define('WITHDRAWAL_TRANSACTIONS','withdrawal_transactions');
+define('PROD_CATEGORY','product_category');
+define('BRD_SERIES','brand_series');
+define('FB_CUST_DEALS', 'customer_facebook_deals_transaction');
+define('URBAN_CUST_REG', 'urbanism_customer_register_info');
 
 //finance
 define('MERCHANT', 'merchant');
 define('CURR_BANK_TRANS', 'asset_current_bank_acc_transaction');
 define('INVTR_TRANS', 'asset_inventories_transaction');
 define('INV_TRANS', 'asset_investment_transaction');
-define('SD_TRANS', 'asset_sundry_debtors_transaction');
+define('SD_TRANS', 'asset_sundry_debtors_transactions');
 define('META_ADS_ACC', 'meta_ads_account');
 define('CAONHD', 'asset_cash_on_hand_transaction');
 define('INITCA_TRANS', 'asset_initial_capital_transaction');
@@ -127,6 +130,18 @@ define('FIN_PAY_METH', 'finance_payment_method');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('MRCHT_COMM', 'merchant_commission');
 define('FIN_PAY_TERMS', 'payment_terms');
+define('SHOPEE_WDL_TRANS','shopee_withdrawal_transactions');
+define('ITL_CSM_ITEM', 'internal_consume_item');
+define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
+define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
+define('AGENT','agent');
+define('TAX_SETT','tax_setting');
+define('DW_TOP_UP_RECORD', 'downline_top_up_record');
+define('SHOPEE_ACC', 'shopee_account');
+define('SHOPEE_ADS_TOPUP', 'shopee_ads_topup_transaction');
+define('FB_ORDER_REQ', 'facebook_order_request');
+define('FB_PAGE_ACC', 'facebook_page_account');
+// define('CHANNEL', 'channel');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

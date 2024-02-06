@@ -395,7 +395,7 @@ if (post('act') == 'D') {
             $trans_id = $row['transactionID'];
 
             //SET the record status to 'D'
-            deleteRecord($tblName, $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, '', $dataID, $trans_id, $finance_connect, $connect, $cdate, $ctime, $pageTitle);
             $_SESSION['delChk'] = 1;
         } catch (Exception $e) {
             echo 'Message: ' . $e->getMessage();
@@ -448,7 +448,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <div class="d-flex flex-column my-3 ms-3">
             <p><a href="<?= $redirect_page ?>"><?= $pageTitle ?></a> <i class="fa-solid fa-chevron-right fa-xs"></i>
                 <?php
-                echo displayPageAction($act, 'Transaction');
+                echo displayPageAction($act, $pageTitle);
                 ?>
             </p>
         </div>
@@ -459,7 +459,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <div class="form-group mb-5">
                         <h2>
                             <?php
-                            echo displayPageAction($act, 'Transaction');
+                            echo displayPageAction($act, $pageTitle);
                             ?>
                         </h2>
                     </div>
@@ -468,15 +468,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_trans_id_lbl" for="cba_trans_id">Transaction
                                     ID</label>
                                 <p>
                                     <input class="form-control" type="text" name="cba_trans_id" id="cba_trans_id" disabled value="<?php echo $trans_id ?>">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_type_label" for="cba_type">Type
                                     <span class="requireRed">*</span></label>
                                 <select class="form-select" name="cba_type" id="cba_type" required <?php if ($act == '') echo 'disabled' ?>>
@@ -506,7 +506,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_date_label" for="cba_date">Date<span class="requireRed">*</span></label>
                                 <input class="form-control" type="date" name="cba_date" id="cba_date" value="<?php
                                                                                                                 if (isset($dataExisted) && isset($row['date']) && !isset($cba_date)) {
@@ -528,9 +528,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_bank_lbl" for="cba_bank">Bank<span class="requireRed">*</span></label>
                                 <select class="form-select" id="cba_bank" name="cba_bank" <?php if ($act == '') echo 'disabled' ?>>
                                     <option value="0" disabled selected>Select Bank</option>
@@ -559,7 +559,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_currency_lbl" for="cba_currency">Currency<span class="requireRed">*</span></label>
                                 <select class="form-select" id="cba_currency" name="cba_currency" <?php if ($act == '') echo 'disabled' ?>>
                                     <option value="0" disabled selected>Select Currency</option>
@@ -589,7 +589,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <?php } ?>
 
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="cba_amt_lbl" for="cba_amt">Amount<span class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="cba_amt" id="cba_amt" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['amount']) && !isset($cba_amt)) {
@@ -612,9 +612,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <textarea class="form-control" name="cba_remark" id="cba_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group ">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label form_lbl" id="cba_attach_lbl" for="cba_attach">Attachment</label>
                                 <input class="form-control" type="file" name="cba_attach" id="cba_attach" value="" <?php if ($act == '') echo 'disabled' ?>>
                                 <?php if (isset($err2)) { ?>
@@ -629,7 +629,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                                 <?php } ?>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <div class="d-flex justify-content-center justify-content-md-end px-4">
                                     <?php
                                     $attachmentSrc = '';
