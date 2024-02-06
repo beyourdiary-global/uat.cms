@@ -44,7 +44,7 @@ if (post('actionBtn')) {
     $dfc_subtotal = postSpaceFilter("dfc_subtotal");
     $dfc_tax = postSpaceFilter("dfc_tax");
     $dfc_total = postSpaceFilter("dfc_total");
-    $dfc_total = postSpaceFilter("dfc_remark");
+    $dfc_remark = postSpaceFilter("dfc_remark");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
