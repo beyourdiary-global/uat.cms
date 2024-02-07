@@ -189,8 +189,9 @@ if (post('act') == 'D') {
             $row = $rst->fetch_assoc();
 
             $dataID = $row['id'];
+
             //SET the record status to 'D'
-            deleteRecord($tblName, '', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+            deleteRecord($tblName, 'id', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
             generateDBData(COURIER, $connect);
             $_SESSION['delChk'] = 1;
             
