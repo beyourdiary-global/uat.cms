@@ -1,5 +1,6 @@
 <?php
 $pageTitle = "Brand Series";
+
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
@@ -43,9 +44,7 @@ if (!$result) {
     </div>
 
     <div class="page-load-cover">
-
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
             <div class="col-12 col-md-8">
 
                 <div class="d-flex flex-column mb-3">
@@ -69,46 +68,27 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (!empty($row['name'])) { ?>
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { 
+                                $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                                $brandRow = $brandResult->fetch_assoc();
+                                ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++ ?></th>
+                                    <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?= $row['name'] ?></td>
-                                   
-                                    <td scope="row">
-                                        <?php
-                                        if (!empty($row['brand'])) {
-
-                                        
-                                            $resultBrand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-
-                                            if (!$resultBrand) {
-                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                            }
-                                            $rowBrand = $resultBrand->fetch_assoc();
-                                            $data_name =isset($rowBrand['name']) ? $rowBrand['name'] : '';
-                                            $data_brand = isset($row['brand']) ? $row['brand'] : '';
-
-
-                                            echo $data_name. ' ' .$data_brand;
-                                        }
-                                        ?>
-                                    </td>
-
-                                    <td scope="row"><?= $row['remark'] ?></td>
-                                    
+                                    <td scope="row"><?php if (isset($brandRow['name'])) echo $brandRow['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -167,6 +147,7 @@ if (!$result) {
         datatableAlignment('table');
         setButtonColor();
     </script>
+
 </body>
 
 </html>
