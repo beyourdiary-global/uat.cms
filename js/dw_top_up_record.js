@@ -2,22 +2,22 @@ $('#dtur_attach').on('change', function() {
     previewImage(this, 'dtur_attach_preview')
 })
 
-document.getElementById("dtur_agent").addEventListener("change", function () {
-    var agentId = document.getElementById("dtur_agent_hidden").value;
-
-    fetch('/finance/agent_table.php?agent_id=' + agentId)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("dtur_brand").value = data.brand;
-        })
-        .catch(error => {
-            console.error('Error fetching brand data:', error);
-        });
-});
-
 //autocomplete
 $(document).ready(function() {
     
+    if (!($("#dtur_brand").attr('disabled'))) {
+        $("#dtur_brand").keyup(function () {
+            var param = {
+                search: $(this).val(),
+                searchType: 'unit', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRAND ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
 
     if (!($("#dtur_agent").attr('disabled'))) { 
         $("#dtur_agent").keyup(function() { 
@@ -77,3 +77,39 @@ $('.submitBtn').on('click', () => {
         return false;
 
 })
+
+function calculateCurr() {
+
+    var paramCurr = {
+        search: $("#dtur_agent_hidden").val(),
+        searchCol: 'id',
+        searchType: '*',
+        dbTable: '<?= AGENT ?>',
+        isFin: 1,
+    };
+
+    retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+        getBrand(result);
+        $("#dtur_brand_hidden").val(result[0]['brand']);
+    });
+
+    function getBrand(result) {
+        if (result && result.length > 0) {
+            curr = result[0]['brand'];
+
+                var paramCurr = {
+                    search: curr,
+                    searchCol: 'id',
+                    searchType: '*',
+                    dbTable: '<?= BRAND ?>',
+                    isFin: 0,
+                };
+
+                retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+                    $("#dtur_brand").val(result[0]['name']);
+                });
+            } else {
+                console.error('Error retrieving agent data');
+            }
+        }
+    }
