@@ -35,7 +35,7 @@ $menuList = array(
         'javascript:void(0)',
         'y',
         'expand' => array(
-            array('Designations', '', $SITEURL . '/designations_table.php', '4'),
+            array('Designations', 'mdi mdi-information-outline', $SITEURL . '/designations_table.php', '4'),
             array('Departments', 'mdi mdi-domain', $SITEURL . '/department_table.php', '5'),
             array('Employee Details', 'mdi mdi-information-outline', $SITEURL . '/employeeDetailsTable.php', '34'),
         ),

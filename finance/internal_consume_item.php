@@ -39,6 +39,12 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+//Delete Data
+if ($act == 'D') {
+    deleteRecord($tblName, '',$dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    $_SESSION['delChk'] = 1;
+}
+
 $pic_list_result = getData('*', '', '', USR_USER, $connect);
 $brand_list_result = getData('*', '', '', BRAND, $connect);
 $package_list_result = getData('*', '', '', PKG, $connect);
@@ -48,7 +54,7 @@ if (post('actionBtn')) {
     $ici_pic = postSpaceFilter("ici_pic_hidden");
     $ici_brand = postSpaceFilter('ici_brand');
     $ici_package = postSpaceFilter('ici_package');
-    $ici_cost = postSpaceFilter('ici_cost');
+    $ici_cost = postSpaceFilter('ici_cost_hidden');
     $ici_remark = postSpaceFilter('ici_remark');
     $action = post('actionBtn');
 
@@ -399,22 +405,40 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span class="requireRed">*</span></label>
-                        <input class="form-control" type="text" name="ici_cost" id="ici_cost" <?php if ($act == '') echo 'disabled' ?>>
-                        <?php if (isset($cost_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1"><?php echo $cost_err; ?></span>
-                            </div>
-                        <?php } ?>
-                    </div>
+                    <div class="row">
+    <div class="col-md-6 mb-3 autocomplete">
+        <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span class="requireRed">*</span></label>
+        <?php
+        unset($echoVal);
 
-                    <div class="form-group mb-3" style="margin-top: 10px;">
-                        <label class="form-label form_lbl" id="ici_remark_lbl" for="ici_remark">Remark</label>
-                        <textarea class="form-control" name="ici_remark" id="ici_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>>
-        <?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?>
-    </textarea>
-                    </div>
+        if (isset($row['cost']))
+            $echoVal = $row['cost'];
+
+        if (isset($echoVal)) {
+            $cost_rst = getData('cost', "id = '$echoVal'", '', PKG, $connect);
+            if (!$cost_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+            }
+            $cost_row = $cost_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="ici_cost" id="ici_cost" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $cost_row['cost'] : '' ?>">
+        <input type="hidden" name="ici_cost_hidden" id="ici_cost_hidden" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>">
+
+        <?php if (isset($cost_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $cost_err; ?></span>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+<div class="form-group mb-3" style="margin-top: 10px;">
+    <label class="form-label form_lbl" id="ici_remark_lbl" for="ici_remark">Remark</label>
+    <textarea class="form-control" name="ici_remark" id="ici_remark" rows="3" <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+</div>
+
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php

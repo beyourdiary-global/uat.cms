@@ -359,7 +359,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 ?>
                                 <input class="form-control" type="text" name="sat_shopee_acc" id="sat_shopee_acc" <?php if ($act == '')
                                     echo 'disabled' ?>
-                                        value="<?php echo !empty($echoVal) ? $shopee_row['accName'] : '' ?>">
+                                        value="<?php echo !empty($echoVal) ? $shopee_row['name'] : '' ?>">
                                 <input type="hidden" name="sat_shopee_acc_hidden" id="sat_shopee_acc_hidden"
                                     value="<?php echo (isset($row['shopee_acc'])) ? $row['shopee_acc'] : ''; ?>">
 

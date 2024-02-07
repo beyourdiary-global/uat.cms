@@ -51,7 +51,7 @@ if (!($dataID) && !($act)) {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName,'', $dataID, $row3['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName,'', $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -61,7 +61,7 @@ if (post('actionBtn')) {
     $action = post('actionBtn');
 
             $dtur_agent = postSpaceFilter("dtur_agent_hidden");
-            $dtur_brand = postSpaceFilter('dtur_brand');
+            $dtur_brand = postSpaceFilter('dtur_brand_hidden');
             $dtur_curr_unit = postSpaceFilter('dtur_currency_unit');
             $dtur_amount = postSpaceFilter('dtur_amount');
 
@@ -371,11 +371,44 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
 
+                        <div class="col-md mb-3 autocomplete">
+                                <label class="form-label form_lbl" id="dtur_brand_lbl" for="dtur_brand">Brand<span
+                                        class="requireRed">*</span></label>
+                                <?php
+                                unset($echoVal);
 
-                        <div class="col-md-6 mb-2">
-    <label class="form-label form_lbl" id="dtur_brand_lbl" for="dtur_brand">Brand<span class="requireRed">*</span></label>
-    <input type="text" class="form-control" id="dtur_brand" name="dtur_brand" readonly>
-</div>
+                                if (isset($row['brand']))
+                                    $echoVal = $row['brand'];
+
+                                if (isset($echoVal)) {
+                                    $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                                    if (!$brand_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $brand_row = $brand_rst->fetch_assoc();
+                                }
+                                ?>
+                                <input class="form-control" type="text" name="dtur_brand" id="dtur_brand" <?php if ($act == '')
+                                    echo 'disabled' ?>
+                                        value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>">
+                                <input type="hidden" name="dtur_brand_hidden" id="dtur_brand_hidden"
+                                    value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+
+
+                                <?php if (isset($brand_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1">
+                                            <?php echo $brand_err; ?>
+                                        </span>
+                                    </div>
+                                <?php } ?>
+
+                            </div>
+
+
+                        </div>
+                    </div>
 
 <div class="form-group mb-3">
     <div class="row">
