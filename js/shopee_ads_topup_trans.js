@@ -158,7 +158,7 @@ $('.submitBtn').on('click', () => {
 
     if (($('#sat_gst').val() == '' || $('#sat_gst').val() == '0' || $('#sat_gst').val() === null || $('#sat_gst')
         .val() === undefined)) {
-            gst_chk = 0;
+        gst_chk = 0;
         $("#sat_gst").after(
             '<span class="error-message sat-gst-err">GST is required!</span>');
     } else {
@@ -192,59 +192,64 @@ function calculateTax() {
     var tax = 0.00;
     var tax_perc = 0.00;
 
-    var paramTaxable = {
+    var paramAcc = {
         search: $("#sat_shopee_acc_hidden").val(),
         searchCol: 'id',
         searchType: '*',
         dbTable: '<?= SHOPEE_ACC ?>',
         isFin: 1,
     };
-
-    retrieveDBData(paramTaxable, '<?= $SITEURL ?>', function (result) {
+    retrieveDBData(paramAcc, '<?= $SITEURL ?>', function (result) {
         getTaxPercentage(result);
         getCurrency(result);
-        $("#sat_curr_hidden").val(result[0]['currency']);
+        $("#sat_curr_hidden").val(result[0]['currency_unit']);
     });
 
     function getCurrency(result) {
         if (result && result.length > 0) {
-            curr = result[0]['currency'];
+            curr = result[0]['currency_unit'];
+            console.log(result[0]);
+            var paramCurr = {
+                search: curr,
+                searchCol: 'id',
+                searchType: '*',
+                dbTable: '<?= CUR_UNIT ?>',
+                isFin: 0,
+            };
 
-                var paramCurr = {
-                    search: curr,
-                    searchCol: 'id',
-                    searchType: '*',
-                    dbTable: '<?= CUR_UNIT ?>',
-                    isFin: 0,
-                };
-
-                retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
-                    $("#sat_curr").val(result[0]['unit']);
-                });
+            retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+                $("#sat_curr").val(result[0]['unit']);
+                console.log('currency successful');
+            });
 
         } else {
             console.error('Error retrieving Courier data');
         }
+        
     }
 
     function getTaxPercentage(result) {
         if (result && result.length > 0) {
             country = result[0]['country'];
 
-                var paramTaxSetting = {
-                    search: country,
-                    searchCol: 'country',
-                    searchType: '*',
-                    dbTable: '<?= TAX_SETT ?>',
-                    isFin: 1,
-                };
+            var paramTaxSetting = {
+                search: country,
+                searchCol: 'country',
+                searchType: '*',
+                dbTable: '<?= TAX_SETT ?>',
+                isFin: 1,
+            };
 
-                retrieveDBData(paramTaxSetting, '<?= $SITEURL ?>', function (result) {
-                    console.log(result);
-                    tax_perc = parseFloat(result[0]['percentage']);
-                    GSTInput.val(tax_perc.toFixed(2)); //set  GST to tax percentage from tax settings table based on country
-                    handleTaxSettingData(result);
-                });
+            retrieveDBData(paramTaxSetting, '<?= $SITEURL ?>', function (result) {
+                console.log(result);
+                if (result && result.length > 0) {
+                    if (result[0]['percentage'] !== undefined ) {
+                        tax_perc = parseFloat(result[0]['percentage']);
+                    }
+                }
+                GSTInput.val(tax_perc.toFixed(2)); //set  GST to tax percentage from tax settings table based on country
+                handleTaxSettingData(result);
+            });
 
         } else {
             console.error('Error retrieving Courier data');

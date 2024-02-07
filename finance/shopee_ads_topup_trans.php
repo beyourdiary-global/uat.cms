@@ -349,7 +349,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     $echoVal = $row['shopee_acc'];
 
                                 if (isset($echoVal)) {
-                                    $shopee_rst = getData('*', "id = '$echoVal'", '', META_ADS_ACC, $finance_connect);
+                                    $shopee_rst = getData('*', "id = '$echoVal'", '', SHOPEE_ACC, $finance_connect);
                                     if (!$shopee_rst) {
                                         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -359,7 +359,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 ?>
                                 <input class="form-control" type="text" name="sat_shopee_acc" id="sat_shopee_acc" <?php if ($act == '')
                                     echo 'disabled' ?>
-                                        value="<?php echo !empty($echoVal) ? $shopee_row['accName'] : '' ?>">
+                                        value="<?php echo !empty($echoVal) ? $shopee_row['name'] : '' ?>">
                                 <input type="hidden" name="sat_shopee_acc_hidden" id="sat_shopee_acc_hidden"
                                     value="<?php echo (isset($row['shopee_acc'])) ? $row['shopee_acc'] : ''; ?>">
 

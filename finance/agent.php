@@ -50,6 +50,26 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+function isDuplicateRecordForNameAndBrand($name, $agt_brand, $tbl, $connect, $primaryKeyValue)
+{
+    $conditions = ['name' => $name, 'brand' => $agt_brand, 'status' => 'A'];
+
+    // Exclude current record if editing
+    if ($primaryKeyValue) {
+        $conditions['id !='] = $primaryKeyValue;
+    }
+
+    $whereClause = implode(' AND ', array_map(
+        fn ($key, $value) => "`$key` = '" . mysqli_real_escape_string($connect, $value) . "'",
+        array_keys($conditions),
+        $conditions
+    ));
+
+    $query = "SELECT COUNT(*) as count FROM `$tbl` WHERE $whereClause";
+    $result = mysqli_query($connect, $query);
+
+    return $result && mysqli_fetch_assoc($result)['count'] > 0;
+}
 
 
 if (post('actionBtn')) {
@@ -75,10 +95,10 @@ if (post('actionBtn')) {
         break;
     }
 
-    if (isDuplicateRecord("name", $name, $tblName,  $finance_connect, $dataID)) {
-        $name_err = "Duplicate record found for " . $pageTitle . " name.";
+    if (isDuplicateRecordForNameAndBrand($name, $agt_brand, $tblName, $finance_connect, $dataID)) {
+        $name_err = "Duplicate record found for the combination of name and brand.";
         break;
-    }
+    }    
              if (!$name) {
                 $name_err = "Please specify the name.";
                 break;
@@ -235,11 +255,7 @@ if (post('actionBtn')) {
 
             break;
             case 'back':
-                if ($action == 'addData' || $action == 'updData') {
-                    echo $clearLocalStorage . ' ' . $redirectLink;
-                } else {
-                    echo $redirectLink;
-                }
+                echo $clearLocalStorage . ' ' . $redirectLink;
                 break;
     }
 }
@@ -454,7 +470,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
                 $country_row = $country_rst->fetch_assoc();
-                echo $country_row['name'];
             }
             ?>
 
@@ -464,7 +479,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
             <?php if (isset($country_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $country_err; ?></span>
+                    <span class="mt-n1"></span>
                 </div>
             <?php } ?>
         </div>
@@ -497,7 +512,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 
     <?php
-   /*
+    /*
         oufei 20231014
         common.fun.js
         function(title, subtitle, page name, ajax url path, redirect path, action)
@@ -509,7 +524,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
-
     <script>
         <?php include "../js/agent.js" ?>
 
