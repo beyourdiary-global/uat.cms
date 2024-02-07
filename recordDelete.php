@@ -7,7 +7,7 @@ function deleteRecord($tbl, $idType, $id, $name, $connect, $audit_connect, $cdat
             $idType = 'id';
         
         $idType = mysqli_real_escape_string($connect, $idType);
-        $query =  "UPDATE $tbl SET status = 'D' WHERE $idType = " . $id;
+        $query =  "UPDATE $tbl SET status = 'D' WHERE $idType = '" . $id . "'";
         mysqli_query($connect, $query);
     } catch (Exception $e) {
         $errorMsg =  $e->getMessage();
