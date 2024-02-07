@@ -30,6 +30,7 @@ if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
 
+
 //Checking The Page ID , Action , Pin Access Exist Or Not
 if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
@@ -75,6 +76,8 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     audit_log($log);
 }
 
+
+
 //Edit And Add Data
 if (post('actionBtn')) {
 
@@ -105,7 +108,32 @@ if (post('actionBtn')) {
             }
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+            $fields = array('PIC', 'date', 'brand', 'currency_unit', 'amount'); // Define fields to check for duplicates
+            $values = array($PIC, $date, $brand, $curr_unit, $amount); // Values of the fields
+            
+            if (empty($curr_unit)) {
+                $curr_err = "Currency unit is required!";
+            }
+            if (empty($amount)) {
+                $amt_err = "Amount is required!";
+            }
 
+            if (!empty($curr_err) || !empty($amt_err)) {
+                echo "<div class='alert alert-danger'>Please fix the following errors:<br>";
+                if (!empty($curr_err)) {
+                    echo "- $curr_err<br>";
+                }
+                if (!empty($amt_err)) {
+                    echo "- $amt_err<br>";
+                }
+                echo "</div>";
+                break; 
+            }
+
+            if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
+                $pic_err = "Duplicate record found for person-in-charge, date, brand, currency unit and amount.";
+                break;}
+            
             if ($action == 'addData') {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
@@ -144,7 +172,7 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $attach);
                         array_push($datafield, 'attachment');
                     }
-                    $query = "INSERT INTO " . $tblName . "(PIC,date,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$PIC','$date','$brand','$curr_unit','$amount','$attach','$dataRemark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(PIC,date,brand,currency_unit,amount,remark,attachment,create_by,create_date,create_time) VALUES ('$PIC','$date','$brand','$curr_unit','$amount','$dataRemark','$attach','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
                 } catch (Exception $e) {
@@ -198,7 +226,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET PIC ='$PIC', date='$date',brand='$brand',currency_unit='$curr_unit',amount='$amount',attachment='$attach',remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET PIC ='$PIC', date='$date',brand='$brand',currency_unit='$curr_unit',amount='$amount',remark ='$dataRemark',attachment='$attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -310,6 +338,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 ?>
                                 <input class="form-control" type="text" required name="pic" id="pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
                                 <input type="hidden" name="pic_hidden" id="pic_hidden" value="<?php echo (isset($row['PIC'])) ? $row['PIC'] : ''; ?>">
+                                <?php if (isset($pic_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $pic_err; ?></span>
+            </div>
+        <?php } ?>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -347,7 +380,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             
                             <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit<span class="requireRed">*</span></label>
-                                <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
+                                <select class="form-select" required id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
                                     <?php
                                     $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);
 
@@ -366,13 +399,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     }
                                     ?>
                                 </select>
+                                
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label class="form-label form_lbl" id="ampunt_lbl" for="amount">Amount<span class="requireRed">*</span></label>
-                                <input class="form-control" type="number" step="any" name="amount" id="amount" value="<?php echo (isset($row['amount']) ? $row['amount'] : '') ?>" <?php if ($act == '') echo 'disabled' ?>>
-                            </div>
+    <label class="form-label form_lbl" id="ampunt_lbl" for="amount">Amount<span class="requireRed">*</span></label>
+    <input class="form-control" type="number" step="any" name="amount" id="amount" value="<?php echo (isset($row['amount']) ? $row['amount'] : '') ?>" <?php if ($act == '') echo 'disabled' ?> required>
+    <?php if (!empty($amt_err)) { ?>
+        <div id="err_msg">
+            <span class="mt-n1"><?php echo $amt_err; ?></span>
+        </div>
+    <?php } ?>
+</div>
+
+                            
                         </div>
+                        
+
                     </div>
 
                     <div class="form-group mb-3">
@@ -391,6 +434,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     </div>
                                     <input type="hidden" name="existing_attachment" value="<?php echo htmlspecialchars($row['attachment']); ?>">
                                 <?php } ?>
+                                
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="d-flex justify-content-center justify-content-md-end px-4">
@@ -416,6 +460,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+
+        
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
@@ -446,6 +492,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
             }
         })
+
+        
     </script>
 
 </body>
