@@ -102,8 +102,9 @@ $result = getData('*', '', '', COURIER, $connect);
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['id'] ?>','<?= $row['name'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/courier_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['id'] ?>','<?= $row['name'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/courier_table.php','D')">Delete</a>
                                                     <?php endif; ?>
+                                                    
                                                 </li>
                                             </ul>
                                         </div>
