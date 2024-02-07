@@ -127,3 +127,38 @@ $('.submitBtn').on('click', () => {
         return false;
 
 })
+
+function calculateCost() {
+
+    var paramCost = {
+        search: $("#cost_hidden").val(),
+        searchCol: 'id',
+        searchType: '*',
+        dbTable: '<?= PKG ?>',
+    };
+
+    retrieveDBData(paramCost, '<?= $SITEURL ?>', function (result) {
+        getCost(result);
+        $("#ici_cost_hidden").val(result[0]['cost']);
+    });
+
+    function getCost(result) {
+        if (result && result.length > 0) {
+            cost = result[0]['cost'];
+
+                var paramCost = {
+                    search: cost,
+                    searchCol: 'id',
+                    searchType: '*',
+                    dbTable: '<?= PKG ?>',
+                };
+
+                retrieveDBData(paramCost, '<?= $SITEURL ?>', function (result) {
+                    $("#ici_cost").val(result[0]['cost']);
+                });
+
+        } else {
+            console.error('Error retrieving Cost data');
+        }
+    }
+}
