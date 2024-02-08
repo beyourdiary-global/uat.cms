@@ -110,9 +110,9 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                                     <?php endif; ?>
                                                 </li>
                                                 <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
+                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_ads_topup_trans_table.php','D')">Delete</a>
+                                                <?php endif; ?>
                                                 </li>
                                             </ul>
                                         </div>
