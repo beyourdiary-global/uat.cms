@@ -32,6 +32,7 @@ $(document).ready(function() {
         });
 
     }
+    $("#dtur_agent").change(calculateBrand); 
 })
 
 //jQuery form validation
