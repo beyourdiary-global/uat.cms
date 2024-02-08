@@ -413,7 +413,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <div class="form-group mb-3">
     <div class="row">
         <div class="col-md-6 mb-2">
-            <label class="form-label form_lbl" id="dtur_currency_unit_lbl" for="currency_unit">Currency Unit<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="dtur_currency_unit_lbl" for="currency_unit">Currency Unit</span></label>
             <select class="form-select"  id="dtur_currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
                 <?php
                 $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);

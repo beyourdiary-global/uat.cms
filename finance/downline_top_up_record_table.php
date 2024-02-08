@@ -87,7 +87,7 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <td scope="row"><?= $num++ ?></td>
-                                    <td scope="row"><?= isset($row3['name']) ? $row3['name'] : '' ?></td>
+                                    <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['name'])) echo  $row['name'] ?></td>
                                     <td scope="row"><?php if (isset($currRow['unit'])) echo  $currRow['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo  $row['amount'] ?></td>
@@ -111,8 +111,8 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                                 </li>
                                                 <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
-                                                    <?php endif; ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/downline_top_up_record_table.php','D')">Delete</a>
+                                                <?php endif; ?>
                                                 </li>
                                             </ul>
                                         </div>
