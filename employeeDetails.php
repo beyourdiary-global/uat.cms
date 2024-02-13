@@ -566,7 +566,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 <span class="input-group-text" style="height: 40px;">+<span id="phoneCodeSpan">00</span></span>
                                             </div>
                                             <div class="col" style=" padding-left: 0;">
-                                                <input type="text" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($row['phone_number'])) echo $row['phone_number'] ?>">
+                                                <input type="number" name="employeePhone" id="employeePhone" class="form-control" style="height: 40px;" required value="<?php if (isset($row['phone_number'])) echo $row['phone_number'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -578,7 +578,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 <span class="input-group-text" style="height: 40px;">+<span id="alternatePhoneCodeSpan">00</span></span>
                                             </div>
                                             <div class="col" style=" padding-left: 0;">
-                                                <input type="text" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
+                                                <input type="number" name="employeeAlternatePhone" id="employeeAlternatePhone" class="form-control" style="height: 40px;" value="<?php if (isset($row['alternate_phone_number'])) echo $row['alternate_phone_number'] ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -684,7 +684,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 <span class="input-group-text" style="height: 40px;">+<span id="emergencyContactNumSpan">00</span></span>
                                             </div>
                                             <div class="col" style=" padding-left: 0;">
-                                                <input type="text" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
+                                                <input type="number" name="emergencyContactNum" id="emergencyContactNum" class="form-control" style="height: 40px;" value="<?php if (isset($row['emergency_contact_phone'])) echo $row['emergency_contact_phone'] ?>" required>
                                             </div>
                                         </div>
                                     </div>
@@ -1023,7 +1023,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </fieldset>
                     </div>
 
-                    <div class="row" style="padding-bottom : 20px;">
+                    <div class="row" style="padding-bottom : 35px;">
                         <div class="col-sm-4 text-start button-bottom">
                             <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
                         </div>
@@ -1069,6 +1069,7 @@ switch ($act) {
     checkCurrentPage(page, action);
     centerAlignment("formContainer");
     setButtonColor();
+    setAutofocus(action);
     preloader(300, action);
 
     if (!action) {
