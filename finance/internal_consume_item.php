@@ -50,13 +50,14 @@ $brand_list_result = getData('*', '', '', BRAND, $connect);
 $package_list_result = getData('*', '', '', PKG, $connect);
 
 if (post('actionBtn')) {
+    $action = post('actionBtn');
+
     $ici_date = postSpaceFilter("ici_date");
     $ici_pic = postSpaceFilter("ici_pic_hidden");
     $ici_brand = postSpaceFilter('ici_brand');
     $ici_package = postSpaceFilter('ici_package');
     $ici_cost = postSpaceFilter('ici_cost_hidden');
     $ici_remark = postSpaceFilter('ici_remark');
-    $action = post('actionBtn');
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -70,15 +71,13 @@ if (post('actionBtn')) {
             } else if (!$ici_pic && $ici_pic < 1) {
                 $pic_err = "Please specify the person-in-charge.";
                 break;
-            } else if (!$ici_brand && $coh_brand < 1) {
+            } else if (!$ici_brand && $ici_brand < 1) {
                 $brand_err = "Please specify the brand.";
                 break;
             } else if (!$ici_package && $ici_package < 1) {
                 $package_err = "Please specify the package.";
                 break;
-            } else if (!$ici_cost) {
-                $cost_err = "Please specify the cost.";
-                break;
+
             } else if ($action == 'addTransaction') {
                 try {
 
@@ -110,11 +109,11 @@ if (post('actionBtn')) {
                     }
 
                     if ($ici_remark) {
-                        array_push($newvalarr, $iciremark);
+                        array_push($newvalarr, $ici_remark);
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(date,pic,date,brand,package,cost,remark,create_by,create_date,create_time) VALUES ('$ici_date','$ici_pic','$ici_brand','$ici_package','$ici_cost','$ici_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(date,pic,brand,package,cost,remark,create_by,create_date,create_time) VALUES ('$ici_date','$ici_pic','$ici_brand','$ici_package','$ici_cost','$ici_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -124,9 +123,9 @@ if (post('actionBtn')) {
                 }
             } else {
                 try {
-                    // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
-                    $row = $rst->fetch_assoc();
+                   // take old value
+                   $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
+                   $row = $rst->fetch_assoc();
 
                     // check value
 
@@ -444,10 +443,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <?php
                         switch ($act) {
                             case 'I':
-                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Item</button>';
                                 break;
                             case 'E':
-                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Item</button>';
                                 break;
                         }
                         ?>
@@ -471,27 +470,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
-
-    <?php
-    /*
-        oufei 20231014
-        common.fun.js
-        function(title, subtitle, page name, ajax url path, redirect path, action)
-        to show action dialog after finish certain action (eg. edit)
-    */
-    if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo $clearLocalStorage;
-        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
-    }
-    ?>
     <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
-
-        checkCurrentPage(page, action);
-
         <?php include "../js/internal_consume_item.js" ?>
     </script>
 
