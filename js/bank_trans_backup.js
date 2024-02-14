@@ -79,3 +79,27 @@ $('.submitBtn').on('click', () => {
         return false;
 
 })
+
+// $(document).ready(function ($) { 
+//     $(document).on("change", ".leaveAssignAll", function (event) {
+//         event.preventDefault();
+
+//         var isChecked = $(this).prop("checked");
+//         $(".leaveAssign").prop("checked", isChecked);
+//         $(".leaveAssignAll").prop("checked", isChecked);
+//     });
+// });
+
+// $(document).ready(function () { //stores checked checkboxes in the browser's cookies
+//     $('button[name="leaveAssignBtn"]').on("click", function () {
+//         var checkboxValues = [];
+
+//         $(".leaveAssign:checked").each(function () {
+//             checkboxValues.push($(this).val());
+//         });
+
+//         setCookie("employeeID", checkboxValues, 1);
+//         sessionStorage.setItem("leaveAssignClick", "true");
+//         location.reload(true);
+//     });
+// })
