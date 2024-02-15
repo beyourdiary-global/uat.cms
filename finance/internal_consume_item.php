@@ -374,7 +374,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3 autocomplete">
                             <label class="form-label form_lbl" id="ici_package_lbl" for="ici_package">Package<span class="requireRed">*</span></label>
                             <select class="form-select" id="ici_package" name="ici_package" <?php if ($act == '') echo 'disabled' ?>>
                                 <option value="0" disabled selected>Select Package</option>
