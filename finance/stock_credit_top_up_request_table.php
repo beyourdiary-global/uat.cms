@@ -87,8 +87,8 @@ if (!$result) {
                             $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                             $brandRow = $brandResult->fetch_assoc();
 
-                            $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
-                            $currRow = $currResult->fetch_assoc();
+                            $curr = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                            $row2 = $curr->fetch_assoc();
                         ?>
                             
 
@@ -97,7 +97,7 @@ if (!$result) {
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row2['name'])) echo $row2['name'] ?></td>
                                     <td scope="row"><?php if (isset($brandRow['name'])) echo $brandRow['name'] ?></td>
-                                    <td scope="row"><?php if (isset($currRow['unit'])) echo $currRow['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
