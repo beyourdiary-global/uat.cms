@@ -146,8 +146,8 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $dtur_remark);
                         array_push($datafield, 'remark');
                     }
-                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,brand,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$dtur_curr','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
-                    var_dump($query);exit;
+                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$dtur_curr','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
+                    
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
                     $_SESSION['tempValConfirmBox'] = true;
@@ -350,7 +350,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                 }
                                 $agent_row = $agent_rst->fetch_assoc();
-                                var_dump($agent_row);
+        
                             }
                             ?>
                             <input class="form-control" type="text" name="dtur_agent" id="dtur_agent" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $agent_row['name'] : ''  ?>">
