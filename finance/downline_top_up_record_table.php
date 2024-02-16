@@ -81,6 +81,9 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                 $agent = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $finance_connect);
                                 $row3 = $agent->fetch_assoc();
 
+                                $brand = getData('name', "id='" . $row['brand'] . "'", 'LIMIT 1', BRAND, $connect);
+                                $row2 = $brand->fetch_assoc();
+
                                 $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
                                 $currRow = $currResult->fetch_assoc();
                         ?>
@@ -88,7 +91,7 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <td scope="row"><?= $num++ ?></td>
                                     <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row['name'])) echo  $row['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['name'])) echo  $row2['name'] ?></td>
                                     <td scope="row"><?php if (isset($currRow['unit'])) echo  $currRow['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo  $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo  $row['attachment'] ?></td>

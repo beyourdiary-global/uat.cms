@@ -29,7 +29,7 @@ if (!file_exists($img_path)) {
 
 // to display data to input
 if ($dataID) { //edit/remove/view
-    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName , $finance_connect);
+    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
@@ -51,14 +51,17 @@ if (!($dataID) && !($act)) {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName,'', $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '',$dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
 //Edit And Add Data
 if (post('actionBtn')) {
-
     $action = post('actionBtn');
+
+    switch ($action) {
+        case 'addData':
+        case 'updData':
 
             $dtur_agent = postSpaceFilter("dtur_agent_hidden");
             $dtur_brand = postSpaceFilter('dtur_brand_hidden');
@@ -66,22 +69,16 @@ if (post('actionBtn')) {
             $dtur_amount = postSpaceFilter('dtur_amount');
 
             $dtur_attach = null;
-            if (isset($_FILES["dtur_attach"]) && isset($_FILES["dtur_attach"]["size"]) && $_FILES["dtur_attach"]["size"] != 0) {
-            $dtur_attach = $_FILES["dtur_attach"]["name"];
-            } elseif (isset($_POST['existing_attachment'])) {
-            $dtur_attach = $_POST['existing_attachment'];
-            }
+    if (isset($_FILES["dtur_attach"]) && $_FILES["dtur_attach"]["size"] != 0) {
+        $dtur_attach = $_FILES["dtur_attach"]["name"];
+    } elseif (isset($_POST['existing_attachment'])) {
+        $dtur_attach = $_POST['existing_attachment'];
+    }
 
             $dtur_remark = postSpaceFilter('dtur_remark');
-
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-            
-    switch ($action) {
-        case 'addData':
-        case 'updData':
-
-            if (isset($_FILES["dtur_attach"]) && $_FILES["dtur_attach"]["size"] != 0) {
+            if ($_FILES["dtur_attach"]["size"] != 0) {
                 // move file
                 $dtur_file_name = $_FILES["dtur_attach"]["name"];
                 $dtur_file_tmp_name = $_FILES["dtur_attach"]["tmp_name"];
@@ -104,7 +101,7 @@ if (post('actionBtn')) {
 
                     // Move the uploaded file
                     if (move_uploaded_file($dtur_file_tmp_name, $img_path . $new_file_name)) {
-                        $dtur_attach = $new_file_name; // Update $dtur_attach with the new filename
+                        $dtur_attach = $new_file_name; 
                     } else {
                         $err2 = "Failed to upload the file.";
                     }
