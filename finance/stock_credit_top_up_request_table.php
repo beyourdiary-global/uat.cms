@@ -82,7 +82,7 @@ if (!$result) {
                            if (isset($row['id']) && !empty($row['id'])) {
 
                             $merchant = getData('name', "id='" . $row['merchant'] . "'", '', MERCHANT, $finance_connect);
-                            $row2 = $merchant->fetch_assoc();
+                            $row3 = $merchant->fetch_assoc();
 
                             $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                             $brandRow = $brandResult->fetch_assoc();
@@ -95,7 +95,7 @@ if (!$result) {
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?php if (isset($row2['name'])) echo $row2['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['name'])) echo $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($brandRow['name'])) echo $brandRow['name'] ?></td>
                                     <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
