@@ -80,7 +80,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                 $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                                 $row2 = $brand->fetch_assoc();
 
-                                $package = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                                $package = getData('*', "id='" . $row['package'] . "'", '', PKG, $connect);
                                 $row3 = $package->fetch_assoc();
                         ?>
 
@@ -111,7 +111,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                                 </li>
                                                 <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_ads_topup_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                                 </li>
                                             </ul>
