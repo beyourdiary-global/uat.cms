@@ -7,7 +7,7 @@ include '../checkCurrentPagePin.php';
 
 $tblname = CRED_NOTES_INV;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
+var_dump($_POST);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
@@ -46,8 +46,8 @@ if (post('pay_status_option')) {
     if ($oldvalarr && $chgvalarr) {
         try {
             $query = "UPDATE " . $tblname . " SET payment_status = '$payment_status' WHERE id = '$inv_id'";
-            mysqli_query($connect, $query);
-            generateDBData($tblname, $connect);
+            mysqli_query($finance_connect, $query);
+            generateDBData($tblname, $finance_connect);
         } catch (Exception $e) {
             $errorMsg = $e->getMessage();
         }
@@ -129,21 +129,26 @@ $(document).ready(() => {
                             <th scope="col">Merchant</th>
                             <th scope="col">Invoice ID</th>
                             <th scope="col">Issued Date</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">Total</th>
                             <th scope="col">Status</th>
                             <th scope="col">Due Date</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()) {  ?>
-                        <?php $leave_status = $row['payment_status']; ?>
+                        <?php while ($row = $result->fetch_assoc()) {  
+                            $mrcht = getData('name', "id='" . $row['bill_nameID'] . "'", '', MERCHANT, $finance_connect);
+                            $row2 = $mrcht->fetch_assoc();
+                        ?>
+                        <?php $payment_status = $row['payment_status']; ?>
                         <tr>
                             <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                             <th scope="row"><?= $num;
                                                 $num++ ?></th>
-                            <td scope="row"><?= $row['name'] ?></td>
-                            <td scope="row"><?= $row['num_of_days'] . ' Days' ?></td>
+                            <td scope="row"><?php if (isset($row2['name'])) echo $row2['name'] ?></td>
+                            <td scope="row"><?= $row['invoice'] ?></td>
+                            <td scope="row"><?= $row['date'] ?></td>
+                            <td scope="row"><?= $row['total'] ?></td>
                             <td scope="row">
                                 <div class="dropdown">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
@@ -151,38 +156,51 @@ $(document).ready(() => {
                                         aria-expanded="false">
                                         <button class="roundedSelectionBtn">
                                             <span class="mdi mdi-record-circle-outline"
-                                                style="<?php echo ($payment_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
+                                                style="<?php 
+                                                if ($payment_status == 'Paid') {
+                                                    echo 'color:#008000;';
+                                                } else if ($payment_status == 'Cancelled') {
+                                                    echo 'color:#ff0000;';
+                                                } else {
+                                                    echo 'color:#F17FB5;';
+                                                } ?>"></span>
                                             <?php
-                                                switch ($leave_status) {
-                                                    case 'Active':
-                                                        echo 'Active';
+                                                switch ($payment_status) {
+                                                    case 'Paid':
+                                                        echo 'Paid';
                                                         break;
-                                                    case 'Inactive':
-                                                        echo 'Inactive';
+                                                    case 'Cancelled':
+                                                        echo 'Cancelled';
                                                         break;
                                                     default:
-                                                        echo 'Error';
+                                                        echo 'Pending';
                                                 }
                                                 ?>
                                         </button>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="leaveStatusMenu">
+                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="payStatusMenu">
                                         <li>
-                                            <a class="dropdown-item" id="activeOption" href=""
-                                                onclick="updateLeaveStatus(<?= $row['id'] ?>,'Active')"><span
-                                                    class="mdi mdi-record-circle-outline" style="color:#008000"></span>
-                                                Active</a>
+                                            <a class="dropdown-item" id="pendingOption" href=""
+                                                onclick="updatepayStatus(<?= $row['id'] ?>,'Pending')"><span
+                                                    class="mdi mdi-record-circle-outline" style="color:#F17FB5"></span>
+                                                Pending</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" id="inactiveOption" href=""
-                                                onclick="updateLeaveStatus(<?= $row['id'] ?>,'Inactive')"><span
+                                            <a class="dropdown-item" id="paidOption" href=""
+                                                onclick="updatepayStatus(<?= $row['id'] ?>,'Paid')"><span
+                                                    class="mdi mdi-record-circle-outline" style="color:#008000"></span>
+                                                Paid</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" id="cancelledOption" href=""
+                                                onclick="updatepayStatus(<?= $row['id'] ?>,'Cancelled')"><span
                                                     class="mdi mdi-record-circle-outline" style="color:#ff0000"></span>
-                                                Inactive</a>
+                                                Cancelled</a>
                                         </li>
                                     </ul>
                                 </div>
                             </td>
-                            <td scope="row" style="text-transform: uppercase;"><?= $row['auto_assign'] ?></td>
+                            <td scope="row"><?= $row['due_date'] ?></td>
                             <td scope="row">
                                 <div class="dropdown" style="text-align:center">
                                     <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
@@ -207,7 +225,7 @@ $(document).ready(() => {
                                         <li>
                                             <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
                                             <a class="dropdown-item"
-                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['invoiceID'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cred_notes_inv_table.php','D')">Delete</a>
+                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['invoice'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cred_notes_inv_table.php','D')">Delete</a>
                                             <?php endif; ?>
                                         </li>
                                     </ul>
@@ -223,7 +241,7 @@ $(document).ready(() => {
                             <th scope="col">Merchant</th>
                             <th scope="col">Invoice ID</th>
                             <th scope="col">Issued Date</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">Total</th>
                             <th scope="col">Status</th>
                             <th scope="col">Due Date</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
@@ -245,23 +263,36 @@ dropdownMenuDispFix();
 setButtonColor();
 datatableAlignment('cred_notes_inv_table');
 
-var activeElem = $('#activeOption');
-var inactiveElem = $('#inactiveOption');
+var pendingElem = $('#pendingOption');
+var paidElem = $('#paidOption');
+var cancelledElem = $('#cancelledOption');
 
-function updateLeaveStatus(id, status) {
+function updatepayStatus(id, status) {
+    // Log data being sent
+    console.log('Data sent:', { inv_id: id, pay_status_option: status });
+    
     $.ajax({
         url: 'cred_notes_inv_table.php',
         type: 'post',
         data: {
-            l_type_id: id,
-            l_status_option: status,
+            inv_id: id,
+            pay_status_option: status,
         },
         success: function(data) {
-            console.log('TEST7');
+            console.log('AJAX Success:', data);
+            // Reload the page after successful update
             window.location.href = 'cred_notes_inv_table.php';
         },
-    })
+        error: function(xhr, status, error) {
+            console.log('AJAX Error:', error);
+            // Handle error gracefully
+            // For example, display an alert message
+            alert('An error occurred while updating payment status. Please try again later.');
+        }
+    });
 }
+
+
 </script>
 
 </html>

@@ -1,12 +1,12 @@
 <?php
 $pageTitle = "Credit Notes (Invoice)";
 $isFinance = 1;
+$redirectToCreateInvoicePage = 0; // Default value
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
 $tblName = CRED_NOTES_INV;
-
 //Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
@@ -14,6 +14,7 @@ $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/finance/cred_notes_inv_table.php';
+$create_page = $SITEURL . '/finance/cred_inv_create.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -38,7 +39,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '', $dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -50,7 +51,7 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['invoice'] . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -68,6 +69,10 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
 }
 
 $logo_path = $SITEURL . '/' . img_server . 'themes/';
+$defaultDate = date('Y-m-d');
+
+//dropdown list for currency
+$pay_list_result = getData('*', '', '', FIN_PAY_METH, $finance_connect);
 $proj_result = getData('*', "id = '1'", '', PROJ, $connect);
 
 if (!$proj_result) {
@@ -76,7 +81,8 @@ if (!$proj_result) {
 }
 
 $proj_row = $proj_result->fetch_assoc();
-
+$inv_num = $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
+$redirectToCreateInvoicePage = postSpaceFilter('createInvoice');
 //Edit And Add Data
 if (post('actionBtn')) {
 
@@ -85,143 +91,229 @@ if (post('actionBtn')) {
     switch ($action) {
         case 'addData':
         case 'updData':
+            $redirectToCreateInvoicePage = postSpaceFilter('createInvoice');
+            $inv_id = postSpaceFilter('invID');
+            $date = postSpaceFilter('cni_date');
+            $due = postSpaceFilter('cni_due');
+            $cni_curr = postSpaceFilter('cni_curr_hidden');
+            $mName = postSpaceFilter('cni_name_hidden');
+            $mEmail = postSpaceFilter('cni_email');
+            $mAdd = postSpaceFilter('cni_address');
+            $mCtc = postSpaceFilter('cni_ctc');
+            $cni_pic = postSpaceFilter('cni_pic_hidden');
+            $cni_remark = postSpaceFilter('cni_remark');
+            $cni_sub = postSpaceFilter('cni_sub');
+            $cni_disc = postSpaceFilter('cni_disc');
+            $cni_tax = postSpaceFilter('cni_tax');
+            $cni_total = postSpaceFilter('cni_total');
+            $cni_notes = postSpaceFilter('internal_notes');
+            $cni_pay = postSpaceFilter('cni_pay');
+            $cni_pay_details = postSpaceFilter('cni_pay_details');
+            $cni_terms = postSpaceFilter('cni_terms');
 
-            $currentDataName = postSpaceFilter('currentDataName');
-            $pkg_price = postSpaceFilter('price');
-            $cur_unit = postSpaceFilter('cur_unit_hidden');
-            $brand = postSpaceFilter('brand_hidden');
-            $cost = postSpaceFilter('package_cost');
-            $cost_curr = postSpaceFilter('cost_curr_hidden');
-
-            // middle
-            $prod_list = post('prod_val');
-            $prod_list = implode(',', array_filter($prod_list));
-
-
-            $barcode_slot_total = postSpaceFilter('barcode_slot_total_hidden');
-            $dataRemark = postSpaceFilter('currentDataRemark');
-
+            $descriptions = $_POST["prod_name"];
+            $prices = $_POST["price"];
+            $quantities = $_POST["quantity"];
+            $amounts = $_POST["amount"];
+            
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
-
-            if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
-                $err = "Duplicate record found for " . $pageTitle . " name.";
-                break;
-            }
 
             if ($action == 'addData') {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
+                    if ($inv_id) {
+                        array_push($newvalarr, $inv_id);
+                        array_push($datafield, 'invoice ID');
+                    }
 
-                    if ($currentDataName) {
-                        array_push($newvalarr, $currentDataName);
+                    if ($date) {
+                        array_push($newvalarr, $date);
+                        array_push($datafield, 'date');
+                    }
+
+                    if ($due) {
+                        array_push($newvalarr, $due);
+                        array_push($datafield, 'due date');
+                    }
+
+                    if ($cni_curr) {
+                        array_push($newvalarr, $cni_curr);
+                        array_push($datafield, 'currency');
+                    }
+
+                    if ($mName) {
+                        array_push($newvalarr, $mName);
                         array_push($datafield, 'name');
                     }
 
-                    if ($pkg_price) {
-                        array_push($newvalarr, $pkg_price);
-                        array_push($datafield, 'price');
+                    if ($mEmail) {
+                        array_push($newvalarr, $mEmail);
+                        array_push($datafield, 'email');
                     }
 
-                    if ($cur_unit) {
-                        array_push($newvalarr, $cur_unit);
-                        array_push($datafield, 'currency_unit');
-                    }
-                    if ($brand) {
-                        array_push($newvalarr, $brand);
-                        array_push($datafield, 'brand');
-                    }
-                    if ($cost) {
-                        array_push($newvalarr, $cost);
-                        array_push($datafield, 'cost');
-                    }
-                    if ($cost_curr) {
-                        array_push($newvalarr, $cost_curr);
-                        array_push($datafield, 'cost_curr');
+                    if ($mAdd) {
+                        array_push($newvalarr, $mAdd);
+                        array_push($datafield, 'address');
                     }
 
-                    if ($prod_list) {
-                        array_push($newvalarr, $prod_list);
-                        array_push($datafield, 'product');
+                    if ($mCtc) {
+                        array_push($newvalarr, $mCtc);
+                        array_push($datafield, 'contact');
                     }
 
-                    if ($barcode_slot_total) {
-                        array_push($newvalarr, $barcode_slot_total);
-                        array_push($datafield, 'barcode_slot_total');
+                    if ($cni_pic) {
+                        array_push($newvalarr, $cni_pic);
+                        array_push($datafield, 'PIC');
                     }
 
-                    if ($dataRemark) {
-                        array_push($newvalarr, $dataRemark);
+                    if ($cni_remark) {
+                        array_push($newvalarr, $cni_remark);
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(name,brand,cost,cost_curr,price,currency_unit,product,barcode_slot_total,remark,create_by,create_date,create_time) VALUES ('$currentDataName','$brand','$cost', '$cost_curr','$pkg_price','$cur_unit','$prod_list','$barcode_slot_total','$dataRemark','" . USER_ID . "',curdate(),curtime())";
-                    $returnData = mysqli_query($connect, $query);
-                    $dataID = $connect->insert_id;
+                    if ($cni_sub) {
+                        array_push($newvalarr, $cni_sub);
+                        array_push($datafield, 'subtotal');
+                    }
+
+                    if ($cni_disc) {
+                        array_push($newvalarr, $cni_disc);
+                        array_push($datafield, 'discount');
+                    }
+
+                    if ($cni_tax) {
+                        array_push($newvalarr, $cni_tax);
+                        array_push($datafield, 'tax');
+                    }
+
+                    if ($cni_total) {
+                        array_push($newvalarr, $cni_total);
+                        array_push($datafield, 'total');
+                    }
+
+                    if ($cni_notes) {
+                        array_push($newvalarr, $cni_notes);
+                        array_push($datafield, 'internal notes');
+                    }
+
+                    if ($cni_pay) {
+                        array_push($newvalarr, $cni_pay);
+                        array_push($datafield, 'pay method');
+                    }
+
+                    if ($cni_pay_details) {
+                        array_push($newvalarr, $cni_pay_details);
+                        array_push($datafield, 'payment details');
+                    }
+                    $query2 = "UPDATE " . PROJ . " SET invoice_next_number_credit = invoice_next_number_credit + 1 WHERE id = 1;";
+                    $update_inv_no = mysqli_query($connect, $query2);
+
+                    $query = "INSERT INTO " . $tblName . "(projectID, invoice, date, due_date, currency, bill_nameID, bill_add, bill_email, bill_contact, pay_method, pay_terms, pay_details, sales_pic, remark, subtotal, discount, tax, total, inv_note, create_by, create_date, create_time) VALUES ('1','$inv_id','$date','$due','$cni_curr','$mName','$mAdd','$mEmail','$mCtc','$cni_pay','$cni_terms','$cni_pay_details','$cni_pic','$cni_remark','$cni_sub','$cni_disc','$cni_tax','$cni_total','$cni_notes','" . USER_ID . "',curdate(),curtime())";
+                    $returnData = mysqli_query($finance_connect, $query);
+                    $dataID = $finance_connect->insert_id;
+
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
                     $act = "F";
                 }
             } else {
                 try {
-                    if ($row['name'] != $currentDataName) {
-                        array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $currentDataName);
-                        array_push($datafield, 'name');
+                    if ($row['invoice'] != $inv_id) {
+                        array_push($oldvalarr, $row['invoice']);
+                        array_push($chgvalarr, $inv_id);
+                        array_push($datafield, 'invoice ID');
                     }
-
-                    if ($row['brand'] != $brand) {
-                        array_push($oldvalarr, $row['brand']);
-                        array_push($chgvalarr, $brand);
-                        array_push($datafield, 'brand');
+                    if ($row['date'] != $date) {
+                        array_push($oldvalarr, $row['date']);
+                        array_push($chgvalarr, $date);
+                        array_push($datafield, 'date');
                     }
-
-                    if ($row['cost'] != $cost) {
-                        array_push($oldvalarr, $row['cost']);
-                        array_push($chgvalarr, $cost);
-                        array_push($datafield, 'cost');
+                    if ($row['due_date'] != $due) {
+                        array_push($oldvalarr, $row['due_date']);
+                        array_push($chgvalarr, $due);
+                        array_push($datafield, 'due date');
                     }
-
-                    if ($row['cost_curr'] != $cost_curr) {
-                        array_push($oldvalarr, $row['cost_curr']);
-                        array_push($chgvalarr, $cost_curr);
-                        array_push($datafield, 'cost_curr');
+                    if ($row['currency'] != $cni_curr) {
+                        array_push($oldvalarr, $row['currency']);
+                        array_push($chgvalarr, $cni_curr);
+                        array_push($datafield, 'currency');
                     }
-
-                    if ($row['price'] != $pkg_price) {
-                        array_push($oldvalarr, $row['price']);
-                        array_push($chgvalarr, $pkg_price);
-                        array_push($datafield, 'price');
+                    if ($row['bill_nameID'] != $mName) {
+                        array_push($oldvalarr, $row['bill_nameID']);
+                        array_push($chgvalarr, $mName);
+                        array_push($datafield, 'billing name');
                     }
-
-                    if ($row['currency_unit'] != $cur_unit) {
-                        array_push($oldvalarr, $row['currency_unit']);
-                        array_push($chgvalarr, $cur_unit);
-                        array_push($datafield, 'currency_unit');
+                    if ($row['bill_add'] != $mAdd) {
+                        array_push($oldvalarr, $row['bill_add']);
+                        array_push($chgvalarr, $mAdd);
+                        array_push($datafield, 'billing add');
                     }
-
-                    if ($row['product'] != $prod_list) {
-                        array_push($oldvalarr, $row['product']);
-                        array_push($chgvalarr, $prod_list);
-                        array_push($datafield, 'product');
+                    if ($row['bill_email'] != $mEmail) {
+                        array_push($oldvalarr, $row['bill_email']);
+                        array_push($chgvalarr, $mEmail);
+                        array_push($datafield, 'billing email');
                     }
-
-                    if ($row['barcode_slot_total'] != $barcode_slot_total) {
-                        array_push($oldvalarr, $row['barcode_slot_total']);
-                        array_push($chgvalarr, $barcode_slot_total);
-                        array_push($datafield, 'barcode_slot_total');
+                    if ($row['bill_contact'] != $mCtc) {
+                        array_push($oldvalarr, $row['bill_contact']);
+                        array_push($chgvalarr, $mCtc);
+                        array_push($datafield, 'billing contact');
                     }
-
-                    if ($row['remark'] != $dataRemark) {
-                        array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
-                        array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
+                    if ($row['pay_method'] != $cni_pay) {
+                        array_push($oldvalarr, $row['pay_method']);
+                        array_push($chgvalarr, $cni_pay);
+                        array_push($datafield, 'pay_method');
+                    }
+                    if ($row['pay_details'] != $cni_pay_details) {
+                        array_push($oldvalarr, $row['pay_details']);
+                        array_push($chgvalarr, $cni_pay_details);
+                        array_push($datafield, 'pay_details');
+                    }
+                    if ($row['pay_terms'] != $cni_terms) {
+                        array_push($oldvalarr, $row['pay_terms']);
+                        array_push($chgvalarr, $cni_terms);
+                        array_push($datafield, 'payment terms');
+                    }
+                    if ($row['sales_pic'] != $cni_pic) {
+                        array_push($oldvalarr, $row['sales_pic']);
+                        array_push($chgvalarr, $cni_pic);
+                        array_push($datafield, 'sales_pic');
+                    }
+                    if ($row['remark'] != $cni_remark) {
+                        array_push($oldvalarr, $row['remark']);
+                        array_push($chgvalarr, $cni_remark);
                         array_push($datafield, 'remark');
+                    }
+                    if ($row['subtotal'] != $cni_sub) {
+                        array_push($oldvalarr, $row['subtotal']);
+                        array_push($chgvalarr, $cni_sub);
+                        array_push($datafield, 'subtotal');
+                    }
+                    if ($row['discount'] != $cni_disc) {
+                        array_push($oldvalarr, $row['discount']);
+                        array_push($chgvalarr, $cni_disc);
+                        array_push($datafield, 'discount');
+                    }
+                    if ($row['tax'] != $cni_tax) {
+                        array_push($oldvalarr, $row['tax']);
+                        array_push($chgvalarr, $cni_tax);
+                        array_push($datafield, 'tax');
+                    }
+                    if ($row['total'] != $cni_total) {
+                        array_push($oldvalarr, $row['total']);
+                        array_push($chgvalarr, $cni_total);
+                        array_push($datafield, 'total');
+                    }
+                    if ($row['inv_note'] != $cni_notes) {
+                        array_push($oldvalarr, $row['inv_note']);
+                        array_push($chgvalarr, $cni_notes);
+                        array_push($datafield, 'notes');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName',brand='$brand',cost='$cost',cost_curr='$cost_curr',price ='$pkg_price', currency_unit ='$cur_unit', product ='$prod_list', barcode_slot_total ='$barcode_slot_total', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
-                        $returnData = mysqli_query($connect, $query);
+                        $query = "UPDATE " . $tblName . " SET invoice = '$inv_id ',date='$date',due_date='$due',currency='$cni_curr',bill_nameID='$mName',bill_add='$mAdd',bill_email='$mEmail',bill_contact='$mCtc',pay_method='$cni_pay',pay_details='$cni_pay_details',pay_terms='',sales_pic='$cni_pic',remark='$cni_remark',subtotal='$cni_sub',discount='$cni_disc',tax='$cni_tax',total='$cni_total',inv_note='$cni_notes', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
                     }
@@ -271,7 +363,17 @@ if (post('actionBtn')) {
 if (isset($_SESSION['tempValConfirmBox'])) {
     unset($_SESSION['tempValConfirmBox']);
     echo $clearLocalStorage;
-    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+    if ($redirectToCreateInvoicePage == 1) {
+        $url = $create_page . "?id=" . $dataID;
+        echo "<script>location.href = '$url';</script>";
+    } else {
+        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+    }
+}
+
+if ($redirectToCreateInvoicePage == 1) {
+    $url = $create_page . "?id=" . $dataID;
+    echo "<script>location.href = '$url';</script>";
 }
 
 ?>
@@ -301,7 +403,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
         <div id="formContainer" class="container-fluid mt-2">
             <div class="col-12 col-md-12 formWidthAdjust">
-                <form id="form" method="post" novalidate>
+                <form id="form" method="post" enctype="multipart/form-data">
                     <div class="form-group mb-5">
                         <h2>
                             <?php echo $pageActionTitle ?>
@@ -332,30 +434,101 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         </div>
                                         <div class="col-md-5">
                                             <dl class="row mb-2">
-                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end ps-0">
+                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="h4 text-capitalize mb-0 text-nowrap">Invoice</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-0 ps-sm-2">
+                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
                                                     <div class="input-group input-group-merge disabled w-px-150">
                                                         <span class="input-group-text">#</span>
-                                                        <input type="text" class="form-control" disabled
-                                                            placeholder="3905" value="3905" id="invoiceId" />
+                                                        <input type="text" class="form-control" value="<?php
+                                                        if (isset($dataExisted) && isset($row['invoice']) && !isset($inv_id)) {
+                                                            echo $row['invoice'];
+                                                        } else if (isset($inv_id)) {
+                                                            echo $inv_id;
+                                                        } else {
+                                                            echo $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
+                                                        } ?>" name="invID" id="invID" />
                                                     </div>
                                                 </dd>
-                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end ps-0">
+                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-0 ps-sm-2">
+                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
-                                                        placeholder="YYYY-MM-DD" />
+                                                        name="cni_date" id="cni_date" placeholder="YYYY-MM-DD" value="<?php
+                                                        if (isset($dataExisted) && isset($row['date']) && !isset($cni_date)) {
+                                                            echo $row['date'];
+                                                        } else if (isset($cni_date)) {
+                                                            echo $cni_date;
+                                                        } else {
+                                                            echo $defaultDate;
+                                                        }
+                                                        ?>" <?php if ($act == '')
+                                                            echo 'disabled' ?>>
+                                                    <?php if (isset($date_err)) { ?>
+                                                        <div id="err_msg">
+                                                            <span class="mt-n1">
+                                                                <?php echo $date_err; ?>
+                                                            </span>
+                                                        </div>
+                                                    <?php } ?>
                                                 </dd>
-                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end ps-0">
+                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Due Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-0 ps-sm-2">
+                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
-                                                        placeholder="YYYY-MM-DD" />
+                                                        name="cni_due" id="cni_due" placeholder="YYYY-MM-DD" value="<?php
+                                                        if (isset($dataExisted) && isset($row['due_date']) && !isset($cni_due)) {
+                                                            echo $row['due_date'];
+                                                        } else if (isset($cni_due)) {
+                                                            echo $cni_due;
+                                                        }
+                                                        ?>" <?php if ($act == '')
+                                                            echo 'disabled' ?>>
+                                                    <?php if (isset($date_err)) { ?>
+                                                        <div id="err_msg">
+                                                            <span class="mt-n1">
+                                                                <?php echo $date_err; ?>
+                                                            </span>
+                                                        </div>
+                                                    <?php } ?>
                                                 </dd>
+                                                <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
+                                                    <span class="fw-normal">Currency:</span>
+                                                </dt>
+                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
+                                                    <div class="col-12 autocomplete">
+                                                        <?php
+                                                        unset($echoVal);
+
+                                                        if (isset($row['currency']))
+                                                            $echoVal = $row['currency'];
+
+                                                        if (isset($echoVal)) {
+                                                            $curr_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                                                            if (!$curr_rst) {
+                                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                            }
+                                                            $curr_row = $curr_rst->fetch_assoc();
+                                                        }
+                                                        ?>
+                                                        <input class="form-control" type="text" name="cni_curr"
+                                                            id="cni_curr" <?php if ($act == '')
+                                                                echo 'disabled' ?>
+                                                                value="<?php echo !empty($echoVal) ? $curr_row['unit'] : '' ?>">
+                                                        <input type="hidden" name="cni_curr_hidden" id="cni_curr_hidden"
+                                                            value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
+
+                                                        <?php if (isset($curr_err)) { ?>
+                                                            <div id="err_msg">
+                                                                <span class="mt-n1">
+                                                                    <?php echo $curr_err; ?>
+                                                                </span>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
                                             </dl>
                                         </div>
                                     </div>
@@ -364,32 +537,45 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         <div class="col-md-6 mb-md-0 mb-2">
 
                                             <div class="row gy-2">
-                                                <div class="col-12">
+                                                <div class="col-12 autocomplete">
+                                                    <?php
+                                                    unset($echoVal);
+
+                                                    if (isset($row['bill_nameID']))
+                                                        $echoVal = $row['bill_nameID'];
+
+                                                    if (isset($echoVal)) {
+                                                        $mrcht_rst = getData('name', "id = '$echoVal'", '', MERCHANT, $finance_connect);
+                                                        if (!$mrcht_rst) {
+                                                            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                            echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                        }
+                                                        $mrcht_row = $mrcht_rst->fetch_assoc();
+                                                    }
+                                                    ?>
                                                     <input class="form-control" type="text" placeholder="Customer Name"
-                                                        name="pmf_name" id="pmf_name" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['name']) && !isset($pmf_name)) {
-                                                                                                            echo $row['name'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['name']) && isset($pmf_name)) {
-                                                                                                            echo $pmf_name;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>"
-                                                        <?php if ($act == '') echo 'disabled' ?>>
+                                                        name="cni_name" id="cni_name" <?php if ($act == '')
+                                                            echo 'disabled' ?>
+                                                            value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : '' ?>">
+                                                    <input type="hidden" name="cni_name_hidden" id="cni_name_hidden"
+                                                        value="<?php echo (isset($echoVal)) ? $echoVal : ''; ?>">
                                                     <?php if (isset($name_err)) { ?>
-                                                    <div id="err_msg">
-                                                        <span class="mt-n1"><?php echo $name_err; ?></span>
-                                                    </div>
+                                                        <div id="err_msg">
+                                                            <span class="mt-n1">
+                                                                <?php echo $name_err; ?>
+                                                            </span>
+                                                        </div>
                                                     <?php } ?>
                                                 </div>
                                                 <div class="col-12">
-                                                    <textarea class="form-control" name="pmf_remark" id="pmf_remark"
-                                                        rows="3" placeholder="Enter Address"
-                                                        <?php if ($act == '') echo 'disabled' ?>><?php
-                                                                if (isset($dataExisted) && isset($row['remark']) && !isset($pmf_remark)) {
-                                                                    echo $row['remark'];
-                                                                } else if (isset($dataExisted) && isset($row['remark']) && isset($pmf_remark)) {
-                                                                    echo $pmf_remark;
-                                                                } ?></textarea>
+                                                    <textarea class="form-control" name="cni_address" id="cni_address"
+                                                        rows="3" placeholder="Enter Address" <?php if ($act == '')
+                                                            echo 'disabled' ?>><?php
+                                                        if (isset($dataExisted) && isset($row['bill_add']) && !isset($cni_address)) {
+                                                            echo $row['bill_add'];
+                                                        } else if (isset($dataExisted) && isset($row['bill_add']) && isset($cni_address)) {
+                                                            echo $cni_address;
+                                                        } ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -397,36 +583,36 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                             <div class="row gy-2">
                                                 <div class="col-12">
                                                     <input class="form-control" type="text" placeholder="Customer Email"
-                                                        name="pmf_name" id="pmf_name" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['name']) && !isset($pmf_name)) {
-                                                                                                            echo $row['name'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['name']) && isset($pmf_name)) {
-                                                                                                            echo $pmf_name;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>"
-                                                        <?php if ($act == '') echo 'disabled' ?>>
-                                                    <?php if (isset($name_err)) { ?>
-                                                    <div id="err_msg">
-                                                        <span class="mt-n1"><?php echo $name_err; ?></span>
-                                                    </div>
+                                                        name="cni_email" id="cni_email" value="<?php
+                                                        if (isset($dataExisted) && isset($row['bill_email']) && !isset($cni_email)) {
+                                                            echo $row['bill_email'];
+                                                        } else if (isset($dataExisted) && isset($row['bill_email']) && isset($cni_email)) {
+                                                            echo $cni_email;
+                                                        } ?>" <?php if ($act == '')
+                                                             echo 'disabled' ?>>
+                                                    <?php if (isset($email_err)) { ?>
+                                                        <div id="err_msg">
+                                                            <span class="mt-n1">
+                                                                <?php echo $email_err; ?>
+                                                            </span>
+                                                        </div>
                                                     <?php } ?>
                                                 </div>
                                                 <div class="col-12">
                                                     <input class="form-control" type="text" placeholder="Phone Number"
-                                                        name="pmf_name" id="pmf_name" value="<?php
-                                                                                                        if (isset($dataExisted) && isset($row['name']) && !isset($pmf_name)) {
-                                                                                                            echo $row['name'];
-                                                                                                        } else if (isset($dataExisted) && isset($row['name']) && isset($pmf_name)) {
-                                                                                                            echo $pmf_name;
-                                                                                                        } else {
-                                                                                                            echo '';
-                                                                                                        } ?>"
-                                                        <?php if ($act == '') echo 'disabled' ?>>
-                                                    <?php if (isset($name_err)) { ?>
-                                                    <div id="err_msg">
-                                                        <span class="mt-n1"><?php echo $name_err; ?></span>
-                                                    </div>
+                                                        name="cni_ctc" id="cni_ctc" value="<?php
+                                                        if (isset($dataExisted) && isset($row['bill_contact']) && !isset($cni_ctc)) {
+                                                            echo $row['bill_contact'];
+                                                        } else if (isset($dataExisted) && isset($row['bill_contact']) && isset($cni_ctc)) {
+                                                            echo $cni_ctc;
+                                                        } ?>" <?php if ($act == '')
+                                                             echo 'disabled' ?>>
+                                                    <?php if (isset($ctc_err)) { ?>
+                                                        <div id="err_msg">
+                                                            <span class="mt-n1">
+                                                                <?php echo $ctc_err; ?>
+                                                            </span>
+                                                        </div>
                                                     <?php } ?>
                                                 </div>
                                             </div>
@@ -452,154 +638,126 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                     <tbody>
 
                                                         <?php
-                                                    // check act
-                                                    if ($act != '')
-                                                        $readonly = '';
-                                                    else
-                                                        $readonly = ' readonly';
+                                                        // check act
+                                                        if ($act != '')
+                                                            $readonly = '';
+                                                        else
+                                                            $readonly = ' readonly';
 
-                                                    // get value
-                                                    unset($echoVal);
+                                                        // get value
+                                                        unset($echoVal);
 
-                                                    if (isset($row['product']))
-                                                        $echoVal = $row['product'];
+                                                        if (isset($row['product']))
+                                                            $echoVal = $row['product'];
 
-                                                    // echo
-                                                    if (isset($echoVal)) {
-                                                        $num = 1; // numbering
-                                                        $echoVal = explode(',', $echoVal);
-                                                        foreach ($echoVal as $prod_id) {
-                                                            // product info
-                                                            $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
-                                                            $product_info_row = $product_info_result->fetch_assoc();
+                                                        // echo
+                                                        if (isset($echoVal)) {
+                                                            $num = 1; // numbering
+                                                            $echoVal = explode(',', $echoVal);
+                                                            foreach ($echoVal as $prod_id) {
+                                                                // product info
+                                                                $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
+                                                                $product_info_row = $product_info_result->fetch_assoc();
 
-                                                            $pid = $product_info_row['id'];
-                                                            $pn = $product_info_row['name'];
-                                                            $pw = $product_info_row['weight'];
-                                                            $pwu = $product_info_row['weight_unit'];
-                                                            $ps = $product_info_row['barcode_status'];
-                                                            $pslot = $product_info_row['barcode_slot'];
+                                                                $pid = $product_info_row['id'];
+                                                                $pn = $product_info_row['name'];
+                                                                $pw = $product_info_row['weight'];
+                                                                $pwu = $product_info_row['weight_unit'];
+                                                                $ps = $product_info_row['barcode_status'];
+                                                                $pslot = $product_info_row['barcode_slot'];
 
-                                                            // weight unit info
-                                                            $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
-                                                            $product_info_row = $product_info_result->fetch_assoc();
+                                                                // weight unit info
+                                                                $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
+                                                                $product_info_row = $product_info_result->fetch_assoc();
 
-                                                            $pwun = $product_info_row['unit'];
-                                                            ?>
-                                                        <tr>
-                                                            <td>
-                                                                <?= $num ?>
-                                                            </td>
-                                                            <td class="autocomplete"><input type="text"
-                                                                    name="prod_name[]" id="prod_name_<?= $num ?>"
-                                                                    value="<?= $pn ?>" onkeyup="prodInfo(this)"
-                                                                    <?= $readonly ?>><input type="hidden"
-                                                                    name="prod_val[]" id="prod_val_<?= $num ?>"
-                                                                    value="<?= $pid ?>"
-                                                                    oninput="prodInfoAutoFill(this)">
-                                                                <div id="err_msg">
-                                                                    <span class="mt-n1">
-                                                                        <?php if (isset($err4))
-                                                                                echo $err4; ?>
-                                                                    </span>
-                                                                </div>
-                                                            </td>
-                                                            <td><input class="readonlyInput" type="text" name="wgt[]"
-                                                                    id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly>
-                                                            </td>
-                                                            <td><input class="readonlyInput" type="text"
-                                                                    name="wgt_unit[]" id="wgt_unit_<?= $num ?>"
-                                                                    value="<?= $pwun ?>" readonly><input type="hidden"
-                                                                    name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>"
-                                                                    value="<?= $pwu ?>" readonly>
-                                                            </td>
-                                                            <td><input class="readonlyInput" type="text"
-                                                                    name="barcode_status[]"
-                                                                    id="barcode_status_<?= $num ?>" value="<?= $ps ?>"
-                                                                    readonly>
-                                                            </td>
-                                                            <?php
-                                                                if ($act != '') {
-                                                                    if ($num == 1) {
-                                                                        ?>
-                                                            <td><button class="mt-1" id="action_menu_btn" type="button"
-                                                                    onclick="Add()"><i
-                                                                        class="fa-regular fa-square-plus fa-xl"
-                                                                        style="color:#37c22e"></i></button></td>
-                                                            <?php
-                                                                    } else {
-                                                                        ?>
-                                                            <td><button class="mt-1" id="action_menu_btn" type="button"
-                                                                    onclick="Remove(this)"><i
-                                                                        class="fa-regular fa-trash-can fa-xl"
-                                                                        style="color:#ff0000"
-                                                                        value="Remove"></i></button>
-                                                            </td>
-                                                            <?php
-                                                                    }
-                                                                }
+                                                                $pwun = $product_info_row['unit'];
                                                                 ?>
-                                                        </tr>
-                                                        <?php
-                                                            $num++;
-                                                        }
-                                                    } else {
-                                                        ?>
-                                                        <tr>
-                                                            <td>1</td>
-                                                            <td class="autocomplete"><input type="text"
-                                                                    name="prod_name[]" id="prod_name_1" value=""
-                                                                    onkeyup="prodInfo(this)"><input type="hidden"
-                                                                    name="prod_val[]" id="prod_val_1" value=""
-                                                                    oninput="prodInfoAutoFill(this)">
-                                                                <div id="err_msg">
-                                                                    <span class="mt-n1">
-                                                                        <?php if (isset($err4))
-                                                                            echo $err4; ?>
-                                                                    </span>
-                                                                </div>
-                                                            </td>
-                                                            <td><input class="readonlyInput" type="text" name="wgt[]"
-                                                                    id="wgt_1" value="" readonly></td>
-                                                            <td><input class="readonlyInput" type="text"
-                                                                    name="wgt_unit[]" id="wgt_unit_1" value=""
-                                                                    readonly><input type="hidden" name="wgt_unit_val[]"
-                                                                    id="wgt_unit_val_1" value="" readonly>
-                                                            </td>
-                                                            <td><input class="readonlyInput" type="text"
-                                                                    name="barcode_status[]" id="barcode_status_1"
-                                                                    value="" readonly></td>
+                                                                <tr>
+                                                                    <td>
+                                                                        <?= $num ?>
+                                                                    </td>
+                                                                    <td class="autocomplete"><input type="text"
+                                                                            name="prod_name[]" id="prod_name_<?= $num ?>"
+                                                                            value="<?= $pn ?>" onkeyup="prodInfo(this)"
+                                                                            <?= $readonly ?>><input type="hidden"
+                                                                            name="prod_val[]" id="prod_val_<?= $num ?>"
+                                                                            value="<?= $pid ?>"
+                                                                            oninput="prodInfoAutoFill(this)">
+                                                                        <div id="err_msg">
+                                                                            <span class="mt-n1">
+                                                                                <?php if (isset($err4))
+                                                                                    echo $err4; ?>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td><input class="readonlyInput" type="text" name="wgt[]"
+                                                                            id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly>
+                                                                    </td>
+                                                                    <td><input class="readonlyInput" type="text"
+                                                                            name="wgt_unit[]" id="wgt_unit_<?= $num ?>"
+                                                                            value="<?= $pwun ?>" readonly><input type="hidden"
+                                                                            name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>"
+                                                                            value="<?= $pwu ?>" readonly>
+                                                                    </td>
+                                                                    <?php
+                                                                    if ($act != '') {
+                                                                        if ($num == 1) {
+                                                                            ?>
+                                                                            <td><button class="mt-1" id="action_menu_btn" type="button"
+                                                                                    onclick="Add()"><i
+                                                                                        class="fa-regular fa-square-plus fa-xl"
+                                                                                        style="color:#37c22e"></i></button></td>
+                                                                            <?php
+                                                                        } else {
+                                                                            ?>
+                                                                            <td><button class="mt-1" id="action_menu_btn" type="button"
+                                                                                    onclick="Remove(this)"><i
+                                                                                        class="fa-regular fa-trash-can fa-xl"
+                                                                                        style="color:#ff0000"
+                                                                                        value="Remove"></i></button>
+                                                                            </td>
+                                                                            <?php
+                                                                        }
+                                                                    }
+                                                                    ?>
+                                                                </tr>
+                                                                <?php
+                                                                $num++;
+                                                            }
+                                                        } else {
+                                                            ?>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td class="autocomplete"><input type="text"
+                                                                        name="prod_name[]" id="prod_name_1" value=""
+                                                                        onkeyup="prodInfo(this)"><input type="hidden"
+                                                                        name="prod_val[]" id="prod_val_1" value=""
+                                                                        oninput="prodInfoAutoFill(this)">
+                                                                    <div id="err_msg">
+                                                                        <span class="mt-n1">
+                                                                            <?php if (isset($err4))
+                                                                                echo $err4; ?>
+                                                                        </span>
+                                                                    </div>
+                                                                </td>
+                                                                <td><input class="readonlyInput" type="text" name="wgt[]"
+                                                                        id="wgt_1" value="" readonly></td>
+                                                                <td><input class="readonlyInput" type="text"
+                                                                        name="wgt_unit[]" id="wgt_unit_1" value=""
+                                                                        readonly><input type="hidden" name="wgt_unit_val[]"
+                                                                        id="wgt_unit_val_1" value="" readonly>
+                                                                </td>
+                                                                <td><input class="readonlyInput" type="text"
+                                                                        name="barcode_status[]" id="barcode_status_1"
+                                                                        value="" readonly></td>
 
-                                                            <td><button class="mt-1" id="action_menu_btn" type="button"
-                                                                    onclick="Add()"><i
-                                                                        class="fa-regular fa-square-plus fa-xl"
-                                                                        style="color:#37c22e"></i></button></td>
-                                                        </tr>
+                                                                <td><button class="mt-1" id="action_menu_btn" type="button"
+                                                                        onclick="Add()"><i
+                                                                            class="fa-regular fa-square-plus fa-xl"
+                                                                            style="color:#37c22e"></i></button></td>
+                                                            </tr>
                                                         <?php } ?>
                                                     </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <td scope="col" colspan="5" style="text-align:right">Total
-                                                                Barcode
-                                                            </td>
-                                                            <td scope="col" id="barcode_slot_total"
-                                                                style="text-align:center">
-                                                                <?php
-                                                            if (isset($barcode_slot_total) && $barcode_slot_total != '')
-                                                                echo $barcode_slot_total;
-                                                            else {
-                                                                if (isset($dataExisted) && isset($row['barcode_slot_total']))
-                                                                    echo $row['barcode_slot_total'];
-                                                                else
-                                                                    echo '0';
-                                                            }
-                                                            ?><input name="barcode_slot_total_hidden"
-                                                                    id="barcode_slot_total_hidden" type="hidden"
-                                                                    value="<?php echo (isset($row['barcode_slot_total'])) ? $row['barcode_slot_total'] : ''; ?>">
-                                                            </td>
-                                                            <td scope="col"></td>
-                                                        </tr>
-                                                    </tfoot>
                                                 </table>
                                             </div>
                                         </div>
@@ -615,28 +773,28 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                             </dt>
                                                             <dd class="col-sm-8 d-flex ps-sm-2 ">
                                                                 <?php
-                                                            unset($echoVal);
+                                                                unset($echoVal);
 
-                                                            if (isset($row['cost_curr']))
-                                                                $echoVal = $row['cost_curr'];
+                                                                if (isset($row['sales_pic']))
+                                                                    $echoVal = $row['sales_pic'];
 
-                                                            if (isset($echoVal)) {
-                                                                $cost_curr_result = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                                                                if (isset($echoVal)) {
+                                                                    $pic_result = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
 
-                                                                $cost_curr_row = $cost_curr_result->fetch_assoc();
-                                                            }
-                                                            ?>
-                                                                <input class="form-control" type="text" name="cost_curr"
-                                                                    id="cost_curr"
-                                                                    value="<?php echo !empty($echoVal) ? $cost_curr_row['unit'] : '' ?>" <?php if ($act == '')
-                                                                           echo 'readonly' ?> required>
-                                                                <input type="hidden" name="cost_curr_hidden"
-                                                                    id="cost_curr_hidden"
-                                                                    value="<?php echo (isset($row['cost_curr'])) ? $row['cost_curr'] : ''; ?>">
+                                                                    $pic_row = $pic_result->fetch_assoc();
+                                                                }
+                                                                ?>
+                                                                <input class="form-control" type="text" name="cni_pic"
+                                                                    id="cni_pic"
+                                                                    value="<?php echo !empty($echoVal) ? $pic_row['name'] : '' ?>" <?php if ($act == '')
+                                                                               echo 'readonly' ?>>
+                                                                    <input type="hidden" name="cni_pic_hidden"
+                                                                        id="cni_pic_hidden"
+                                                                        value="<?php echo (isset($echoVal)) ? $echoVal : ''; ?>">
                                                                 <div id="err_msg">
                                                                     <span class="mt-n1">
-                                                                        <?php if (isset($cost_curr_err))
-                                                                        echo $cost_curr_err; ?>
+                                                                        <?php if (isset($pic_err))
+                                                                            echo $pic_err; ?>
                                                                     </span>
                                                                 </div>
                                                             </dd>
@@ -644,110 +802,121 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                         </dl>
                                                         <div class="form-group mb-3">
                                                             <label class="form-label form_lbl"
-                                                                for="salesperson_remark">Remark:</label>
-                                                            <textarea class="form-control" name="salesperson_remark"
-                                                                id="salesperson_remark" rows="3" <?php if ($act == '')
-                                                                echo 'readonly' ?>><?php if (isset($row['remark']))
-                                                                echo $row['remark'] ?></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-auto mb-auto col-12 col-md-4 justify-content-end">
-                                                        <div class="invoice-calculations">
-                                                            <div class="d-flex justify-content-between mb-2">
-                                                                <span class="w-px-100">Subtotal:</span>
-                                                                <span class="fw-medium">$00.00</span>
-                                                            </div>
-                                                            <div class="d-flex justify-content-between mb-2">
-                                                                <span class="w-px-100">Discount:</span>
-                                                                <span class="fw-medium">$00.00</span>
-                                                            </div>
-                                                            <div class="d-flex justify-content-between mb-2">
-                                                                <span class="w-px-100">Tax:</span>
-                                                                <span class="fw-medium">$00.00</span>
-                                                            </div>
-                                                            <hr />
-                                                            <div class="d-flex justify-content-between">
-                                                                <span class="w-px-100">Total:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                for="cni_remark">Remark:</label>
+                                                            <textarea class="form-control" name="cni_remark"
+                                                                id="cni_remark" rows="3" <?php if ($act == '')
+                                                                    echo 'disabled' ?>><?php if (isset($row['remark']))
+                                                                    echo $row['remark'] ?></textarea>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        <div class="mt-auto mb-auto col-12 col-md-4 justify-content-end">
+                                                            <div class="invoice-calculations">
+                                                                <div class="d-flex justify-content-between mb-2">
+                                                                    <span class="w-px-100">Subtotal:</span>
+                                                                    <span class="fw-medium">$00.00</span>
+                                                                </div>
+                                                                <div class="d-flex justify-content-between mb-2">
+                                                                    <span class="w-px-100">Discount:</span>
+                                                                    <span class="fw-medium">$00.00</span>
+                                                                </div>
+                                                                <div class="d-flex justify-content-between mb-2">
+                                                                    <span class="w-px-100">Tax:</span>
+                                                                    <span class="fw-medium">$00.00</span>
+                                                                </div>
+                                                                <hr />
+                                                                <div class="d-flex justify-content-between">
+                                                                    <span class="w-px-100">Total:</span>
+                                                                    <span class="fw-medium">$00.00</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            <hr class="my-3">
+                                                <hr class="my-3">
 
-                                            <div class="form-group mb-3">
-                                                <label class="form-label form_lbl" for="currentDataRemark">Note:</label>
-                                                <textarea class="form-control" name="currentDataRemark"
-                                                    id="currentDataRemark" rows="3" <?php if ($act == '')
-                                                                echo 'readonly' ?>><?php if (isset($row['remark']))
-                                                                echo $row['remark'] ?></textarea>
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label form_lbl" for="internal_notes">Notes:</label>
+                                                    <textarea class="form-control" name="internal_notes" id="internal_notes"
+                                                        rows="3" <?php if ($act == '')
+                                                                    echo 'disabled' ?>><?php if (isset($row['inv_note']))
+                                                                    echo $row['inv_note'] ?></textarea>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-3 col-12 invoice-actions  mb-4">
-                                <div class="card mb-4">
-                                    <div class="card-body">
-                                        <button class="btn btn-primary d-grid w-100 mb-2" data-bs-toggle="offcanvas"
-                                            data-bs-target="#sendInvoiceOffcanvas">
-                                            <span
-                                                class="d-flex align-items-center justify-content-center text-nowrap"><i
-                                                    class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
-                                        </button>
-                                        <a href="./app-invoice-preview.html"
-                                            class="btn btn-label-secondary d-grid w-100 mb-2">Preview</a>
-                                        <button type="button" class="btn btn-label-secondary d-grid w-100">Save</button>
-                                        <button class="btn btn-primary d-grid w-100 mb-2 cancel"
-                                            name="actionBtn" id="actionBtn" value="back"><span
-                                                class="d-flex align-items-center justify-content-center text-nowrap"><i
+                                <div class="col-lg-3 col-12 invoice-actions  mb-4">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <?php
+                                                                // Determine the value based on $act
+                                                                switch ($act) {
+                                                                    case 'I':
+                                                                        $actionValue = 'addData';
+                                                                        break;
+                                                                    case 'E':
+                                                                        $actionValue = 'updData';
+                                                                        break;
+                                                                    default:
+                                                                        $actionValue = ''; // You may want to handle this case differently based on your logic
+                                                                }
+                                                                ?>
+                                        <input type="hidden" name="createInvoice" id="createInvoice" value="0">
+                                        <button class="btn btn-primary d-grid w-100 mb-2 submitBtn createInvoiceButton"
+                                            name="actionBtn" id="actionBtn" onclick="createInvoice();"
+                                            value="<?= $actionValue ?>">Create Invoice</button>
+                                        <?php if ($act == 'I' || $act == 'E') { ?>
+                                            <button class="btn btn-primary d-grid w-100 mb-2 submitBtn" name="actionBtn"
+                                                id="actionBtn" value="<?= $actionValue ?>">Save As Draft</button>
+                                        <?php } ?>
+                                        <button class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
+                                            id="actionBtn" value="back"><span><i
                                                     class="ti ti-send ti-xs me-2"></i>Back</span></button>
                                     </div>
                                 </div>
                                 <div>
                                     <p class="mb-2">Accept payments via</p>
-                                    <select class="form-select mb-4">
-                                        <option value="Bank Account">Bank Account</option>
-                                        <option value="Paypal">Paypal</option>
-                                        <option value="Card">Credit/Debit Card</option>
-                                        <option value="UPI Transfer">UPI Transfer</option>
+                                    <select class="form-select mb-2" id="cni_pay" name="cni_pay" <?php if ($act == '')
+                                        echo 'disabled' ?>>
+                                            <option value="0" disabled selected>Select Payment Method</option>
+                                            <?php
+                                    if ($pay_list_result->num_rows >= 1) {
+                                        $pay_list_result->data_seek(0);
+                                        while ($row2 = $pay_list_result->fetch_assoc()) {
+                                            $selected = "";
+                                            if (isset($dataExisted, $row['pay_method']) && (!isset($cni_pay))) {
+                                                $selected = $row['pay_method'] == $row2['id'] ? "selected" : "";
+                                            } else if (isset($cni_pay)) {
+                                                $selected = $cni_pay == $row2['id'] ? "selected" : "";
+                                            }
+                                            echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['name'] . "</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=\"0\">None</option>";
+                                    }
+                                    ?>
                                     </select>
+
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <textarea class="form-control" name="cni_pay_details" id="cni_pay_details"
+                                            rows="2" placeholder="Payment Details" <?php if ($act == '')
+                                                echo 'disabled' ?>><?php
+                                            if (isset($dataExisted) && isset($row['pay_details']) && !isset($cni_pay_details)) {
+                                                echo $row['pay_details'];
+                                            } else if (isset($dataExisted) && isset($row['pay_details']) && isset($cni_pay_details)) {
+                                                echo $cni_pay_details;
+                                            } ?></textarea>
+                                    </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <label for="payment-terms" class="mb-0">Payment Terms</label>
                                         <label class="switch switch-primary me-0">
                                             <input type="checkbox" class="switch-input" id="payment-terms" checked />
-                                            <span class="switch-toggle-slider">
-                                                <span class="switch-on"></span>
-                                                <span class="switch-off"></span>
-                                            </span>
-                                            <span class="switch-label"></span>
+
                                         </label>
                                     </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <label for="client-notes" class="mb-0">Client Notes</label>
-                                        <label class="switch switch-primary me-0">
-                                            <input type="checkbox" class="switch-input" id="client-notes" />
-                                            <span class="switch-toggle-slider">
-                                                <span class="switch-on"></span>
-                                                <span class="switch-off"></span>
-                                            </span>
-                                            <span class="switch-label"></span>
-                                        </label>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <label for="payment-stub" class="mb-0">Payment Stub</label>
-                                        <label class="switch switch-primary me-0">
-                                            <input type="checkbox" class="switch-input" id="payment-stub" />
-                                            <span class="switch-toggle-slider">
-                                                <span class="switch-on"></span>
-                                                <span class="switch-off"></span>
-                                            </span>
-                                            <span class="switch-label"></span>
-                                        </label>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -760,19 +929,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-    checkCurrentPage(page, action);
-    setButtonColor();
-    preloader(300, action);
+        checkCurrentPage(page, action);
+        setButtonColor();
+        preloader(300, action);
     </script>
 
 </body>
 
 <script>
-<?php include '../js/package.js'; ?>
+    <?php include '../js/cred_inv.js'; ?>
 </script>
 
 </html>
