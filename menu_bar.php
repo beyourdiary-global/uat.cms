@@ -160,9 +160,21 @@ $menuList = array(
                 'pin' => array('49', '51', '68'),
             ),
 
+            array(
+                'Lazada',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Lazada Account Management', 'mdi storefront-outline', $SITEURL . '/finance/lazada_acc_table.php', '81'),
+                    
+                ),
+                'pin' => array('81'),
+            ),
+
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78','81')
 
     ),
     array(
