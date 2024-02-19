@@ -64,6 +64,8 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"
+                                        href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -198,6 +200,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
       to resize table with bootstrap 5 classes
     */
     datatableAlignment('bank_trans_backup_table');
+    <?php include '../js/bank_trans_backup_table.js'?>
 </script>
 
 </html>
