@@ -32,6 +32,7 @@ $(document).ready(function() {
         });
 
     }
+    $("#dtur_agent").change(calculateBrand); 
 })
 
 //jQuery form validation
@@ -78,9 +79,9 @@ $('.submitBtn').on('click', () => {
 
 })
 
-function calculateCurr() {
+function calculateBrand() {
 
-    var paramCurr = {
+    var paramAgent = {
         search: $("#dtur_agent_hidden").val(),
         searchCol: 'id',
         searchType: '*',
@@ -88,24 +89,24 @@ function calculateCurr() {
         isFin: 1,
     };
 
-    retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+    retrieveDBData(paramAgent, '<?= $SITEURL ?>', function (result) {
         getBrand(result);
         $("#dtur_brand_hidden").val(result[0]['brand']);
     });
 
     function getBrand(result) {
         if (result && result.length > 0) {
-            curr = result[0]['brand'];
-
-                var paramCurr = {
-                    search: curr,
+            brand = result[0]['brand'];
+            
+                var paramBrand = {
+                    search: brand,
                     searchCol: 'id',
                     searchType: '*',
                     dbTable: '<?= BRAND ?>',
                     isFin: 0,
                 };
 
-                retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+                retrieveDBData(paramBrand, '<?= $SITEURL ?>', function (result) {
                     $("#dtur_brand").val(result[0]['name']);
                 });
             } else {

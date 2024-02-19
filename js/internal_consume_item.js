@@ -8,7 +8,6 @@ preloader(300, action);
 
 //autocomplete
 $(document).ready(function() {
-
     if (!($("#ici_pic").attr('disabled'))) {
         $("#ici_pic").keyup(function() {
             var param = {
@@ -18,7 +17,6 @@ $(document).ready(function() {
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= USR_USER ?>', // json filename (generated when login)
             }
-            console.log(param["elementID"]);
             searchInput(param, '<?= $SITEURL ?>');
         });
 
@@ -33,7 +31,6 @@ $(document).ready(function() {
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= BRAND ?>', // json filename (generated when login)
             }
-            console.log(param["elementID"]);
             searchInput(param, '<?= $SITEURL ?>');
         });
 
@@ -48,11 +45,11 @@ if (!($("#ici_package").attr('disabled'))) {
             hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
             dbTable: '<?= PKG ?>', // json filename (generated when login)
         }
-        console.log(param["elementID"]);
         searchInput(param, '<?= $SITEURL ?>');
     });
 
 }
+$("#ici_package").change(calculateCost);
 })
 
 //jQuery form validation
@@ -121,7 +118,7 @@ $('.submitBtn').on('click', () => {
         package_chk = 1;
     }
 
-    if (pic_chk == 1 && date_chk == 1 && brand_chk == 1 && package_chk == 1)
+    if (date_chk == 1 && pic_chk == 1 && brand_chk == 1 && package_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
@@ -130,14 +127,15 @@ $('.submitBtn').on('click', () => {
 
 function calculateCost() {
 
-    var paramCost = {
-        search: $("#cost_hidden").val(),
+    var paramPackage = {
+        search: $("#ici_cost_hidden").val(),
         searchCol: 'id',
         searchType: '*',
         dbTable: '<?= PKG ?>',
+        isFin: 0,
     };
 
-    retrieveDBData(paramCost, '<?= $SITEURL ?>', function (result) {
+    retrieveDBData(paramPackage, '<?= $SITEURL ?>', function (result) {
         getCost(result);
         $("#ici_cost_hidden").val(result[0]['cost']);
     });
@@ -151,6 +149,7 @@ function calculateCost() {
                     searchCol: 'id',
                     searchType: '*',
                     dbTable: '<?= PKG ?>',
+                    isFin: 0,
                 };
 
                 retrieveDBData(paramCost, '<?= $SITEURL ?>', function (result) {

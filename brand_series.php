@@ -11,6 +11,7 @@ $dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
 $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
+//Page Redirect Link , Clean LocalStorage , Error Alert Msg 
 $redirect_page = $SITEURL . '/brand_series_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
@@ -36,7 +37,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
 
 //Delete Data
 if ($act == 'D') {
-    deleteRecord($tblName, $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
+    deleteRecord($tblName, '', $dataID, $row['name'], $connect, $connect, $cdate, $ctime, $pageTitle);
     $_SESSION['delChk'] = 1;
 }
 
@@ -75,7 +76,7 @@ if (post('actionBtn')) {
         case 'updData':
 
             $currentDataName = postSpaceFilter('currentDataName');
-            $brand = postSpaceFilter('brand_hidden');
+            $brand = postSpaceFilter('brand');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -134,7 +135,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName',brand='$brand',remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', brand ='$brand', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -195,7 +196,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
 <head>
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
-    <link rel="stylesheet" href="./css/package.css">
 </head>
 
 <body>
@@ -211,8 +211,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             </p>
         </div>
 
-        <div id="formContainer" class="container-fluid mt-2">
-            <div class="col-12 col-md-12 formWidthAdjust">
+        <div id="formContainer" class="container d-flex justify-content-center">
+            <div class="col-8 col-md-6 formWidthAdjust">
                 <form id="form" method="post" novalidate>
                     <div class="form-group mb-5">
                         <h2>
@@ -221,54 +221,49 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="row">
-    <div class="col-12 col-md-6">
+    <div class="col-md-6">
         <div class="form-group mb-3">
-            <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-            <input class="form-control" type="text" name="currentDataName" id="currentDataName"
-                value="<?php if (isset($row['name'])) echo $row['name'] ?>"
-                <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+            <label class="form-label form_lbl" for="currentDataName">Name*</label>
+            <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
             <div id="err_msg">
                 <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
+            <select class="form-select" required id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
+                <?php
+                $resultBrand = getData('*', '', '', BRAND, $connect);
 
-    <div class="col-12 col-md-6">
-        <div class="form-group autocomplete mb-3">
-            <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand</label>
-            <?php
-            unset($echoVal);
+                echo "<option value disabled selected>Select Brand Type</option>";
 
-            if (isset($row['brand']))
-                $echoVal = $row['brand'];
-
-            if (isset($echoVal)) {
-                $brand_result = getData('name', "id = '$echoVal'", '', BRAND, $connect);
-                $brand_row = $brand_result->fetch_assoc();
-            }
-            ?>
-            <input class="form-control" type="text" name="brand" id="brand"
-                value="<?php echo !empty($echoVal) ? $brand_row['name'] : ''  ?>"
-                <?php if ($act == '') echo 'readonly' ?> required>
-            <input type="hidden" name="brand_hidden" id="brand_hidden"
-                value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
-            <div id="err_msg">
-                <span class="mt-n1"><?php if (isset($brand_err)) echo $brand_err; ?></span>
-            </div>
+                if (!$resultBrand) {
+                    echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+                }
+                if ($resultBrand->num_rows >= 1) {
+                    while ($rowBrand = $resultBrand->fetch_assoc()) {
+                        $selected = isset($row['brand']) && $rowBrand['id'] == $row['brand'] ? "selected" : "";
+                        echo "<option value='{$rowBrand['id']}' $selected>{$rowBrand['name']}</option>";
+                    }
+                } else {
+                    echo "<option value=\"0\">None</option>";
+                }
+                ?>
+            </select>
         </div>
     </div>
 </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3"
-                            <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
+                        <label class="form-label form_lbl" for="currentDataRemark">Remark</label>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn"
-                            value="back">Back</button>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </form>
             </div>
@@ -276,20 +271,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ''; ?>";
+        //Initial Page And Action Value
+        var page = "<?= $pageTitle ?>";
+        var action = "<?php echo isset($act) ? $act : ''; ?>";
 
-    checkCurrentPage(page, action);
-    setButtonColor();
-    preloader(300, action);
-    setAutofocus(action);
+        checkCurrentPage(page, action);
+        centerAlignment("formContainer");
+        setButtonColor();
+        preloader(300, action);
     </script>
 
 </body>
-
-<script>
-<?php include './js/brand_series.js'; ?>
-</script>
 
 </html>
