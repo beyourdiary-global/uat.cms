@@ -79,6 +79,7 @@ if (post('actionBtn')) {
             $colorSegmentation =  postSpaceFilter('segmentationColor');
             $currentDataboxFrom = postSpaceFilter('boxFrom');
             $currentDataboxUntil = postSpaceFilter('boxUntil');
+            $brandSeries = postSpaceFilter('brandSeries');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -118,7 +119,10 @@ if (post('actionBtn')) {
                     if ($dataRemark)
                         array_push($newvalarr, $dataRemark);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,boxFrom,boxUntil,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataboxFrom','$currentDataboxUntil','" . USER_ID . "',curdate(),curtime())";
+                    if ($brandSeries)
+                        array_push($newvalarr, $brandSeries);
+
+                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,boxFrom,boxUntil,brandSeries,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataboxFrom','$currentDataboxUntil','$brandSeries','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
@@ -150,6 +154,11 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $currentDataboxUntil);
                     }
 
+                    if ($row['brandSeries'] != $brandSeries) {
+                        array_push($oldvalarr, $row['brandSeries']);
+                        array_push($chgvalarr, $brandSeries);
+                    }
+
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
@@ -159,7 +168,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , boxFrom='$currentDataboxFrom', boxUntil='$currentDataboxUntil', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , boxFrom='$currentDataboxFrom', boxUntil='$currentDataboxUntil', brandSeries='$brandSeries', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
