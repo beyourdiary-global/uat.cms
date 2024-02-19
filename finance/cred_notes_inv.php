@@ -115,7 +115,7 @@ if (post('actionBtn')) {
             $prices = $_POST["price"];
             $quantities = $_POST["quantity"];
             $amounts = $_POST["amount"];
-            
+
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if ($action == 'addData') {
@@ -694,9 +694,9 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                             id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly>
                                                                     </td>
                                                                     <td><input class="readonlyInput" type="text"
-                                                                            name="wgt_unit[]" id="wgt_unit_<?= $num ?>"
+                                                                            name="amount[]" id="amount_<?= $num ?>"
                                                                             value="<?= $pwun ?>" readonly><input type="hidden"
-                                                                            name="wgt_unit_val[]" id="wgt_unit_val_<?= $num ?>"
+                                                                            name="amount_val[]" id="amount_val_<?= $num ?>"
                                                                             value="<?= $pwu ?>" readonly>
                                                                     </td>
                                                                     <?php
@@ -740,15 +740,13 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                         </span>
                                                                     </div>
                                                                 </td>
-                                                                <td><input class="readonlyInput" type="text" name="wgt[]"
-                                                                        id="wgt_1" value="" readonly></td>
-                                                                <td><input class="readonlyInput" type="text"
-                                                                        name="wgt_unit[]" id="wgt_unit_1" value=""
-                                                                        readonly><input type="hidden" name="wgt_unit_val[]"
-                                                                        id="wgt_unit_val_1" value="" readonly>
+                                                                <td><input type="number" name="price[]"
+                                                                        id="price_1" value="" readonly></td>
+                                                                <td><input type="number"
+                                                                        name="quantity[]" id="quantity_1" value="" readonly>
                                                                 </td>
                                                                 <td><input class="readonlyInput" type="text"
-                                                                        name="barcode_status[]" id="barcode_status_1"
+                                                                        name="amount[]" id="amount_1"
                                                                         value="" readonly></td>
 
                                                                 <td><button class="mt-1" id="action_menu_btn" type="button"
