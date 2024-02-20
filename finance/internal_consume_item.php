@@ -388,16 +388,16 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             $echoVal = $row['package'];
 
         if (isset($echoVal)) {
-            $pkg_rst = getData('*', "id = '$echoVal'", '', PKG, $finance_connect);
-            if (!$pkg_rst) {
+            $package_rst = getData('*', "id = '$echoVal'", '', PKG, $connect);
+            if (!$package_rst) {
                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            $pkg_row = $pkg_rst->fetch_assoc();
+            $package_row = $package_rst->fetch_assoc();
         }
         ?>
         <input class="form-control" type="text" name="ici_package" id="ici_package" <?php if ($act == '') echo 'disabled' ?>
-            value="<?php echo !empty($echoVal) ? $pkg_row['name'] : '' ?>">
+            value="<?php echo !empty($echoVal) ? $package_row['name'] : '' ?>">
         <input type="hidden" name="ici_package_hidden" id="ici_package_hidden"
             value="<?php echo (isset($row['package'])) ? $row['package'] : ''; ?>">
 
