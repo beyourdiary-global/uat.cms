@@ -36,20 +36,20 @@ $(document).ready(function() {
 
     }
 
-if (!($("#ici_package").attr('disabled'))) {
-    $("#ici_package").keyup(function() {
-        var param = {
-            search: $(this).val(),
-            searchType: 'package', // column of the table
-            elementID: $(this).attr('id'), // id of the input
-            hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
-            dbTable: '<?= PKG ?>', // json filename (generated when login)
-        }
-        searchInput(param, '<?= $SITEURL ?>');
-    });
+    if (!($("#ici_package").attr('disabled'))) {
+        $("#ici_package").keyup(function () {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= PKG ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
 
-}
-$("#ici_package").change(calculateCost);
+    }
+    $("#ici_package").change(calculateCost);
 })
 
 //jQuery form validation
@@ -126,38 +126,45 @@ $('.submitBtn').on('click', () => {
 })
 
 function calculateCost() {
+    var pkgName = '';
+    var costInput = $("#ici_cost");
 
-    var paramPackage = {
-        search: $("#ici_cost_hidden").val(),
+    var paramPkg = {
+        search: $("#ici_package_hidden").val(),
         searchCol: 'id',
         searchType: '*',
         dbTable: '<?= PKG ?>',
         isFin: 0,
     };
-
-    retrieveDBData(paramPackage, '<?= $SITEURL ?>', function (result) {
+    retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
         getCost(result);
         $("#ici_cost_hidden").val(result[0]['cost']);
     });
 
     function getCost(result) {
         if (result && result.length > 0) {
-            cost = result[0]['cost'];
+            pkgName = result[0]['name'];
 
-                var paramCost = {
-                    search: cost,
-                    searchCol: 'id',
-                    searchType: '*',
-                    dbTable: '<?= PKG ?>',
-                    isFin: 0,
-                };
+            var paramPackage = {
+                search: pkgName,
+                searchCol: 'name',
+                searchType: '*',
+                dbTable: '<?= PKG ?>',
+                isFin: 0,
+            };
 
-                retrieveDBData(paramCost, '<?= $SITEURL ?>', function (result) {
-                    $("#ici_cost").val(result[0]['cost']);
-                });
+            retrieveDBData(paramPackage, '<?= $SITEURL ?>', function (result) {
+                console.log(result);
+                if (result && result.length > 0) {
+                    if (result[0]['cost'] !== undefined ) {
+                        cost_amt = parseFloat(result[0]['cost']);
+                    }
+                }
+                costInput.val(cost_amt .toFixed(2));
+            });
 
         } else {
-            console.error('Error retrieving Cost data');
+            console.error('Error retrieving data');
         }
     }
 }

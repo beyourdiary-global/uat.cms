@@ -111,28 +111,13 @@ if (post('actionBtn')) {
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
             $fields = array('merchant', 'brand', 'currency_unit', 'amount'); // Define fields to check for duplicates
             $values = array($ivs_mrcht,$brand, $curr_unit, $amount); // Values of the fields
-            
-            if (empty($curr_unit)) {
-                $curr_err = "Currency unit is required!";
-            }
+           
             if (empty($amount)) {
                 $amt_err = "Amount is required!";
             }
 
-            if (!empty($curr_err) || !empty($amt_err)) {
-                echo "<div class='alert alert-danger'>Please fix the following errors:<br>";
-                if (!empty($curr_err)) {
-                    echo "- $curr_err<br>";
-                }
-                if (!empty($amt_err)) {
-                    echo "- $amt_err<br>";
-                }
-                echo "</div>";
-                break; 
-            }
-
             if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
-                $pic_err = "Duplicate record found for merchant, brand, currency unit and amount.";
+                $mrcht_err = "Duplicate record found for merchant, brand, currency unit and amount.";
                 break;}
             
             if ($action == 'addData') {
@@ -313,7 +298,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         <label class="form-label form_lbl" id="ivs_mrcht_lbl" for="ivs_mrcht">Merchant<span class="requireRed">*</span></label>
         <select class="form-select" id="ivs_mrcht" name="ivs_mrcht" <?php if ($act == '') echo 'disabled' ?>>
             <option value="0" disabled selected>Select Merchant</option>
-            <option value="other" <?php if (isset($ivs_mrcht) && $ivs_mrcht == 'other') echo 'selected'; ?>>Create New Merchant</option>
             <?php
             if ($mrcht_list_result->num_rows >= 1) {
                 $mrcht_list_result->data_seek(0);
@@ -365,8 +349,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
 <div class="row">
     <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit<span class="requireRed">*</span></label>
-        <select class="form-select" required id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
+        <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit</span></label>
+        <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
             <?php
             $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);
 
@@ -454,7 +438,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             previewImage(this, 'attach_preview')
         })
 
-        
     </script>
 
 </body>
