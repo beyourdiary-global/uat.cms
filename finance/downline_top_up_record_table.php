@@ -84,15 +84,15 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                 $brand = getData('name', "id='" . $row['brand'] . "'", 'LIMIT 1', BRAND, $connect);
                                 $row4 = $brand->fetch_assoc();
 
-                                $curr = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
-                                $row2 = $curr->fetch_assoc();
+                                $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                            $currRow = $currResult->fetch_assoc();
                         ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <td scope="row"><?= $num++ ?></td>
                                     <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($row4['name'])) echo  $row4['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($currRow['unit'])) echo $currRow['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo  $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo  $row['attachment'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo  $row['remark'] ?></td>

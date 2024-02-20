@@ -144,6 +144,8 @@ define('FB_PAGE_ACC', 'facebook_page_account');
 // define('CHANNEL', 'channel');
 define('STK_CDT_TOPUP_RCD', 'stock_credit_topup_record');
 define('LAZADA_ACC','lazada_account');
+define('PAY_MTHD_SHOPEE','shopee_payment_method');
+define('CHANEL_SC_MD', 'chanel_social_media');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

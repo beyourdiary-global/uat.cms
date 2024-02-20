@@ -222,8 +222,9 @@ $menuList = array(
                     array('Warehouse', 'mdi mdi-warehouse', $SITEURL . '/warehouse.php', '16'),
                     array('Weight Unit', 'mdi mdi-weight', $SITEURL . '/weight_unit_table.php', '19'),
                     array('Change Password', 'mdi mdi-key-change', $SITEURL . '/changePassword.php', '25'),
+                    array('Chanel (Social Media)', 'mdi storefront-outline', $SITEURL . '/finance/chanel_social_media_table.php', '79'),
                 ),
-                'pin' => array('8', '11', '10', '14', '16', '19', '25'),
+                'pin' => array('8', '11', '10', '14', '16', '19', '25','79'),
             ),
             array(
                 'Product Administration Setting',
@@ -306,8 +307,19 @@ $menuList = array(
                 ),
                 'pin' => array('76'),
             ),
+
+            array(
+                'Order Administration  Setting',
+                'mdi mdi-cash-multiple',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Payment Method (Shopee)', 'mdi mdi-contactless-payment-circle', $SITEURL . '/finance/payment_method_shopee_table.php', '80'),
+                ),
+                'pin' => array('80'),
+            ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78','79','80')
     ),
     array(
         'Audit Log',

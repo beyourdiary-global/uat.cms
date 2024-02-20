@@ -65,7 +65,7 @@ if (post('actionBtn')) {
 
             $dtur_agent = postSpaceFilter('dtur_agent_hidden');
             $dtur_brand = postSpaceFilter('dtur_brand_hidden');
-            $dtur_curr = postSpaceFilter('dtur_currency');
+            $curr_unit = postSpaceFilter('currency_unit');
             $dtur_amount = postSpaceFilter('dtur_amount');
 
             $dtur_attach = null;
@@ -109,11 +109,15 @@ if (post('actionBtn')) {
                 } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
             }
 
-           if (!$dtur_amount) {
-                $amount_err = "Please specify the amount.";
-                break;
+            $fields = array('agent', 'brand', 'currency_unit', 'amount'); // Define fields to check for duplicates
+            $values = array($dtur_agent, $dtur_brand, $curr_unit, $dtur_amount); // Values of the fields
 
-            } else if ($action == 'addData') {
+
+        if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
+                $agent_err = "Duplicate record found for agent, brand, currency unit and amount.";
+                break;}
+
+        if ($action == 'addData') {
                 try {
 
                     //check values
@@ -127,8 +131,8 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($dtur_curr) {
-                        array_push($newvalarr, $dtur_curr);
+                    if ($curr_unit) {
+                        array_push($newvalarr, $curr_unit);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -146,7 +150,7 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $dtur_remark);
                         array_push($datafield, 'remark');
                     }
-                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$dtur_curr','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$curr_unit','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
                     
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -174,9 +178,9 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($row['currency_unit'] != $dtur_curr) {
+                    if ($row['currency_unit'] != $curr_unit) {
                         array_push($oldvalarr, $row['currency_unit']);
-                        array_push($chgvalarr, $dtur_curr);
+                        array_push($chgvalarr, $curr_unit);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -205,7 +209,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET agent ='$dtur_agent',brand='$dtur_brand',currency='$dtur_curr',amount='$dtur_amount',attachment='$dtur_attach',remark ='$dtur_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET agent ='$dtur_agent',brand='$dtur_brand',currency_unit='$curr_unit',amount='$dtur_amount',attachment='$dtur_attach',remark ='$dtur_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     
                     } else {
@@ -403,37 +407,29 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <div class="form-group mb-3">
     <div class="row">
         <div class="col-md-6 mb-2">
-        <label class="form-label form_lbl" id="dtur_currency_lbl"
-                                    for="dtur_currency">Currency Unit<span class="requireRed">*</span></label>
-                                <select class="form-select" id="dtur_currency" name="dtur_currency"
-                                    <?php if ($act == '') echo 'disabled' ?>>
-                                    <option value="0" disabled selected>Select Currency Unit</option>
+        <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit</span></label>
+                                <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
                                     <?php
-                                if ($cur_list_result->num_rows >= 1) {
-                                    $cur_list_result->data_seek(0);
-                                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['currency_unit']) && (!isset($dtur_curr))) {
-                                            $selected = $row['currency_unit'] == $row2['id'] ? "selected" : "";
-                                        } else if (isset($dtur_curr)) {
-                                            $selected = $dtur_curr == $row2['id'] ? "selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
+                                    $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);
+
+                                    echo "<option value disabled selected>Select Currency Unit</option>";
+
+                                    if (!$resultCurUnit) {
+                                        echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
                                     }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
+                                    if ($resultBrand->num_rows >= 1) {
+                                        while ($rowCurUnit = $resultCurUnit->fetch_assoc()) {
+                                            $selected = isset($row['currency_unit']) && $rowCurUnit['id'] == $row['currency_unit'] ? "selected" : "";
+                                            echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=\"0\">None</option>";
+                                    }
+                                    ?>
                                 </select>
-
-                                <?php if (isset($curr_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
-                                </div>
-                                <?php } ?>
-
                             </div>
-        
+
+
         <div class="col-md-6 mb-2">
         <label class="form-label form_lbl" id="dtur_amount_lbl" for="dtur_amount">Amount<span
                                         class="requireRed">*</span></label>
@@ -540,6 +536,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
        preloader(300, action);
        checkCurrentPage(page, action);
        setAutofocus(action);
+       
        <?php include "../js/dw_top_up_record.js" ?>
    </script>
 
