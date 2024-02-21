@@ -285,7 +285,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="pms_fees_lbl" for="pms_fees">Transaction fees (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="pms_fees" id="pms_fees" value="<?php 
+            <input class="form-control" type="number" step=".01" name="pms_fees" id="pms_fees" value="<?php 
                 if (isset($dataExisted) && isset($row['fees']) && !isset($pms_fees)) {
                     echo $row['fees'];
                 } else if (isset($dataExisted) && isset($row['fees']) && isset($pms_fees)) {
@@ -300,7 +300,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
     </div>
-</div>
 
                 <div class="form-group mb-3">
                         <label class="form-label form_lbl" for="pms_remark">Remark</label>
