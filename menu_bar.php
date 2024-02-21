@@ -173,9 +173,20 @@ $menuList = array(
                 'pin' => array('81'),
             ),
 
+            array(
+                'Shopee',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Shopee Service Charges Rate Setting', 'mdi storefront-outline', $SITEURL . '/finance/shopee_service_charges_rate_setting_table.php', '83'),
+                    
+                ),
+                'pin' => array('83'),
+            ),
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78','81')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78','81','83')
 
     ),
     array(
