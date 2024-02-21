@@ -231,7 +231,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         </div>
     </div>
     <div class="col-md-6">
-        <div class="form-group">
+        <div class="form-group mb-3">
             <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
             <select class="form-select" required id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
                 <?php
@@ -255,6 +255,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         </div>
     </div>
 </div>
+
 
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" for="currentDataRemark">Remark</label>

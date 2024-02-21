@@ -80,7 +80,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                 $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                                 $row2 = $brand->fetch_assoc();
 
-                                $package = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                                $package = getData('*', "id='" . $row['package'] . "'", '', PKG, $connect);
                                 $row3 = $package->fetch_assoc();
                         ?>
 
@@ -88,9 +88,9 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row['date'])) echo  $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($usr['pic'])) echo  $usr['pic'] ?></td>
-                                    <td scope="row"><?php if (isset($row2['brand'])) echo  $row2['brand'] ?></td>
-                                    <td scope="row"><?php if (isset($row3['package'])) echo  $row3['package'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['name'])) echo  $usr['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['name'])) echo  $row2['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['cost'])) echo  $row['cost'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
@@ -111,7 +111,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                                 </li>
                                                 <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_ads_topup_trans_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/internal_consume_item_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                                 </li>
                                             </ul>

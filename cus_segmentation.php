@@ -79,6 +79,7 @@ if (post('actionBtn')) {
             $colorSegmentation =  postSpaceFilter('segmentationColor');
             $currentDataboxFrom = postSpaceFilter('boxFrom');
             $currentDataboxUntil = postSpaceFilter('boxUntil');
+            $brandSeries = postSpaceFilter('brandSeries_hidden');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -118,7 +119,10 @@ if (post('actionBtn')) {
                     if ($dataRemark)
                         array_push($newvalarr, $dataRemark);
 
-                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,boxFrom,boxUntil,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataboxFrom','$currentDataboxUntil','" . USER_ID . "',curdate(),curtime())";
+                    if ($brandSeries)
+                        array_push($newvalarr, $brandSeries);
+
+                    $query = "INSERT INTO " . $tblName . "(name,colorCode,remark,boxFrom,boxUntil,brandSeries,create_by,create_date,create_time) VALUES ('$currentDataName','$colorSegmentation','$dataRemark','$currentDataboxFrom','$currentDataboxUntil','$brandSeries','" . USER_ID . "',curdate(),curtime())";
 
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
@@ -150,6 +154,11 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $currentDataboxUntil);
                     }
 
+                    if ($row['brandSeries'] != $brandSeries) {
+                        array_push($oldvalarr, $row['brandSeries']);
+                        array_push($chgvalarr, $brandSeries);
+                    }
+
                     if ($row['remark'] != $dataRemark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
                         array_push($chgvalarr, $dataRemark == '' ? 'Empty Value' : $dataRemark);
@@ -159,7 +168,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , boxFrom='$currentDataboxFrom', boxUntil='$currentDataboxUntil', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$currentDataName', colorCode = '$colorSegmentation' , boxFrom='$currentDataboxFrom', boxUntil='$currentDataboxUntil', brandSeries='$brandSeries', remark ='$dataRemark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
                     } else {
                         $act = 'NC';
@@ -283,11 +292,36 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </div>
                             </div>
                             <div class="col-sm autocomplete">
-                                <label class="form-label" for="brandSeries">Brand Series</label>
-                                <input class="form-control" type="text" name="brandSeries" id="brandSeries" value="<?php if (isset($row['brandSeries'])) echo $row['brandSeries'] ?>" <?php if ($act == '') echo 'readonly' ?> autocomplete="off">
-                                <div id="brandSeriesErrorMsg" class="error-message">
-                                    <span class="mt-n1"></span>
-                                </div>
+                            <label class="form-label form_lbl" id="brandSeries_lbl" for="brandSeries">Brand Series</label>
+                                <?php
+                                                        unset($echoVal);
+
+                                                        if (isset($row['brandSeries']))
+                                                            $echoVal = $row['brandSeries'];
+
+                                                        if (isset($echoVal)) {
+                                                            $brd_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
+                                                            if (!$brd_rst) {
+                                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                            }
+                                                            $brd_row = $brd_rst->fetch_assoc();
+                                                        }
+                                                        ?>
+                                                        <input class="form-control" type="text" name="brandSeries"
+                                                            id="brandSeries" <?php if ($act == '')
+                                                                echo 'disabled' ?>
+                                                                value="<?php echo !empty($echoVal) ? $brd_row['name'] : '' ?>">
+                                                        <input type="hidden" name="brandSeries_hidden" id="brandSeries_hidden"
+                                                            value="<?php echo (isset($row['brandSeries'])) ? $row['brandSeries'] : ''; ?>">
+
+                                                        <?php if (isset($curr_err)) { ?>
+                                                            <div id="err_msg">
+                                                                <span class="mt-n1">
+                                                                    <?php echo $brandseries_err; ?>
+                                                                </span>
+                                                            </div>
+                                                        <?php } ?>
                             </div>
                         </div>
                     </div>

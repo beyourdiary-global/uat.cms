@@ -2,7 +2,6 @@
 $(document).ready(function() {
 
     if (!($("#courier_country").attr('disabled'))) {
-        var selectedValue = '';
         $("#courier_country").keyup(function() {
             var param = {
                 search: $(this).val(),
@@ -12,7 +11,6 @@ $(document).ready(function() {
                 dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
             }
             console.log("Element ID:", param["elementID"]);
-            console.log("Site URL:", '<?= $SITEURL ?>');
             searchInput(param, '<?= $SITEURL ?>');
         });
     }

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0">
+    <meta name="robots" content="beyourdiary">
+
+    <!-- Website -->
+    <title>Create Invoice</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/package.css">
+
+    <style>
+        body,
+        p,
+        th {
+            font-size: 13px !important;
+
+        }
+
+        hr {
+            font-size: 1px !important;
+        }
+
+        /* Ensure the table fills its container */
+        table {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Centered and italicized footer */
+        footer {
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Flex layout for the invoice header */
+        .invoice-header {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Style for the logo */
+        .logo {
+            flex: 0 0 10%;
+            /* Allow the logo to shrink */
+        }
+
+        /* Style for the company information */
+        .company-info {
+            flex: 1;
+            /* Allow the company info to grow */
+            margin-left: 1rem;
+            /* Adjust margin as needed */
+        }
+
+        /* Flex layout for the address section */
+        .address {
+            display: flex;
+            /* Make the address section flex */
+            flex-direction: column;
+            /* Align items in a column */
+        }
+
+        /* Encapsulate invoice header and address in a parent div */
+        .invoice-container {
+            display: flex;
+            /* Use flexbox to create two columns */
+            flex-wrap: wrap;
+            /* Allow wrapping to the next line */
+        }
+
+        /* Style each column */
+        .invoice-column {
+            box-sizing: border-box;
+        }
+
+        .company-info {
+            margin: 2rem 0rem;
+        }
+
+        hr {
+            margin: 1rem 0rem;
+            border: none;
+            border-top: 1px solid grey;
+            /* Customize border color and width */
+            height: 1px;
+            /* Adjust height as needed */
+            background-color: transparent;
+            /* Ensure no background color */
+        }
+
+        .align-left th,
+        .align-left td {
+            text-align: left;
+            padding: 5px;
+        }
+
+        .padding-left {
+            padding-left: 1rem;
+        }
+    </style>
+
+
+<body>
+
+    <table style="padding-bottom: 1.5rem;">
+        <thead>
+            <tr>
+                <th rowspan="2" style="text-align: left; width: 10%;">
+                    <img id="logo" style="min-height:40px; max-height: 40px; width: auto;"
+                        src="../images_server/themes/34234.png">
+                </th>
+                <th rowspan="2" colspan='3' style="text-align: left; font-size: larger;">
+                    {{COMPANY NAME}}
+                </th>
+                <th colspan="2" style="text-align: left; margin-left: 10px; vertical-align: bottom;">
+                    Business No: {{comp_business_no}}
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="2" style="text-align: left;">Email: {{comp_email}}</td>
+            </tr>
+            <tr>
+                <td colspan='4' style="font-weight: bold; text-align: left; vertical-align: bottom;">Company Address:</td>
+                <td colspan='2' style="text-align: left;">Contact Number: {{comp_ctc}}</td>
+            </tr>
+            <tr>
+                <td colspan='3' rowspan="2" style=" text-align: left; min-height: 50px;">{{comp_add}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <hr />
+    <table class="align-left">
+        <thead>
+            <tr>
+                <th>
+                    INVOICE NO
+                </th>
+                <th>
+                    DATE
+                </th>
+                <th>
+                    PAYMENT STATUS
+                </th>
+                <th>
+                    DUE DATE
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{invoice}}</td>
+                <td>{{date}}</td>
+                <td><button class="roundedSelectionBtn">
+                        <!-- <span class="mdi mdi-record-circle-outline" style="<?php
+                        if ($payment_status == 'Paid') {
+                            echo 'color:#008000;';
+                        } else if ($payment_status == 'Cancelled') {
+                            echo 'color:#ff0000;';
+                        } else {
+                            echo 'color:#F17FB5;';
+                        } ?>"></span>
+                        <?php
+                        switch ($payment_status) {
+                            case 'Paid':
+                                echo 'Paid';
+                                break;
+                            case 'Cancelled':
+                                echo 'Cancelled';
+                                break;
+                            default:
+                                echo 'Pending';
+                        }
+                        ?> -->
+                    </button></td>
+                <td>{{due}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <hr />
+    <table class="align-left">
+        <thead>
+            <tr>
+                <th colspan="2" style="text-align: left; padding-bottom: 0.5rem;">
+                    BILLING TO:
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{name}}</td>
+                <td style="width: 50%;">{{contact}}</td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="min-height: 40px; vertical-align: text-top;">{{address}}</td>
+                <td>{{email}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <hr />
+
+    <div style="min-height: 250px;">
+        <table id="productList">
+            <thead>
+                <tr>
+                    <th style="width: 30px;">#</th>
+                    <th colspan="3">Description</th>
+                    <th style="width: 80px;">Price</th>
+                    <th style="width: 80px;">Quantity</th>
+                    <th style="width: 80px;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <table class="align-left" style="align-self: self-end;">
+        <thead>
+            <tr>
+                <th colspan="4" rowspan="4"></th>
+                <th style="width: 80px; font-weight: 400;">SubTotal</th>
+                <th style="width: 80px; text-align: right;font-weight: 400;">{{subtotal}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tax</td>
+                <td style="text-align: right;">{{tax}}</td>
+            </tr>
+            <tr>
+                <td>Discount</td>
+                <td style="text-align: right;">{{discount}}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Total Amount</td>
+                <td style="text-align: right;font-weight: bold;">{{total}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+    <table class="align-left">
+        <thead>
+            <tr>
+                <th colspan="4" style="text-align: left;">
+                    PAYMENT DETAILS:
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Payment Method: {{pay method}}</td>
+                <td><span style="font-weight: bold;">Salesperson: </span>{{pic}}</td>
+            </tr>
+            <tr>
+                <td rowspan="3" style="vertical-align: text-top; padding-right: 0.5rem;">{{pay details}}</td>
+                <td>{{person in charge remark}}</td>
+            </tr>
+
+        </tbody>
+    </table>
+    <table class="align-left"
+        style="background-color: rgb(135, 206, 250,0.3); color: rgb(62, 131, 174); border: 1px solid rgb(69, 136, 177); border-radius: 3px;">
+        <thead>
+            <tr>
+                <th class="padding-left" style="text-align: left;  padding-top: 0.5rem;">
+                    NOTES:
+                </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="padding-left" style="padding-bottom: 0.5rem;">{{payment terms}}</td>
+            </tr>
+
+
+        </tbody>
+    </table>
+    
+
+</body>
+
+</html>

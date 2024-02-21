@@ -44,12 +44,22 @@ $("#dtur_amount").on("input", function() {
     $(".dtur-amount-err").remove();
 });
 
+$("#curr").on("input", function() {
+    $(".curr-err").remove();
+});
+
+$("#dtur_brand").on("input", function() {
+    $(".dtur-brand-err").remove();
+});
+
+
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     //event.preventDefault();
     var agent_chk = 0;
     var amount_chk = 0;
-
+    var curr_chk = 0;
+    var brand_chk = 0;
 
     if (($('#dtur_agent').val() === '' || $('#dtur_agent').val() === null || $('#dtur_agent')
             .val() === undefined)) {
@@ -71,8 +81,27 @@ $('.submitBtn').on('click', () => {
         amount_chk = 1;
     }
 
+    if (($('#curr').val() === '' || $('#curr').val() === null || $('#curr')
+            .val() === undefined)) {
+        curr_chk = 0;
+        $("#curr").after(
+            '<span class="error-message curr-err">Currency Unit is required!</span>');
+    } else {
+        $(".curr-err").remove();
+        curr_chk = 1;
+    }
 
-    if (agent_chk == 1 && amount_chk == 1 )
+    if (($('#dtur_brand').val() === '' || $('#dtur_brand').val() === null || $('#dtur_brand')
+            .val() === undefined)) {
+                brand_chk = 0;
+        $("#dtur_brand").after(
+            '<span class="error-message dtur-brand-err">Brand is required!</span>');
+    } else {
+        $(".dtur-brand-err").remove();
+        brand_chk = 1;
+    }
+
+    if (agent_chk == 1 && amount_chk == 1 && curr_chk == 1&& brand_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

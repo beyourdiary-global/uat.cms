@@ -55,6 +55,8 @@ if ($act == 'D') {
     $_SESSION['delChk'] = 1;
 }
 
+$cur_list_result = getData('*', '', '', CUR_UNIT, $connect);
+
 //Edit And Add Data
 if (post('actionBtn')) {
     $action = post('actionBtn');
@@ -65,7 +67,7 @@ if (post('actionBtn')) {
 
             $dtur_agent = postSpaceFilter('dtur_agent_hidden');
             $dtur_brand = postSpaceFilter('dtur_brand_hidden');
-            $dtur_curr = postSpaceFilter('dtur_currency');
+            $curr = postSpaceFilter('curr');
             $dtur_amount = postSpaceFilter('dtur_amount');
 
             $dtur_attach = null;
@@ -109,11 +111,15 @@ if (post('actionBtn')) {
                 } else $err2 = "Only allow PNG, JPG, JPEG or SVG file";
             }
 
-           if (!$dtur_amount) {
-                $amount_err = "Please specify the amount.";
-                break;
+            $fields = array('agent', 'brand', 'currency_unit', 'amount'); // Define fields to check for duplicates
+            $values = array($dtur_agent, $dtur_brand, $curr, $dtur_amount); // Values of the fields
 
-            } else if ($action == 'addData') {
+
+        if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
+                $agent_err = "Duplicate record found for agent, brand, currency unit and amount.";
+                break;}
+
+        if ($action == 'addData') {
                 try {
 
                     //check values
@@ -127,8 +133,8 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($dtur_curr) {
-                        array_push($newvalarr, $dtur_curr);
+                    if ($curr) {
+                        array_push($newvalarr, $curr);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -146,7 +152,7 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $dtur_remark);
                         array_push($datafield, 'remark');
                     }
-                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$dtur_curr','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(agent,brand,currency_unit,amount,attachment,remark,create_by,create_date,create_time) VALUES ('$dtur_agent','$dtur_brand','$curr','$dtur_amount','$dtur_attach','$dtur_remark','" . USER_ID . "',curdate(),curtime())";
                     
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -174,9 +180,9 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($row['currency_unit'] != $dtur_curr) {
+                    if ($row['currency_unit'] != $curr) {
                         array_push($oldvalarr, $row['currency_unit']);
-                        array_push($chgvalarr, $dtur_curr);
+                        array_push($chgvalarr, $curr);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -205,7 +211,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET agent ='$dtur_agent',brand='$dtur_brand',currency='$dtur_curr',amount='$dtur_amount',attachment='$dtur_attach',remark ='$dtur_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET agent ='$dtur_agent',brand='$dtur_brand',currency_unit='$curr',amount='$dtur_amount',attachment='$dtur_attach',remark ='$dtur_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     
                     } else {
@@ -400,40 +406,38 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
                     </div>
 
-<div class="form-group mb-3">
-    <div class="row">
-        <div class="col-md-6 mb-2">
-        <label class="form-label form_lbl" id="dtur_currency_lbl"
-                                    for="dtur_currency">Currency Unit<span class="requireRed">*</span></label>
-                                <select class="form-select" id="dtur_currency" name="dtur_currency"
-                                    <?php if ($act == '') echo 'disabled' ?>>
-                                    <option value="0" disabled selected>Select Currency Unit</option>
-                                    <?php
-                                if ($cur_list_result->num_rows >= 1) {
-                                    $cur_list_result->data_seek(0);
-                                    while ($row2 = $cur_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['currency_unit']) && (!isset($dtur_curr))) {
-                                            $selected = $row['currency_unit'] == $row2['id'] ? "selected" : "";
-                                        } else if (isset($dtur_curr)) {
-                                            $selected = $dtur_curr == $row2['id'] ? "selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                                </select>
+                    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit<span class="requireRed">*</span></label>
+            <select class="form-select" id="curr" name="curr" <?php if ($act == '') echo 'disabled' ?>>
+                <option value="0" disabled selected>Select Currency Unit</option>
+                <?php
+                if ($cur_list_result->num_rows >= 1) {
+                    $cur_list_result->data_seek(0);
+                    while ($row2 = $cur_list_result->fetch_assoc()) {
+                        $selected = "";
+                        if (isset($dataExisted, $row['currency_unit']) && (!isset($curr))) {
+                            $selected = $row['currency_unit'] == $row2['id'] ? "selected" : "";
+                        } else if (isset($curr)) {
+                            list($curr_id, $curr) = explode(':', $curr);
+                            $selected = $curr == $row2['id'] ? "selected" : "";
+                        }
+                        echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['unit'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=\"0\">None</option>";
+                }
+                ?>
+            </select>
 
-                                <?php if (isset($curr_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $curr_err; ?></span>
-                                </div>
-                                <?php } ?>
+            <?php if (isset($curr_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
 
-                            </div>
-        
+
         <div class="col-md-6 mb-2">
         <label class="form-label form_lbl" id="dtur_amount_lbl" for="dtur_amount">Amount<span
                                         class="requireRed">*</span></label>
@@ -540,6 +544,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
        preloader(300, action);
        checkCurrentPage(page, action);
        setAutofocus(action);
+       
        <?php include "../js/dw_top_up_record.js" ?>
    </script>
 
