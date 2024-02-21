@@ -66,8 +66,8 @@ if (post('actionBtn')) {
             
     $swt_date = postSpaceFilter("swt_date");
     $swt_id = postSpaceFilter("swt_id");
-    $curr = postSpaceFilter('curr_hidden');
-    $swt_amt = postSpaceFilter('swt_amt');
+    $curr = postSpaceFilter("curr_hidden");
+    $swt_amt = postSpaceFilter("swt_amt");
     $swt_pic = postSpaceFilter("swt_pic_hidden");
 
     $swt_attach = null;
@@ -422,7 +422,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         </div>
 
         <div class="col-12 col-md-4 mb-3 autocomplete">
-            <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit<span class="requireRed">*</span></label>
+        <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit*<span class="requireRed"></span></label>
             <?php
             unset($echoVal);
 
@@ -438,7 +438,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 $currency_row = $currency_rst->fetch_assoc();
             }
             ?>
-            <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
+            <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
             <input type="hidden" name="curr_hidden" id="curr_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
             <?php if (isset($curr_err)) { ?>
