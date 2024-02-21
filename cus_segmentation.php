@@ -79,7 +79,7 @@ if (post('actionBtn')) {
             $colorSegmentation =  postSpaceFilter('segmentationColor');
             $currentDataboxFrom = postSpaceFilter('boxFrom');
             $currentDataboxUntil = postSpaceFilter('boxUntil');
-            $brandSeries = postSpaceFilter('brandSeries');
+            $brandSeries = postSpaceFilter('brandSeries_hidden');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
@@ -292,11 +292,36 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </div>
                             </div>
                             <div class="col-sm autocomplete">
-                                <label class="form-label" for="brandSeries">Brand Series</label>
-                                <input class="form-control" type="text" name="brandSeries" id="brandSeries" value="<?php if (isset($row['brandSeries'])) echo $row['brandSeries'] ?>" <?php if ($act == '') echo 'readonly' ?> autocomplete="off">
-                                <div id="brandSeriesErrorMsg" class="error-message">
-                                    <span class="mt-n1"></span>
-                                </div>
+                            <label class="form-label form_lbl" id="brandSeries_lbl" for="brandSeries">Brand Series</label>
+                                <?php
+                                                        unset($echoVal);
+
+                                                        if (isset($row['brandSeries']))
+                                                            $echoVal = $row['brandSeries'];
+
+                                                        if (isset($echoVal)) {
+                                                            $brd_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
+                                                            if (!$brd_rst) {
+                                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                            }
+                                                            $brd_row = $brd_rst->fetch_assoc();
+                                                        }
+                                                        ?>
+                                                        <input class="form-control" type="text" name="brandSeries"
+                                                            id="brandSeries" <?php if ($act == '')
+                                                                echo 'disabled' ?>
+                                                                value="<?php echo !empty($echoVal) ? $brd_row['name'] : '' ?>">
+                                                        <input type="hidden" name="brandSeries_hidden" id="brandSeries_hidden"
+                                                            value="<?php echo (isset($row['brandSeries'])) ? $row['brandSeries'] : ''; ?>">
+
+                                                        <?php if (isset($curr_err)) { ?>
+                                                            <div id="err_msg">
+                                                                <span class="mt-n1">
+                                                                    <?php echo $brandseries_err; ?>
+                                                                </span>
+                                                            </div>
+                                                        <?php } ?>
                             </div>
                         </div>
                     </div>

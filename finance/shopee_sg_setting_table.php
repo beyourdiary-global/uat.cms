@@ -1,29 +1,32 @@
 <?php
-$pageTitle =  "Customer Segmentation";
+$pageTitle = "Shopee SG Setting";
+$isFinance = 1;
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
-
-$tblName = CUR_SEGMENTATION;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/cus_segmentation.php';
-$deleteRedirectPage = $SITEURL . '/cus_segmentation_table.php';
+$redirect_page = $SITEURL . '/finance/shopee_sg_setting.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_sg_setting_table.php';
+$result = getData('*', '', '', SHOPEE_SG_SETT, $finance_connect);
+if (!$result) {
+    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+}
 
-$result = getData('*', '', '', $tblName, $connect);
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+    <link rel="stylesheet" href="../css/main.css">
 </head>
+
 <script>
     preloader(300);
 
@@ -39,8 +42,8 @@ $result = getData('*', '', '', $tblName, $connect);
 
     <div class="page-load-cover">
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
             <div class="col-12 col-md-8">
+
 
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
@@ -52,7 +55,7 @@ $result = getData('*', '', '', $tblName, $connect);
                             <h2><?php echo $pageTitle ?></h2>
                             <div class="mt-auto mb-auto">
                                 <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Setting </a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -64,31 +67,25 @@ $result = getData('*', '', '', $tblName, $connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Color Segmentation</th>
-                            <th scope="col">Box From</th>
-                            <th scope="col">Box Until</th>
-                            <th scope="col">Brand Series</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">Commission Fees Rate (%)</th>
+                            <th scope="col">Service Fee Rate (%)</th>
+                            <th scope="col">Transaction Fee (%)</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php
-                        while ($row = $result->fetch_assoc()) {
-                            $brnd = getData('name', "id='" . $row['brandSeries'] . "'", '', BRD_SERIES, $connect);
-                            $row2 = $brnd->fetch_assoc();
-                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                         while ($row = $result->fetch_assoc()) {
+                          
+                        ?>
+    
                                 <tr>
-                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row['colorCode'])) { ?><input type="color" value="<?= $row['colorCode'] ?>" disabled><?php } ?></td>
-                                    <td scope="row"><?php if (isset($row['boxFrom'])) echo $row['boxFrom'] ?></td>
-                                    <td scope="row"><?php if (isset($row['boxUntil'])) echo $row['boxUntil'] ?></td>
-                                    <td scope="row"><?php if (isset($row['brandSeries'])) echo $row2['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($row['commission'])) echo $row['commission'] ?></td>
+                                    <td scope="row"><?php if (isset($row['service'])) echo $row['service'] ?></td>
+                                    <td scope="row"><?php if (isset($row['transaction'])) echo $row['transaction'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -107,29 +104,24 @@ $result = getData('*', '', '', $tblName, $connect);
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
-                        <?php
-                            }
-                        }
+                        <?php }
+                        
                         ?>
                     </tbody>
-
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Color Segmentation</th>
-                            <th scope="col">Box From</th>
-                            <th scope="col">Box Until</th>
-                            <th scope="col">Brand Series</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Commission Fees Rate (%)</th>
+                            <th scope="col">Service Fee Rate (%)</th>
+                            <th scope="col">Transaction Fee (%)</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
@@ -139,7 +131,6 @@ $result = getData('*', '', '', $tblName, $connect);
     </div>
 
     <script>
-        //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
