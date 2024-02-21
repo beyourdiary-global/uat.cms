@@ -5,16 +5,15 @@ $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblname = CRED_NOTES_INV;
+$tblName = CRED_NOTES_INV;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-var_dump($_POST);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/cred_notes_inv.php';
-$result = getData('*', '', '', $tblname, $finance_connect);
+$result = getData('*', '', '', $tblName, $finance_connect);
 
 if (post('pay_status_option')) {
     $inv_id = post('inv_id');
@@ -22,7 +21,7 @@ if (post('pay_status_option')) {
 
     $datafield = $oldvalarr = $chgvalarr = array();
 
-    $rst = getData('*', "id = '$inv_id'", '', $tblname, $finance_connect);
+    $rst = getData('*', "id = '$inv_id'", '', $tblName, $finance_connect);
 
     echo "<script>console.log('TEST2')</script>";
 
@@ -45,9 +44,9 @@ if (post('pay_status_option')) {
 
     if ($oldvalarr && $chgvalarr) {
         try {
-            $query = "UPDATE " . $tblname . " SET payment_status = '$payment_status' WHERE id = '$inv_id'";
+            $query = "UPDATE " . $tblName . " SET payment_status = '$payment_status' WHERE id = '$inv_id'";
             mysqli_query($finance_connect, $query);
-            generateDBData($tblname, $finance_connect);
+            generateDBData($tblName, $finance_connect);
         } catch (Exception $e) {
             $errorMsg = $e->getMessage();
         }
@@ -65,7 +64,7 @@ if (post('pay_status_option')) {
             'connect'      => $connect,
             'oldval'       => implodeWithComma($oldvalarr),
             'changes'      => implodeWithComma($chgvalarr),
-            'act_msg'      => actMsgLog($leave_type_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
+            'act_msg'      => actMsgLog($payment_status, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
         ];
         echo "<script>console.log('TEST5')</script>";
 
