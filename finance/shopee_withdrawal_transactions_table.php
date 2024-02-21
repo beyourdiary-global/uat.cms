@@ -59,7 +59,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
-                            <th scope="col">Withdrawal Amount</th>
+                            <th scope="col">Currency Unit</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th> 
@@ -71,8 +71,11 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
 
                         <?php while ($row = $result->fetch_assoc()) {    
                            
-                               $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                               $usr = $pic->fetch_assoc();
+                           $currency = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                           $row2 = $currency->fetch_assoc();
+
+                           $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                           $usr = $pic->fetch_assoc();
                                 
                                 ?>
 
@@ -82,7 +85,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
                                     <td scope="row"><?php if (isset($row['swt_id'])) echo $row['swt_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['currency_unit'])) echo $row2['currency_unit'] ?></td>
                                     <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
@@ -124,7 +127,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
-                            <th scope="col">Withdrawal Amount</th>
+                            <th scope="col">Currency Unit</th>
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th>       
