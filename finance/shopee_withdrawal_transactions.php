@@ -67,6 +67,7 @@ if (post('actionBtn')) {
     $swt_date = postSpaceFilter("swt_date");
     $swt_id = postSpaceFilter("swt_id");
     $curr = postSpaceFilter('curr_hidden');
+    $swt_amt = postSpaceFilter('swt_amt');
     $swt_pic = postSpaceFilter("swt_pic_hidden");
 
     $swt_attach = null;
@@ -122,7 +123,9 @@ if (post('actionBtn')) {
             } else if (!$swt_id) {
                 $id_err = "Please specify the id.";
                 break;
-           
+            } else if (!$swt_amt) {
+                $amt_err = "Please specify the amount.";
+                break;         
             } else if (!$swt_pic && $swt_pic < 1) {
                 $pic_err = "Please specify the person-in-charge.";
                 break;
@@ -147,6 +150,11 @@ if (post('actionBtn')) {
                         array_push($datafield, 'currency_unit');
                     }
 
+                    if ($swt_amt) {
+                        array_push($newvalarr, $swt_amt);
+                        array_push($datafield, 'amount');
+                    }
+
                     if ($swt_pic) {
                         array_push($newvalarr, $swt_pic);
                         array_push($datafield, 'pic');
@@ -162,7 +170,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(date,swt_id,currency_unit,pic,attachment,remark,create_by,create_date,create_time) VALUES ('$swt_date','$swt_id','$curr','$swt_pic','$swt_attach','$swt_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(date,swt_id,currency_unit,amount,pic,attachment,remark,create_by,create_date,create_time) VALUES ('$swt_date','$swt_id','$curr','$swt_amt','$swt_pic','$swt_attach','$swt_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
@@ -188,6 +196,13 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['swt_id']);
                         array_push($chgvalarr, $swt_id);
                         array_push($datafield, 'swt_id');
+                    }
+
+                    if ($row['amount'] != $swt_amt) {
+                        array_push($oldvalarr, $row['amount']);
+                        array_push($chgvalarr, $swt_amt);
+                        array_push($datafield, 'amount');
+
                     }
 
                     if ($row['currency_unit'] != $curr) {
@@ -221,7 +236,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
-                        $query = "UPDATE " . $tblName  . " SET date = '$swt_date', swt_id = '$swt_id', currency_unit = '$curr', pic = '$swt_pic', attachment = '$swt_attach', remark ='$swt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET date = '$swt_date', swt_id = '$swt_id', currency_unit = '$curr', amount = '$swt_amt', pic = '$swt_pic', attachment = '$swt_attach', remark ='$swt_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
                      
@@ -388,60 +403,78 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     <div class="form-group">
     <div class="row">
-    <div class="col-12 col-md-6 mb-3 autocomplete">
-        <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit<span class="requireRed">*</span></label>
-        <?php
-        unset($echoVal);
-
-        if (isset($row['currency_unit']))
-            $echoVal = $row['currency_unit'];
-
-        if (isset($echoVal)) {
-            $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-            if (!$currency_rst) {
-                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-            }
-            $currency_row = $currency_rst->fetch_assoc();
-        }
-        ?>
-        <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
-        <input type="hidden" name="curr_hidden" id="curr_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
-
-        <?php if (isset($curr_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $curr_err; ?></span>
+        <div class="col-12 col-md-4">
+            <div class="form-group mb-3">
+                <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount<span class="requireRed">*</span></label>
+                <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
+                    if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
+                        echo $row['amount'];
+                    } else if (isset($swt_amt)) {
+                        echo $swt_amt;
+                    }
+                ?>" <?php if ($act == '') echo 'disabled' ?>>
+                <?php if (isset($amt_err)) { ?>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php echo $amt_err; ?></span>
+                    </div>
+                <?php } ?>
             </div>
-        <?php } ?>
-    </div>
+        </div>
 
-    <div class="col-12 col-md-6 mb-3 autocomplete">
-        <label class="form-label form_lbl" id="swt_pic_lbl" for="swt_pic">Person-In-Charge*<span class="requireRed"></span></label>
-        <?php
-        unset($echoVal);
+        <div class="col-12 col-md-4 mb-3 autocomplete">
+            <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
 
-        if (isset($row['pic']))
-            $echoVal = $row['pic'];
+            if (isset($row['currency_unit']))
+                $echoVal = $row['currency_unit'];
 
-        if (isset($echoVal)) {
-            $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
-            if (!$user_rst) {
-                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+            if (isset($echoVal)) {
+                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                if (!$currency_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $currency_row = $currency_rst->fetch_assoc();
             }
-            $user_row = $user_rst->fetch_assoc();
-        }
-        ?>
-        <input class="form-control" type="text" name="swt_pic" id="swt_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
-        <input type="hidden" name="swt_pic_hidden" id="swt_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+            ?>
+            <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
+            <input type="hidden" name="curr_hidden" id="curr_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
-        <?php if (isset($pic_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1"><?php echo $pic_err; ?></span>
-            </div>
-        <?php } ?>
+            <?php if (isset($curr_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+
+        <div class="col-12 col-md-4 mb-3 autocomplete">
+            <label class="form-label form_lbl" id="swt_pic_lbl" for="swt_pic">Person-In-Charge*<span class="requireRed"></span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['pic']))
+                $echoVal = $row['pic'];
+
+            if (isset($echoVal)) {
+                $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                if (!$user_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $user_row = $user_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="swt_pic" id="swt_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
+            <input type="hidden" name="swt_pic_hidden" id="swt_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+
+            <?php if (isset($pic_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $pic_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
     </div>
-</div>
 </div>
 
 

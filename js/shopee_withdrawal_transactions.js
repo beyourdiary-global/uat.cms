@@ -52,6 +52,10 @@ $("#curr").on("input", function() {
     $(".curr-err").remove();
 });
 
+$("#swt_amt").on("input", function() {
+    $(".swt-amt-err").remove();
+});
+
 $("#swt_attach").on("input", function() {
     $(".swt-attach-err").remove();
 });
@@ -64,6 +68,7 @@ $('.submitBtn').on('click', () => {
     var id_chk = 0;
     var pic_chk = 0;
     var curr_chk = 0;
+    var amt_chk = 0;
     var attach_chk = 0;
 
 
@@ -106,6 +111,16 @@ $('.submitBtn').on('click', () => {
         $(".curr-err").remove();
         curr_chk = 1;
     }
+   
+    if (($('#swt_amt').val() == '' || $('#swt_amt').val() == '0' || $('#swt_amt').val() === null || $('#swt_amt')
+            .val() === undefined)) {
+        amt_chk = 0;
+        $("#swt_amt").after(
+            '<span class="error-message coh-amt-err">Amount is required!</span>');
+    } else {
+        $(".swt-amt-err").remove();
+        amt_chk = 1;
+    }
     
     if ($('#swt_attach').prop('files').length > 0 || $('#swt_attachmentValue').val() !== '') {
         attach_chk = 1;
@@ -114,7 +129,7 @@ $('.submitBtn').on('click', () => {
         $("#swt_attach").after('<span class="error-message swt-attach-err">Attachment is required!</span>');
     }
 
-    if (date_chk == 1 && id_chk == 1 && pic_chk == 1 && curr_chk == 1 && attach_chk == 1)
+    if (date_chk == 1 && id_chk == 1 && pic_chk == 1 && curr_chk == 1 && amt_chk == 1 && attach_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
