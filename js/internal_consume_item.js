@@ -61,7 +61,7 @@ $("#ici_pic").on("input", function() {
     $(".ici-pic-err").remove();
 });
 
-$("#ici_pic").on("input", function() {
+$("#ici_brand").on("input", function() {
     $(".ici-brand-err").remove();
 });
 
@@ -76,6 +76,7 @@ $('.submitBtn').on('click', () => {
     var pic_chk = 0;
     var brand_chk = 0;
     var package_chk = 0;
+    var cost_chk = 0;
  
 
     if (($('#ici_date').val() === '' || $('#ici_date').val() === null || $('#ici_date')
@@ -118,7 +119,17 @@ $('.submitBtn').on('click', () => {
         package_chk = 1;
     }
 
-    if (date_chk == 1 && pic_chk == 1 && brand_chk == 1 && package_chk == 1)
+    if (($('#ici_cost').val() === '' || $('#ici_cost').val() === null || $('#ici_cost')
+            .val() === undefined)) {
+                cost_chk = 0;
+        $("#ici_cost").after(
+            '<span class="error-message ici-package-err">Cost is required!</span>');
+    } else {
+        $(".ici-cost-err").remove();
+        cost_chk = 1;
+    }
+
+    if (date_chk == 1 && pic_chk == 1 && brand_chk == 1 && package_chk == 1 && cost_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
