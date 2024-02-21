@@ -77,6 +77,8 @@ $result = getData('*', '', '', $tblName, $connect);
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
+                            $brnd = getData('name', "id='" . $row['brandSeries'] . "'", '', BRD_SERIES, $connect);
+                            $row2 = $brnd->fetch_assoc();
                             if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
@@ -85,7 +87,7 @@ $result = getData('*', '', '', $tblName, $connect);
                                     <td scope="row"><?php if (isset($row['colorCode'])) { ?><input type="color" value="<?= $row['colorCode'] ?>" disabled><?php } ?></td>
                                     <td scope="row"><?php if (isset($row['boxFrom'])) echo $row['boxFrom'] ?></td>
                                     <td scope="row"><?php if (isset($row['boxUntil'])) echo $row['boxUntil'] ?></td>
-                                    <td scope="row"><?php if (isset($row['brandSeries'])) echo $row['brandSeries'] ?></td>
+                                    <td scope="row"><?php if (isset($row['brandSeries'])) echo $row2['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
