@@ -19,6 +19,20 @@ $(document).ready(function() {
         });
 
     }
+
+    if (!($("#curr").attr('disabled'))) {
+        $("#curr").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'unit', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= CUR_UNIT ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+            console.log(hiddenElementID.val())
+        });
+    }
 })
 
 //jQuery form validation
@@ -30,12 +44,16 @@ $("#swt_id").on("input", function() {
     $(".swt-id-err").remove();
 });
 
-$("#swt_amt").on("input", function() {
-    $(".swt-amt-err").remove();
-});
-
 $("#swt_pic").on("input", function() {
     $(".swt-pic-err").remove();
+});
+
+$("#curr").on("input", function() {
+    $(".curr-err").remove();
+});
+
+$("#swt_amt").on("input", function() {
+    $(".swt-amt-err").remove();
 });
 
 $("#swt_attach").on("input", function() {
@@ -48,8 +66,9 @@ $('.submitBtn').on('click', () => {
     //event.preventDefault();
     var date_chk = 0;
     var id_chk = 0;
-    var amt_chk = 0;
     var pic_chk = 0;
+    var curr_chk = 0;
+    var amt_chk = 0;
     var attach_chk = 0;
 
 
@@ -73,17 +92,6 @@ $('.submitBtn').on('click', () => {
         id_chk = 1;
     }
 
-
-    if (($('#swt_amt').val() == '' || $('#swt_amt').val() == '0' || $('#swt_amt').val() === null || $('#swt_amt')
-            .val() === undefined)) {
-        amt_chk = 0;
-        $("#swt_amt").after(
-            '<span class="error-message coh-amt-err">Amount(SGD) is required!</span>');
-    } else {
-        $(".swt-amt-err").remove();
-        amt_chk = 1;
-    }
-
     if (($('#swt_pic').val() === '' || $('#swt_pic').val() === null || $('#swt_pic')
             .val() === undefined)) {
         pic_chk = 0;
@@ -94,6 +102,25 @@ $('.submitBtn').on('click', () => {
         pic_chk = 1;
     }
 
+     if (($('#curr').val() === '' || $('#curr').val() === null || $('#curr')
+            .val() === undefined)) {
+        curr_chk = 0;
+        $("#curr").after(
+            '<span class="error-message curr-err">Currency Unit is required!</span>');
+    } else {
+        $(".curr-err").remove();
+        curr_chk = 1;
+    }
+   
+    if (($('#swt_amt').val() == '' || $('#swt_amt').val() == '0' || $('#swt_amt').val() === null || $('#swt_amt')
+            .val() === undefined)) {
+        amt_chk = 0;
+        $("#swt_amt").after(
+            '<span class="error-message coh-amt-err">Amount is required!</span>');
+    } else {
+        $(".swt-amt-err").remove();
+        amt_chk = 1;
+    }
     
     if ($('#swt_attach').prop('files').length > 0 || $('#swt_attachmentValue').val() !== '') {
         attach_chk = 1;
@@ -102,7 +129,7 @@ $('.submitBtn').on('click', () => {
         $("#swt_attach").after('<span class="error-message swt-attach-err">Attachment is required!</span>');
     }
 
-    if (date_chk == 1 && id_chk == 1 && amt_chk == 1 && pic_chk == 1 && attach_chk == 1)
+    if (date_chk == 1 && id_chk == 1 && pic_chk == 1 && curr_chk == 1 && amt_chk == 1 && attach_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
