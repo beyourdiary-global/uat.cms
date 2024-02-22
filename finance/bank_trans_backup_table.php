@@ -1,6 +1,5 @@
 <?php
 ob_start();
-
 $pageTitle = "Monthly Bank Transaction Backup Record";
 $isFinance = 1;
 include '../menuHeader.php';
@@ -30,10 +29,9 @@ if (!empty($checkboxValues)) {
     );    // Get the data from the database using the WHERE clause
     $query2 = $finance_connect->query("SELECT * FROM " . BANK_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY year ASC, month ASC");
 
-
+    $excelRowNum = 1;
     if ($query2->num_rows > 0) {
         while ($row2 = $query2->fetch_assoc()) {
-            $excelRowNum = 1; // Consider removing this line if it's not needed
             // Initialize an empty array to store the row data
             $lineData = array();
             $lineData[] = $excelRowNum;
@@ -41,16 +39,18 @@ if (!empty($checkboxValues)) {
 
             if (isset($row2['attachment']) && !empty($row2['attachment'])) {
                 $attachmentSourcePath = $img_path . $row2['attachment'];
-                $yearFolder = $tempAttachDir . $row2['year'] . '/';
-                $monthFolder = $yearFolder . $fullMonthName . '/';
-                if (!file_exists($yearFolder)) {
-                    mkdir($yearFolder, 0777, true);
+                if (file_exists($attachmentSourcePath)) {
+                    $yearFolder = $tempAttachDir . $row2['year'] . '/';
+                    $monthFolder = $yearFolder . $fullMonthName . '/';
+                    if (!file_exists($yearFolder)) {
+                        mkdir($yearFolder, 0777, true);
+                    }
+                    if (!file_exists($monthFolder)) {
+                        mkdir($monthFolder, 0777, true);
+                    }
+                    $attachmentDestPath = $monthFolder . $row2['attachment'];
+                    copy($attachmentSourcePath, $attachmentDestPath);
                 }
-                if (!file_exists($monthFolder)) {
-                    mkdir($monthFolder, 0777, true);
-                }
-                $attachmentDestPath = $monthFolder . $row2['attachment'];
-                copy($attachmentSourcePath, $attachmentDestPath);
             }
 
             // Define the column names in the same order as in your database query
@@ -83,15 +83,76 @@ if (!empty($checkboxValues)) {
 
         if ($tempExcelFilePath) {
             $xlsx->saveAs($tempExcelFilePath);
+            $zipFile = date('Ymd_His') . ".zip";
+            $zip = new ZipArchive();
 
+            $zip = new ZipArchive();
+            if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+                die("Failed to create zip file");
+            }
+
+            // Add the Excel file to the root of the zip archive
+            $zip->addFile($tempExcelFilePath, basename($tempExcelFilePath));
+
+            // Add the 'attachment' folder to the zip archive
+            addDirToZip($tempAttachDir, $zip, $tempAttachDir);
+
+            // Close the zip archive
+            $zip->close();
+
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' .$zipFile .'"');
+            header('Content-Length: ' . filesize($zipFile));
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            ob_clean();
+            readfile($zipFile);
+            deleteDir($tempDir);
             
 
-        } else {
-            echo 'Failed to create temporary Excel file';
+        }
+
+    } else {
+        echo 'Failed to create temporary Excel file';
+    }
+}
+
+function addDirToZip($dir, $zip, $basePath)
+{
+    $files = scandir($dir);
+    foreach ($files as $file) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+        $filePath = $dir . $file;
+        if (is_file($filePath)) {
+            // Add the file to the zip archive with a relative path
+            $relativePath = str_replace($basePath, '', $filePath);
+            $zip->addFile($filePath, $relativePath);
+        } elseif (is_dir($filePath)) {
+            // Add the directory to the zip archive
+            $zip->addEmptyDir(str_replace($basePath, '', $filePath));
+            // Recursively add files and directories inside the current directory
+            addDirToZip($filePath . '/', $zip, $basePath);
         }
     }
-
 }
+
+function deleteDir($dirPath) {
+    if (!is_dir($dirPath)) {
+        return;
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}
+
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
