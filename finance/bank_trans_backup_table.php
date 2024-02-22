@@ -1,15 +1,60 @@
 <?php
+ob_start();
+
 $pageTitle = "Monthly Bank Transaction Backup Record";
 $isFinance = 1;
-include "../header/PhpXlsxGenerator/PhpXlsxGenerator.php";
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
+require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
+$fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 
-// Excel file name for download 
-$fileName = date('Y-m-d H:i:s') . "_list" . ".xlsx"; 
+$checkboxValues = isset($_COOKIE['rowID']) ? $_COOKIE['rowID'] : '';
 
-//defining column names
-$excelData[] = array('S/N', 'YEAR', 'MONTH', 'ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME');
+// Check if any checkboxes are checked
+if (!empty($checkboxValues)) {
+    setcookie('rowID', '', time() - 3600, '/');
+    // Defining column names
+    $excelData = array(
+        array('S/N', 'YEAR', 'MONTH', 'ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
+    );    // Get the data from the database using the WHERE clause
+    $query2 = $finance_connect->query("SELECT * FROM " . BANK_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY year ASC, month ASC");
+
+
+    if ($query2->num_rows > 0) {
+        while ($row2 = $query2->fetch_assoc()) {
+            $excelRowNum = 1; // Consider removing this line if it's not needed
+            // Initialize an empty array to store the row data
+            $lineData = array();
+            $lineData[] = $excelRowNum;
+
+            // Define the column names in the same order as in your database query
+            $columnNames = array('year', 'month', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
+
+            foreach ($columnNames as $columnName) {
+                // Check if the value is null, if so, replace it with an empty string
+                if ($columnName === 'create_by' || $columnName === 'update_by') {
+                    $name = '';
+                    $pic = getData('name', "id='" . $row2[$columnName] . "'", '', USR_USER, $connect);
+                    if ($pic && $pic->num_rows > 0) {
+                        $user = $pic->fetch_assoc();
+                        $name = $user['name'];
+                    }
+                    $lineData[] = $name;
+                } elseif ($columnName === 'create_date') {
+                    // Modify create_date value as needed
+                    $lineData[] = isset($row2[$columnName]) ? $row2[$columnName] : '';
+                } else {
+                    $lineData[] = isset($row2[$columnName]) ? $row2[$columnName] : '';
+                }
+            }
+            $excelData[] = $lineData;
+            $excelRowNum++;
+        }
+        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excelData);
+        $xlsx->downloadAs($fileName);
+    }
+
+}
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
@@ -18,6 +63,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/bank_trans_backup.php';
+
 $result = getData('*', '', '', BANK_TRANS_BACKUP, $finance_connect);
 
 $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
@@ -32,7 +78,17 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
 
 <script>
     $(document).ready(() => {
-        createSortingTable('bank_trans_backup_table');
+        let table = new DataTable("#bank_trans_backup_table", {
+            paging: $("#bank_trans_backup_table tbody tr").length > 10,
+            searching: $("#bank_trans_backup_table tbody tr").length > 10,
+            /* info: false, */
+            order: [[2, "asc"]], // 0 = db id column; 1 = numbering column
+            /* responsive: true, */
+            autoWidth: false,
+            "columnDefs": [
+                { "orderable": false, "targets": 0 } // Disabling sorting for the first column (index 0)
+            ]
+        })
     });
 </script>
 
@@ -64,8 +120,8 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"
-                                        href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-file-export"></i> Export</a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"><i
+                                        class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -81,7 +137,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                     <thead>
                         <tr>
                             <th class="text-center">
-                                <input type="checkbox" class="leaveAssignAll">
+                                <input type="checkbox" class="exportAll">
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
 
@@ -108,7 +164,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         <?= $row['id'] ?>
                                     </th>
                                     <th class="text-center">
-                                        <input type="checkbox" class="leaveAssign" value="<?= $row['id'] ?>">
+                                        <input type="checkbox" class="export" value="<?= $row['id'] ?>">
                                     </th>
                                     <th scope="row">
                                         <?= $num++; ?>
@@ -164,7 +220,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th class="text-center">
-                                <input type="checkbox" class="checkAll">
+                                <input type="checkbox" class="exportAll">
                             </th>
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Year</th>
@@ -200,7 +256,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
       to resize table with bootstrap 5 classes
     */
     datatableAlignment('bank_trans_backup_table');
-    <?php include '../js/bank_trans_backup_table.js'?>
+    <?php include '../js/bank_trans_backup_table.js' ?>
 </script>
 
 </html>
