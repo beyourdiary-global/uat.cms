@@ -7,6 +7,17 @@ include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
+$img_path = '../' . img_server . 'finance/bank_trans_backup/';
+
+
+$tempDir = '../' . img_server . "temp/";
+$tempAttachDir = $tempDir . "attachment/";
+if (!file_exists($tempDir)) {
+    mkdir($tempDir, 0777, true);
+}
+if (!file_exists($tempAttachDir)) {
+    mkdir($tempAttachDir, 0777, true);
+}
 
 $checkboxValues = isset($_COOKIE['rowID']) ? $_COOKIE['rowID'] : '';
 
@@ -26,6 +37,21 @@ if (!empty($checkboxValues)) {
             // Initialize an empty array to store the row data
             $lineData = array();
             $lineData[] = $excelRowNum;
+            $fullMonthName = monthNumberToString($row2['month']);
+
+            if (isset($row2['attachment']) && !empty($row2['attachment'])) {
+                $attachmentSourcePath = $img_path . $row2['attachment'];
+                $yearFolder = $tempAttachDir . $row2['year'] . '/';
+                $monthFolder = $yearFolder . $fullMonthName . '/';
+                if (!file_exists($yearFolder)) {
+                    mkdir($yearFolder, 0777, true);
+                }
+                if (!file_exists($monthFolder)) {
+                    mkdir($monthFolder, 0777, true);
+                }
+                $attachmentDestPath = $monthFolder . $row2['attachment'];
+                copy($attachmentSourcePath, $attachmentDestPath);
+            }
 
             // Define the column names in the same order as in your database query
             $columnNames = array('year', 'month', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
@@ -51,7 +77,18 @@ if (!empty($checkboxValues)) {
             $excelRowNum++;
         }
         $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excelData);
-        $xlsx->downloadAs($fileName);
+        // $xlsx->downloadAs($fileName);
+
+        $tempExcelFilePath = $tempDir . $fileName;
+
+        if ($tempExcelFilePath) {
+            $xlsx->saveAs($tempExcelFilePath);
+
+            
+
+        } else {
+            echo 'Failed to create temporary Excel file';
+        }
     }
 
 }
