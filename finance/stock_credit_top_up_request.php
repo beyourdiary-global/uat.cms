@@ -310,8 +310,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             $mrcht_row = $mrcht_rst->fetch_assoc();
         }
         ?>
-        <input class="form-control" type="text" name="sc_mrcht" id="sc_mrcht" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
-        <input type="hidden" name="sc_mrcht_hidden" id="sc_mrcht_hidden" value="<?php echo (isset($row['merchant'])) ? $row['mrcht'] : ''; ?>">
+        <input class="form-control" type="text" name="sc_mrcht" id="sc_mrcht" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+        <input type="hidden" name="sc_mrcht_hidden" id="sc_mrcht_hidden" value="<?php echo (isset($row['merchant'])) ? $row['merchant'] : ''; ?>">
 
         <?php if (isset($mrcht_err)) { ?>
             <div id="err_msg">
@@ -335,7 +335,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 $brand_row = $brand_result->fetch_assoc();
             }
             ?>
-            <input class="form-control" type="text" name="brand" id="brand" value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+            <input class="form-control" type="text" name="brand" id="brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
             <input type="hidden" name="brand_hidden" id="brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
             <div id="err_msg">
                 <span class="mt-n1"><?php if (isset($brand_err)) echo $brand_err; ?></span>
@@ -364,7 +364,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             $currency_row = $currency_rst->fetch_assoc();
         }
         ?>
-        <input class="form-control" type="text" name="sc_currency" id="sc_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+        <input class="form-control" type="text" name="sc_currency" id="sc_currency" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
         <input type="hidden" name="sc_currency_hidden" id="sc_currency_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
         <?php if (isset($currency_err)) { ?>
