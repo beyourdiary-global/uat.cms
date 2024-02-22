@@ -97,7 +97,7 @@ if (!$result) {
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($rowBrand['name'])) echo $rowBrand['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row2['amount'])) echo $row2['amount'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
