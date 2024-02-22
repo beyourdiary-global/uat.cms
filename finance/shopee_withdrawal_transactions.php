@@ -403,25 +403,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     <div class="form-group">
     <div class="row">
-        <div class="col-12 col-md-4">
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount<span class="requireRed">*</span></label>
-                <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
-                    if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
-                        echo $row['amount'];
-                    } else if (isset($swt_amt)) {
-                        echo $swt_amt;
-                    }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
-                <?php if (isset($amt_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1"><?php echo $amt_err; ?></span>
-                    </div>
-                <?php } ?>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4 mb-3 autocomplete">
+    <div class="col-12 col-md-4 mb-3 autocomplete">
         <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit*<span class="requireRed"></span></label>
             <?php
             unset($echoVal);
@@ -446,6 +428,24 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <span class="mt-n1"><?php echo $curr_err; ?></span>
                 </div>
             <?php } ?>
+        </div>
+        
+        <div class="col-12 col-md-4">
+            <div class="form-group mb-3">
+                <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount<span class="requireRed">*</span></label>
+                <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
+                    if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
+                        echo $row['amount'];
+                    } else if (isset($swt_amt)) {
+                        echo $swt_amt;
+                    }
+                ?>" <?php if ($act == '') echo 'disabled' ?>>
+                <?php if (isset($amt_err)) { ?>
+                    <div id="err_msg">
+                        <span class="mt-n1"><?php echo $amt_err; ?></span>
+                    </div>
+                <?php } ?>
+            </div>
         </div>
 
         <div class="col-12 col-md-4 mb-3 autocomplete">
