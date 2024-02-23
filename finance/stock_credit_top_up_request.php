@@ -302,7 +302,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             $echoVal = $row['merchant'];
 
         if (isset($echoVal)) {
-            $mrcht_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+            $mrcht_rst = getData('name', "id = '$echoVal'", '', MERCHANT, $finance_connect);
             if (!$mrcht_rst) {
                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
