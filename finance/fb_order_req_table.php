@@ -104,7 +104,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                         $fb_page = $q6->fetch_assoc();
 
                         //channel
-                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANNEL, $connect);
+                        $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANEL_SC_MD, $finance_connect);
                         $channel = $q7->fetch_assoc();
 
                         $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);

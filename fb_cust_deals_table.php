@@ -106,7 +106,7 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                             $fb_page = $q6->fetch_assoc();
 
                             //channel
-                            $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANNEL, $connect);
+                            $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANEL_SC_MD, $finance_connect);
                             $channel = $q7->fetch_assoc();
                             ?>
 

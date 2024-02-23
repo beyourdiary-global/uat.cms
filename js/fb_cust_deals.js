@@ -78,7 +78,7 @@ $(document).ready(function() {
                 searchType: 'name', // column of the table
                 elementID: $(this).attr('id'), // id of the input
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input fcb storing the value
-                dbTable: '<?= CHANNEL ?>', // json filename (generated when login)
+                dbTable: '<?= CHANEL_SC_MD ?>', // json filename (generated when login)
             }
             searchInput(param, '<?= $SITEURL ?>');
         });
