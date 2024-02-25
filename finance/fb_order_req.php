@@ -527,7 +527,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <div class="col-md-4 mb-3">
                             <label class="form-label form_lbl" id="for_contact_lbl" for="for_contact">Contact<span
                                     class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="for_contact" id="for_contact" value="<?php
+                            <input class="form-control" type="number" step="0.01" name="for_contact" id="for_contact" value="<?php
                             if (isset($dataExisted) && isset($row['contact']) && !isset($for_contact)) {
                                 echo $row['contact'];
                             } else if (isset($for_contact)) {
