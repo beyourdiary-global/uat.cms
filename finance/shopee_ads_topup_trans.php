@@ -465,7 +465,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md mb-3">
                                 <label class="form-label form_lbl" id="sat_amt_lbl" for="sat_amt">Amount<span
                                         class="requireRed">*</span></label>
-                                <input class="form-control" type="text" name="sat_amt" id="sat_amt" value="<?php
+                                <input class="form-control" type="number" step="0.01" name="sat_amt" id="sat_amt" value="<?php
                                 if (isset($dataExisted) && isset($row['topup_amt']) && !isset($sat_amt)) {
                                     echo $row['topup_amt'];
                                 } else if (isset($sat_amt)) {
@@ -484,7 +484,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md mb-3">
                                 <label class="form-label form_lbl" id="sat_subtotal_lbl" for="sat_subtotal">Subtotal<span
                                         class="requireRed">*</span></label>
-                                <input class="form-control" type="text" name="sat_subtotal" id="sat_subtotal" value="<?php
+                                <input class="form-control" type="number" step="0.01" name="sat_subtotal" id="sat_subtotal" value="<?php
                                 if (isset($dataExisted) && isset($row['subtotal']) && !isset($sat_subtotal)) {
                                     echo $row['subtotal'];
                                 } else if (isset($sat_subtotal)) {
@@ -507,7 +507,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md mb-3">
                                 <label class="form-label form_lbl" id="sat_gst_lbl" for="sat_gst">GST (%)<span
                                         class="requireRed">*</span></label>
-                                <input class="form-control" type="text" name="sat_gst" id="sat_gst" value="<?php
+                                <input class="form-control" type="number" step="0.01" name="sat_gst" id="sat_gst" value="<?php
                                 if (isset($dataExisted) && isset($row['gst']) && !isset($sat_gst)) {
                                     echo $row['gst'];
                                 } else if (isset($sat_gst)) {
