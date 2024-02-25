@@ -62,7 +62,7 @@ $menuList = array(
             array('Customer Info', 'mdi mdi-information-outline', $SITEURL . '/customerInfoTable.php', '38'),
             array('Facebook Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/fb_cust_deals_table.php', '75'),
             array('Website Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/website_customer_record_table.php', '84','85'),
-            array('Shopee Customer Record', 'mdi mdi-deal-outline', $SITEURL . '/shopee_cust_info_table.php', '85'),
+            array('Shopee Customer Record', 'mdi mdi-deal-outline', $SITEURL . '/finance/shopee_cust_info_table.php', '85'),
         ),
         'pin' => array('38','75','84','85')
     ),

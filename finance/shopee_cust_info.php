@@ -1,18 +1,18 @@
 <?php
-$pageTitle = "Shopee Account";
+$pageTitle = "Shopee Customer Record";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 
-$tblName = SHOPEE_ACC;
+$tblName = SHOPEE_CUST_INFO;
 
 //Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
-$actionBtnValue = ($act === 'I') ? 'addAccount' : 'updAccount';
+$actionBtnValue = ($act === 'I') ? 'addRecord' : 'updRecord';
 
-$redirect_page = $SITEURL . '/finance/shopee_acc_table.php';
+$redirect_page = $SITEURL . '/finance/shopee_cust_info_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -53,49 +53,70 @@ if (post('actionBtn')) {
     $action = post('actionBtn');
 
     switch ($action) {
-        case 'addAccount':
-        case 'updAccount':
+        case 'addRecord':
+        case 'updRecord':
 
-    $sa_name = postSpaceFilter("sa_name");
-    $sa_country = postSpaceFilter("sa_country_hidden");
-    $sa_currency = postSpaceFilter("sa_currency_hidden");
+    $scr_username = postSpaceFilter("scr_username");
+    $scr_pic = postSpaceFilter("scr_pic_hidden");
+    $scr_country = postSpaceFilter("scr_country_hidden");
+    $scr_brand = postSpaceFilter("scr_brand_hidden");
+    $scr_series = postSpaceFilter("scr_series_hidden");
+    $scr_remark = postSpaceFilter("scr_remark");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    if (isDuplicateRecord("name", $sa_name, $tblName,  $finance_connect, $dataID)) {
-        $name_err = "Duplicate record found for " . $pageTitle . " name.";
-        break;
-    }
-            if (!$sa_name) {
-                $name_err = "Please specify the account name.";
+            if (!$scr_username) {
+                $name_err = "Shopee Buyer Username cannot be empty";
                 break;
-            } else if (!$sa_country) {
-                $country_err = "Please specify the account country.";
+            } else if (!$scr_pic) {
+                $pic_err = "Sales Person In Charge cannot be empty";
                 break;
-            } else if (!$sa_currency) {
-                $currency_err = "Please specify the account currency.";
+            } else if (!$scr_country) {
+                $country_err = "Country cannot be empty";
                 break;
-            } else if ($action == 'addAccount') { 
+            } else if (!$scr_brand) {
+                $brand_err = "Brand cannot be empty";
+                break;
+            } else if (!$scr_series) {
+                $series_err = "Series cannot be empty";
+                break;
+            } else if ($action == 'addRecord') { 
                 try {
 
                     // check value
 
-                    if ($sa_name) {
-                        array_push($newvalarr, $sa_name);
+                    if ($scr_username) {
+                        array_push($newvalarr, $scr_username);
                         array_push($datafield, 'name');
                     }
 
-                    if ($sa_country) {
-                        array_push($newvalarr, $sa_country);
+                    if ($scr_pic) {
+                        array_push($newvalarr, $scr_pic);
+                        array_push($datafield, 'pic');
+                    }
+
+                    if ($scr_country) {
+                        array_push($newvalarr, $scr_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($sa_currency) {
-                        array_push($newvalarr, $sa_currency);
-                        array_push($datafield, 'currency_unit');
+                    if ($scr_brand) {
+                        array_push($newvalarr, $scr_brand);
+                        array_push($datafield, 'brand');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(name,country,currency_unit,create_by,create_date,create_time) VALUES ('$sa_name','$sa_country','$sa_currency','" . USER_ID . "',curdate(),curtime())";
+                    if ($scr_series) {
+                        array_push($newvalarr, $scr_series);
+                        array_push($datafield, 'series');
+                    }
+
+                    if ($scr_remark) {
+                        array_push($newvalarr, $scr_remark);
+                        array_push($datafield, 'remark');
+                    }
+
+
+                    $query = "INSERT INTO " . $tblName  . "(buyer_username,pic,country,brand,series,remark,create_by,create_date,create_time) VALUES ('$scr_username','$scr_pic','$scr_country','$scr_brand','$scr_series','$scr_remark','" . USER_ID . "',curdate(),curtime())";
 
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
@@ -113,22 +134,40 @@ if (post('actionBtn')) {
 
                     // check value
 
-                    if ($row['name'] != $sa_name) {
-                        array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $sa_name);
-                        array_push($datafield, 'name');
+                    if ($row['buyer_username'] != $scr_username) {
+                        array_push($oldvalarr, $row['buyer_username']);
+                        array_push($chgvalarr, $scr_username);
+                        array_push($datafield, 'buyer_username');
                     }
 
-                    if ($row['country'] != $sa_country) {
+                    if ($row['pic'] != $scr_pic) {
+                        array_push($oldvalarr, $row['pic']);
+                        array_push($chgvalarr, $scr_pic);
+                        array_push($datafield, 'pic');
+                    }
+
+                    if ($row['country'] != $scr_country) {
                         array_push($oldvalarr, $row['country']);
-                        array_push($chgvalarr, $sa_country);
+                        array_push($chgvalarr, $scr_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($row['currency_unit'] != $sa_currency) {
-                        array_push($oldvalarr, $row['currency_unit']);
-                        array_push($chgvalarr, $sa_currency);
-                        array_push($datafield, 'currency_unit');
+                    if ($row['brand'] != $scr_brand) {
+                        array_push($oldvalarr, $row['brand']);
+                        array_push($chgvalarr, $scr_brand);
+                        array_push($datafield, 'brand');
+                    }
+
+                    if ($row['series'] != $scr_series) {
+                        array_push($oldvalarr, $row['series']);
+                        array_push($chgvalarr, $scr_series);
+                        array_push($datafield, 'series');
+                    }
+
+                    if ($row['remark'] != $scr_remark) {
+                        array_push($oldvalarr, $row['remark']);
+                        array_push($chgvalarr, $scr_remark);
+                        array_push($datafield, 'remark');
                     }
 
                     // convert into string
@@ -137,10 +176,9 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {                      
-                        $query = "UPDATE " . $tblName  . " SET name = '$sa_name', country = '$sa_country', currency_unit = '$sa_currency', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET buyer_username = '$scr_username', pic = '$scr_pic', country = '$scr_country', brand = '$scr_brand', series = '$scr_series', remark = '$scr_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
-                     
                     } else {
                         $act = 'NC';
                     }
@@ -179,7 +217,7 @@ if (post('actionBtn')) {
 
             break;
             case 'back':
-                if ($action == 'addAccount' || $action == 'updAccount') {
+                if ($action == 'addRecord' || $action == 'updRecord') {
                     echo $clearLocalStorage . ' ' . $redirectLink;
                 } else {
                     echo $redirectLink;
@@ -250,9 +288,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         </div>
 
-    <div id="SAformContainer" class="container d-flex justify-content-center">
+    <div id="SCRformContainer" class="container d-flex justify-content-center">
         <div class="col-6 col-md-6 formWidthAdjust">
-            <form id="SAForm" method="post" action="" enctype="multipart/form-data">
+            <form id="SCRForm" method="post" action="" enctype="multipart/form-data">
                 <div class="form-group mb-5">
                     <h2>
                         <?php
@@ -268,19 +306,19 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
                     <div class="row">
                         <div class="col-md-12">
-                        <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
-                                    if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
+                        <label class="form-label form_lbl" id="scr_username_lbl" for="scr_username">Shopee Buyer Username<span class="requireRed">*</span></label>
+                            <input class="form-control" type="text" name="scr_username" id="scr_username" value="<?php 
+                                    if (isset($dataExisted) && isset($row['buyer_username']) && !isset($scr_username)) {
                                         echo $row['name'];
-                                        } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {
-                                            echo $sa_name;
+                                        } else if (isset($dataExisted) && isset($row['buyer_username']) && isset($scr_username)) {
+                                            echo $scr_username;
                                             } else {
                                                 echo '';
                                             } ?>" <?php if ($act == '') echo 'disabled' ?>>
         
-                            <?php if (isset($name_err)) { ?>
+                            <?php if (isset($username_err)) { ?>
                                 <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $name_err; ?></span>
+                                    <span class="mt-n1"><?php echo $username_err; ?></span>
                                 </div>
                             <?php } ?>
                         </div>
@@ -290,7 +328,35 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="form-group mb-3">
     <div class="row">
         <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_country_lbl" for="sa_country">Country<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="scr_pic_lbl" for="scr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['pic']))
+                $echoVal = $row['pic'];
+
+            if (isset($echoVal)) {
+                $pic_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                if (!$pic_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $pic_row = $pic_rst->fetch_assoc();
+            }
+            ?>
+
+            <input class="form-control" type="text" name="scr_pic" id="scr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $pic_row['name'] : ''  ?>">
+
+            <input type="hidden" name="scr_pic_hidden" id="scr_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+
+            <?php if (isset($pic_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $pic_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="scr_country_lbl" for="scr_country">Country<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
@@ -307,9 +373,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             }
             ?>
 
-            <input class="form-control" type="text" name="sa_country" id="sa_country" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $country_row['name'] : ''  ?>">
+            <input class="form-control" type="text" name="scr_country" id="scr_country" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $country_row['nicename'] : ''  ?>">
 
-            <input type="hidden" name="sa_country_hidden" id="sa_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+            <input type="hidden" name="scr_country_hidden" id="scr_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
 
             <?php if (isset($country_err)) { ?>
                 <div id="err_msg">
@@ -318,33 +384,70 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
 
-        
+    </div>
+    <div class="row">
         <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
-            <label class="form-label form_lbl" id="sa_currency_lbl" for="sa_currency">Currency Unit<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="scr_brand_lbl" for="scr_brand">Brand<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
-            if (isset($row['currency_unit']))
-                $echoVal = $row['currency_unit'];
+            if (isset($row['brand']))
+                $echoVal = $row['brand'];
 
             if (isset($echoVal)) {
-                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-                if (!$currency_rst) {
+                $brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                if (!$brand_rst) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                $currency_row = $currency_rst->fetch_assoc();
+                $brand_row = $brand_rst->fetch_assoc();
             }
             ?>
-            <input class="form-control" type="text" name="sa_currency" id="sa_currency" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : ''  ?>">
-            <input type="hidden" name="sa_currency_hidden" id="sa_currency_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
 
-            <?php if (isset($currency_err)) { ?>
+            <input class="form-control" type="text" name="scr_brand" id="scr_brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : ''  ?>">
+
+            <input type="hidden" name="scr_brand_hidden" id="scr_brand_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+
+            <?php if (isset($brand_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $currency_err; ?></span>
+                    <span class="mt-n1"><?php echo $brand_err; ?></span>
                 </div>
             <?php } ?>
         </div>
+        <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+            <label class="form-label form_lbl" id="scr_series_lbl" for="scr_series">Series<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['series']))
+                $echoVal = $row['series'];
+
+            if (isset($echoVal)) {
+                $series_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
+                if (!$series_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $series_row = $series_rst->fetch_assoc();
+            }
+            ?>
+
+            <input class="form-control" type="text" name="scr_series" id="scr_series" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $series_row['name'] : ''  ?>">
+
+            <input type="hidden" name="scr_series_hidden" id="scr_series_hidden" value="<?php echo (isset($row['series'])) ? $row['series'] : ''; ?>">
+
+            <?php if (isset($series_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $series_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+        <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="scr_remark_lbl" for="scr_remark">Remark</label>
+                    <textarea class="form-control" name="scr_remark" id="scr_remark" rows="3"
+                        <?php if ($act == '') echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark'])) echo $row['remark'] ?></textarea>
+                </div>
+
     </div>
 </div>
 
@@ -353,10 +456,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <?php
                     switch ($act) {
                         case 'I':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addAccount">Add Account</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addRecord">Add Record</button>';
                             break;
                         case 'E':
-                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updAccount">Edit Account</button>';
+                            echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updRecord">Edit Record</button>';
                             break;
                     }
                     ?>
@@ -383,7 +486,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
 
     <script>
-        <?php include "../js/shopee_acc.js" ?>
+        <?php include "../js/shopee_cust_info.js" ?>
 
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
