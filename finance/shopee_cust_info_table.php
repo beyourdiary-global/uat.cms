@@ -101,6 +101,7 @@ if (!$result) {
                                 <td scope="row"><?= isset($row3['nicename']) ? $row3['nicename'] : '' ?></td>
                                 <td scope="row"><?= isset($row4['name']) ? $row4['name'] : '' ?></td>
                                 <td scope="row"><?= isset($row5['name']) ? $row5['name'] : '' ?></td>
+                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
