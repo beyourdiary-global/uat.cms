@@ -80,6 +80,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <th scope="col">Package</th>
                             <th scope="col">Facebook Page</th>
                             <th scope="col">Channel</th>
+                            <th scope="col">Price</th>
                             <th scope="col">Payment Method</th>
                             <th scope="col">Shipping Receiver Name</th>
                             <th scope="col">Shipping Receiver Address</th>
@@ -156,6 +157,9 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     <?= $channel['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
+                                    <?= $row['price'] ?? '' ?>
+                                </td>
+                                <td scope="row">
                                     <?= $pay_meth['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
@@ -219,6 +223,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <th scope="col">Package</th>
                             <th scope="col">Facebook Page</th>
                             <th scope="col">Channel</th>
+                            <th scope="col">Price</th>
                             <th scope="col">Payment Method</th>
                             <th scope="col">Shipping Receiver Name</th>
                             <th scope="col">Shipping Receiver Address</th>

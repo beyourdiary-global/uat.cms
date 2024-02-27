@@ -57,6 +57,7 @@ if (post('actionBtn')) {
     $for_pkg = postSpaceFilter('for_pkg_hidden');
     $for_fbpage = postSpaceFilter('for_fbpage_hidden');
     $for_channel = postSpaceFilter('for_channel_hidden');
+    $for_price = postSpaceFilter('for_price');
     $for_pay = postSpaceFilter('for_pay_meth_hidden');
     $for_rec_name = postSpaceFilter('for_rec_name');
     $for_rec_ctc = postSpaceFilter('for_rec_ctc');
@@ -136,6 +137,9 @@ if (post('actionBtn')) {
             } else if (!$for_channel && $for_channel < 1) {
                 $channel_err = "Channel cannot be empty.";
                 break;
+            } else if (!$for_price) {
+                $price_err = "Price cannot be empty.";
+                break;
             } else if (!$for_pay && $for_pay < 1) {
                 $pay_err = "Payment Method cannot be empty.";
                 break;
@@ -203,6 +207,11 @@ if (post('actionBtn')) {
                         array_push($datafield, 'channel');
                     }
 
+                    if ($for_price) {
+                        array_push($newvalarr, $for_price);
+                        array_push($datafield, 'price');
+                    }
+
                     if ($for_pay) {
                         array_push($newvalarr, $for_pay);
                         array_push($datafield, 'payment method');
@@ -233,7 +242,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . " (name,fb_link,contact,sales_pic,country,brand,series,package,fb_page,channel,pay_method,ship_rec_name,ship_rec_add,ship_rec_contact,remark,attachment,create_by,create_date,create_time) VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_series','$for_pkg','$for_fbpage','$for_channel','$for_pay','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','$for_attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . " (name,fb_link,contact,sales_pic,country,brand,series,package,fb_page,channel,price,pay_method,ship_rec_name,ship_rec_add,ship_rec_contact,remark,attachment,create_by,create_date,create_time) VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_series','$for_pkg','$for_fbpage','$for_channel','$for_price','$for_pay','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','$for_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -308,6 +317,12 @@ if (post('actionBtn')) {
                         array_push($datafield, 'channel');
                     }
 
+                    if ($row['price'] != $for_price) {
+                        array_push($oldvalarr, $row['price']);
+                        array_push($chgvalarr, $for_price);
+                        array_push($datafield, 'price');
+                    }
+
                     if ($row['pay_method'] != $for_pay) {
                         array_push($oldvalarr, $row['pay_method']);
                         array_push($chgvalarr, $for_pay);
@@ -351,7 +366,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET name = '$for_name', fb_link = '$for_link', contact = '$for_ctc', sales_pic = '$for_pic', country = '$for_country', brand = '$for_brand', series = '$for_series', package = '$for_pkg', fb_page = '$for_fbpage', channel = '$for_channel', pay_method = '$for_pay', ship_rec_name = '$for_rec_name', ship_rec_add = '$for_rec_add', ship_rec_contact = '$for_rec_ctc', remark ='$for_remark', attachment ='$for_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name = '$for_name', fb_link = '$for_link', contact = '$for_ctc', sales_pic = '$for_pic', country = '$for_country', brand = '$for_brand', series = '$for_series', package = '$for_pkg', fb_page = '$for_fbpage', channel = '$for_channel', price = '$for_price', pay_method = '$for_pay', ship_rec_name = '$for_rec_name', ship_rec_add = '$for_rec_add', ship_rec_contact = '$for_rec_ctc', remark ='$for_remark', attachment ='$for_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
 
                     } else {
@@ -552,7 +567,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <legend class="float-none w-auto p-2">Order Request Details</legend>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-6 mb-3 autocomplete">
+                            <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_pic_lbl" for="for_pic">Sales Person In
                                     Charge<span class="requireRed">*</span></label>
                                 <?php
@@ -584,7 +599,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
-                            <div class="col-md-6 mb-3 autocomplete">
+                            <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_country_lbl" for="for_country">Country<span
                                         class="requireRed">*</span></label>
                                 <?php
@@ -618,11 +633,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <?php } ?>
 
                             </div>
-
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
                             <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_brand_lbl" for="for_brand">Brand<span
                                         class="requireRed">*</span></label>
@@ -656,6 +666,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            
                             <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_series_lbl" for="for_series">Series<span
                                         class="requireRed">*</span></label>
@@ -721,10 +737,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
                             <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_fb_page_lbl" for="for_fbpage">Facebook
                                     Page<span class="requireRed">*</span></label>
@@ -758,6 +770,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
                             <div class="col-md-4 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="for_channel_lbl" for="for_channel">Channel<span
                                         class="requireRed">*</span></label>
@@ -791,6 +807,21 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <span class="mt-n1">
                                             <?php echo $channel_err; ?>
                                         </span>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label form_lbl" id="for_price_lbl" for="for_price">Price<span class="requireRed">*</span></label>
+                                <input class="form-control" type="text" name="for_price" id="for_price" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['price']) && !isset($for_price)) {
+                                                                                                                echo $row['price'];
+                                                                                                            } else if (isset($for_price)) {
+                                                                                                                echo $for_price;
+                                                                                                            }
+                                                                                                            ?>" <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($price_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1"><?php echo $price_err; ?></span>
                                     </div>
                                 <?php } ?>
                             </div>
