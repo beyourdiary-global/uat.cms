@@ -545,10 +545,22 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <div class="col-md-6 mb-3 autocomplete">
                             <label class="form-label form_lbl" id="sor_curr_lbl" for="sor_curr">Currency<span
                                     class="requireRed">*</span></label>
-                            <input class="form-control" type="text" name="sor_curr" id="sor_curr" disabled
-                                value="">
-                            <input type="hidden" name="sor_curr_hidden" id="sor_curr_hidden"
-                                value="">
+                            <?php
+                            unset($echoVal);
+                            if (isset($row['currency']))
+                                $echoVal = $row['currency'];
+
+                            if (isset($echoVal)) {
+                                $curr_rst = getData('*', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                                if (!$curr_rst) {
+                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                }
+                                $curr_row = $curr_rst->fetch_assoc();
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="sor_curr" id="sor_curr" disabled value="<?php echo !empty($echoVal) ? $curr_row['unit'] : '' ?>">
+                            <input type="hidden" name="sor_curr_hidden" id="sor_curr_hidden" value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
                             <?php if (isset($curr_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1">

@@ -56,8 +56,9 @@ $(document).ready(function () {
     $("#sor_acc").change(getAccountCurrency);
     $("#sor_pkg").change(getPkgBrand);
     $("#sor_acc, #sor_pkg").change(calculatePrice);
+    $("#sor_serv, #sor_trans, #sor_ams").on('keyup', calculateFinalAmount);
     $("#sor_price, #sor_voucher, #sor_shipping, #sor_serv, #sor_trans, #sor_ams").on('change', calculateFinalAmount);
-    $("#sor_serv, #sor_trans, #sor_ams").change(calculateFees);
+    $("#sor_serv, #sor_trans, #sor_ams").on('keyup', calculateFees);
     $("#sor_price, #sor_user_hidden, #sor_curr_hidden").change(calculateComm);
 
 })
