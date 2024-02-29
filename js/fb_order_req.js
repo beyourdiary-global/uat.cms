@@ -137,18 +137,7 @@ function calculatePrice() {
             var pkg_curr = result[0]['currency_unit'];
             console.log('curr', pkg_curr);
             $("#for_price").val(pkg_price.toFixed(2));
-
-            var paramCountry = {
-                search: country,
-                searchCol: 'country',
-                searchType: '*',
-                dbTable: '<?= TAX_SETT ?>',
-                isFin: 1,
-            };
-
-            retrieveDBData(paramTaxSetting, '<?= $SITEURL ?>', function (result) {
-                handleTaxSettingData(result);
-            });
+            
         } else {
             console.error('Error retrieving Courier data');
         }
