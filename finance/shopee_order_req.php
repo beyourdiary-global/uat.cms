@@ -958,7 +958,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             } else {
                                 echo '0';
                             }
-                            ?>" disabled>
+                            ?>" readonly>
                             <?php if (isset($fees_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1">
@@ -978,7 +978,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             } else {
                                 echo '0';
                             }
-                            ?>" disabled>
+                            ?>">
                             <?php if (isset($final_err)) { ?>
                                 <div id="err_msg">
                                     <span class="mt-n1">

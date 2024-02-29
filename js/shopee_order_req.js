@@ -57,7 +57,7 @@ $(document).ready(function () {
     $("#sor_pkg").change(getPkgBrand);
     $("#sor_acc, #sor_pkg").change(calculatePrice);
     $("#sor_serv, #sor_trans, #sor_ams").on('keyup', calculateFinalAmount);
-    $("#sor_price, #sor_voucher, #sor_shipping, #sor_serv, #sor_trans, #sor_ams").on('change', calculateFinalAmount);
+    $("#sor_price, #sor_voucher, #sor_shipping, #sor_serv, #sor_trans, #sor_ams").change(calculateFinalAmount);
     $("#sor_serv, #sor_trans, #sor_ams").on('keyup', calculateFees);
     $("#sor_price, #sor_user_hidden, #sor_curr_hidden").change(calculateComm);
 
@@ -265,245 +265,185 @@ function calculateComm() {
         }
     });
 }
-// //jQuery form validation
-// $("#sor_name").on("input", function() {
-//     $(".for-name-err").remove();
-// });
+//jQuery form validation
+$("#sor_acc").on("input", function() {
+    $(".sor-acc-err").remove();
+});
+$("#sor_curr").on("change", function() {
+    $(".sor-curr-err").remove();
+});
 
-// $("#sor_link").on("input", function() {
-//     $(".for-link-err").remove();
-// });
+$("#sor_order").on("input", function() {
+    $(".sor-order-err").remove();
+});
 
-// $("#sor_contact").on("input", function() {
-//     $(".for-contact-err").remove();
-// });
+$("#sor_pic").on("input", function() {
+    $(".sor-pic-err").remove();
+});
 
-// $("#sor_pic").on("input", function() {
-//     $(".for-pic-err").remove();
-// });
+$("#sor_brand").on("keyup", function() {
+    $(".sor-brand-err").remove();
+});
 
-// $("#sor_country").on("input", function() {
-//     $(".for-country-err").remove();
-// });
+$("#sor_pkg").on("input", function() {
+    $(".sor-pkg-err").remove();
+});
 
-// $("#sor_brand").on("input", function() {
-//     $(".for-brand-err").remove();
-// });
+$("#sor_price").on("change", function() {
+    $(".sor-price-err").remove();
+});
 
-// $("#sor_series").on("input", function() {
-//     $(".for-series-err").remove();
-// });
+$("#sor_pay").on("input", function() {
+    $(".sor-pay-err").remove();
+});
 
-// $("#sor_pkg").on("input", function() {
-//     $(".for-pkg-err").remove();
-// });
+$("#sor_user").on("input", function() {
+    $(".sor-user-err").remove();
+});
 
-// $("#sor_fbpage").on("input", function() {
-//     $(".for-fbpage-err").remove();
-// });
-
-// $("#sor_channel").on("input", function() {
-//     $(".for-channel-err").remove();
-// });
-
-// $("#sor_price").on("input", function() {
-//     $(".for-price-err").remove();
-// });
-
-// $("#sor_pay_meth").on("input", function() {
-//     $(".for-pay-err").remove();
-// });
-
-// $("#sor_rec_name").on("input", function() {
-//     $(".for-rec-name-err").remove();
-// });
-
-// $("#sor_rec_ctc").on("input", function() {
-//     $(".for-rec-ctc-err").remove();
-// });
-
-// $("#sor_rec_add").on("input", function() {
-//     $(".for-rec-add-err").remove();
-// });
-
-// $("#sor_attach").on("input", function() {
-//     $(".for-attach-err").remove();
-// });
+$("#sor_final").on("input", function() {
+    $(".sor-final-err").remove();
+});
 
 
-// $('.submitBtn').on('click', () => {
-//     $(".error-message").remove();
-//     var name_chk = 0;
-//     var link_chk = 0;
-//     var ctc_chk = 0;
-//     var pic_chk = 0;
-//     var country_chk = 0;
-//     var brand_chk = 0;
-//     var series_chk = 0;
-//     var pkg_chk = 0;
-//     var fbpage_chk = 0;
-//     var channel_chk = 0;
-//     var price_chk = 0;
-//     var pay_chk = 0;
-//     var rec_name_chk = 0;
-//     var rec_ctc_chk = 0;
-//     var rec_add_chk = 0;
-//     var attach_chk = 0;
 
-//     if ($('#sor_name').val() === '' || $('#sor_name').val() === null || $('#sor_name')
-//         .val() === undefined) {
-//         name_chk = 0;
-//         $("#sor_name").after(
-//             '<span class="error-message for-name-err">Name is required!</span>');
-//     } else {
-//         $(".for-name-err").remove();
-//         name_chk = 1;
-//     }
+$('.submitBtn').on('click', () => {
+    $(".error-message").remove();
+    var acc_chk = 0;
+    var curr_chk = 0;
+    var order_chk = 0;
+    var date_chk = 0;
+    var time_chk = 0;
+    var pkg_chk = 0;
+    var brand_chk = 0;
+    var user_chk = 0;
+    var pay_chk = 0;
+    var pic_chk = 0;
+    var price_chk = 0;
+    var final_chk = 0;
 
-//     if (($('#sor_link').val() === '' || $('#sor_link').val() === null || $('#sor_link')
-//             .val() === undefined)) {
-//         link_chk = 0;
-//         $("#sor_link").after(
-//             '<span class="error-message for-link-err">Facebook Link is required!</span>');
-//     } else {
-//         $(".for-link-err").remove();
-//         link_chk = 1;
-//     }
+    if ($('#sor_acc').val() === '' || $('#sor_acc').val() === null || $('#sor_acc')
+        .val() === undefined) {
+        acc_chk = 0;
+        $("#sor_acc").after(
+            '<span class="error-message sor-acc-err">Shopee Account is required!</span>');
+    } else {
+        $(".sor-acc-err").remove();
+        acc_chk = 1;
+    }
 
-//     if (($('#sor_contact').val() === '' || $('#sor_contact').val() === null || $('#sor_contact')
-//             .val() === undefined)) {
-//         ctc_chk = 0;
-//         $("#sor_contact").after(
-//             '<span class="error-message for-contact-err">Contact is required!</span>');
-//     } else {
-//         $(".for-contact-err").remove();
-//         ctc_chk = 1;
-//     }
+    if (($('#sor_curr').val() === '' || $('#sor_curr').val() === null || $('#sor_curr')
+            .val() === undefined)) {
+        curr_chk = 0;
+        $("#sor_curr").after(
+            '<span class="error-message sor-curr-err">Currency is required!</span>');
+    } else {
+        $(".sor-curr-err").remove();
+        curr_chk = 1;
+    }
 
-//     if (($('#sor_pic_hidden').val() === ''  || $('#sor_pic_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_pic_hidden')
-//             .val() === undefined)) {
-//         pic_chk = 0;
-//         $("#sor_pic").after(
-//             '<span class="error-message for-pic-err">Sales Person-In-Charge is required!</span>');
-//     } else {
-//         $(".for-pic-err").remove();
-//         pic_chk = 1;
-//     }
+    if (($('#sor_order').val() === '' || $('#sor_order').val() === null || $('#sor_order')
+            .val() === undefined)) {
+        order_chk = 0;
+        $("#sor_order").after(
+            '<span class="error-message sor-order-err">Order ID is required!</span>');
+    } else {
+        $(".sor-order-err").remove();
+        order_chk = 1;
+    }
 
+    if (($('#sor_date').val() === '' || $('#sor_date').val() === null || $('#sor_date')
+            .val() === undefined)) {
+        date_chk = 0;
+        $("#sor_date").after(
+            '<span class="error-message sor-date-err">Date is required!</span>');
+    } else {
+        $(".sor-date-err").remove();
+        date_chk = 1;
+    }
 
-//     if (($('#sor_country_hidden').val() == '' || $('#sor_country_hidden').val() == '0' || $('#sor_country_hidden').val() === null || $('#sor_country_hidden')
-//             .val() === undefined)) {
-//         country_chk = 0;
-//         $("#sor_country").after(
-//             '<span class="error-message for-country-err">Country is required!</span>');
-//     } else {
-//         $(".for-country-err").remove();
-//         country_chk = 1;
-//     }
+    if (($('#sor_time').val() === '' || $('#sor_time').val() === null || $('#sor_time')
+            .val() === undefined)) {
+        time_chk = 0;
+        $("#sor_time").after(
+            '<span class="error-message sor-time-err">Time is required!</span>');
+    } else {
+        $(".sor-time-err").remove();
+        time_chk = 1;
+    }
 
-//     if (($('#sor_brand_hidden').val() == '' || $('#sor_brand_hidden').val() == '0' || $('#sor_brand_hidden').val() === null || $('#sor_brand_hidden')
-//             .val() === undefined)) {
-//         brand_chk = 0;
-//         $("#sor_brand").after(
-//             '<span class="error-message for-brand-err">Brand is required!</span>');
-//     } else {
-//         $(".for-brand-err").remove();
-//         brand_chk = 1;
-//     }
+    if (($('#sor_pic_hidden').val() === ''  || $('#sor_pic_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_pic_hidden')
+            .val() === undefined)) {
+        pic_chk = 0;
+        $("#sor_pic").after(
+            '<span class="error-message sor-pic-err">Sales Person-In-Charge is required!</span>');
+    } else {
+        $(".sor-pic-err").remove();
+        pic_chk = 1;
+    }
 
-//     if (($('#sor_series_hidden').val() == '' || $('#sor_series_hidden').val() == '0' || $('#sor_series_hidden').val() === null || $('#sor_series_hidden')
-//             .val() === undefined)) {
-//         series_chk = 0;
-//         $("#sor_series").after(
-//             '<span class="error-message for-series-err">Series is required!</span>');
-//     } else {
-//         $(".for-series-err").remove();
-//         series_chk = 1;
-//     }
+    if (($('#sor_user_hidden').val() === ''  || $('#sor_user_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_user_hidden')
+            .val() === undefined)) {
+        user_chk = 0;
+        $("#sor_user").after(
+            '<span class="error-message sor-user-err">Buyer Username is required!</span>');
+    } else {
+        $(".sor-user-err").remove();
+        user_chk = 1;
+    }
 
-//     if (($('#sor_pkg_hidden').val() == '' || $('#sor_pkg_hidden').val() == '0' || $('#sor_pkg_hidden').val() === null || $('#sor_pkg_hidden')
-//             .val() === undefined)) {
-//         pkg_chk = 0;
-//         $("#sor_pkg").after(
-//             '<span class="error-message for-pkg-err">Package is required!</span>');
-//     } else {
-//         $(".for-pkg-err").remove();
-//         pkg_chk = 1;
-//     }
+    if (($('#sor_brand_hidden').val() == '' || $('#sor_brand_hidden').val() == '0' || $('#sor_brand_hidden').val() === null || $('#sor_brand_hidden')
+            .val() === undefined)) {
+        brand_chk = 0;
+        $("#sor_brand").after(
+            '<span class="error-message sor-brand-err">Brand is required!</span>');
+    } else {
+        $(".sor-brand-err").remove();
+        brand_chk = 1;
+    }
 
-//     if (($('#sor_fbpage_hidden').val() == '' || $('#sor_fbpage_hidden').val() == '0' || $('#sor_fbpage_hidden').val() === null || $('#sor_fbpage_hidden')
-//             .val() === undefined)) {
-//         fbpage_chk = 0;
-//         $("#sor_fbpage").after(
-//             '<span class="error-message for-fbpage-err">Facebook Page is required!</span>');
-//     } else {
-//         $(".for-fbpage-err").remove();
-//         fbpage_chk = 1;
-//     }
+    if (($('#sor_pkg_hidden').val() == '' || $('#sor_pkg_hidden').val() == '0' || $('#sor_pkg_hidden').val() === null || $('#sor_pkg_hidden')
+            .val() === undefined)) {
+        pkg_chk = 0;
+        $("#sor_pkg").after(
+            '<span class="error-message sor-pkg-err">Package is required!</span>');
+    } else {
+        $(".sor-pkg-err").remove();
+        pkg_chk = 1;
+    }
 
-//     if (($('#sor_channel_hidden').val() == '' || $('#sor_channel_hidden').val() == '0' || $('#sor_channel_hidden').val() === null || $('#sor_channel_hidden')
-//             .val() === undefined)) {
-//         channel_chk = 0;
-//         $("#sor_channel").after(
-//             '<span class="error-message for-channel-err">Channel is required!</span>');
-//     } else {
-//         $(".for-channel-err").remove();
-//         channel_chk = 1;
-//     }
+    if (($('#sor_price').val() == '' || $('#sor_price').val() == '0' || $('#sor_price').val() === null || $('#sor_price')
+            .val() === undefined)) {
+        price_chk = 0;
+        $("#sor_price").after(
+            '<span class="error-message sor-price-err">Price is required!</span>');
+    } else {
+        $(".sor-price-err").remove();
+        price_chk = 1;
+    }
 
-//     if (($('#sor_price').val() == '' || $('#sor_price').val() == '0' || $('#sor_price').val() === null || $('#sor_price')
-//             .val() === undefined)) {
-//         price_chk = 0;
-//         $("#sor_price").after(
-//             '<span class="error-message for-price-err">Price is required!</span>');
-//     } else {
-//         $(".for-price-err").remove();
-//         price_chk = 1;
-//     }
+    if (($('#sor_pay').val() == '' || $('#sor_pay').val() == '0' || $('#sor_pay').val() === null || $('#sor_pay')
+            .val() === undefined)) {
+        pay_chk = 0;
+        $("#sor_pay").after(
+            '<span class="error-message sor-pay-err">Buyer Payment Method is required!</span>');
+    } else {
+        $(".sor-pay-err").remove();
+        pay_chk = 1;
+    }
+    if (($('#sor_final').val() == '' || $('#sor_final').val() == '0' || $('#sor_final').val() === null || $('#sor_final')
+            .val() === undefined)) {
+        final_chk = 0;
+        $("#sor_final").after(
+            '<span class="error-message sor-final-err">Final Amount is required!</span>');
+    } else {
+        $(".sor-final-err").remove();
+        final_chk = 1;
+    }
 
-//     if (($('#sor_pay_meth_hidden').val() == '' || $('#sor_pay_meth_hidden').val() == '0' || $('#sor_pay_meth_hidden').val() === null || $('#sor_pay_meth_hidden')
-//             .val() === undefined)) {
-//         pay_chk = 0;
-//         $("#sor_pay_meth").after(
-//             '<span class="error-message for-pay-err">Payment Method is required!</span>');
-//     } else {
-//         $(".for-pay-err").remove();
-//         pay_chk = 1;
-//     }
+    if (acc_chk == 1 && curr_chk == 1 && order_chk == 1 && date_chk == 1 && time_chk == 1 && pkg_chk == 1 && brand_chk == 1 && user_chk == 1 && pay_chk == 1 && pic_chk == 1 && price_chk == 1 && final_chk == 1)
+        $(this).closest('form').submit();
+    else
+        return false;
 
-//     if (($('#sor_rec_name').val() == '' || $('#sor_rec_name').val() === null || $('#sor_rec_name')
-//             .val() === undefined)) {
-//         rec_name_chk = 0;
-//         $("#sor_rec_name").after(
-//             '<span class="error-message for-rec-name-err">Shipping Receiver Name is required!</span>');
-//     } else {
-//         $(".for-rec-name-err").remove();
-//         rec_name_chk = 1;
-//     }
-
-//     if (($('#sor_rec_ctc').val() == '' || $('#sor_rec_ctc').val() === null || $('#sor_rec_ctc')
-//             .val() === undefined)) {
-//         rec_ctc_chk = 0;
-//         $("#sor_rec_ctc").after(
-//             '<span class="error-message for-rec-ctc-err">Shipping Receiver Contact is required!</span>');
-//     } else {
-//         $(".for-rec-ctc-err").remove();
-//         rec_ctc_chk = 1;
-//     }
-
-//     if (($('#sor_rec_add').val() == '' || $('#sor_rec_add').val() === null || $('#sor_rec_add')
-//             .val() === undefined)) {
-//         rec_add_chk = 0;
-//         $("#sor_rec_add").after(
-//             '<span class="error-message for-rec-ctc-err">Shipping Receiver Address is required!</span>');
-//     } else {
-//         $(".for-rec-add-err").remove();
-//         rec_add_chk = 1;
-//     }
-
-//     if (name_chk == 1 && link_chk == 1 && ctc_chk == 1 && pic_chk == 1 && country_chk == 1 && brand_chk == 1 && series_chk == 1 && pkg_chk == 1 && fbpage_chk == 1 && channel_chk == 1 && price_chk == 1 && pay_chk == 1 && rec_name_chk == 1 && rec_add_chk == 1 && rec_ctc_chk == 1 && attach_chk == 1)
-//         $(this).closest('form').submit();
-//     else
-//         return false;
-
-// })
+})
