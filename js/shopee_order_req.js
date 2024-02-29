@@ -177,19 +177,54 @@ function calculatePrice() {
             // Retrieve account currency
             var acc_curr = $("#sor_curr_hidden").val();
             console.log('Account Currency:', acc_curr);
+            var pkgCurrName = '';
 
             // Compare account currency with package currency
             if (acc_curr !== pkg_curr) {
                 console.log('Currency mismatch: Account currency is different from package currency.');
-                //get exchange rate from currencies table
-                //default_currency_unit => pkg curr
-                //exchange_currency_unit => shopee acc curr
-                //SELECT exchange_currency_rate FROM $tbl WHERE default_currency_unit = '' AND exchange_currency_unit = ''
-                // if found: // price = pkg_price * exchange_currency_rate
-                // if !found: show error msg, enter own input
+                var paramCurrencies = {
+                    search: acc_curr,
+                    searchCol: 'default_currency_unit` = ' + pkg_curr + ' AND `exchange_currency_unit',
+                    searchType: '*',
+                    dbTable: '<?= CURRENCIES ?>',
+                    isFin: 0,
+                };
+                retrieveDBData(paramCurrencies, '<?= $SITEURL ?>', function (result) {
+                    if (result && result.length > 0) {
+                        var exchangeRate = parseFloat(result[0]['exchange_currency_rate']);
+                        console.log(result);
+                        var priceInAccountCurrency = pkg_price * exchangeRate;
+                        console.log(pkg_price);
+                        console.log('Price in account currency:', priceInAccountCurrency);
+                        $("#sor_price").val(priceInAccountCurrency.toFixed(2));
+                        $("#sor_price").trigger("change");
+                    } else {
+                        var paramPkgCurr = {
+                            search: pkg_curr,
+                            searchCol: 'id',
+                            searchType: '*',
+                            dbTable: '<?= CUR_UNIT ?>',
+                            isFin: 0,
+                        };
+                        retrieveDBData(paramPkgCurr, '<?= $SITEURL ?>', function (result) {
+                            if (result && result.length > 0) {
+                                pkgCurrName = result[0]['unit'];
+                                price_curr_chk = 0;
+                                $("#sor_price").val(0);
+                                $("#sor_price").after(
+                                    '<span class="error-message sor-pricecurr-err">Currency rate not found! (Package Price: ' + pkgCurrName + ' ' + pkg_price + ')</span>');
+                            }
+                        })
+                        // If data is not found, show an error message
+                        console.error('No exchange rate found for the specified currencies.');
+                    }
+                })
+            } else {
+                console.log('Same Package Shopee Acc currency.');
+
             }
         } else {
-            console.error('Error retrieving Courier data');
+            console.error('Error retrieving Package data');
         }
     });
 }
@@ -266,42 +301,45 @@ function calculateComm() {
     });
 }
 //jQuery form validation
-$("#sor_acc").on("input", function() {
+$("#sor_acc").on("input", function () {
     $(".sor-acc-err").remove();
 });
-$("#sor_curr").on("change", function() {
+$("#sor_curr").on("change", function () {
     $(".sor-curr-err").remove();
 });
 
-$("#sor_order").on("input", function() {
+$("#sor_order").on("input", function () {
     $(".sor-order-err").remove();
 });
 
-$("#sor_pic").on("input", function() {
+$("#sor_pic").on("input", function () {
     $(".sor-pic-err").remove();
 });
 
-$("#sor_brand").on("keyup", function() {
+$("#sor_brand").on("keyup", function () {
     $(".sor-brand-err").remove();
 });
 
-$("#sor_pkg").on("input", function() {
+$("#sor_pkg").on("input", function () {
     $(".sor-pkg-err").remove();
 });
 
-$("#sor_price").on("change", function() {
+$("#sor_price").on("change", function () {
     $(".sor-price-err").remove();
 });
+$("#sor_price").on("change", function () {
+    $(".sor-pricecurr-err").remove();
+});
 
-$("#sor_pay").on("input", function() {
+$("#sor_pay").on("input", function () {
     $(".sor-pay-err").remove();
 });
 
-$("#sor_user").on("input", function() {
+$("#sor_user").on("input", function () {
     $(".sor-user-err").remove();
 });
 
-$("#sor_final").on("input", function() {
+$("#sor_final").on("input", function () {
     $(".sor-final-err").remove();
 });
 
@@ -321,6 +359,7 @@ $('.submitBtn').on('click', () => {
     var pic_chk = 0;
     var price_chk = 0;
     var final_chk = 0;
+    var price_curr_chk = 0;
 
     if ($('#sor_acc').val() === '' || $('#sor_acc').val() === null || $('#sor_acc')
         .val() === undefined) {
@@ -333,7 +372,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_curr').val() === '' || $('#sor_curr').val() === null || $('#sor_curr')
-            .val() === undefined)) {
+        .val() === undefined)) {
         curr_chk = 0;
         $("#sor_curr").after(
             '<span class="error-message sor-curr-err">Currency is required!</span>');
@@ -343,7 +382,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_order').val() === '' || $('#sor_order').val() === null || $('#sor_order')
-            .val() === undefined)) {
+        .val() === undefined)) {
         order_chk = 0;
         $("#sor_order").after(
             '<span class="error-message sor-order-err">Order ID is required!</span>');
@@ -353,7 +392,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_date').val() === '' || $('#sor_date').val() === null || $('#sor_date')
-            .val() === undefined)) {
+        .val() === undefined)) {
         date_chk = 0;
         $("#sor_date").after(
             '<span class="error-message sor-date-err">Date is required!</span>');
@@ -363,7 +402,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_time').val() === '' || $('#sor_time').val() === null || $('#sor_time')
-            .val() === undefined)) {
+        .val() === undefined)) {
         time_chk = 0;
         $("#sor_time").after(
             '<span class="error-message sor-time-err">Time is required!</span>');
@@ -372,8 +411,8 @@ $('.submitBtn').on('click', () => {
         time_chk = 1;
     }
 
-    if (($('#sor_pic_hidden').val() === ''  || $('#sor_pic_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_pic_hidden')
-            .val() === undefined)) {
+    if (($('#sor_pic_hidden').val() === '' || $('#sor_pic_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_pic_hidden')
+        .val() === undefined)) {
         pic_chk = 0;
         $("#sor_pic").after(
             '<span class="error-message sor-pic-err">Sales Person-In-Charge is required!</span>');
@@ -382,8 +421,8 @@ $('.submitBtn').on('click', () => {
         pic_chk = 1;
     }
 
-    if (($('#sor_user_hidden').val() === ''  || $('#sor_user_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_user_hidden')
-            .val() === undefined)) {
+    if (($('#sor_user_hidden').val() === '' || $('#sor_user_hidden').val() == '0' || $('#sor_pic_hidden').val() === null || $('#sor_user_hidden')
+        .val() === undefined)) {
         user_chk = 0;
         $("#sor_user").after(
             '<span class="error-message sor-user-err">Buyer Username is required!</span>');
@@ -393,7 +432,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_brand_hidden').val() == '' || $('#sor_brand_hidden').val() == '0' || $('#sor_brand_hidden').val() === null || $('#sor_brand_hidden')
-            .val() === undefined)) {
+        .val() === undefined)) {
         brand_chk = 0;
         $("#sor_brand").after(
             '<span class="error-message sor-brand-err">Brand is required!</span>');
@@ -403,7 +442,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_pkg_hidden').val() == '' || $('#sor_pkg_hidden').val() == '0' || $('#sor_pkg_hidden').val() === null || $('#sor_pkg_hidden')
-            .val() === undefined)) {
+        .val() === undefined)) {
         pkg_chk = 0;
         $("#sor_pkg").after(
             '<span class="error-message sor-pkg-err">Package is required!</span>');
@@ -413,7 +452,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_price').val() == '' || $('#sor_price').val() == '0' || $('#sor_price').val() === null || $('#sor_price')
-            .val() === undefined)) {
+        .val() === undefined)) {
         price_chk = 0;
         $("#sor_price").after(
             '<span class="error-message sor-price-err">Price is required!</span>');
@@ -423,7 +462,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (($('#sor_pay').val() == '' || $('#sor_pay').val() == '0' || $('#sor_pay').val() === null || $('#sor_pay')
-            .val() === undefined)) {
+        .val() === undefined)) {
         pay_chk = 0;
         $("#sor_pay").after(
             '<span class="error-message sor-pay-err">Buyer Payment Method is required!</span>');
@@ -432,7 +471,7 @@ $('.submitBtn').on('click', () => {
         pay_chk = 1;
     }
     if (($('#sor_final').val() == '' || $('#sor_final').val() == '0' || $('#sor_final').val() === null || $('#sor_final')
-            .val() === undefined)) {
+        .val() === undefined)) {
         final_chk = 0;
         $("#sor_final").after(
             '<span class="error-message sor-final-err">Final Amount is required!</span>');
@@ -441,7 +480,7 @@ $('.submitBtn').on('click', () => {
         final_chk = 1;
     }
 
-    if (acc_chk == 1 && curr_chk == 1 && order_chk == 1 && date_chk == 1 && time_chk == 1 && pkg_chk == 1 && brand_chk == 1 && user_chk == 1 && pay_chk == 1 && pic_chk == 1 && price_chk == 1 && final_chk == 1)
+    if (acc_chk == 1 && price_curr_chk == 1 && curr_chk == 1 && order_chk == 1 && date_chk == 1 && time_chk == 1 && pkg_chk == 1 && brand_chk == 1 && user_chk == 1 && pay_chk == 1 && pic_chk == 1 && price_chk == 1 && final_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
