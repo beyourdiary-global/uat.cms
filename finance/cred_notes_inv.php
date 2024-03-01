@@ -111,7 +111,7 @@ if (post('actionBtn')) {
             $cni_pay_details = postSpaceFilter('cni_pay_details');
             $cni_terms = postSpaceFilter('cni_terms');
 
-            $descriptions = $_POST["prod_name"];
+            $descriptions = $_POST["prod_desc"];
             $prices = $_POST["price"];
             $quantities = $_POST["quantity"];
             $amounts = $_POST["amount"];
@@ -677,7 +677,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                         <?= $num ?>
                                                                     </td>
                                                                     <td class="autocomplete"><input type="text"
-                                                                            name="prod_name[]" id="prod_name_<?= $num ?>"
+                                                                            name="prod_desc[]" id="prod_desc_<?= $num ?>"
                                                                             value="<?= $pn ?>" onkeyup="prodInfo(this)"
                                                                             <?= $readonly ?>><input type="hidden"
                                                                             name="prod_val[]" id="prod_val_<?= $num ?>"
@@ -729,7 +729,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             <tr>
                                                                 <td>1</td>
                                                                 <td class="autocomplete"><input type="text"
-                                                                        name="prod_name[]" id="prod_name_1" value=""
+                                                                        name="prod_desc[]" id="prod_desc_1" value=""
                                                                         onkeyup="prodInfo(this)"><input type="hidden"
                                                                         name="prod_val[]" id="prod_val_1" value=""
                                                                         oninput="prodInfoAutoFill(this)">

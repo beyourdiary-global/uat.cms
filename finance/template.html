@@ -12,6 +12,8 @@
     <title>Create Invoice</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/package.css">
+    <link href="../fontawesome-free-6.0.0-web/css/all.min.css" rel="stylesheet">
+    <link href="../MaterialDesign-Webfont-master/css/materialdesignicons.css" rel="stylesheet">
 
     <style>
         body,
@@ -160,27 +162,9 @@
             <tr>
                 <td>{{invoice}}</td>
                 <td>{{date}}</td>
-                <td><button class="roundedSelectionBtn">
-                        <!-- <span class="mdi mdi-record-circle-outline" style="<?php
-                        if ($payment_status == 'Paid') {
-                            echo 'color:#008000;';
-                        } else if ($payment_status == 'Cancelled') {
-                            echo 'color:#ff0000;';
-                        } else {
-                            echo 'color:#F17FB5;';
-                        } ?>"></span>
-                        <?php
-                        switch ($payment_status) {
-                            case 'Paid':
-                                echo 'Paid';
-                                break;
-                            case 'Cancelled':
-                                echo 'Cancelled';
-                                break;
-                            default:
-                                echo 'Pending';
-                        }
-                        ?> -->
+                <td><button class="roundedSelectionBtn"  style="font-size: 12px;">
+                        <span class="mdi mdi-record-circle-outline" style=" {{pay_colour}} "></span>
+                        {{pay_status}}
                     </button></td>
                 <td>{{due}}</td>
             </tr>

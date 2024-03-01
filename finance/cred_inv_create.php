@@ -249,29 +249,7 @@ $pic_row = $pic_result->fetch_assoc();
                                                     </thead>
                                                     <tbody>
                                                     </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <td scope="col" colspan="5" style="text-align:right">Total
-                                                                Barcode
-                                                            </td>
-                                                            <td scope="col" id="barcode_slot_total"
-                                                                style="text-align:center">
-                                                                <?php
-                                                                if (isset($barcode_slot_total) && $barcode_slot_total != '')
-                                                                    echo $barcode_slot_total;
-                                                                else {
-                                                                    if (isset($dataExisted) && isset($row['barcode_slot_total']))
-                                                                        echo $row['barcode_slot_total'];
-                                                                    else
-                                                                        echo '0';
-                                                                }
-                                                                ?><input name="barcode_slot_total_hidden"
-                                                                    id="barcode_slot_total_hidden" type="hidden"
-                                                                    value="<?php echo (isset($row['barcode_slot_total'])) ? $row['barcode_slot_total'] : ''; ?>">
-                                                            </td>
-                                                            <td scope="col"></td>
-                                                        </tr>
-                                                    </tfoot>
+                                                    
                                                 </table>
                                             </div>
                                         </div>
@@ -352,7 +330,7 @@ $pic_row = $pic_result->fetch_assoc();
                                                     class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
                                         </button>
 
-                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>"
+                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>" target="_blank"
                                             class="btn btn-primary d-grid w-100 mb-2 download" name="actionBtn"
                                             id="actionBtn"><span>Print/Download</span>
                                         </a>

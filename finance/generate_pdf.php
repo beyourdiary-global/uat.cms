@@ -33,6 +33,17 @@ $mrcht_row = $mrcht_result->fetch_assoc();
 $pay_row = $pay_result->fetch_assoc();
 $pic_row = $pic_result->fetch_assoc();
 
+$payColour = '';
+if (isset($row['payment_status'])) {
+    if ($row['payment_status'] == 'Paid') {
+        $payColour = 'color:#008000;';
+    } else if ($row['payment_status'] == 'Cancelled') {
+        $payColour = 'color:#ff0000;';
+    } else {
+        $payColour = 'color:#F17FB5;';
+    }
+}
+
 $dompdf = new Dompdf;
 
 $options = new Options;
@@ -53,6 +64,8 @@ $html = str_replace(
         "{{comp_ctc}}",
         "{{invoice}}",
         "{{date}}",
+        "{{pay_colour}}",
+        "{{pay_status}}",
         "{{due}}",
         "{{name}}",
         "{{address}}",
@@ -76,6 +89,8 @@ $html = str_replace(
         isset($proj_row['company_contact']) ? $proj_row['company_contact'] : '',
         isset($row['invoice']) ? $row['invoice'] : '',
         isset($row['date']) ? $row['date'] : '',
+        $payColour,
+        isset($row['payment_status']) ? $row['payment_status'] : '',//pay_status
         isset($row['due_date']) ? $row['due_date'] : '',
         isset($mrcht_row['name']) ? $mrcht_row['name'] : '',
         isset($row['bill_add']) ? $row['bill_add'] : '',

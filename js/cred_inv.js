@@ -75,43 +75,40 @@ function autofillMrcht() {
 
 
 function Add() {
-    AddRow($("#prod_name").val(), $("#prod_price").val(), $("#qty").val(), $("#amount").val());
+    AddRow($("#prod_desc").val(), $("#price").val(), $("#quantity").val(), $("#amount").val());
 };
-function AddRow(description, price, quantity, amount) {
-    // Get the reference of the Table's TBODY element.
+
+function AddRow() {
+    //Get the reference of the Table's TBODY element.
     var tBody = $("#productList > TBODY")[0];
-    
-    // Calculate the numbering based on the existing rows.
-    var numbering = $("#productList > TBODY > TR").length + 1;
+    var numbering = +$("#productList > TBODY > TR:last > TD:first").text();
+    numbering += 1;
+    numbering = numbering.toFixed(0)
 
-    // Add Row.
-    var row = tBody.insertRow(-1);
+    //Add Row.
+    row = tBody.insertRow(-1);
 
-    // Add cells.
+    //Add cell.
     var cell = $(row.insertCell(-1));
     cell.html(numbering);
-
+    var cell = $(row.insertCell(-1));
+    cell.html('<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
+    cell.addClass('autocomplete');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="prod_name[]" value="' + description + '">');
-    
+    cell.html('<input type="text" name="price[]" id="price_' + numbering + '" value="">');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="price[]" value="' + price + '">');
-
+    cell.html('<input type="text" name="quantity[]" id="quatity_' + numbering + '" value="">');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="quantity[]" value="' + quantity + '">');
-
-    cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="amount[]" value="' + amount + '">');
+    cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="" readonly>');
    
-    // Add Button cell for removal.
+    //Add Button cell.
     cell = $(row.insertCell(-1));
     var btnRemove = $('<button class="mt-1" id="action_menu_btn"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000"></i></button>');
     btnRemove.attr("type", "button");
-    btnRemove.click(function() {
-        Remove(this);
-    });
+    btnRemove.attr("onclick", "Remove(this);");
+    btnRemove.val("Remove");
     cell.append(btnRemove);
-}
+};
 
 function Remove(button) {
     // Determine the reference of the Row using the Button.
@@ -122,7 +119,7 @@ function Remove(button) {
     }
 }
 
-// // product autofill
+// product autofill
 // function prodInfo(element) {
 //     var id = $(element).attr('id').split('_');
 //     id = id[(id.length) - 1];
