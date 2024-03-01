@@ -114,7 +114,11 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                                 </li>
                                                 <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/downline_top_up_record_table.php','D')">Delete</a>
+                                                    <?php 
+                                                    $agentName = isset($row3['name']) ? $row3['name'] : ''; 
+                                                    $brandName = isset($row4['name']) ? $row4['name'] : ''; 
+                                                    ?>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $agentName ?>', '<?= $brandName ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/downline_top_up_record_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                                 </li>
                                             </ul>
