@@ -45,8 +45,6 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
     $act = "F";
 }
 
-//dropdown list for merchant
-$mrcht_list_result = getData('*', '', '', MERCHANT, $finance_connect);
 //Delete Data
 if ($act == 'D') {
     deleteRecord($tblName, '',$dataID, $row['name'], $finance_connect, $connect, $cdate, $ctime, $pageTitle);
@@ -89,9 +87,9 @@ if (post('actionBtn')) {
         case 'addData':
         case 'updData':
 
-            $ivs_mrcht = postSpaceFilter('ivs_mrcht');
-            $brand = postSpaceFilter('brand');
-            $curr_unit = postSpaceFilter('currency_unit');
+            $sc_mrcht = postSpaceFilter('sc_mrcht_hidden');
+            $brand = postSpaceFilter('brand_hidden');
+            $sc_currency = postSpaceFilter("sc_currency_hidden");
             $amount = postSpaceFilter('amount');
             $dataRemark = postSpaceFilter('currentDataRemark');
 
@@ -110,7 +108,7 @@ if (post('actionBtn')) {
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
             $fields = array('merchant', 'brand', 'currency_unit', 'amount'); // Define fields to check for duplicates
-            $values = array($ivs_mrcht,$brand, $curr_unit, $amount); // Values of the fields
+            $values = array($sc_mrcht,$brand, $sc_currency, $amount); // Values of the fields
            
             if (empty($amount)) {
                 $amt_err = "Amount is required!";
@@ -124,8 +122,8 @@ if (post('actionBtn')) {
                 try {
                     $_SESSION['tempValConfirmBox'] = true;
 
-                    if ($ivs_mrcht) {
-                        array_push($newvalarr, $ivs_mrcht);
+                    if ($sc_mrcht) {
+                        array_push($newvalarr, $sc_mrcht);
                         array_push($datafield, 'merchant');
                     }
 
@@ -134,8 +132,8 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($curr_unit) {
-                        array_push($newvalarr, $curr_unit);
+                    if ($sc_currency) {
+                        array_push($newvalarr, $sc_currency);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -153,7 +151,8 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $attach);
                         array_push($datafield, 'attachment');
                     }
-                    $query = "INSERT INTO " . $tblName . "(merchant,brand,currency_unit,amount,remark,attachment,create_by,create_date,create_time) VALUES ('$ivs_mrcht','$brand','$curr_unit','$amount','$dataRemark','$attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(merchant,brand,currency_unit,amount,remark,attachment,create_by,create_date,create_time) VALUES ('$sc_mrcht','$brand','$sc_currency','$amount','$dataRemark','$attach','" . USER_ID . "',curdate(),curtime())";
+
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
                 } catch (Exception $e) {
@@ -163,9 +162,9 @@ if (post('actionBtn')) {
             } else {
                 try {
 
-                    if ($row['merchant'] != $ivs_mrcht) {
+                    if ($row['merchant'] != $sc_mrcht) {
                         array_push($oldvalarr, $row['merchant']);
-                        array_push($chgvalarr, $ivs_mrcht);
+                        array_push($chgvalarr, $sc_mrcht);
                         array_push($datafield, 'merchant');
                     }
 
@@ -175,9 +174,9 @@ if (post('actionBtn')) {
                         array_push($datafield, 'brand');
                     }
 
-                    if ($row['currency_unit'] != $curr_unit) {
+                    if ($row['currency_unit'] != $sc_currency) {
                         array_push($oldvalarr, $row['currency_unit']);
-                        array_push($chgvalarr, $curr_unit);
+                        array_push($chgvalarr, $sc_currency);
                         array_push($datafield, 'currency_unit');
                     }
 
@@ -202,7 +201,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET merchant = '$ivs_mrcht',brand='$brand',currency_unit='$curr_unit',amount='$amount',remark ='$dataRemark',attachment='$attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET merchant = '$sc_mrcht',brand='$brand',currency_unit='$sc_currency',amount='$amount',remark ='$dataRemark',attachment='$attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -294,27 +293,25 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
                     
                     <div class="row">
-    <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="ivs_mrcht_lbl" for="ivs_mrcht">Merchant<span class="requireRed">*</span></label>
-        <select class="form-select" id="ivs_mrcht" name="ivs_mrcht" <?php if ($act == '') echo 'disabled' ?>>
-            <option value="0" disabled selected>Select Merchant</option>
-            <?php
-            if ($mrcht_list_result->num_rows >= 1) {
-                $mrcht_list_result->data_seek(0);
-                while ($row2 = $mrcht_list_result->fetch_assoc()) {
-                    $selected = "";
-                    if (isset($dataExisted, $row['merchant']) && !isset($ivs_mrcht)) {
-                        $selected = $row['merchant'] == $row2['id'] ? " selected" : "";
-                    } else if (isset($ivs_mrcht) && ($ivs_mrcht != 'other')) {
-                        $selected = $ivs_mrcht == $row2['id'] ? " selected" : "";
-                    }
-                    echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
+    <div class="col-md-6 autocomplete mb-3">
+    <label class="form-label form_lbl" id="sc_mrcht_lbl" for="sc_mrcht">Merchant<span class="requireRed">*</span></label>
+        <?php
+        unset($echoVal);
+
+        if (isset($row['merchant']))
+            $echoVal = $row['merchant'];
+
+        if (isset($echoVal)) {
+            $mrcht_rst = getData('name', "id = '$echoVal'", '', MERCHANT, $finance_connect);
+            if (!$mrcht_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            ?>
-        </select>
+            $mrcht_row = $mrcht_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="sc_mrcht" id="sc_mrcht" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+        <input type="hidden" name="sc_mrcht_hidden" id="sc_mrcht_hidden" value="<?php echo (isset($row['merchant'])) ? $row['merchant'] : ''; ?>">
 
         <?php if (isset($mrcht_err)) { ?>
             <div id="err_msg">
@@ -323,52 +320,58 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         <?php } ?>
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
-        <select class="form-select" required id="brand" name="brand" <?php if ($act == '') echo 'disabled' ?>>
+    <div class="col-md-6">
+        <div class="form-group autocomplete mb-3">
+            <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
             <?php
-            $resultBrand = getData('*', '', '', BRAND, $connect);
+            unset($echoVal);
 
-            echo "<option value disabled selected>Select Brand Type</option>";
+            if (isset($row['brand']))
+                $echoVal = $row['brand'];
 
-            if (!$resultBrand) {
-                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
-            }
-            if ($resultBrand->num_rows >= 1) {
-                while ($rowBrand = $resultBrand->fetch_assoc()) {
-                    $selected = isset($row['brand']) && $rowBrand['id'] == $row['brand'] ? "selected" : "";
-                    echo "<option value='{$rowBrand['id']}' $selected>{$rowBrand['name']}</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
+            if (isset($echoVal)) {
+                $brand_result = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+
+                $brand_row = $brand_result->fetch_assoc();
             }
             ?>
-        </select>
+            <input class="form-control" type="text" name="brand" id="brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+            <input type="hidden" name="brand_hidden" id="brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+            <div id="err_msg">
+                <span class="mt-n1"><?php if (isset($brand_err)) echo $brand_err; ?></span>
+            </div>
+        </div>
     </div>
 </div>
 
+
+ 
 <div class="row">
-    <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="currency_unit_lbl" for="currency_unit">Currency Unit</span></label>
-        <select class="form-select" id="currency_unit" name="currency_unit" <?php if ($act == '') echo 'disabled' ?>>
-            <?php
-            $resultCurUnit = getData('*', '', '', CUR_UNIT, $connect);
+    <div class="form-group autocomplete col-md-6 mb-3 mb-md-0">
+        <label class="form-label form_lbl" id="sc_currency_lbl" for="sc_currency">Currency Unit<span class="requireRed">*</span></label>
+        <?php
+        unset($echoVal);
 
-            echo "<option value disabled selected>Select Currency Unit</option>";
+        if (isset($row['currency_unit']))
+            $echoVal = $row['currency_unit'];
 
-            if (!$resultCurUnit) {
-                echo $errorMsgAlert . $clearLocalStorage . $redirectLink;
+        if (isset($echoVal)) {
+            $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+            if (!$currency_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            if ($resultBrand->num_rows >= 1) {
-                while ($rowCurUnit = $resultCurUnit->fetch_assoc()) {
-                    $selected = isset($row['currency_unit']) && $rowCurUnit['id'] == $row['currency_unit'] ? "selected" : "";
-                    echo "<option value='{$rowCurUnit['id']}' $selected>{$rowCurUnit['unit']}</option>";
-                }
-            } else {
-                echo "<option value=\"0\">None</option>";
-            }
-            ?>
-        </select>
+            $currency_row = $currency_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="sc_currency" id="sc_currency" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>" <?php if ($act == '') echo 'readonly' ?> required>
+        <input type="hidden" name="sc_currency_hidden" id="sc_currency_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
+
+        <?php if (isset($currency_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $currency_err; ?></span>
+            </div>
+        <?php } ?>
     </div>
 
     <div class="col-md-6 mb-3">
@@ -423,7 +426,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
-
+    
+    <?php include "../js/stock_credit_top_up_request.js" ?>
         
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
@@ -433,10 +437,6 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         centerAlignment("formContainer");
         setButtonColor();
         preloader(300, action);
-
-        $('#attachment').on('change', function() {
-            previewImage(this, 'attach_preview')
-        })
 
     </script>
 

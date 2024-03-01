@@ -66,8 +66,8 @@ if (post('actionBtn')) {
             
     $swt_date = postSpaceFilter("swt_date");
     $swt_id = postSpaceFilter("swt_id");
-    $curr = postSpaceFilter('curr_hidden');
-    $swt_amt = postSpaceFilter('swt_amt');
+    $curr = postSpaceFilter("curr_hidden");
+    $swt_amt = postSpaceFilter("swt_amt");
     $swt_pic = postSpaceFilter("swt_pic_hidden");
 
     $swt_attach = null;
@@ -403,6 +403,33 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
     <div class="form-group">
     <div class="row">
+    <div class="col-12 col-md-4 mb-3 autocomplete">
+        <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit*<span class="requireRed"></span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['currency_unit']))
+                $echoVal = $row['currency_unit'];
+
+            if (isset($echoVal)) {
+                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+                if (!$currency_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $currency_row = $currency_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
+            <input type="hidden" name="curr_hidden" id="curr_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
+
+            <?php if (isset($curr_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $curr_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+        
         <div class="col-12 col-md-4">
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount<span class="requireRed">*</span></label>
@@ -419,33 +446,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
                 <?php } ?>
             </div>
-        </div>
-
-        <div class="col-12 col-md-4 mb-3 autocomplete">
-            <label class="form-label form_lbl" id="curr_lbl" for="curr">Currency Unit<span class="requireRed">*</span></label>
-            <?php
-            unset($echoVal);
-
-            if (isset($row['currency_unit']))
-                $echoVal = $row['currency_unit'];
-
-            if (isset($echoVal)) {
-                $currency_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
-                if (!$currency_rst) {
-                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                }
-                $currency_row = $currency_rst->fetch_assoc();
-            }
-            ?>
-            <input class="form-control" type="text" name="curr" id="curr" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $currency_row['unit'] : '' ?>">
-            <input type="hidden" name="curr_hidden" id="curr_hidden" value="<?php echo (isset($row['currency_unit'])) ? $row['currency_unit'] : ''; ?>">
-
-            <?php if (isset($curr_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $curr_err; ?></span>
-                </div>
-            <?php } ?>
         </div>
 
         <div class="col-12 col-md-4 mb-3 autocomplete">

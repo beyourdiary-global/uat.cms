@@ -113,6 +113,7 @@ define('PROD_CATEGORY','product_category');
 define('BRD_SERIES','brand_series');
 define('FB_CUST_DEALS', 'customer_facebook_deals_transaction');
 define('URBAN_CUST_REG', 'urbanism_customer_register_info');
+define('WEB_CUST_RCD', 'customer_website_deals_transaction');
 
 //finance
 define('MERCHANT', 'merchant');
@@ -142,13 +143,14 @@ define('SHOPEE_ACC', 'shopee_account');
 define('SHOPEE_ADS_TOPUP', 'shopee_ads_topup_transaction');
 define('FB_ORDER_REQ', 'facebook_order_request');
 define('FB_PAGE_ACC', 'facebook_page_account');
-// define('CHANNEL', 'channel');
 define('STK_CDT_TOPUP_RCD', 'stock_credit_topup_record');
 define('LAZADA_ACC','lazada_account');
 define('PAY_MTHD_SHOPEE','shopee_payment_method');
 define('CHANEL_SC_MD', 'chanel_social_media');
 define('SHOPEE_SCR_SETT','shopee_service_charges_rate_setting');
-define('SHOPEE_SG_SETT','shopee_SG_fees_setting');
+define('SHOPEE_SG_SETT','shopee_sg_fees_setting');
+define('SHOPEE_CUST_INFO','shopee_customer_info');
+
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

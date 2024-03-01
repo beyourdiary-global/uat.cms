@@ -176,7 +176,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET ici_date = '$ici_date', pic = '$ici_pic', brand = '$ici_brand', package = '$ici_package', cost = '$ici_cost', remark ='$ici_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET date = '$ici_date', pic = '$ici_pic', brand = '$ici_brand', package = '$ici_package', cost = '$ici_cost', remark ='$ici_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';

@@ -1024,16 +1024,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="row" style="padding-bottom : 35px;">
-                        <div class="col-sm-4 text-start button-bottom">
+                        <div class="col-sm-4 mb-3 text-start button-bottom">
                             <button type="button" name="actionBtn" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-outline-primary ml-auto mt-2 pull-right" style="font-size: 15px;" value="">Previous</button>
                         </div>
 
-                        <div class="col-sm-4 text-center button-bottom">
+                        <div class="col-sm-4 mb-3 text-center button-bottom">
                             <button type="button" name="actionBtn" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="back" onclick="clearLocalStorageAndRedirect();" style="font-size: 15px;">Back</button>
                             <button type="submit" name="actionBtn" id="editButton" class="btn btn-outline-primary ml-auto mt-2 pull-right" value="updEmpDetails" style="font-size: 15px;">Edit</button>
                         </div>
 
-                        <div class="col-sm-4 text-end button-bottom">
+                        <div class="col-sm-4 mb-3 text-end button-bottom">
                             <button type="button" name="actionBtn" id="nextBtn" onclick="nextPrev(1)" class="btn btn-outline-primary ml-auto mt-2 pull-right actionNextSubBtn" value="" style="font-size: 15px;">Next</button>
                         </div>
                     </div>

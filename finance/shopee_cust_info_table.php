@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Facebook Page Account";
+$pageTitle = "Shopee Customer Record";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,9 +10,9 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fb_page_acc.php';
-$deleteRedirectPage = $SITEURL . '/finance/fb_page_acc_table.php';
-$result = getData('*', '', '', FB_PAGE_ACC, $finance_connect);
+$redirect_page = $SITEURL . '/finance/shopee_cust_info.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_cust_info_table.php';
+$result = getData('*', '', '', SHOPEE_CUST_INFO, $finance_connect);
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
@@ -29,7 +29,7 @@ if (!$result) {
 <script>
     preloader(300);
     $(document).ready(() => {
-        createSortingTable('fb_page_acc_table');
+        createSortingTable('shopee_cust_info_table');
     });
 </script>
 
@@ -54,20 +54,23 @@ if (!$result) {
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Account </a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Record </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <table class="table table-striped" id="fb_page_acc_table">
+            <table class="table table-striped" id="shopee_cust_info_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Shopee Buyer Username</th>
+                        <th scope="col">Sales Person In Charge</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Series</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -75,16 +78,30 @@ if (!$result) {
                 <tbody>
                     <?php
                     while ($row = $result->fetch_assoc()) {
-                        if (isset($row['name'], $row['id']) && !empty($row['name'])) {
+                        if (isset($row['buyer_username'], $row['id']) && !empty($row['buyer_username'])) {
+
+                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                            $row2 = $pic->fetch_assoc();
+
+                            $country = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
+                            $row3 = $country->fetch_assoc();
+
+                            $brand = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                            $row4 = $brand->fetch_assoc();
+
+                            $series = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
+                            $row5 = $series->fetch_assoc();
                     ?>
 
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?= isset($row['name']) ? $row['name']  : '' ?></td>
-                                <td scope="row"><?= isset($row['description']) ? $row['description'] : '' ?></td>
-                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?>
-                                </td>
+                                <td scope="row"><?= isset($row['buyer_username']) ? $row['buyer_username']  : '' ?></td>
+                                <td scope="row"><?= isset($row2['name']) ? $row2['name'] : '' ?></td>
+                                <td scope="row"><?= isset($row3['nicename']) ? $row3['nicename'] : '' ?></td>
+                                <td scope="row"><?= isset($row4['name']) ? $row4['name'] : '' ?></td>
+                                <td scope="row"><?= isset($row5['name']) ? $row5['name'] : '' ?></td>
+                                <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -103,7 +120,7 @@ if (!$result) {
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_page_acc_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_cust_info_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -117,8 +134,11 @@ if (!$result) {
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Shopee Buyer Username</th>
+                        <th scope="col">Sales Person In Charge</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Series</th>
                         <th scope="col">Remark</th>
                         <th scope="col" id="action_col">Action</th>
                     </tr>
@@ -146,7 +166,7 @@ if (!$result) {
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_page_acc_table');
+    datatableAlignment('shopee_cust_info_table');
     setButtonColor();
 </script>
 

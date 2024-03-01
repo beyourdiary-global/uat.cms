@@ -74,8 +74,33 @@ $(document).ready(function() {
         });
 
     }
-    //TODO: fb page account
-    //TODO: channel
+    //fb page account
+    if (!($("#for_fbpage").attr('disabled'))) {
+        $("#for_fbpage").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= FB_PAGE_ACC ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+    // channel
+    if (!($("#for_channel").attr('disabled'))) {
+        $("#for_channel").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= CHANEL_SC_MD ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
     //payment method
     if (!($("#for_pay_meth").attr('disabled'))) {
         $("#for_pay_meth").keyup(function() {

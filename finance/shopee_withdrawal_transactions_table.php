@@ -86,7 +86,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
                                     <td scope="row"><?php if (isset($row['swt_id'])) echo $row['swt_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row2['currency_unit'])) echo $row2['currency_unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
                                     <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
