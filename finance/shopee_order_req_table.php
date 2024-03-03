@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Facebook Order Request";
+$pageTitle = "Shopee SG Order Request";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
@@ -11,8 +11,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/fb_order_req.php';
-$result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
+$redirect_page = $SITEURL . '/finance/shopee_order_req.php';
+$result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +24,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('fb_order_req_table');
+        createSortingTable('shopee_order_req_table');
     });
 </script>
 
@@ -65,58 +65,54 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
             } else {
                 ?>
 
-                <table class="table table-striped" id="fb_order_req_table">
+                <table class="table table-striped" id="shopee_order_req_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Facebook Link</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Sales Person In Charge</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Series</th>
+                            <th scope="col">Shopee Account</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
                             <th scope="col">Package</th>
-                            <th scope="col">Facebook Page</th>
-                            <th scope="col">Channel</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Payment Method</th>
-                            <th scope="col">Shipping Receiver Name</th>
-                            <th scope="col">Shipping Receiver Address</th>
-                            <th scope="col">Shipping Receiver Contact</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Shopee Buyer Username</th>
+                            <th scope="col">Buyer Payment Method</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Product Price</th>
+                            <th scope="col">Voucher</th>
+                            <th scope="col">Actual Shipping Fee</th>
+                            <th scope="col">Service Fee (incl. GST)</th>
+                            <th scope="col">Transaction Fee (incl. GST)</th>
+                            <th scope="col">AMS Commission Fee</th>
+                            <th scope="col">Fees & Charges</th>
+                            <th scope="col">Final Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                            $q1 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
-                            $pic = $q1->fetch_assoc();
+                            $q1 = getData('*', "id='" . $row['shopee_acc'] . "'", '', SHOPEE_ACC, $finance_connect);
+                            $acc = $q1->fetch_assoc();
+                            $q7 = getData('*', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                            $curr = $q7->fetch_assoc();
 
-                            $q2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                            $country = $q2->fetch_assoc();
+                            $q2 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                            $pkg = $q2->fetch_assoc();
 
-                            $q3 = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                            $q3 = getData('name', "id='" . $row['brand'] ."'", '', BRAND, $connect);
                             $brand = $q3->fetch_assoc();
 
-                            $q4 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
-                            $series = $q4->fetch_assoc();
+                            $q4 = getData('buyer_username', "id='" . $row['buyer'] . "'", '', SHOPEE_CUST_INFO, $finance_connect);
+                            $buyer = $q4->fetch_assoc();
 
-                            $q5 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
-                            $package = $q5->fetch_assoc();
+                            $q6 = getData('*', "id='" . $row['buyer_pay_meth'] . "'", '', PAY_MTHD_SHOPEE, $finance_connect);
+                            $pay = $q6->fetch_assoc();
 
-                            //fb page
-                            $q6 = getData('name', "id='" . $row['fb_page'] . "'", '', FB_PAGE_ACC, $finance_connect);
-                            $fb_page = $q6->fetch_assoc();
-
-                            //channel
-                            $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANEL_SC_MD, $finance_connect);
-                            $channel = $q7->fetch_assoc();
-
-                            $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
-                            $pay_meth = $q8->fetch_assoc();
+                            $q5 = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                            $pic = $q5->fetch_assoc();
                             ?>
 
                             <tr>
@@ -127,55 +123,61 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     <?= $num++; ?>
                                 </th>
                                 <td scope="row">
-                                    <?= $row['name'] ?? '' ?>
+                                    <?= $acc['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['fb_link'] ?? '' ?>
+                                    <?= $curr['unit'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['contact'] ?? '' ?>
+                                    <?= $row['orderID'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $pic['name'] ?? '' ?>
+                                    <?= $row['date'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $country['nicename'] ?? '' ?>
+                                    <?= $row['time'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $pkg['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
                                     <?= $brand['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $series['name'] ?? '' ?>
+                                    <?= $buyer['buyer_username'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $package['name'] ?? '' ?>
+                                    <?= $pay['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $fb_page['name'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $channel['name'] ?? '' ?>
+                                    <?= $pic['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
                                     <?= $row['price'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $pay_meth['name'] ?? '' ?>
+                                    <?= $row['voucher'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['ship_rec_name'] ?? '' ?>
+                                    <?= $row['act_shipping_fee'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['ship_rec_add'] ?? '' ?>
+                                    <?= $row['service_fee'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['ship_rec_contact'] ?? '' ?>
+                                    <?= $row['trans_fee'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $row['ams_fee'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $row['fees'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $row['final_amt'] ?? '' ?>
                                 </td>
                                 <td scope="row">
                                     <?= $row['remark'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $row['attachment'] ?? '' ?>
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
@@ -200,7 +202,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)): ?>
                                                     <a class="dropdown-item"
-                                                        onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_order_req_table.php','D')">Delete</a>
+                                                        onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $acc['name'] ?>','<?= $row['date'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_order_req_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>
@@ -213,23 +215,25 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Facebook Link</th>
-                            <th scope="col">Contact</th>
-                            <th scope="col">Sales Person In Charge</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Series</th>
+                            <th scope="col">Shopee Account</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
                             <th scope="col">Package</th>
-                            <th scope="col">Facebook Page</th>
-                            <th scope="col">Channel</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Payment Method</th>
-                            <th scope="col">Shipping Receiver Name</th>
-                            <th scope="col">Shipping Receiver Address</th>
-                            <th scope="col">Shipping Receiver Contact</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Shopee Buyer Username</th>
+                            <th scope="col">Buyer Payment Method</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Product Price</th>
+                            <th scope="col">Voucher</th>
+                            <th scope="col">Actual Shipping Fee</th>
+                            <th scope="col">Service Fee (incl. GST)</th>
+                            <th scope="col">Transaction Fee (incl. GST)</th>
+                            <th scope="col">AMS Commission Fee</th>
+                            <th scope="col">Fees & Charges</th>
+                            <th scope="col">Final Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
@@ -255,7 +259,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_order_req_table');
+    datatableAlignment('shopee_order_req_table');
 </script>
 
 </html>

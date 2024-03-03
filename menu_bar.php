@@ -73,8 +73,9 @@ $menuList = array(
         'y',
         'expand' => array(
             array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
+            array('Shopee SG Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/shopee_order_req_table.php', '86'),
         ),
-        'pin' => array('69')
+        'pin' => array('69','86')
     ),
     array(
         'Distributor',
@@ -194,13 +195,14 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Stripe Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/stripe_trans_backup_table.php', '89'),
-                    
+                    array('J&T Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/j&t_trans_backup_table.php', '88'),
+                    array('Atome Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/atome_trans_backup_table.php', '87'),
                 ),
-                'pin' => array('89'),
+                'pin' => array('89','87','88'),
             ),
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78','81','83','89')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '51', '58', '66', '67', '68','77','78','81','83','87','88','89')
 
     ),
     array(
@@ -346,7 +348,7 @@ $menuList = array(
                 'pin' => array('80','82'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78','79','80','82','84','85','89')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78','79','80','82','84','85','86','87','88','89')
     ),
     array(
         'Audit Log',

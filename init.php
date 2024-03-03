@@ -151,6 +151,10 @@ define('SHOPEE_SCR_SETT','shopee_service_charges_rate_setting');
 define('SHOPEE_SG_SETT','shopee_sg_fees_setting');
 define('SHOPEE_CUST_INFO','shopee_customer_info');
 define('STRIPE_TRANS_BACKUP', 'stripe_transaction_backup');
+define('JT_TRANS_BACKUP','jt_transaction_backup');
+define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
+define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
+
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
