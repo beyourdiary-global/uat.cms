@@ -150,6 +150,7 @@ define('CHANEL_SC_MD', 'chanel_social_media');
 define('SHOPEE_SCR_SETT','shopee_service_charges_rate_setting');
 define('SHOPEE_SG_SETT','shopee_sg_fees_setting');
 define('SHOPEE_CUST_INFO','shopee_customer_info');
+define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
 define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
 
 
