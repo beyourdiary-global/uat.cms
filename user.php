@@ -79,12 +79,13 @@ if (post('actionBtn')) {
             $dataUsername = postSpaceFilter('dataUsername');
             $userGroup = postSpaceFilter('userGroup');
             $userEmail = postSpaceFilter('currentUserEmail');
-            $userPassword = md5($dataUsername);
+            $userPassword = postSpaceFilter('password');
+            $userConfirmPassword = postSpaceFilter('confirmPassword');
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
             if (isDuplicateRecord("name", $currentDataName, $tblName, $connect, $dataID)) {
-                $err = "Duplicate record found for username.";
+                $err1 = "Duplicate record found for username.";
                 $errCount = 1;
             }
 
@@ -95,6 +96,11 @@ if (post('actionBtn')) {
 
             if (isDuplicateRecord("email", $userEmail, $tblName, $connect, $dataID)) {
                 $err3 = "Duplicate record found for user email.";
+                $errCount = 1;
+            }
+
+            if ($userPassword !== $userConfirmPassword) {
+                $err5 = "Password and confirm password do not match.";
                 $errCount = 1;
             }
 
@@ -126,7 +132,13 @@ if (post('actionBtn')) {
                         array_push($datafield, 'access_id');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(name,username,password_alt,email,access_id,create_by,create_date,create_time) VALUES ('$currentDataName','$dataUsername','$userPassword','$userEmail','$userGroup','" . USER_ID . "',curdate(),curtime())";
+                    if ($userPassword) {
+                        array_push($newvalarr, $userPassword);
+                        array_push($datafield, 'password');
+                    }
+
+                    $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
+                    $query = "INSERT INTO " . $tblName . "(name,username,password,password_alt,email,access_id,create_by,create_date,create_time) VALUES ('$currentDataName','$dataUsername','$userPassword','$hashedPassword','$userEmail','$userGroup','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
@@ -157,6 +169,12 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['access_id']);
                         array_push($chgvalarr, $userGroup);
                         array_push($datafield, 'access_id');
+                    }
+
+                    if ($row['password'] != $userPassword) {
+                        array_push($oldvalarr, $row['password']);
+                        array_push($chgvalarr, $userPassword);
+                        array_push($datafield, 'password');
                     }
 
                     $_SESSION['tempValConfirmBox'] = true;
@@ -310,7 +328,35 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             </div>
                         </div>
                     </div>
+                    <div class="form-group mb-3">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" id="password_lbl" for="password">Password</label>
+                                <div id="row-password-input">
+                                    <div class="d-flex justify-content-end">
+                                        <i class="fa fa-eye-slash hide_icon" id="showPassword"></i>
+                                    </div>
+                                        <input class="form-control" type="password" name="password" id="password" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                    <div id="err_msg">
+                                        <span class="mt-n1" id="errorSpan"><?php if (isset($err5)) echo $err5; ?></span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" id="confirmpassword_lbl" for="password">Confirm Password</label>
+                                <div id="row-password-input">
+                                    <div class="d-flex justify-content-end">
+                                        <i class="fa fa-eye-slash hide_icon" id="showConfirmPassword"></i>
+                                    </div>
+                                        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                    <div id="err_msg">
+                                        <span class="mt-n1" id="errorSpan"><?php if (isset($err6)) echo $err6; ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
                         <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
@@ -321,6 +367,29 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+        $(document).ready(() => {
+            $("#showPassword").on('click', () => {
+                togglePasswordVisibility("#password", "#showPassword");
+            });
+
+            $("#showConfirmPassword").on('click', () => {
+                togglePasswordVisibility("#confirmPassword", "#showConfirmPassword");
+            });
+        });
+
+        function togglePasswordVisibility(passwordField, icon) {
+            var passwordFieldType = $(passwordField).attr('type');
+            if (passwordFieldType == 'password') {
+                $(passwordField).attr('type', 'text');
+                $(icon).removeClass("fa-eye-slash").addClass("fa-eye");
+            } else if (passwordFieldType == 'text') {
+                $(passwordField).attr('type', 'password');
+                $(icon).removeClass("fa-eye").addClass("fa-eye-slash");
+            }
+        }
+
+
+
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";

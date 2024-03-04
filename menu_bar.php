@@ -219,11 +219,11 @@ $menuList = array(
                 'expand' => array(
                     array('Pin', 'mdi mdi-pin', $SITEURL . '/pin_table.php', '1'),
                     array('Pin Group', 'mdi mdi-ungroup', $SITEURL . '/pin_group_table.php', '2'),
-                    array('User', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_table.php', '3'),
-                    array('User Group', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_group_table.php', '4'),
+                    array('User', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_table.php', '90'),
+                    array('User Group', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_group_table.php', '3'),
                    
                 ),
-                'pin' => array('1', '2', '3','4'),
+                'pin' => array('1', '2', '90','3'),
             ),
             array(
                 'User Administration Setting',
