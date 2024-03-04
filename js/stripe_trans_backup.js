@@ -67,7 +67,7 @@ $('.submitBtn').on('click', () => {
             .val() === undefined)) {
     stb_amount_chk = 0;
         $("#stb_amount").after(
-            '<span class="error-message stb-amount-err">Currency Unit is required!</span>');
+            '<span class="error-message stb-amount-err">Amount is required!</span>');
     } else {
         $(".stb-amount-err").remove();
     stb_amount_chk = 1;
