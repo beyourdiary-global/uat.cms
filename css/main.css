@@ -625,3 +625,11 @@ input {
     margin-bottom: 1.5rem
 }
 
+#row-password-input i {
+    position: absolute;
+}
+
+.hide_icon {
+    padding: 10px;
+    min-width: 40px;
+}
