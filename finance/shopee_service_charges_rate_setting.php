@@ -314,7 +314,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="commission_lbl" for="commission">Commission Fees Rate (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="commission" id="commission" value="<?php 
+            <input class="form-control" type="number"  step=".01" name="commission" id="commission" value="<?php 
                 if (isset($dataExisted) && isset($row['commission']) && !isset($commission)) {
                     echo $row['commission'];
                 } else if (isset($dataExisted) && isset($row['commission']) && isset($commission)) {
@@ -333,7 +333,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="service_lbl" for="service">Service Fee Rate (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="service" id="service" value="<?php 
+            <input class="form-control" type="number"  step=".01" name="service" id="service" value="<?php 
                 if (isset($dataExisted) && isset($row['service']) && !isset($service)) {
                     echo $row['service'];
                 } else if (isset($dataExisted) && isset($row['service']) && isset($service)) {

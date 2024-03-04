@@ -5,11 +5,11 @@ $('#dtur_attach').on('change', function() {
 //autocomplete
 $(document).ready(function() {
     
-    if (!($("#dtur_brand").attr('disabled'))) {
-        $("#dtur_brand").keyup(function () {
-            var param = {
-                search: $(this).val(),
-                searchType: 'unit', // column of the table
+    if (!($("#dtur_brand").attr('disabled'))) { 
+        $("#dtur_brand").keyup(function() { 
+            var param = { 
+                search: $(this).val(), 
+                searchType: 'name', // column of the table
                 elementID: $(this).attr('id'), // id of the input
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= BRAND ?>', // json filename (generated when login)
