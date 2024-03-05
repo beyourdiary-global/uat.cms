@@ -633,3 +633,8 @@ input {
     padding: 10px;
     min-width: 40px;
 }
+
+/*date picker*/
+.date-separator {
+    padding: 0 5px;
+}
