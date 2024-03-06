@@ -12,6 +12,7 @@ $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/fb_ads_topup_trans.php';
 $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
+$result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -26,8 +27,6 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
     });
 </script>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <body>
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
@@ -50,19 +49,20 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     </div>
                 </div>
             </div>
-            <div class="row mb-3">
-                    <div class="col">
+           
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col-md-2 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
-                        <select class="form-select" id="timeInterval">
+                        <select class="form-select" id="timeInterval" >
+                        
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
                             <option value="yearly">Yearly</option>
                         </select>
                     </div>
-                    
-                <div class="col">
-
+                    <div class="col-md-4 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
                         <div class="input-group date" id="datepicker">
                             <input type="text" class="form-control" placeholder="Select date">
@@ -70,109 +70,130 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
-
                         <div class="input-daterange input-group" id="datepicker2" style="display: none;">
                             <input type="text" class="input form-control" name="start" placeholder="Start date"/>
-                            <span class="input-group-addon date-separator"> to </span>
+                                <span class="input-group-addon date-separator"> to </span>
                             <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
                         </div>
                         <div class="input-group input-daterange" id="datepicker3" style="display: none;">
                             <input type="text" class="input form-control" name="start" placeholder="Start month"/>
-                            <span class="input-group-addon date-separator"> to </span>
+                                <span class="input-group-addon date-separator"> to </span>
                             <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
-                           
-                        </div>
+                            
+                            </div>
                         <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                             <input type="text" class="input form-control" name="start" placeholder="Start year"/>
-                            <span class="input-group-addon date-separator"> to </span>
+                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
+                                <span class="input-group-addon date-separator"> to </span>
                             <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
-                           
+                            
                         </div>
                     </div>
-                    
-            </div>
-            <div class="row mb-3">
-            <div class="col-md-6">
-                        <label>Group by:</label>
+                    <div class="col-md-3">
+                        <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
-                            <option value="">-</option>
-                          
+                            <option value="metaaccount" selected>Meta Account</option>
+                            <option value="invoice">Invoice/Payment Date</option>
                         </select>
                     </div>
+                    <div class="col-md-3 meta">
+                        <label class="form-label">Group by Meta Account:</label>
+                        <select class="form-select" id="metagroup">
+                            <option value="" selected>Select a Meta account</option>
+                            <?php
+                            $uniqueNames = array();
+
+                            foreach ($result2 as $row1) {
+                                $metaQuery1 = getData('*', "id='" . $row1['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+                                $meta_acc1 = $metaQuery1->fetch_assoc();
+                                $accNames = isset($meta_acc1['accName']) ? $meta_acc1['accName'] : '';
+
+                                if (!in_array($accNames, $uniqueNames)) {
+                                    echo '<option value="' . $accNames . '">' . $accNames . '</option>';
+                                    $uniqueNames[] = $accNames;
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+        
+                 
+                </div>
+             
+                    
+                
             </div>
+         
+            
             <table class="table table-striped" id="fb_ads_topup_trans_table">
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
-                        <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th id="group_header" scope="col">Meta Account</th>
+                        <th scope="col">Total Top-up Amount</th>
+                        
+                        
                     </tr>
                 </thead>
+
+                 
                 <tbody>
-                <?php while ($row = $result->fetch_assoc()) {
-                        if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
-                            $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-                            $meta_acc = $metaQuery->fetch_assoc();
-                            $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $usr = $pic->fetch_assoc();
-                    ?>
-                            <tr>
-                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                <th scope="row"><?= $num++; ?></th>
-                                <td scope="row"><?php if (isset($meta_acc['accName'])) echo  $meta_acc['accName'] ?></td>
-                                <td scope="row"><?= $row['transactionID'] ?></td>
-                                <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
-                                <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
-                                <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
-                                <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
-                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>     
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['meta_acc'] ?>','<?= $row['transactionID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_ads_topup_trans_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                    <?php }
-                    } ?>
-                </tbody>
+    <?php
+   
+    $groupOption = isset($_GET['group']) ? $_GET['group'] : 'metaaccount'; // Default to 'metaaccount' if no group is selected
+    $groupHeader = $groupOption === 'metaaccount' ? 'Meta Account' : 'Invoice/Payment Date';
+    $groupedRows = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+        $meta_acc = $metaQuery->fetch_assoc();
+        $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
+        $paymentDate = $row['payment_date'];
+
+        if ($groupOption === 'metaaccount') {
+            $totalTopupAmount = isset($groupedRows[$accName]['totalTopupAmount']) ? $groupedRows[$accName]['totalTopupAmount'] : 0;
+            $totalTopupAmount += $row['topup_amt'];
+
+            $groupedRows[$accName] = [
+                'id' => $row['id'],
+                'num' => isset($groupedRows[$accName]['num']) ? $groupedRows[$accName]['num'] + 1 : 1,
+                'totalTopupAmount' => number_format($row['topup_amt'], 0, '.', '') 
+                
+            ];
+        } else{
+
+            if (!isset($groupedRows[$paymentDate])) {
+                $groupedRows[$paymentDate] = [
+                    'id' => $row['id'],
+                    'num' => 1,
+                    'totalTopupAmount' => number_format($row['topup_amt'], 0, '.', '') 
+                ];
+            } else {
+                $groupedRows[$paymentDate]['num']++;
+                $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+            }
+        }
+    }
+
+    foreach ($groupedRows as $key => $groupedRow) {
+        echo '<tr>';
+        echo '<th class="hideColumn" scope="row">' . $groupedRow['id'] . '</th>';
+        echo '<th scope="row">' . $groupedRow['num'] . '</th>';
+        echo '<td scope="row">' . $key . '</td>';
+
+        echo '<td scope="row">' . $groupedRow['totalTopupAmount'] . '</td>';
+        echo '</tr>';
+    }
+    ?>
+</tbody>
+   
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col">Meta Account</th>
-                        <th scope="col">Transaction ID</th>
-                        <th scope="col">Invoice/Payment Date</th>
-                        <th scope="col">Person In Charge</th>
-                        <th scope="col">Top-up Amount</th>
-                        <th scope="col">Attachment</th>
-                        <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th id="group_header2" scope="col">Meta Account</th>
+                        <th scope="col">Total Top-up Amount</th>
+                        
                     </tr>
                 </tfoot>
             </table>
@@ -181,14 +202,27 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
     </div>
 
 </body>
-<script>$(document).ready(function() {
-    // Initialize the datepickers
+<script>
+
+    window.onload = function() {
+        document.getElementById("timeInterval").value = 'daily';
+        document.getElementById("metagroup").value = '';
+};
+
+$(document).ready(function() {
+    var selectedMetaAccount = $('#metagroup').val();
+    $('#group').val('metaaccount');
+    $('#group').change(function(){
+    var group = $(this).val();
+    window.location.href = window.location.pathname + '?group=' + group;
+
+  });
     $('#datepicker').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd',
         weekStart: 1,
-        maxViewMode: 0, // Set to show only days
-        minViewMode: 0, // Set to show only days
+        maxViewMode: 0, 
+        minViewMode: 0,
         todayHighlight: true,
         toggleActive: true,
         orientation: 'bottom left',
@@ -220,29 +254,48 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
         orientation: 'bottom',
     });
 
-    // Function to filter the table based on the selected date range
-    function filterTable() {
+ 
+   function filterTable() {
         var selectedOption = $('#timeInterval').val();
-        if (selectedOption === 'daily') {
+        var selectedMetaAccount = $('#metagroup').val();
+         if (selectedMetaAccount){
+            
+            $('#fb_ads_topup_trans_table tbody tr').each(function() {
+                var metaAccount = $(this).find('td:nth-child(3)').text()
+         
+                if (metaAccount.toLowerCase() === selectedMetaAccount.toLowerCase()) {
+                     $(this).show();     
+                } else {
+                    $(this).hide();
+                }
+            });
+          
+           
+         }
+        if (selectedOption === 'daily' && !selectedMetaAccount) {
             var selectedDate = $('#datepicker input').val();
             $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(5)').text();
+                var paymentDate = $(this).find('td:nth-child(3)').text();
                 if (paymentDate === selectedDate) {
                     $(this).show();
+                
+                    
                 } else {
                     $(this).hide();
                 }
             });
         } 
+        
         else if (selectedOption === 'weekly') {
             var startDate = $('#datepicker2 input[name="start"]').val();
             var endDate = new Date(startDate);
             endDate.setDate(endDate.getDate() + 6); // Add 6 days to get a total of 7 days
             var endDateFormatted = endDate.toISOString().split('T')[0]; // Format the date as yyyy-mm-dd
             $('#datepicker2 input[name="end"]').val(endDateFormatted);
-
+            var selectedMetaAccount = $('#metagroup').val();
+            
             $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(5)').text();
+                var paymentDate = $(this).find('td:nth-child(3)').text();
                 if ((startDate === '' || paymentDate >= startDate) && (endDateFormatted === '' || paymentDate <= endDateFormatted)) {
                     $(this).show();
                 } else {
@@ -256,7 +309,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
             var endDate = new Date(startDate);
             endDate.setDate(startDate.getDate() + 7);
             $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(5)').text();
+                var paymentDate = $(this).find('td:nth-child(3)').text();
                 if ((startDate === '' || paymentDate >= startDate) && (endDate === '' || paymentDate <= endDate)) {
                     $(this).show();
                 } else {
@@ -268,7 +321,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
         var startYear = $('#datepicker4 input[name="start"]').val();
         var endYear = $('#datepicker4 input[name="end"]').val();
         $('#fb_ads_topup_trans_table tbody tr').each(function() {
-            var paymentYear = $(this).find('td:nth-child(5)').text().slice(0, 4);
+            var paymentYear = $(this).find('td:nth-child(3)').text().slice(0, 4);
             if ((startYear === '' || paymentYear >= startYear) && (endYear === '' || paymentYear <= endYear)) {
                 $(this).show();
             } else {
@@ -278,38 +331,39 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
         }
 
     }
-
-    // Filter the table when the date range changes
     $('#datepicker, #datepicker2, #datepicker3, #datepicker4').on('changeDate', filterTable);
+    $('#metagroup').change(filterTable);
 
-    // Filter the table when the time interval changes
-    $('#timeInterval').change(function() {
-        var selectedOption = $(this).val();
-        if (selectedOption === 'daily') {
-            $('#datepicker').prop('disabled', false).show();
-            $('#datepicker2').prop('disabled', true).hide();
-            $('#datepicker3').prop('disabled', true).hide();
-            $('#datepicker4').prop('disabled', true).hide();
-        } else if (selectedOption === 'weekly') {
-            $('#datepicker').prop('disabled', true).hide();
-            $('#datepicker2').prop('disabled', false).show();
-            $('#datepicker3').prop('disabled', true).hide();
-            $('#datepicker4').prop('disabled', true).hide();
-        } else if (selectedOption === 'monthly') {
-            $('#datepicker').prop('disabled', true).hide();
-            $('#datepicker2').prop('disabled', true).hide();
-            $('#datepicker3').prop('disabled', false).show();
-            $('#datepicker4').prop('disabled', true).hide();
-        } else if (selectedOption === 'yearly') {
-            $('#datepicker').prop('disabled', true).hide();
-            $('#datepicker2').prop('disabled', true).hide();
-            $('#datepicker3').prop('disabled', true).hide();
-            $('#datepicker4').prop('disabled', false).show();
+   $('#timeInterval').change(function() {
+    var selectedOption = $(this).val();
+    $('#datepicker, #datepicker2, #datepicker3, #datepicker4').prop('disabled', true).hide();
+
+    if (selectedOption === 'daily') {
+        $('#datepicker').prop('disabled', false).show();
+    } else if (selectedOption === 'weekly') {
+        $('#datepicker2').prop('disabled', false).show();
+    } else if (selectedOption === 'monthly') {
+        $('#datepicker3').prop('disabled', false).show();
+    } else if (selectedOption === 'yearly') {
+        $('#datepicker4').prop('disabled', false).show();
+    }
+});
+
+
+
+    document.getElementById('group').addEventListener('change', function() {
+        let selectedValue = this.value;
+        let groupHeader = document.getElementById('group_header');
+        let groupHeader2 = document.getElementById('group_header2');
+        if (selectedValue === 'metaaccount') {
+            groupHeader.textContent = 'Meta Account';
+            groupHeader2.textContent = 'Meta Account';
+        } else if (selectedValue === 'invoice') {
+            groupHeader.textContent = 'Invoice/Payment Date';
+            groupHeader2.textContent = 'Invoice/Payment Date';
         }
-        filterTable();
     });
 
-    // Initial hide based on selected option
     
 });
 </script>
