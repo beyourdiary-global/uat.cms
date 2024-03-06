@@ -68,8 +68,11 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col" width="60px">S/N</th>
+                    <th scope="col">Customer ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Contact</th>
+                    <th scope="col">Customer Email</th>
+                    <th scope="col">Customer Birthday</th>
                     <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
                     <th scope="col">Brand</th>
@@ -104,6 +107,11 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                         <th scope="row">
                             <?= $num++; ?>
                         </th>
+
+                        <td scope="row">
+                            <?= $row['cust_id'] ?>
+                        </td>
+
                         <td scope="row">
                             <?= $row['name'] ?>
                         </td>
@@ -111,6 +119,15 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                         <td scope="row">
                             <?= $row['contact'] ?>
                         </td>
+
+                        <td scope="row">
+                            <?= $row['cust_email'] ?>
+                        </td>
+
+                        <td scope="row">
+                            <?= $row['cust_birthday'] ?>
+                        </td>
+
                         <td scope="row"><?= isset($pic['name']) ? $pic['name'] : ''  ?></td>
 
                         <td scope="row">
@@ -169,8 +186,11 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col" width="60px">S/N</th>
+                    <th scope="col">Customer ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Contact</th>
+                    <th scope="col">Customer Email</th>
+                    <th scope="col">Customer Birthday</th>
                     <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
                     <th scope="col">Brand</th>
