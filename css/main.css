@@ -638,3 +638,7 @@ input {
 .date-separator {
     padding: 0 5px;
 }
+ 
+.modal{
+    width: 505px;
+}

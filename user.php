@@ -297,7 +297,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="currentUsername">User Group</label>
                                 <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
-                                    <option value="" disabled selected style="display:off;">Select User Group</option>
+                                    <option value="" disabled style="display:off;">Select User Group</option>
                                     <?php
                                     $user_grp_list = getData('id,name', '', '', USR_GRP, $connect);
                                     if ($user_grp_list) {
