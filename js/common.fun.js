@@ -929,7 +929,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       break;
     case "D":
       var title = "Successful Delete " + pagename;
-      var title2 = "Are You Sure Want To Delete This " + pagename + "?";
+      var title2 = "Are You Sure Want To Delete This " + pagename + " ?";
       var btn = "Delete";
       break;
     case "F":
