@@ -11,13 +11,12 @@ $("#cni_due").datepicker({
 });
 
 $('.createInvoiceButton').on('click', () => {
-    $("#createInvoice").val(1); 
+    $("#createInvoice").val(1);
 });
 
-$(document).ready(function() {
-
+$(document).ready(function () {
     if (!($("#cni_name").attr('disabled'))) {
-        $("#cni_name").keyup(function() {
+        $("#cni_name").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -29,7 +28,7 @@ $(document).ready(function() {
         });
     }
     if (!($("#cni_pic").attr('disabled'))) {
-        $("#cni_pic").keyup(function() {
+        $("#cni_pic").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -41,7 +40,7 @@ $(document).ready(function() {
         });
     }
     if (!($("#cni_curr").attr('disabled'))) {
-        $("#cni_curr").keyup(function() {
+        $("#cni_curr").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'unit', // column of the table
@@ -53,6 +52,20 @@ $(document).ready(function() {
         });
     }
     $("#cni_name").change(autofillMrcht);
+    
+    $('#payment-terms').change(function () {
+        if ($(this).is(':checked')) {
+            $('#pay_terms').show();
+        } else {
+            // If the checkbox is unchecked, hide the payment terms dropdown
+            $('#pay_terms').hide();
+            // Clear the selected value of the payment terms dropdown
+            $('#pay_terms').val('0');
+        }
+    });
+    if (!$('#payment-terms').is(':checked')) {
+        $('#pay_terms').hide();
+    }
 
 })
 function autofillMrcht() {
@@ -99,8 +112,8 @@ function AddRow() {
     cell = $(row.insertCell(-1));
     cell.html('<input type="text" name="quantity[]" id="quatity_' + numbering + '" value="">');
     cell = $(row.insertCell(-1));
-    cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="" readonly>');
-   
+    cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="">');
+
     //Add Button cell.
     cell = $(row.insertCell(-1));
     var btnRemove = $('<button class="mt-1" id="action_menu_btn"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000"></i></button>');

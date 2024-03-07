@@ -73,6 +73,7 @@ $defaultDate = date('Y-m-d');
 
 //dropdown list for currency
 $pay_list_result = getData('*', '', '', FIN_PAY_METH, $finance_connect);
+$pay_terms_result = getData('*', '', '', FIN_PAY_TERMS, $finance_connect);
 $proj_result = getData('*', "id = '1'", '', PROJ, $connect);
 
 if (!$proj_result) {
@@ -109,12 +110,52 @@ if (post('actionBtn')) {
             $cni_notes = postSpaceFilter('internal_notes');
             $cni_pay = postSpaceFilter('cni_pay');
             $cni_pay_details = postSpaceFilter('cni_pay_details');
-            $cni_terms = postSpaceFilter('cni_terms');
 
             $descriptions = $_POST["prod_desc"];
             $prices = $_POST["price"];
             $quantities = $_POST["quantity"];
             $amounts = $_POST["amount"];
+
+            $pay_terms = postSpaceFilter('pay_terms');
+
+            $productIDs = array();
+
+            foreach ($_POST['prod_desc'] as $index => $description) {
+                // Prepare values for SQL query
+                $price = $_POST['price'][$index];
+                $quantity = $_POST['quantity'][$index];
+                $amount = $_POST['amount'][$index];
+
+                // Check if a row already exists for the current invoice_row and description
+                $queryCheck = "SELECT id FROM " . CRED_INV_PROD . " WHERE invoice_row = '$inv_id' AND description = '$description'";
+                $resultCheck = mysqli_query($finance_connect, $queryCheck);
+
+                if (mysqli_num_rows($resultCheck) > 0) {
+                    // Row already exists, update its details
+                    $rowCheck = mysqli_fetch_assoc($resultCheck);
+                    $productID = $rowCheck['id'];
+
+                    // Update product details
+                    $queryUpdate = "UPDATE " . CRED_INV_PROD . " 
+                                    SET price = '$price', quantity = '$quantity', amount = '$amount' 
+                                    WHERE id = '$productID'";
+                    $update_prod = mysqli_query($finance_connect, $queryUpdate);
+                } else {
+                    // Row doesn't exist, insert a new row
+                    $queryInsert = "INSERT INTO " . CRED_INV_PROD . " 
+                                    (invoice_row, description, price, quantity, amount, create_by, create_date, create_time) 
+                                    VALUES ('$inv_id', '$description', '$price', '$quantity', '$amount', '" . USER_ID . "', curdate(), curtime())";
+                    $insert_prod = mysqli_query($finance_connect, $queryInsert);
+
+                    // Get the ID of the inserted product
+                    $productID = mysqli_insert_id($finance_connect);
+                }
+
+                $productIDs[] = $productID;
+            }
+
+            // Combine product IDs into a comma-separated string
+            $productIDString = implode(',', $productIDs);
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -205,10 +246,16 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $cni_pay_details);
                         array_push($datafield, 'payment details');
                     }
+
+                    if ($productIDString) {
+                        array_push($newvalarr, $productIDString);
+                        array_push($datafield, 'products');
+                    }
+
                     $query2 = "UPDATE " . PROJ . " SET invoice_next_number_credit = invoice_next_number_credit + 1 WHERE id = 1;";
                     $update_inv_no = mysqli_query($connect, $query2);
 
-                    $query = "INSERT INTO " . $tblName . "(projectID, invoice, date, due_date, currency, bill_nameID, bill_add, bill_email, bill_contact, pay_method, pay_terms, pay_details, sales_pic, remark, subtotal, discount, tax, total, inv_note, create_by, create_date, create_time) VALUES ('1','$inv_id','$date','$due','$cni_curr','$mName','$mAdd','$mEmail','$mCtc','$cni_pay','$cni_terms','$cni_pay_details','$cni_pic','$cni_remark','$cni_sub','$cni_disc','$cni_tax','$cni_total','$cni_notes','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(projectID, invoice, date, due_date, currency, bill_nameID, bill_add, bill_email, bill_contact, products, pay_method, pay_terms, pay_details, sales_pic, remark, subtotal, discount, tax, total, inv_note, create_by, create_date, create_time) VALUES ('1','$inv_id','$date','$due','$cni_curr','$mName','$mAdd','$mEmail','$mCtc','$productIDString','$cni_pay','$pay_terms','$cni_pay_details','$cni_pic','$cni_remark','$cni_sub','$cni_disc','$cni_tax','$cni_total','$cni_notes','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
 
@@ -218,11 +265,6 @@ if (post('actionBtn')) {
                 }
             } else {
                 try {
-                    if ($row['invoice'] != $inv_id) {
-                        array_push($oldvalarr, $row['invoice']);
-                        array_push($chgvalarr, $inv_id);
-                        array_push($datafield, 'invoice ID');
-                    }
                     if ($row['date'] != $date) {
                         array_push($oldvalarr, $row['date']);
                         array_push($chgvalarr, $date);
@@ -268,9 +310,9 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $cni_pay_details);
                         array_push($datafield, 'pay_details');
                     }
-                    if ($row['pay_terms'] != $cni_terms) {
+                    if ($row['pay_terms'] != $pay_terms) {
                         array_push($oldvalarr, $row['pay_terms']);
-                        array_push($chgvalarr, $cni_terms);
+                        array_push($chgvalarr, $pay_terms);
                         array_push($datafield, 'payment terms');
                     }
                     if ($row['sales_pic'] != $cni_pic) {
@@ -308,11 +350,16 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $cni_notes);
                         array_push($datafield, 'notes');
                     }
+                    if ($row['products'] != $productIDString) {
+                        array_push($oldvalarr, $row['products']);
+                        array_push($chgvalarr, $productIDString);
+                        array_push($datafield, 'products');
+                    }
 
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET invoice = '$inv_id ',date='$date',due_date='$due',currency='$cni_curr',bill_nameID='$mName',bill_add='$mAdd',bill_email='$mEmail',bill_contact='$mCtc',pay_method='$cni_pay',pay_details='$cni_pay_details',pay_terms='',sales_pic='$cni_pic',remark='$cni_remark',subtotal='$cni_sub',discount='$cni_disc',tax='$cni_tax',total='$cni_total',inv_note='$cni_notes', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET invoice = '$inv_id ',date='$date',due_date='$due',currency='$cni_curr',bill_nameID='$mName',bill_add='$mAdd',bill_email='$mEmail',bill_contact='$mCtc', products='$productIDString',pay_method='$cni_pay',pay_details='$cni_pay_details',pay_terms='$pay_terms',sales_pic='$cni_pic',remark='$cni_remark',subtotal='$cni_sub',discount='$cni_disc',tax='$cni_tax',total='$cni_total',inv_note='$cni_notes', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -647,8 +694,8 @@ if ($redirectToCreateInvoicePage == 1) {
                                                         // get value
                                                         unset($echoVal);
 
-                                                        if (isset($row['product']))
-                                                            $echoVal = $row['product'];
+                                                        if (isset($row['products']))
+                                                            $echoVal = $row['products'];
 
                                                         // echo
                                                         if (isset($echoVal)) {
@@ -656,21 +703,14 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             $echoVal = explode(',', $echoVal);
                                                             foreach ($echoVal as $prod_id) {
                                                                 // product info
-                                                                $product_info_result = getData('*', "id = '$prod_id'", '', PROD, $connect);
+                                                                $product_info_result = getData('*', "id = '$prod_id'", '', CRED_INV_PROD, $finance_connect);
                                                                 $product_info_row = $product_info_result->fetch_assoc();
 
                                                                 $pid = $product_info_row['id'];
-                                                                $pn = $product_info_row['name'];
-                                                                $pw = $product_info_row['weight'];
-                                                                $pwu = $product_info_row['weight_unit'];
-                                                                $ps = $product_info_row['barcode_status'];
-                                                                $pslot = $product_info_row['barcode_slot'];
-
-                                                                // weight unit info
-                                                                $product_info_result = getData('unit', "id = '$pwu'", '', WGT_UNIT, $connect);
-                                                                $product_info_row = $product_info_result->fetch_assoc();
-
-                                                                $pwun = $product_info_row['unit'];
+                                                                $pdesc = $product_info_row['description'];
+                                                                $pp = $product_info_row['price'];
+                                                                $pqty = $product_info_row['quantity'];
+                                                                $pamt = $product_info_row['amount'];
                                                                 ?>
                                                                 <tr>
                                                                     <td>
@@ -678,11 +718,10 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                     </td>
                                                                     <td class="autocomplete"><input type="text"
                                                                             name="prod_desc[]" id="prod_desc_<?= $num ?>"
-                                                                            value="<?= $pn ?>" onkeyup="prodInfo(this)"
+                                                                            value="<?= $pdesc ?>" onkeyup="prodInfo(this)"
                                                                             <?= $readonly ?>><input type="hidden"
                                                                             name="prod_val[]" id="prod_val_<?= $num ?>"
-                                                                            value="<?= $pid ?>"
-                                                                            oninput="prodInfoAutoFill(this)">
+                                                                            value="<?= $pid ?>">
                                                                         <div id="err_msg">
                                                                             <span class="mt-n1">
                                                                                 <?php if (isset($err4))
@@ -690,14 +729,14 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                             </span>
                                                                         </div>
                                                                     </td>
-                                                                    <td><input class="readonlyInput" type="text" name="wgt[]"
-                                                                            id="wgt_<?= $num ?>" value="<?= $pw ?>" readonly>
+                                                                    <td><input class="readonlyInput" type="text" name="price[]"
+                                                                            id="price_<?= $num ?>" value="<?= $pp ?>">
                                                                     </td>
                                                                     <td><input class="readonlyInput" type="text"
+                                                                            name="quantity[]" id="quantity_<?= $num ?>"
+                                                                            value="<?= $pqty ?>"><input type="hidden"
                                                                             name="amount[]" id="amount_<?= $num ?>"
-                                                                            value="<?= $pwun ?>" readonly><input type="hidden"
-                                                                            name="amount_val[]" id="amount_val_<?= $num ?>"
-                                                                            value="<?= $pwu ?>" readonly>
+                                                                            value="<?= $pamt ?>" readonly>
                                                                     </td>
                                                                     <?php
                                                                     if ($act != '') {
@@ -740,14 +779,13 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                         </span>
                                                                     </div>
                                                                 </td>
-                                                                <td><input type="number" name="price[]"
-                                                                        id="price_1" value="" readonly></td>
-                                                                <td><input type="number"
-                                                                        name="quantity[]" id="quantity_1" value="" readonly>
+                                                                <td><input type="number" name="price[]" id="price_1"
+                                                                        value=""></td>
+                                                                <td><input type="number" name="quantity[]" id="quantity_1"
+                                                                        value="">
                                                                 </td>
-                                                                <td><input class="readonlyInput" type="text"
-                                                                        name="amount[]" id="amount_1"
-                                                                        value="" readonly></td>
+                                                                <td><input class="readonlyInput" type="text" name="amount[]"
+                                                                        id="amount_1" value=""></td>
 
                                                                 <td><button class="mt-1" id="action_menu_btn" type="button"
                                                                         onclick="Add()"><i
@@ -909,10 +947,32 @@ if ($redirectToCreateInvoicePage == 1) {
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <label for="payment-terms" class="mb-0">Payment Terms</label>
-                                        <label class="switch switch-primary me-0">
-                                            <input type="checkbox" class="switch-input" id="payment-terms" checked />
+                                        <label class="me-0">
+                                            <input type="checkbox" id="payment-terms" checked>
 
                                         </label>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <select class="form-select mb-2" id="pay_terms" name="pay_terms" <?php if ($act == '')
+                                            echo 'disabled' ?>>
+                                                <option value="0" disabled selected>Select Payment Terms</option>
+                                                <?php
+                                        if ($pay_terms_result->num_rows >= 1) {
+                                            $pay_terms_result->data_seek(0);
+                                            while ($row3 = $pay_terms_result->fetch_assoc()) {
+                                                $selected = "";
+                                                if (isset($dataExisted, $row['pay_terms']) && (!isset($pay_terms))) {
+                                                    $selected = $row['pay_terms'] == $row3['id'] ? "selected" : "";
+                                                } else if (isset($pay_terms)) {
+                                                    $selected = $pay_terms == $row3['id'] ? "selected" : "";
+                                                }
+                                                echo "<option value=\"" . $row3['id'] . "\" $selected>" . $row3['name'] . "</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=\"0\">None</option>";
+                                        }
+                                        ?>
+                                        </select>
                                     </div>
 
                                 </div>

@@ -244,12 +244,38 @@ $pic_row = $pic_result->fetch_assoc();
                                                             <th scope="col">Price</th>
                                                             <th scope="col">Quantity</th>
                                                             <th scope="col">Amount</th>
-                                                            <th scope="col" id="action_col"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        <?php
+                                                        $productIDs = explode(',', $row['products']);
+                                                        $productData = array();
+                                                        // Loop through each product ID
+                                                        foreach ($productIDs as $productID) {
+                                                            // Retrieve product details from the database based on the product ID
+                                                            $query = "SELECT * FROM " . CRED_INV_PROD . " WHERE id = $productID";
+                                                            $result = mysqli_query($finance_connect, $query);
+
+                                                            // Check if the query was successful and if there is any result
+                                                            if ($result && mysqli_num_rows($result) > 0) {
+                                                                $product = mysqli_fetch_assoc($result);
+                                                                // Add the retrieved product data to the $productData array
+                                                                $productData[] = $product;
+                                                            }
+                                                        }
+
+                                                        foreach ($productData as $index => $product) {
+                                                            echo "<tr>";
+                                                            echo "<th scope='row'>" . ($index + 1) . "</th>";
+                                                            echo "<td>" . $product['description'] . "</td>";
+                                                            echo "<td>" . $product['price'] . "</td>";
+                                                            echo "<td>" . $product['quantity'] . "</td>";
+                                                            echo "<td>" . $product['amount'] . "</td>";
+                                                            echo "</tr>";
+                                                        }
+                                                        ?>
                                                     </tbody>
-                                                    
+
                                                 </table>
                                             </div>
                                         </div>
@@ -330,17 +356,16 @@ $pic_row = $pic_result->fetch_assoc();
                                                     class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
                                         </button>
 
-                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>" target="_blank"
-                                            class="btn btn-primary d-grid w-100 mb-2 download" name="actionBtn"
-                                            id="actionBtn"><span>Print/Download</span>
+                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>"
+                                            target="_blank" class="btn btn-primary d-grid w-100 mb-2 download"
+                                            name="actionBtn" id="actionBtn"><span>Print/Download</span>
                                         </a>
                                         <a href="<?= $edit_page . "?id=" . $dataID . '&act=' . $act_2 ?>"
                                             class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
                                             id="actionBtn"><span>Edit Invoice</span>
                                         </a>
-                                        <a href="<?= $redirect_page ?>"
-                                            class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
-                                            id="actionBtn"><span>Back</span>
+                                        <a href="<?= $redirect_page ?>" class="btn btn-primary d-grid w-100 mb-2 cancel"
+                                            name="actionBtn" id="actionBtn"><span>Back</span>
                                         </a>
 
                                     </div>

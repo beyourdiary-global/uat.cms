@@ -44,6 +44,28 @@ if (isset($row['payment_status'])) {
     }
 }
 
+$productRows = '';
+$productIDs = explode(',', $row['products']);
+$num = 1;
+foreach ($productIDs as $productID) {
+    // Fetch product details from the database
+    $query = "SELECT * FROM " . CRED_INV_PROD . " WHERE id = '$productID'";
+    $result = mysqli_query($finance_connect, $query);
+
+    // Check if product exists
+    if (mysqli_num_rows($result) > 0) {
+        $product = mysqli_fetch_assoc($result);
+        // Generate HTML row for the product
+        $productRows .= '<tr>';
+        $productRows .= '<td>' . $num++ . '</td>';
+        $productRows .= '<td colspan="3">' . $product['description'] . '</td>';
+        $productRows .= '<td>' . $product['price'] . '</td>';
+        $productRows .= '<td>' . $product['quantity'] . '</td>';
+        $productRows .= '<td>' . $product['amount'] . '</td>';
+        $productRows .= '</tr>';
+    }
+}
+
 $dompdf = new Dompdf;
 
 $options = new Options;
@@ -79,7 +101,8 @@ $html = str_replace(
         "{{total}}",
         "{{payment terms}}",
         "{{pay method}}",
-        "{{pay details}}"
+        "{{pay details}}",
+        "{{product rows}}",
     ],
     [
         isset($proj_row['company_name']) ? $proj_row['company_name'] : '',
@@ -104,12 +127,12 @@ $html = str_replace(
         isset($row['total']) ? $row['total'] : '',
         isset($row['pay_terms']) ? $row['pay_terms'] : '',
         isset($pay_row['name']) ? $pay_row['name'] : '',
-        isset($row['pay_details']) ? $row['pay_details'] : ''
+        isset($row['pay_details']) ? $row['pay_details'] : '',
+        $productRows
     ],
     $html
 );
 
-//$html = str_replace(["{{COMPANY NAME}}","{{comp_add}}","{{comp_business_no}}","{{comp_email}}","{{comp_ctc}}","{{invoice}}","{{date}}","{{due}}","{{name}}","{{address}}","{{contact}}","{{email}}","{{pic}}","{{person in charge remark}}","{{subtotal}}","{{discount}}","{{tax}}","{{total}}","{{notes}}"], [$name, $quantity], $html);
 $dompdf->loadHtml($html);
 $dompdf->render();
 $dompdf->stream("invoice.pdf", ["Attachment" => 0]);

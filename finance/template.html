@@ -163,7 +163,8 @@
                 <td>{{invoice}}</td>
                 <td>{{date}}</td>
                 <td><button class="roundedSelectionBtn"  style="font-size: 12px;">
-                        <span class="mdi mdi-record-circle-outline" style=" {{pay_colour}} "></span>
+                        <!-- <span class="mdi mdi-record-circle-outline" style=" {{pay_colour}} "></span> -->
+                        <span class="mdi mdi-record-circle-outline"></span>
                         {{pay_status}}
                     </button></td>
                 <td>{{due}}</td>
@@ -209,6 +210,7 @@
                 </tr>
             </thead>
             <tbody>
+                {{product rows}}
             </tbody>
         </table>
     </div>
