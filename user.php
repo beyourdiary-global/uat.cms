@@ -266,7 +266,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label" for="currentDataName">Name</label>
                                 <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
@@ -274,7 +274,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 </div>
                             </div>
 
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 ">
                                 <label class="form-label" for="dataUsername">Username</label>
                                 <input class="form-control" type="text" name="dataUsername" id="dataUsername" value="<?php if (isset($row['username'])) echo $row['username'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
@@ -286,7 +286,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-6 mb-3">
                                 <label class="form-label" for="currentUserEmail">Email</label>
                                 <input class="form-control" type="text" name="currentUserEmail" id="currentUserEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
@@ -297,7 +297,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="col-12 col-md-6">
                                 <label class="form-label" for="currentUsername">User Group</label>
                                 <select class="form-select" id="userGroup" name="userGroup" <?php if ($act == '') echo "disabled" ?> required>
-                                    <option value="" disabled selected style="display:none;">Select User Group</option>
+                                    <option value="" disabled selected style="display:off;">Select User Group</option>
                                     <?php
                                     $user_grp_list = getData('id,name', '', '', USR_GRP, $connect);
                                     if ($user_grp_list) {
@@ -330,8 +330,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-12 col-md-6">
-                                <label class="form-label" id="password_lbl" for="password">Password</label>
+                            <div class="col-12 col-md-6 mb-3">
+                                <label class="form-label" id="password" for="password">Password</label>
                                 <div id="row-password-input">
                                     <div class="d-flex justify-content-end">
                                         <i class="fa fa-eye-slash hide_icon" id="showPassword"></i>
