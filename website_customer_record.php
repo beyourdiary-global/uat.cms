@@ -42,8 +42,11 @@ $series_list_result = getData('*', '', '', BRD_SERIES, $connect);
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
+    $wcr_cust_id = postSpaceFilter('wcr_cust_id');
     $wcr_name = postSpaceFilter('wcr_name');
     $wcr_ctc = postSpaceFilter('wcr_contact');
+    $wcr_cust_email = postSpaceFilter('wcr_cust_email');
+    $wcr_cust_birthday = postSpaceFilter('wcr_cust_birthday');
     $wcr_pic = postSpaceFilter('wcr_pic_hidden');
     $wcr_country = postSpaceFilter('wcr_country_hidden');
     $wcr_brand = postSpaceFilter('wcr_brand_hidden');
@@ -59,11 +62,26 @@ if (post('actionBtn')) {
         case 'addRecord':
         case 'updRecord':
 
-            if (!$wcr_name) {
+            if ($wcr_cust_email && !isEmail($wcr_cust_email)) {
+                $cust_email_err = "Wrong email format!";
+                $error = 1;
+                break;
+            }
+
+            if (!$wcr_cust_id) {
+                $cust_id_err = "Customer ID cannot be empty.";
+                break;            
+            } else if (!$wcr_name) {
                 $name_err = "Name cannot be empty.";
                 break;
             } else if (!$wcr_ctc) {
                 $contact_err = "Contact cannot be empty.";
+                break;
+            } else if (!$wcr_cust_email) {
+                $cust_email_err = "Customer Email cannot be empty.";
+                break;
+            } else if (!$wcr_cust_birthday) {
+                $cust_birthday_err = "Customer Birthday cannot be empty.";
                 break;
             } else if (!$wcr_pic && $wcr_pic < 1) {
                 $pic_err = "Sales Person-In-Charge cannot be empty.";
@@ -89,6 +107,11 @@ if (post('actionBtn')) {
             } else if ($action == 'addRecord') {
                 try {
                     //check values
+                    if ($wcr_cust_id) {
+                        array_push($newvalarr, $wcr_cust_id);
+                        array_push($datafield, 'cust_id');
+                    }
+
                     if ($wcr_name) {
                         array_push($newvalarr, $wcr_name);
                         array_push($datafield, 'name');
@@ -97,6 +120,16 @@ if (post('actionBtn')) {
                     if ($wcr_ctc) {
                         array_push($newvalarr, $wcr_ctc);
                         array_push($datafield, 'contact');
+                    }
+
+                    if ($wcr_cust_email) {
+                        array_push($newvalarr, $wcr_cust_email);
+                        array_push($datafield, 'cust_email');
+                    }
+
+                    if ($wcr_cust_birthday) {
+                        array_push($newvalarr, $wcr_cust_birthday);
+                        array_push($datafield, 'cust_birthday');
                     }
 
                     if ($wcr_pic) {
@@ -139,7 +172,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(name,contact,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wcr_name','$wcr_ctc','$wcr_pic','$wcr_country','$wcr_brand','$wcr_series','$wcr_rec_name','$wcr_rec_add','$wcr_rec_ctc','$wcr_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wcr_cust_id','$wcr_name','$wcr_ctc','$wcr_cust_email','$wcr_cust_birthday','$wcr_pic','$wcr_country','$wcr_brand','$wcr_series','$wcr_rec_name','$wcr_rec_add','$wcr_rec_ctc','$wcr_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -154,6 +187,12 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
+                    if ($row['cust_id'] != $wcr_cust_id) {
+                        array_push($oldvalarr, $row['cust_id']);
+                        array_push($chgvalarr, $wcr_cust_id);
+                        array_push($datafield, 'cust_id');
+                    }
+
                     if ($row['name'] != $wcr_name) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $wcr_name);
@@ -164,6 +203,18 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['contact']);
                         array_push($chgvalarr, $wcr_ctc);
                         array_push($datafield, 'contact');
+                    }
+
+                    if ($row['cust_email'] != $wcr_cust_email) {
+                        array_push($oldvalarr, $row['cust_email']);
+                        array_push($chgvalarr, $wcr_cust_email);
+                        array_push($datafield, 'cust_email');
+                    }
+
+                    if ($row['cust_birthday'] != $wcr_cust_birthday) {
+                        array_push($oldvalarr, $row['cust_birthday']);
+                        array_push($chgvalarr, $wcr_cust_birthday);
+                        array_push($datafield, 'cust_birthday');
                     }
 
                     if ($row['sales_pic'] != $wcr_pic) {
@@ -220,7 +271,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET name = '$wcr_name', contact = '$wcr_ctc', sales_pic = '$wcr_pic', country = '$wcr_country', brand = '$wcr_brand', series = '$wcr_series', ship_rec_name = '$wcr_rec_name', ship_rec_add = '$wcr_rec_add', ship_rec_contact = '$wcr_rec_ctc', remark ='$wcr_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET cust_id = '$wcr_cust_id', name = '$wcr_name', contact = '$wcr_ctc', cust_email = '$wcr_cust_email', cust_birthday = '$wcr_cust_birthday', sales_pic = '$wcr_pic', country = '$wcr_country', brand = '$wcr_brand', series = '$wcr_series', ship_rec_name = '$wcr_rec_name', ship_rec_add = '$wcr_rec_add', ship_rec_contact = '$wcr_rec_ctc', remark ='$wcr_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
 
                     } else {
@@ -355,7 +406,25 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                     <div class="form-group">
     <div class="row">
-        <div class="col-md-6 mb-3">
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" id="wcr_cust_id_lbl" for="wcr_cust_id">Customer ID<span class="requireRed">*</span></label>
+        <input class="form-control" type="text" name="wcr_cust_id" id="wcr_cust_id" value="<?php
+        if (isset($dataExisted) && isset($row['cust_id']) && !isset($wcr_cust_id)) {
+            echo $row['cust_id'];
+        } else if (isset($wcr_cust_id)) {
+            echo $wcr_cust_id;
+        }
+        ?>" <?php if ($act == '') echo 'disabled' ?>>
+        <?php if (isset($cust_id_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1">
+                    <?php echo $cust_id_err; ?>
+                </span>
+            </div>
+        <?php } ?>
+    </div>
+
+        <div class="col-md-4 mb-3">
             <label class="form-label form_lbl" id="wcr_name_lbl" for="wcr_name">Name<span class="requireRed">*</span></label>
             <input class="form-control" type="text" name="wcr_name" id="wcr_name" value="<?php
             if (isset($dataExisted) && isset($row['name']) && !isset($wcr_name)) {
@@ -373,25 +442,65 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label class="form-label form_lbl" id="wcr_contact_lbl" for="wcr_contact">Contact<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="wcr_contact" id="wcr_contact" value="<?php
-            if (isset($dataExisted) && isset($row['contact']) && !isset($wcr_contact)) {
-                echo $row['contact'];
-            } else if (isset($wcr_contact)) {
-                echo $wcr_contact;
-            }
-            ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($contact_err)) { ?>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" id="wcr_contact_lbl" for="wcr_contact">Contact<span class="requireRed">*</span></label>
+        <input class="form-control" type="number" name="wcr_contact" id="wcr_contact" value="<?php
+        if (isset($dataExisted) && isset($row['contact']) && !isset($wcr_contact)) {
+            echo $row['contact'];
+        } else if (isset($wcr_contact)) {
+            echo $wcr_contact;
+        }
+        ?>" <?php if ($act == '') echo 'disabled' ?>>
+        <?php if (isset($contact_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1">
+                    <?php echo $contact_err; ?>
+                </span>
+            </div>
+        <?php } ?>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <label class="form-label form_lbl" id="wcr_cust_email_lbl" for="wcr_cust_email">Customer Email<span class="requireRed">*</span></label>
+        <input class="form-control" type="text" name="wcr_cust_email" id="wcr_cust_email" value="<?php
+        if (isset($dataExisted) && isset($row['cust_email']) && !isset($wcr_cust_email)) {
+            echo $row['cust_email'];
+        } else if (isset($wcr_cust_email)) {
+            echo $wcr_cust_email;
+        }
+        ?>" <?php if ($act == '') echo 'disabled' ?>>
+        <?php if (isset($cust_email_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1">
+                    <?php echo $cust_email_err; ?>
+                </span>
+            </div>
+        <?php } ?>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group mb-3">
+            <label class="form-label form_lbl" id="wcr_cust_birthday_label" for="wcr_cust_birthday">Customer Birthday<span class="requireRed">*</span></label>
+            <input class="form-control" type="date" name="wcr_cust_birthday" id="wcr_cust_birthday" value="<?php
+                if (isset($dataExisted) && isset($row['cust_birthday']) && !isset($wcr_cust_birthday)) {
+                    echo $row['cust_birthday'];
+                } else if (isset($wcr_cust_birthday)) {
+                    echo $wcr_cust_birthday;
+                } else {
+                    echo date('Y-m-d');
+                }
+            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($cust_birthday_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1">
-                        <?php echo $contact_err; ?>
-                    </span>
+                    <span class="mt-n1"><?php echo $cust_birthday_err; ?></span>
                 </div>
             <?php } ?>
         </div>
     </div>
 </div>
+
+
 <div class="form-group">
     <div class="row">
     <div class="col-md-3 mb-3 autocomplete">
