@@ -661,3 +661,8 @@ input {
     border: none; 
     outline: none; 
   }
+
+.modal{
+    width: 505px;
+}
+
