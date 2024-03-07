@@ -104,7 +104,7 @@ if (!$result) {
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['',''],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['commission'] ?>','<?= $row['service'] ?>','<?= $row['transaction'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
