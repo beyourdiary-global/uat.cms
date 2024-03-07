@@ -139,35 +139,6 @@ function addDirToZip($dir, $zip, $basePath)
     }
 }
 
-function addDirToZip($dir, $zip, $basePath)
-{
-    $files = scandir($dir);
-    foreach ($files as $file) {
-        if ($file == '.' || $file == '..') {
-            continue;
-        }
-        $filePath = $dir . $file;
-        if (is_file($filePath)) {
-            // Determine year and month based on file's last modified time
-            $year = date('Y', filemtime($filePath));
-            $month = date('m', filemtime($filePath));
-            
-            // Add the file to the zip archive with a relative path including year and month folders
-            $relativePath = 'attachment/' . $year . '/' . $month . '/' . $file;
-            $zip->addFile($filePath, $relativePath);
-
-            // Set the directory's last modified time to the file's last modified time
-            $dirPath = dirname($relativePath);
-            $zip->setExternalAttributesName($relativePath, ZipArchive::OPSYS_UNIX, null, filemtime($filePath));
-        } elseif (is_dir($filePath) && !empty(array_diff(scandir($filePath), array('.', '..')))) {
-            // Add the directory to the zip archive recursively if it's not empty
-            $zip->addEmptyDir(str_replace($basePath, '', $filePath));
-            // Recursively add files and directories inside the current directory
-            addDirToZip($filePath . '/', $zip, $basePath);
-        }
-    }
-}
-
 function deleteDir($dirPath) {
     if (!is_dir($dirPath)) {
         return;

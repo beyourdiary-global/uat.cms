@@ -61,10 +61,11 @@ $menuList = array(
         'expand' => array(
             array('Customer Info', 'mdi mdi-information-outline', $SITEURL . '/customerInfoTable.php', '38'),
             array('Facebook Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/fb_cust_deals_table.php', '75'),
-            array('Website Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/website_customer_record_table.php', '84','85'),
+            array('Website Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/website_customer_record_table.php', '84'),
             array('Shopee Customer Record', 'mdi mdi-deal-outline', $SITEURL . '/finance/shopee_cust_info_table.php', '85'),
+            array('Lazada Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/lazada_cust_rcd_table.php', '91'),
         ),
-        'pin' => array('38','75','84','85')
+        'pin' => array('38','75','84','85','91')
     ),
     array(
         'Orders',
@@ -74,8 +75,9 @@ $menuList = array(
         'expand' => array(
             array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
             array('Shopee SG Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/shopee_order_req_table.php', '86'),
+            array('Website Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/website_order_request_table.php', '92'),
         ),
-        'pin' => array('69','86')
+        'pin' => array('69','86','92')
     ),
     array(
         'Distributor',
@@ -369,7 +371,7 @@ $menuList = array(
                 'pin' => array('80','82'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78','79','80','82','84','85','86','87','88','89')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','72','74','75','76','77','78','79','80','82','84','85','86','87','88','89','91','92')
     ),
     array(
         'Audit Log',

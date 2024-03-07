@@ -252,18 +252,18 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </h2>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
-                                <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name*</label>
+                            <div class="col-sm  mb-3">
+                                <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name*</label>
                                 <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
                                 <div id="err_msg">
                                     <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
                                 </div>
                             </div>
 
-                            <div class="col-sm">
-                                <label class=" form-label" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
+                            <div class="col-sm mb-3">
+                                <label class=" form-label form_lbl" for="segmentationColor"><?php echo $pageTitle ?> Color</label><br>
                                 <div class="col d-flex justify-content-start align-items-center">
                                     <input type="color" name="segmentationColor" id="segmentationColor" <?php if ($act == '') echo 'disabled ' ?> value="<?php if (isset($row['colorCode'])) echo $row['colorCode'] ?>" class="form-control" style="height: 40px;">
                                     <span id="color-display"><?php if (isset($dataExisted) && isset($row['colorCode'])) echo $row['colorCode']; ?></span>
@@ -275,23 +275,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                     </div>
 
-                    <div class="form-group mb-3">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-sm">
-                                <label class="form-label" for="boxFrom">Box From*</label>
+                            <div class="col-sm mb-3">
+                                <label class="form-label form_lbl" for="boxFrom">Box From*</label>
                                 <input class="form-control" type="text" name="boxFrom" id="boxFrom" value="<?php if (isset($row['boxFrom'])) echo $row['boxFrom'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'boxFromErrorMsg', 'boxUntilErrorMsg')">
                                 <div id="boxFromErrorMsg" class="error-message">
                                     <span class="mt-n1"></span>
                                 </div>
                             </div>
-                            <div class="col-sm">
-                                <label class="form-label" for="boxUntil">Box Until*</label>
+                            <div class="col-sm mb-3">
+                                <label class="form-label form_lbl" for="boxUntil">Box Until*</label>
                                 <input class="form-control" type="text" name="boxUntil" id="boxUntil" value="<?php if (isset($row['boxUntil'])) echo $row['boxUntil'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off" oninput="validateNumericInput(this, 'boxUntilErrorMsg', 'boxFromErrorMsg')">
                                 <div id="boxUntilErrorMsg" class="error-message">
                                     <span class="mt-n1"></span>
                                 </div>
                             </div>
-                            <div class="col-sm autocomplete">
+                            <div class="col-sm mb-3 autocomplete">
                             <label class="form-label form_lbl" id="brandSeries_lbl" for="brandSeries">Brand Series</label>
                                 <?php
                                                         unset($echoVal);
@@ -327,7 +327,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="form-group mb-3">
-                        <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
+                        <label class="form-label form_lbl" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
                         <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
                     </div>
 

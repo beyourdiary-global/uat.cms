@@ -83,7 +83,7 @@ if ($email && $password) {
                     generateDBData(SHOPEE_ACC, $finance_connect);
                     generateDBData(CHANEL_SC_MD, $finance_connect);
                     generateDBData(SHOPEE_CUST_INFO, $finance_connect);
-                    
+                    generateDBData(WEB_CUST_RCD, $connect);
 
                     return header('Location: dashboard.php');
                } else {

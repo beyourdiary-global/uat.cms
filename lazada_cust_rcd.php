@@ -1,17 +1,17 @@
 <?php
-$pageTitle = "Website Customer Record (Deals)";
+$pageTitle = "Lazada Customer Record (Deals)";
 
 include_once 'menuHeader.php';
 include_once 'checkCurrentPagePin.php';
 
-$tblName = WEB_CUST_RCD;
+$tblName = LAZADA_CUST_RCD;
 
 $dataID = input('id');
 $act = input('act');
 $pageAction = getPageAction($act);
 
 
-$redirect_page = $SITEURL . '/website_customer_record_table.php';
+$redirect_page = $SITEURL . '/lazada_cust_rcd_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -42,19 +42,18 @@ $series_list_result = getData('*', '', '', BRD_SERIES, $connect);
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
-    $wcr_cust_id = postSpaceFilter('wcr_cust_id');
-    $wcr_name = postSpaceFilter('wcr_name');
-    $wcr_ctc = postSpaceFilter('wcr_contact');
-    $wcr_cust_email = postSpaceFilter('wcr_cust_email');
-    $wcr_cust_birthday = postSpaceFilter('wcr_cust_birthday');
-    $wcr_pic = postSpaceFilter('wcr_pic_hidden');
-    $wcr_country = postSpaceFilter('wcr_country_hidden');
-    $wcr_brand = postSpaceFilter('wcr_brand_hidden');
-    $wcr_series = postSpaceFilter('wcr_series');
-    $wcr_rec_name = postSpaceFilter('wcr_rec_name');
-    $wcr_rec_ctc = postSpaceFilter('wcr_rec_ctc');
-    $wcr_rec_add = postSpaceFilter('wcr_rec_add');
-    $wcr_remark = postSpaceFilter('wcr_remark');
+    $lcr_id = postSpaceFilter('lcr_id');
+    $lcr_name = postSpaceFilter('lcr_name');
+    $lcr_email = postSpaceFilter('lcr_email');
+    $lcr_phone = postSpaceFilter('lcr_phone');
+    $lcr_pic = postSpaceFilter('lcr_pic_hidden');
+    $lcr_country = postSpaceFilter('lcr_country_hidden');
+    $lcr_brand = postSpaceFilter('lcr_brand_hidden');
+    $lcr_series = postSpaceFilter('lcr_series');
+    $lcr_rec_name = postSpaceFilter('lcr_rec_name');
+    $lcr_rec_ctc = postSpaceFilter('lcr_rec_ctc');
+    $lcr_rec_add = postSpaceFilter('lcr_rec_add');
+    $lcr_remark = postSpaceFilter('lcr_remark');
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -62,117 +61,109 @@ if (post('actionBtn')) {
         case 'addRecord':
         case 'updRecord':
 
-            if ($wcr_cust_email && !isEmail($wcr_cust_email)) {
-                $cust_email_err = "Wrong email format!";
+            if ($lcr_email && !isEmail($lcr_email)) {
+                $email_err = "Wrong email format!";
                 $error = 1;
                 break;
             }
 
-            if (!$wcr_cust_id) {
-                $cust_id_err = "Customer ID cannot be empty.";
-                break;            
-            } else if (!$wcr_name) {
+            if (!$lcr_id) {
+                $lcr_id_err = "Customer ID cannot be empty.";
+                break;
+            } else if (!$lcr_name) {
                 $name_err = "Name cannot be empty.";
                 break;
-            } else if (!$wcr_ctc) {
-                $contact_err = "Contact cannot be empty.";
+            } else if (!$lcr_email) {
+                $email_err = "Email cannot be empty.";
                 break;
-            } else if (!$wcr_cust_email) {
-                $cust_email_err = "Customer Email cannot be empty.";
+            } else if (!$lcr_phone) {
+                $phone_err = "Phone cannot be empty.";
                 break;
-            } else if (!$wcr_cust_birthday) {
-                $cust_birthday_err = "Customer Birthday cannot be empty.";
-                break;
-            } else if (!$wcr_pic && $wcr_pic < 1) {
+            } else if (!$lcr_pic && $lcr_pic < 1) {
                 $pic_err = "Sales Person-In-Charge cannot be empty.";
                 break;
-            } else if (!$wcr_country && $wcr_country < 1) {
+            } else if (!$lcr_country && $lcr_country < 1) {
                 $country_err = "Country cannot be empty.";
                 break;
-            } else if (!$wcr_brand && $wcr_brand < 1) {
+            } else if (!$lcr_brand && $lcr_brand < 1) {
                 $brand_err = "Brand cannot be empty.";
                 break;
-            } else if (!$wcr_series && $wcr_series < 1) {
+            } else if (!$lcr_series && $lcr_series < 1) {
                 $series_err = "Series cannot be empty.";
                 break;
-            } else if (!$wcr_rec_name) {
+            } else if (!$lcr_rec_name) {
                 $rec_name_err = "Receiver Name cannot be empty.";
                 break;
-            } else if (!$wcr_rec_ctc) {
+            } else if (!$lcr_rec_ctc) {
                 $rec_ctc_err = "Receiver Contact cannot be empty.";
                 break;
-            } else if (!$wcr_rec_add) {
+            } else if (!$lcr_rec_add) {
                 $rec_add_err = "Receiver Address cannot be empty.";
                 break;
             } else if ($action == 'addRecord') {
                 try {
                     //check values
-                    if ($wcr_cust_id) {
-                        array_push($newvalarr, $wcr_cust_id);
-                        array_push($datafield, 'cust_id');
+                    if ($lcr_id) {
+                        array_push($newvalarr, $lcr_name);
+                        array_push($datafield, 'lcr_id');
                     }
 
-                    if ($wcr_name) {
-                        array_push($newvalarr, $wcr_name);
+                    if ($lcr_name) {
+                        array_push($newvalarr, $lcr_name);
                         array_push($datafield, 'name');
                     }
 
-                    if ($wcr_ctc) {
-                        array_push($newvalarr, $wcr_ctc);
-                        array_push($datafield, 'contact');
+                    if ($lcr_email) {
+                        array_push($newvalarr, $lcr_email);
+                        array_push($datafield, 'email');
                     }
 
-                    if ($wcr_cust_email) {
-                        array_push($newvalarr, $wcr_cust_email);
-                        array_push($datafield, 'cust_email');
+                    if ($lcr_phone) {
+                        array_push($newvalarr, $lcr_phone);
+                        array_push($datafield, 'phone');
                     }
 
-                    if ($wcr_cust_birthday) {
-                        array_push($newvalarr, $wcr_cust_birthday);
-                        array_push($datafield, 'cust_birthday');
-                    }
-
-                    if ($wcr_pic) {
-                        array_push($newvalarr, $wcr_pic);
+                    if ($lcr_pic) {
+                        array_push($newvalarr, $lcr_pic);
                         array_push($datafield, 'pic');
                     }
 
-                    if ($wcr_country) {
-                        array_push($newvalarr, $wcr_country);
+                    if ($lcr_country) {
+                        array_push($newvalarr, $lcr_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($wcr_brand) {
-                        array_push($newvalarr, $wcr_brand);
+                    if ($lcr_brand) {
+                        array_push($newvalarr, $lcr_brand);
                         array_push($datafield, 'brand');
                     }
 
-                    if ($wcr_series) {
-                        array_push($newvalarr, $wcr_series);
+                    if ($lcr_series) {
+                        array_push($newvalarr, $lcr_series);
                         array_push($datafield, 'series');
                     }
 
-                    if ($wcr_rec_name) {
-                        array_push($newvalarr, $wcr_rec_name);
+                    if ($lcr_rec_name) {
+                        array_push($newvalarr, $lcr_rec_name);
                         array_push($datafield, 'receiver name');
                     }
 
-                    if ($wcr_rec_ctc) {
-                        array_push($newvalarr, $wcr_rec_ctc);
+                    if ($lcr_rec_ctc) {
+                        array_push($newvalarr, $lcr_rec_ctc);
                         array_push($datafield, 'receiver contact');
                     }
 
-                    if ($wcr_rec_add) {
-                        array_push($newvalarr, $wcr_rec_add);
+                    if ($lcr_rec_add) {
+                        array_push($newvalarr, $lcr_rec_add);
                         array_push($datafield, 'receiver address');
                     }
 
-                    if ($wcr_remark) {
-                        array_push($newvalarr, $wcr_remark);
+                    if ($lcr_remark) {
+                        array_push($newvalarr, $lcr_remark);
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wcr_cust_id','$wcr_name','$wcr_ctc','$wcr_cust_email','$wcr_cust_birthday','$wcr_pic','$wcr_country','$wcr_brand','$wcr_series','$wcr_rec_name','$wcr_rec_add','$wcr_rec_ctc','$wcr_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(lcr_id,name,email,phone,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$lcr_id','$lcr_name','$lcr_email','$lcr_phone','$lcr_pic','$lcr_country','$lcr_brand','$lcr_series','$lcr_rec_name','$lcr_rec_add','$lcr_rec_ctc','$lcr_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -187,81 +178,75 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
-                    if ($row['cust_id'] != $wcr_cust_id) {
-                        array_push($oldvalarr, $row['cust_id']);
-                        array_push($chgvalarr, $wcr_cust_id);
-                        array_push($datafield, 'cust_id');
+                    if ($row['lcr_id'] != $lcr_id) {
+                        array_push($oldvalarr, $row['lcr_id']);
+                        array_push($chgvalarr, $lcr_id);
+                        array_push($datafield, 'lcr_id');
                     }
 
-                    if ($row['name'] != $wcr_name) {
+                    if ($row['name'] != $lcr_name) {
                         array_push($oldvalarr, $row['name']);
-                        array_push($chgvalarr, $wcr_name);
+                        array_push($chgvalarr, $lcr_name);
                         array_push($datafield, 'name');
                     }
 
-                    if ($row['contact'] != $wcr_ctc) {
-                        array_push($oldvalarr, $row['contact']);
-                        array_push($chgvalarr, $wcr_ctc);
-                        array_push($datafield, 'contact');
+                    if ($row['email'] != $lcr_email) {
+                        array_push($oldvalarr, $row['email']);
+                        array_push($chgvalarr, $lcr_email);
+                        array_push($datafield, 'email');
                     }
 
-                    if ($row['cust_email'] != $wcr_cust_email) {
-                        array_push($oldvalarr, $row['cust_email']);
-                        array_push($chgvalarr, $wcr_cust_email);
-                        array_push($datafield, 'cust_email');
+                    if ($row['phone'] != $lcr_phone) {
+                        array_push($oldvalarr, $row['phone']);
+                        array_push($chgvalarr, $lcr_phone);
+                        array_push($datafield, 'phone');
                     }
 
-                    if ($row['cust_birthday'] != $wcr_cust_birthday) {
-                        array_push($oldvalarr, $row['cust_birthday']);
-                        array_push($chgvalarr, $wcr_cust_birthday);
-                        array_push($datafield, 'cust_birthday');
-                    }
-
-                    if ($row['sales_pic'] != $wcr_pic) {
+                    if ($row['sales_pic'] != $lcr_pic) {
                         array_push($oldvalarr, $row['sales_pic']);
-                        array_push($chgvalarr, $wcr_pic);
+                        array_push($chgvalarr, $lcr_pic);
                         array_push($datafield, 'pic');
                     }
 
-                    if ($row['country'] != $wcr_country) {
+                    if ($row['country'] != $lcr_country) {
                         array_push($oldvalarr, $row['country']);
-                        array_push($chgvalarr, $wcr_country);
+                        array_push($chgvalarr, $lcr_country);
                         array_push($datafield, 'country');
                     }
 
-                    if ($row['brand'] != $wcr_brand) {
+                    if ($row['brand'] != $lcr_brand) {
                         array_push($oldvalarr, $row['brand']);
-                        array_push($chgvalarr, $wcr_brand);
+                        array_push($chgvalarr, $lcr_brand);
                         array_push($datafield, 'brand');
                     }
 
-                    if ($row['series'] != $wcr_series) {
+                    if ($row['series'] != $lcr_series) {
                         array_push($oldvalarr, $row['series']);
-                        array_push($chgvalarr, $wcr_series);
+                        array_push($chgvalarr, $lcr_series);
                         array_push($datafield, 'series');
                     }
 
-                    if ($row['ship_rec_name'] != $wcr_rec_name) {
+                    if ($row['ship_rec_name'] != $lcr_rec_name) {
                         array_push($oldvalarr, $row['ship_rec_name']);
-                        array_push($chgvalarr, $wcr_rec_name);
+                        array_push($chgvalarr, $lcr_rec_name);
                         array_push($datafield, 'shipping receiver name');
                     }
 
-                    if ($row['ship_rec_contact'] != $wcr_rec_ctc) {
+                    if ($row['ship_rec_contact'] != $lcr_rec_ctc) {
                         array_push($oldvalarr, $row['ship_rec_contact']);
-                        array_push($chgvalarr, $wcr_rec_ctc);
+                        array_push($chgvalarr, $lcr_rec_ctc);
                         array_push($datafield, 'shipping receiver contact');
                     }
 
-                    if ($row['ship_rec_add'] != $wcr_rec_add) {
+                    if ($row['ship_rec_add'] != $lcr_rec_add) {
                         array_push($oldvalarr, $row['ship_rec_add']);
-                        array_push($chgvalarr, $wcr_rec_add);
+                        array_push($chgvalarr, $lcr_rec_add);
                         array_push($datafield, 'shipping receiver address');
                     }
 
-                    if ($row['remark'] != $wcr_remark) {
+                    if ($row['remark'] != $lcr_remark) {
                         array_push($oldvalarr, $row['remark'] == '' ? 'Empty Value' : $row['remark']);
-                        array_push($chgvalarr, $wcr_remark == '' ? 'Empty Value' : $wcr_remark);
+                        array_push($chgvalarr, $lcr_remark == '' ? 'Empty Value' : $lcr_remark);
                         array_push($datafield, 'remark');
                     }
 
@@ -271,7 +256,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET cust_id = '$wcr_cust_id', name = '$wcr_name', contact = '$wcr_ctc', cust_email = '$wcr_cust_email', cust_birthday = '$wcr_cust_birthday', sales_pic = '$wcr_pic', country = '$wcr_country', brand = '$wcr_brand', series = '$wcr_series', ship_rec_name = '$wcr_rec_name', ship_rec_add = '$wcr_rec_add', ship_rec_contact = '$wcr_rec_ctc', remark ='$wcr_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET lcr_id = '$lcr_id', name = '$lcr_name', email = '$lcr_email', phone = '$lcr_phone', sales_pic = '$lcr_pic', country = '$lcr_country', brand = '$lcr_brand', series = '$lcr_series', ship_rec_name = '$lcr_rec_name', ship_rec_add = '$lcr_rec_add', ship_rec_contact = '$lcr_rec_ctc', remark ='$lcr_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
 
                     } else {
@@ -406,105 +391,82 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                     <div class="form-group">
     <div class="row">
-    <div class="col-md-4 mb-3">
-        <label class="form-label form_lbl" id="wcr_cust_id_lbl" for="wcr_cust_id">Customer ID<span class="requireRed">*</span></label>
-        <input class="form-control" type="text" name="wcr_cust_id" id="wcr_cust_id" value="<?php
-        if (isset($dataExisted) && isset($row['cust_id']) && !isset($wcr_cust_id)) {
-            echo $row['cust_id'];
-        } else if (isset($wcr_cust_id)) {
-            echo $wcr_cust_id;
-        }
-        ?>" <?php if ($act == '') echo 'disabled' ?>>
-        <?php if (isset($cust_id_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1">
-                    <?php echo $cust_id_err; ?>
-                </span>
-            </div>
-        <?php } ?>
-    </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label form_lbl" id="wcr_name_lbl" for="wcr_name">Name<span class="requireRed">*</span></label>
-            <input class="form-control" type="text" name="wcr_name" id="wcr_name" value="<?php
-            if (isset($dataExisted) && isset($row['name']) && !isset($wcr_name)) {
-                echo $row['name'];
-            } else if (isset($wcr_name)) {
-                echo $wcr_name;
-            }
-            ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($name_err)) { ?>
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="lcr_id_lbl" for="lcr_id">Customer ID<span class="requireRed">*</span></label>
+            <input class="form-control" type="text" name="lcr_id" id="lcr_id" value="<?php
+                if (isset($dataExisted) && isset($row['lcr_id']) && !isset($lcr_id)) {
+                    echo $row['lcr_id'];
+                } else if (isset($lcr_id)) {
+                    echo $lcr_id;
+                }
+                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($lcr_id_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1">
-                        <?php echo $name_err; ?>
-                    </span>
+                    <span class="mt-n1"><?php echo $lcr_id_err; ?></span>
                 </div>
             <?php } ?>
         </div>
 
-
-    <div class="col-md-4 mb-3">
-        <label class="form-label form_lbl" id="wcr_contact_lbl" for="wcr_contact">Contact<span class="requireRed">*</span></label>
-        <input class="form-control" type="number" name="wcr_contact" id="wcr_contact" value="<?php
-        if (isset($dataExisted) && isset($row['contact']) && !isset($wcr_contact)) {
-            echo $row['contact'];
-        } else if (isset($wcr_contact)) {
-            echo $wcr_contact;
-        }
-        ?>" <?php if ($act == '') echo 'disabled' ?>>
-        <?php if (isset($contact_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1">
-                    <?php echo $contact_err; ?>
-                </span>
-            </div>
-        <?php } ?>
-    </div>
-    
-    <div class="col-md-6 mb-3">
-        <label class="form-label form_lbl" id="wcr_cust_email_lbl" for="wcr_cust_email">Customer Email<span class="requireRed">*</span></label>
-        <input class="form-control" type="text" name="wcr_cust_email" id="wcr_cust_email" value="<?php
-        if (isset($dataExisted) && isset($row['cust_email']) && !isset($wcr_cust_email)) {
-            echo $row['cust_email'];
-        } else if (isset($wcr_cust_email)) {
-            echo $wcr_cust_email;
-        }
-        ?>" <?php if ($act == '') echo 'disabled' ?>>
-        <?php if (isset($cust_email_err)) { ?>
-            <div id="err_msg">
-                <span class="mt-n1">
-                    <?php echo $cust_email_err; ?>
-                </span>
-            </div>
-        <?php } ?>
-    </div>
-
-    <div class="col-md-6">
-        <div class="form-group mb-3">
-            <label class="form-label form_lbl" id="wcr_cust_birthday_label" for="wcr_cust_birthday">Customer Birthday<span class="requireRed">*</span></label>
-            <input class="form-control" type="date" name="wcr_cust_birthday" id="wcr_cust_birthday" value="<?php
-                if (isset($dataExisted) && isset($row['cust_birthday']) && !isset($wcr_cust_birthday)) {
-                    echo $row['cust_birthday'];
-                } else if (isset($wcr_cust_birthday)) {
-                    echo $wcr_cust_birthday;
-                } else {
-                    echo date('Y-m-d');
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="lcr_name_lbl" for="lcr_name">Name<span class="requireRed">*</span></label>
+            <input class="form-control" type="text" name="lcr_name" id="lcr_name" value="<?php
+                if (isset($dataExisted) && isset($row['name']) && !isset($lcr_name)) {
+                    echo $row['name'];
+                } else if (isset($lcr_name)) {
+                    echo $lcr_name;
                 }
-            ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($cust_birthday_err)) { ?>
+                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($name_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $cust_birthday_err; ?></span>
+                    <span class="mt-n1"><?php echo $name_err; ?></span>
                 </div>
             <?php } ?>
         </div>
     </div>
 </div>
 
+<div class="form-group">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="lcr_email_lbl" for="lcr_email">Customer Email<span class="requireRed">*</span></label>
+            <input class="form-control" type="text" name="lcr_email" id="lcr_email" value="<?php
+                if (isset($dataExisted) && isset($row['email']) && !isset($email)) {
+                    echo $row['email'];
+                } else if (isset($dataExisted) && isset($row['email']) && isset($lcr_email)) {
+                    echo $lcr_email;
+                } else {
+                    echo '';
+                }
+                ?>" <?php if ($act == '') echo 'readonly' ?>>
+            <?php if (isset($email_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $email_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
 
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="lcr_phone_lbl" for="lcr_phone">Customer Phone<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" name="lcr_phone" id="lcr_phone" value="<?php
+                if (isset($dataExisted) && isset($row['phone']) && !isset($lcr_phone)) {
+                    echo $row['phone'];
+                } else if (isset($lcr_phone)) {
+                    echo $lcr_phone;
+                }
+                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($phone_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $phone_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+        
 <div class="form-group">
     <div class="row">
     <div class="col-md-3 mb-3 autocomplete">
-    <label class="form-label form_lbl" id="wcr_pic_lbl" for="wcr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
+    <label class="form-label form_lbl" id="lcr_pic_lbl" for="lcr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
     <?php
     $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
     $defaultUser = '';
@@ -516,8 +478,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         $defaultUser = $user_row['name'];
     }
     ?>
-    <input class="form-control" type="text" name="wcr_pic" id="wcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
-    <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
+    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
     <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
             <span class="mt-n1">
@@ -528,7 +490,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </div>
 
         <div class="col-md-3 mb-3 autocomplete">
-            <label class="form-label form_lbl" id="wcr_country_lbl" for="wcr_country">Country<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="lcr_country_lbl" for="lcr_country">Country<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
@@ -544,8 +506,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 $country_row = $country_rst->fetch_assoc();
             }
             ?>
-            <input class="form-control" type="text" name="wcr_country" id="wcr_country" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $country_row['nicename'] : '' ?>">
-            <input type="hidden" name="wcr_country_hidden" id="wcr_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+            <input class="form-control" type="text" name="lcr_country" id="lcr_country" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $country_row['nicename'] : '' ?>">
+            <input type="hidden" name="lcr_country_hidden" id="lcr_country_hidden" value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
             <?php if (isset($country_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1">
@@ -556,7 +518,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         </div>
 
         <div class="col-md-3 mb-3 autocomplete">
-            <label class="form-label form_lbl" id="wcr_brand_lbl" for="wcr_brand">Brand<span class="requireRed">*</span></label>
+            <label class="form-label form_lbl" id="lcr_brand_lbl" for="lcr_brand">Brand<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
 
@@ -572,8 +534,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 $brand_row = $brand_rst->fetch_assoc();
             }
             ?>
-            <input class="form-control" type="text" name="wcr_brand" id="wcr_brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>">
-            <input type="hidden" name="wcr_brand_hidden" id="wcr_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+            <input class="form-control" type="text" name="lcr_brand" id="lcr_brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>">
+            <input type="hidden" name="lcr_brand_hidden" id="lcr_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
             <?php if (isset($brand_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1">
@@ -582,21 +544,20 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             <?php } ?>
         </div>
-
         <div class="col-md-3 mb-3 autocomplete">
-        <label class="form-label form_lbl" id="wcr_series_lbl" for="wcr_series">Series<span class="requireRed">*</span></label>
-            <select class="form-select" id="wcr_series" name="wcr_series" <?php if ($act == '') echo 'disabled' ?>>
+        <label class="form-label form_lbl" id="lcr_series_lbl" for="lcr_series">Series<span class="requireRed">*</span></label>
+            <select class="form-select" id="lcr_series" name="lcr_series" <?php if ($act == '') echo 'disabled' ?>>
                 <option value="0" disabled selected>Select Series</option>
                 <?php
                 if ($series_list_result->num_rows >= 1) {
                     $series_list_result->data_seek(0);
                     while ($series = $series_list_result->fetch_assoc()) {
                         $selected = "";
-                        if (isset($dataExisted, $row['series']) && (!isset($wcr_series))) {
+                        if (isset($dataExisted, $row['series']) && (!isset($lcr_series))) {
                             $selected = $row['series'] == $series['id'] ? "selected" : "";
-                        } else if (isset($wcr_series)) {
-                            list($wcr_series_id, $wcr_series) = explode(':', $wcr_series);
-                            $selected = $wcr_series == $series['id'] ? "selected" : "";
+                        } else if (isset($lcr_series)) {
+                            list($lcr_series_id, $lcr_series) = explode(':', $lcr_series);
+                            $selected = $lcr_series == $series['id'] ? "selected" : "";
                         }
                         echo "<option value=\"" . $series['id'] . "\" $selected>" . $series['name'] . "</option>";
                     }
@@ -606,9 +567,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 ?>
             </select>
 
-            <?php if (isset($wcr_series_err)) { ?>
+            <?php if (isset($lcr_series_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $wcr_series_err; ?></span>
+                    <span class="mt-n1"><?php echo $lcr_series_err; ?></span>
                 </div>
             <?php } ?>
         </div>
@@ -620,15 +581,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label form_lbl" id="wcr_rec_name_lbl"
-                                            for="wcr_rec_name">Receiver
+                                        <label class="form-label form_lbl" id="lcr_rec_name_lbl"
+                                            for="lcr_rec_name">Receiver
                                             Name<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="wcr_rec_name" id="wcr_rec_name"
+                                        <input class="form-control" type="text" name="lcr_rec_name" id="lcr_rec_name"
                                             value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_name']) && !isset($wcr_rec_name)) {
+                                            if (isset($dataExisted) && isset($row['ship_rec_name']) && !isset($lcr_rec_name)) {
                                                 echo $row['ship_rec_name'];
-                                            } else if (isset($wcr_rec_name)) {
-                                                echo $wcr_rec_name;
+                                            } else if (isset($lcr_rec_name)) {
+                                                echo $lcr_rec_name;
                                             }
                                             ?>" <?php if ($act == '')
                                                 echo 'disabled' ?>>
@@ -641,15 +602,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <?php } ?>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label form_lbl" id="wcr_rec_ctc_lbl"
-                                            for="wcr_rec_ctc">Receiver
+                                        <label class="form-label form_lbl" id="lcr_rec_ctc_lbl"
+                                            for="lcr_rec_ctc">Receiver
                                             Contact<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="number" name="wcr_rec_ctc" id="wcr_rec_ctc"
+                                        <input class="form-control" type="number" name="lcr_rec_ctc" id="lcr_rec_ctc"
                                             value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_contact']) && !isset($wcr_rec_ctc)) {
+                                            if (isset($dataExisted) && isset($row['ship_rec_contact']) && !isset($lcr_rec_ctc)) {
                                                 echo $row['ship_rec_contact'];
-                                            } else if (isset($wcr_rec_ctc)) {
-                                                echo $wcr_rec_ctc;
+                                            } else if (isset($lcr_rec_ctc)) {
+                                                echo $lcr_rec_ctc;
                                             }
                                             ?>" <?php if ($act == '')
                                                 echo 'disabled' ?>>
@@ -662,15 +623,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <?php } ?>
                                     </div>
                                     <div class="col-md-12 mb-3">
-                                        <label class="form-label form_lbl" id="wcr_rec_add_lbl"
-                                            for="wcr_rec_add">Receiver
+                                        <label class="form-label form_lbl" id="lcr_rec_add_lbl"
+                                            for="lcr_rec_add">Receiver
                                             Address<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="wcr_rec_add" id="wcr_rec_add"
+                                        <input class="form-control" type="text" name="lcr_rec_add" id="lcr_rec_add"
                                             value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_add']) && !isset($wcr_rec_add)) {
+                                            if (isset($dataExisted) && isset($row['ship_rec_add']) && !isset($lcr_rec_add)) {
                                                 echo $row['ship_rec_add'];
-                                            } else if (isset($wcr_rec_add)) {
-                                                echo $wcr_rec_add;
+                                            } else if (isset($lcr_rec_add)) {
+                                                echo $lcr_rec_add;
                                             }
                                             ?>" <?php if ($act == '')
                                                 echo 'disabled' ?>>
@@ -688,8 +649,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </fieldset>
 
                         <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="wcr_remark_lbl" for="wcr_remark">Remark</label>
-                            <textarea class="form-control" name="wcr_remark" id="wcr_remark" rows="3" <?php if ($act == '')
+                            <label class="form-label form_lbl" id="lcr_remark_lbl" for="lcr_remark">Remark</label>
+                            <textarea class="form-control" name="lcr_remark" id="lcr_remark" rows="3" <?php if ($act == '')
                                 echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark']))
                                 echo $row['remark'] ?></textarea>
                             </div>
@@ -735,7 +696,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         preloader(300, action);
 
         <?php
-        include "./js/website_customer_record.js"
+        include "./js/lazada_cust_rcd.js"
         ?>
     </script>
 
