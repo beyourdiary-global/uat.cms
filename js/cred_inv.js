@@ -165,42 +165,7 @@ function Remove(button) {
 //     }
 // }
 
-// function prodInfoAutoFill(element) {
-//     var id = $(element).attr('id').split('_');
-//     id = id[(id.length) - 1];
-//     var prodArr = [];
-//     var wgtArr = [];
-//     var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
 
-//     var retrieveProdInfo = async () => {
-//         prodArr = await retrieveJSONData($(element).attr('value'), 'id', '<?= PROD ?>');
-//     }
-
-//     var setProdInfo = async () => {
-//         $('#wgt_' + id).val(prodArr[0]['weight']);
-//         $('#wgt_unit_val_' + id).val(prodArr[0]['weight_unit']);
-//         $('#barcode_status_' + id).val(prodArr[0]['barcode_status']);
-//         $('#barcode_slot_' + id).val(prodArr[0]['barcode_slot']);
-//     }
-
-//     var retrieveWgtUnit = async () => {
-//         wgtArr = await retrieveJSONData($('#wgt_unit_val_' + id).attr('value'), 'id', '<?= WGT_UNIT ?>');
-//     }
-
-//     var setWgtUnit = async () => {
-//         $('#wgt_unit_' + id).val(wgtArr[0]['unit']);
-//     }
-
-//     var allFunc = async () => {
-//         await retrieveProdInfo();
-//         await setProdInfo();
-//         await retrieveWgtUnit();
-//         await setWgtUnit();
-//         await setBarcodeSlotTotal(rowCount);
-//     }
-
-//     allFunc();
-// }
 
 function calculateTotal() {
     var subtotalInput = document.getElementById("cni_sub");

@@ -1006,7 +1006,8 @@ if ($redirectToCreateInvoicePage == 1) {
                                     <div class="d-flex justify-content-between mb-2">
                                         <label for="payment-terms" class="mb-0">Payment Terms</label>
                                         <label class="me-0">
-                                            <input type="checkbox" id="payment-terms" checked>
+                                            <input type="checkbox" id="payment-terms" checked <?php if ($act == '')
+                                                echo 'disabled' ?>>
 
                                         </label>
                                     </div>
