@@ -106,7 +106,7 @@ if (post('actionBtn')) {
             $cni_sub = postSpaceFilter('cni_sub');
             $cni_disc = postSpaceFilter('cni_disc');
             $cni_tax = postSpaceFilter('cni_tax');
-            $cni_total = postSpaceFilter('cni_total');
+            $cni_total = postSpaceFilter('cni_total_input');
             $cni_notes = postSpaceFilter('internal_notes');
             $cni_pay = postSpaceFilter('cni_pay');
             $cni_pay_details = postSpaceFilter('cni_pay_details');
@@ -730,13 +730,15 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                         </div>
                                                                     </td>
                                                                     <td><input class="readonlyInput" type="text" name="price[]"
-                                                                            id="price_<?= $num ?>" value="<?= $pp ?>">
+                                                                            id="price_<?= $num ?>" value="<?= $pp ?>"
+                                                                            onchange="calculateAmount(<?= $num ?>)">
                                                                     </td>
                                                                     <td><input class="readonlyInput" type="text"
                                                                             name="quantity[]" id="quantity_<?= $num ?>"
-                                                                            value="<?= $pqty ?>"><input type="hidden"
-                                                                            name="amount[]" id="amount_<?= $num ?>"
-                                                                            value="<?= $pamt ?>" readonly>
+                                                                            value="<?= $pqty ?>" onchange="calculateAmount(<?= $num ?>)">
+                                                                    </td>
+                                                                    <td><input class="readonlyInput" type="text" name="amount[]"
+                                                                            id="amount_<?= $num ?>" value="<?= $pamt ?>">
                                                                     </td>
                                                                     <?php
                                                                     if ($act != '') {
@@ -849,35 +851,91 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             <div class="invoice-calculations">
                                                                 <div class="d-flex justify-content-between mb-2">
                                                                     <span class="w-px-100">Subtotal:</span>
-                                                                    <span class="fw-medium">$00.00</span>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between mb-2">
-                                                                    <span class="w-px-100">Discount:</span>
-                                                                    <span class="fw-medium">$00.00</span>
-                                                                </div>
-                                                                <div class="d-flex justify-content-between mb-2">
-                                                                    <span class="w-px-100">Tax:</span>
-                                                                    <span class="fw-medium">$00.00</span>
-                                                                </div>
-                                                                <hr />
-                                                                <div class="d-flex justify-content-between">
-                                                                    <span class="w-px-100">Total:</span>
-                                                                    <span class="fw-medium">$00.00</span>
+                                                                    <div class="col-6">
+                                                                        <input class="form-control text-end" type="number"
+                                                                            step="0.01" name="cni_sub" id="cni_sub" value="<?php
+                                                                if (isset($dataExisted) && isset($row['subtotal']) && !isset($cni_sub)) {
+                                                                    echo $row['subtotal'];
+                                                                } else if (isset($dataExisted) && isset($row['subtotal']) && isset($cni_sub)) {
+                                                                    echo $cni_sub;
+                                                                } else {
+                                                                    echo '';
+                                                                } ?>" <?php if ($act == '')
+                                                                     echo 'disabled' ?> onchange="calculateTotal()">
+                                                                    <?php if (isset($sub_err)) { ?>
+                                                                        <div id="err_msg">
+                                                                            <span class="mt-n1">
+                                                                                <?php echo $sub_err; ?>
+                                                                            </span>
+                                                                        </div>
+                                                                    <?php } ?>
                                                                 </div>
                                                             </div>
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <span class="w-px-100">Discount:</span>
+                                                                <div class="col-6">
+                                                                    <input class="form-control text-end" type="number"
+                                                                        step="0.01" name="cni_disc" id="cni_disc" value="<?php
+                                                                        if (isset($dataExisted) && isset($row['discount']) && !isset($cni_disc)) {
+                                                                            echo $row['discount'];
+                                                                        } else if (isset($dataExisted) && isset($row['discount']) && isset($cni_disc)) {
+                                                                            echo $cni_disc;
+                                                                        } else {
+                                                                            echo '';
+                                                                        } ?>" <?php if ($act == '')
+                                                                             echo 'disabled' ?>  onchange="calculateTotal()">
+                                                                    <?php if (isset($disc_err)) { ?>
+                                                                        <div id="err_msg">
+                                                                            <span class="mt-n1">
+                                                                                <?php echo $disc_err; ?>
+                                                                            </span>
+                                                                        </div>
+                                                                    <?php } ?>
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between mb-2">
+                                                                <span class="w-px-100">Tax:</span>
+                                                                <div class="col-6">
+                                                                    <input class="form-control text-end" type="number"
+                                                                        step="0.01" name="cni_tax" id="cni_tax" value="<?php
+                                                                        if (isset($dataExisted) && isset($row['tax']) && !isset($cni_tax)) {
+                                                                            echo $row['tax'];
+                                                                        } else if (isset($dataExisted) && isset($row['tax']) && isset($cni_tax)) {
+                                                                            echo $cni_tax;
+                                                                        } else {
+                                                                            echo '';
+                                                                        } ?>" <?php if ($act == '')
+                                                                             echo 'disabled' ?> onchange="calculateTotal()">
+                                                                    <?php if (isset($tax_err)) { ?>
+                                                                        <div id="err_msg">
+                                                                            <span class="mt-n1">
+                                                                                <?php echo $tax_err; ?>
+                                                                            </span>
+                                                                        </div>
+                                                                    <?php } ?>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                            <div class="d-flex justify-content-between">
+                                                                <span class="w-px-100">Total:</span>
+                                                                <span class="fw-medium" id="cni_total">00.00</span>
+                                                                <input type="hidden" name="cni_total_input"
+                                                                    id="cni_total_input" value="">
+                                                            </div>
                                                         </div>
-
                                                     </div>
+
                                                 </div>
+                                            </div>
 
-                                                <hr class="my-3">
+                                            <hr class="my-3">
 
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label form_lbl" for="internal_notes">Notes:</label>
-                                                    <textarea class="form-control" name="internal_notes" id="internal_notes"
-                                                        rows="3" <?php if ($act == '')
-                                                                    echo 'disabled' ?>><?php if (isset($row['inv_note']))
-                                                                    echo $row['inv_note'] ?></textarea>
+                                            <div class="form-group mb-3">
+                                                <label class="form-label form_lbl" for="internal_notes">Notes:</label>
+                                                <textarea class="form-control" name="internal_notes" id="internal_notes"
+                                                    rows="3" <?php if ($act == '')
+                                                        echo 'disabled' ?>><?php if (isset($row['inv_note']))
+                                                        echo $row['inv_note'] ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -887,18 +945,18 @@ if ($redirectToCreateInvoicePage == 1) {
                                     <div class="card mb-4">
                                         <div class="card-body">
                                             <?php
-                                                                // Determine the value based on $act
-                                                                switch ($act) {
-                                                                    case 'I':
-                                                                        $actionValue = 'addData';
-                                                                        break;
-                                                                    case 'E':
-                                                                        $actionValue = 'updData';
-                                                                        break;
-                                                                    default:
-                                                                        $actionValue = ''; // You may want to handle this case differently based on your logic
-                                                                }
-                                                                ?>
+                                                    // Determine the value based on $act
+                                                    switch ($act) {
+                                                        case 'I':
+                                                            $actionValue = 'addData';
+                                                            break;
+                                                        case 'E':
+                                                            $actionValue = 'updData';
+                                                            break;
+                                                        default:
+                                                            $actionValue = ''; // You may want to handle this case differently based on your logic
+                                                    }
+                                                    ?>
                                         <input type="hidden" name="createInvoice" id="createInvoice" value="0">
                                         <button class="btn btn-primary d-grid w-100 mb-2 submitBtn createInvoiceButton"
                                             name="actionBtn" id="actionBtn" onclick="createInvoice();"
@@ -978,8 +1036,6 @@ if ($redirectToCreateInvoicePage == 1) {
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </form>
             </div>

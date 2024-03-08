@@ -15,6 +15,10 @@ $('.createInvoiceButton').on('click', () => {
 });
 
 $(document).ready(function () {
+    calculateTotal();
+    $('input[name="amount[]"]').on('input', calculateSubtotal);
+    $("#cni_sub").on('change', calculateTotal);
+
     if (!($("#cni_name").attr('disabled'))) {
         $("#cni_name").keyup(function () {
             var param = {
@@ -52,7 +56,7 @@ $(document).ready(function () {
         });
     }
     $("#cni_name").change(autofillMrcht);
-    
+
     $('#payment-terms').change(function () {
         if ($(this).is(':checked')) {
             $('#pay_terms').show();
@@ -130,6 +134,8 @@ function Remove(button) {
     if (confirm("Do you want to delete: " + name)) {
         row.remove();
     }
+    calculateSubtotal();
+    calculateTotal();
 }
 
 // product autofill
@@ -196,3 +202,46 @@ function Remove(button) {
 //     allFunc();
 // }
 
+function calculateTotal() {
+    var subtotalInput = document.getElementById("cni_sub");
+    var discountInput = document.getElementById("cni_disc");
+    var taxInput = document.getElementById("cni_tax");
+    var totalSpan = document.getElementById("cni_total");
+
+    var subtotal = parseFloat(subtotalInput.value) || 0;
+    var discount = parseFloat(discountInput.value) || 0;
+    var tax = parseFloat(taxInput.value) || 0;
+
+    var total = subtotal + discount + tax;
+
+    totalSpan.textContent = total.toFixed(2);
+
+    var totalInput = document.getElementById("cni_total_input");
+    totalInput.value = total.toFixed(2);
+}
+
+function calculateSubtotal() {
+    const amountInputs = document.getElementsByName("amount[]");
+    let subtotal = 0;
+
+    for (let i = 0; i < amountInputs.length; i++) {
+        const amountValue = parseFloat(amountInputs[i].value) || 0;
+        subtotal += amountValue;
+    }
+
+    const subtotalInput = document.getElementById("cni_sub");
+    subtotalInput.value = subtotal.toFixed(2);
+    calculateTotal();
+}
+function calculateAmount(rowNum) {
+    var priceInput = document.getElementById('price_' + rowNum);
+    var quantityInput = document.getElementById('quantity_' + rowNum);
+    var amountInput = document.getElementById('amount_' + rowNum);
+
+    var price = parseFloat(priceInput.value) || 0;
+    var quantity = parseFloat(quantityInput.value) || 0;
+
+    var amount = price * quantity;
+    amountInput.value = amount.toFixed(2);
+    calculateSubtotal();
+}

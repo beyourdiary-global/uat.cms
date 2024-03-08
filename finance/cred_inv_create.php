@@ -309,22 +309,60 @@ $pic_row = $pic_result->fetch_assoc();
                                                     </div>
                                                     <div class="mt-auto mb-auto col-12 col-md-4 justify-content-end">
                                                         <div class="invoice-calculations">
+                                                            <?php
+                                                            // Check if currency is set and not empty
+                                                            if (isset($row['currency']) && !empty($row['currency'])) {
+                                                                $curr_rst = getData('unit', "id = '" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                                                                if (!$curr_rst) {
+                                                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                                }
+                                                                $curr_row = $curr_rst->fetch_assoc();
+                                                                $currency = ' ' . $curr_row['unit'];
+                                                            } else {
+                                                                $currency = ''; // Set empty string if currency is not available
+                                                            }
+                                                            ?>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Subtotal:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['subtotal'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['subtotal'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Discount:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['discount'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['discount'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Tax:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['tax'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['tax'], 2) . $currency .  '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <hr />
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="w-px-100">Total:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['total'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['total'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                         </div>
                                                     </div>

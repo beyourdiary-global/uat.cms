@@ -26,12 +26,14 @@ $curr_result = getData('*', "id = '" . $row['currency'] . "'", '', CUR_UNIT, $co
 $mrcht_result = getData('*', "id = '" . $row['bill_nameID'] . "'", '', MERCHANT, $finance_connect);
 $pay_result = getData('*', "id = '" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
 $pic_result = getData('*', "id = '" . $row['sales_pic'] . "'", '', USR_USER, $connect);
+$term_result = getData('*', "id = '" . $row['pay_terms'] . "'", '', FIN_PAY_TERMS, $finance_connect);
 
 $proj_row = $proj_result->fetch_assoc();
 $curr_row = $curr_result->fetch_assoc();
 $mrcht_row = $mrcht_result->fetch_assoc();
 $pay_row = $pay_result->fetch_assoc();
 $pic_row = $pic_result->fetch_assoc();
+$term_row = $term_result->fetch_assoc();
 
 $payColour = '';
 if (isset($row['payment_status'])) {
@@ -103,6 +105,7 @@ $html = str_replace(
         "{{pay method}}",
         "{{pay details}}",
         "{{product rows}}",
+        "{{curr}}"
     ],
     [
         isset($proj_row['company_name']) ? $proj_row['company_name'] : '',
@@ -125,10 +128,11 @@ $html = str_replace(
         isset($row['discount']) ? $row['discount'] : '',
         isset($row['tax']) ? $row['tax'] : '',
         isset($row['total']) ? $row['total'] : '',
-        isset($row['pay_terms']) ? $row['pay_terms'] : '',
+        isset($row['pay_terms']) ? $term_row['name'] : '',
         isset($pay_row['name']) ? $pay_row['name'] : '',
         isset($row['pay_details']) ? $row['pay_details'] : '',
-        $productRows
+        $productRows,
+        isset($row['currency']) ? $curr_row['unit'] : '',
     ],
     $html
 );
