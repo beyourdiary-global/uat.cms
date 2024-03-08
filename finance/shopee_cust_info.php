@@ -309,7 +309,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <label class="form-label form_lbl" id="scr_username_lbl" for="scr_username">Shopee Buyer Username<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="scr_username" id="scr_username" value="<?php 
                                     if (isset($dataExisted) && isset($row['buyer_username']) && !isset($scr_username)) {
-                                        echo $row['name'];
+                                        echo $row['buyer_username'];
                                         } else if (isset($dataExisted) && isset($row['buyer_username']) && isset($scr_username)) {
                                             echo $scr_username;
                                             } else {
@@ -364,7 +364,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 $echoVal = $row['country'];
 
             if (isset($echoVal)) {
-                $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
+                $country_rst = getData('nicename', "id = '$echoVal'", '', COUNTRIES, $connect);
                 if (!$country_rst) {
                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
