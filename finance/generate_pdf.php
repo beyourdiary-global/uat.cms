@@ -28,12 +28,12 @@ $pay_result = getData('*', "id = '" . $row['pay_method'] . "'", '', FIN_PAY_METH
 $pic_result = getData('*', "id = '" . $row['sales_pic'] . "'", '', USR_USER, $connect);
 $term_result = getData('*', "id = '" . $row['pay_terms'] . "'", '', FIN_PAY_TERMS, $finance_connect);
 
-$proj_row = $proj_result->fetch_assoc();
-$curr_row = $curr_result->fetch_assoc();
-$mrcht_row = $mrcht_result->fetch_assoc();
-$pay_row = $pay_result->fetch_assoc();
-$pic_row = $pic_result->fetch_assoc();
-$term_row = $term_result->fetch_assoc();
+$proj_row = $proj_result->fetch_assoc() ?: [];
+$curr_row = $curr_result->fetch_assoc() ?: [];
+$mrcht_row = $mrcht_result->fetch_assoc() ?: [];
+$pay_row = $pay_result->fetch_assoc() ?: [];
+$pic_row = $pic_result->fetch_assoc() ?: [];
+$term_row = $term_result->fetch_assoc() ?: [];
 
 $payColour = '';
 if (isset($row['payment_status'])) {
@@ -108,31 +108,29 @@ $html = str_replace(
         "{{curr}}"
     ],
     [
-        isset($proj_row['company_name']) ? $proj_row['company_name'] : '',
-        isset($proj_row['company_address']) ? $proj_row['company_address'] : '',
-        isset($proj_row['company_business_no']) ? $proj_row['company_business_no'] : '',
-        isset($proj_row['company_email']) ? $proj_row['company_email'] : '',
-        isset($proj_row['company_contact']) ? $proj_row['company_contact'] : '',
-        isset($row['invoice']) ? $row['invoice'] : '',
-        isset($row['date']) ? $row['date'] : '',
-        $payColour,
-        isset($row['payment_status']) ? $row['payment_status'] : '',//pay_status
-        isset($row['due_date']) ? $row['due_date'] : '',
-        isset($mrcht_row['name']) ? $mrcht_row['name'] : '',
-        isset($row['bill_add']) ? $row['bill_add'] : '',
-        isset($row['bill_contact']) ? $row['bill_contact'] : '',
-        isset($row['bill_email']) ? $row['bill_email'] : '',
-        isset($pic_row['name']) ? $pic_row['name'] : '',
-        isset($row['remark']) ? $row['remark'] : '',
-        isset($row['subtotal']) ? $row['subtotal'] : '',
-        isset($row['discount']) ? $row['discount'] : '',
-        isset($row['tax']) ? $row['tax'] : '',
-        isset($row['total']) ? $row['total'] : '',
-        isset($row['pay_terms']) ? $term_row['name'] : '',
-        isset($pay_row['name']) ? $pay_row['name'] : '',
-        isset($row['pay_details']) ? $row['pay_details'] : '',
-        $productRows,
-        isset($row['currency']) ? $curr_row['unit'] : '',
+        $proj_row['company_name'] = isset($proj_row['company_name']) && $proj_row['company_name'] > 0 ? $proj_row['company_name'] : '',
+$proj_row['company_address'] = isset($proj_row['company_address']) && $proj_row['company_address'] > 0 ? $proj_row['company_address'] : '',
+$proj_row['company_business_no'] = isset($proj_row['company_business_no']) && $proj_row['company_business_no'] > 0 ? $proj_row['company_business_no'] : '',
+$proj_row['company_email'] = isset($proj_row['company_email']) && $proj_row['company_email'] > 0 ? $proj_row['company_email'] : '',
+$proj_row['company_contact'] = isset($proj_row['company_contact']) && $proj_row['company_contact'] > 0 ? $proj_row['company_contact'] : '',
+$row['invoice'] = isset($row['invoice']) && $row['invoice'] > 0 ? $row['invoice'] : '',
+$row['date'] = isset($row['date']) && $row['date'] > 0 ? $row['date'] : '',
+$row['due_date'] = isset($row['due_date']) && $row['due_date'] > 0 ? $row['due_date'] : '',
+$mrcht_row['name'] = isset($mrcht_row['name']) && $mrcht_row['name'] > 0 ? $mrcht_row['name'] : '',
+$row['bill_add'] = isset($row['bill_add']) && $row['bill_add'] > 0 ? $row['bill_add'] : '',
+$row['bill_contact'] = isset($row['bill_contact']) && $row['bill_contact'] > 0 ? $row['bill_contact'] : '',
+$row['bill_email'] = isset($row['bill_email']) && $row['bill_email'] > 0 ? $row['bill_email'] : '',
+$pic_row['name'] = isset($pic_row['name']) && $pic_row['name'] > 0 ? $pic_row['name'] : '',
+$row['remark'] = isset($row['remark']) && $row['remark'] > 0 ? $row['remark'] : '',
+$row['subtotal'] = isset($row['subtotal']) && $row['subtotal'] > 0 ? $row['subtotal'] : '',
+$row['discount'] = isset($row['discount']) && $row['discount'] > 0 ? $row['discount'] : '',
+$row['tax'] = isset($row['tax']) && $row['tax'] > 0 ? $row['tax'] : '',
+$row['total'] = isset($row['total']) && $row['total'] > 0 ? $row['total'] : '',
+$term_row['name'] = isset($row['pay_terms']) && $row['pay_terms'] > 0 ? $term_row['name'] : '',
+$pay_row['name'] = isset($pay_row['name']) && $pay_row['name'] > 0 ? $pay_row['name'] : '',
+$row['pay_details'] = isset($row['pay_details']) && $row['pay_details'] > 0 ? $row['pay_details'] : '',
+$curr_row['unit'] = isset($row['currency']) && $row['currency'] > 0 ? $curr_row['unit'] : '',
+
     ],
     $html
 );
