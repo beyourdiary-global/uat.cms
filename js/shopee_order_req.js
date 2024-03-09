@@ -1,3 +1,4 @@
+var price_curr_chk = 0;
 //autocomplete
 $(document).ready(function () {
     //package
@@ -221,6 +222,7 @@ function calculatePrice() {
                 })
             } else {
                 console.log('Same Package Shopee Acc currency.');
+                price_curr_chk = 1;
 
             }
         } else {
@@ -329,6 +331,7 @@ $("#sor_price").on("change", function () {
 });
 $("#sor_price").on("change", function () {
     $(".sor-pricecurr-err").remove();
+    price_curr_chk = 1;
 });
 
 $("#sor_pay").on("input", function () {
@@ -359,7 +362,6 @@ $('.submitBtn').on('click', () => {
     var pic_chk = 0;
     var price_chk = 0;
     var final_chk = 0;
-    var price_curr_chk = 0;
 
     if ($('#sor_acc').val() === '' || $('#sor_acc').val() === null || $('#sor_acc')
         .val() === undefined) {
