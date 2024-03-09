@@ -1501,3 +1501,17 @@ function setAutofocus(action) {
   }
 
 }
+
+//export notification
+function exportData() {
+  var checkboxes = document.querySelectorAll('.export:checked');
+  if (checkboxes.length === 0) {
+      alert('Please select data to export.');
+      return false;
+  }
+  return true;
+}
+
+function showExportNotification() {
+  alert('Export successful!'); 
+}
