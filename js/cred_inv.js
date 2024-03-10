@@ -11,13 +11,16 @@ $("#cni_due").datepicker({
 });
 
 $('.createInvoiceButton').on('click', () => {
-    $("#createInvoice").val(1); 
+    $("#createInvoice").val(1);
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
+    calculateTotal();
+    $('input[name="amount[]"]').on('input', calculateSubtotal);
+    $("#cni_sub").on('change', calculateTotal);
 
     if (!($("#cni_name").attr('disabled'))) {
-        $("#cni_name").keyup(function() {
+        $("#cni_name").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -29,7 +32,7 @@ $(document).ready(function() {
         });
     }
     if (!($("#cni_pic").attr('disabled'))) {
-        $("#cni_pic").keyup(function() {
+        $("#cni_pic").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -41,7 +44,7 @@ $(document).ready(function() {
         });
     }
     if (!($("#cni_curr").attr('disabled'))) {
-        $("#cni_curr").keyup(function() {
+        $("#cni_curr").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'unit', // column of the table
@@ -53,6 +56,20 @@ $(document).ready(function() {
         });
     }
     $("#cni_name").change(autofillMrcht);
+
+    $('#payment-terms').change(function () {
+        if ($(this).is(':checked')) {
+            $('#pay_terms').show();
+        } else {
+            // If the checkbox is unchecked, hide the payment terms dropdown
+            $('#pay_terms').hide();
+            // Clear the selected value of the payment terms dropdown
+            $('#pay_terms').val('0');
+        }
+    });
+    if (!$('#payment-terms').is(':checked')) {
+        $('#pay_terms').hide();
+    }
 
 })
 function autofillMrcht() {
@@ -75,43 +92,40 @@ function autofillMrcht() {
 
 
 function Add() {
-    AddRow($("#prod_name").val(), $("#prod_price").val(), $("#qty").val(), $("#amount").val());
+    AddRow($("#prod_desc").val(), $("#price").val(), $("#quantity").val(), $("#amount").val());
 };
-function AddRow(description, price, quantity, amount) {
-    // Get the reference of the Table's TBODY element.
+
+function AddRow() {
+    //Get the reference of the Table's TBODY element.
     var tBody = $("#productList > TBODY")[0];
-    
-    // Calculate the numbering based on the existing rows.
-    var numbering = $("#productList > TBODY > TR").length + 1;
+    var numbering = +$("#productList > TBODY > TR:last > TD:first").text();
+    numbering += 1;
+    numbering = numbering.toFixed(0)
 
-    // Add Row.
-    var row = tBody.insertRow(-1);
+    //Add Row.
+    row = tBody.insertRow(-1);
 
-    // Add cells.
+    //Add cell.
     var cell = $(row.insertCell(-1));
     cell.html(numbering);
+    var cell = $(row.insertCell(-1));
+    cell.html('<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
+    cell.addClass('autocomplete');
+    cell = $(row.insertCell(-1));
+    cell.html('<input type="text" name="price[]" id="price_' + numbering + '" value="">');
+    cell = $(row.insertCell(-1));
+    cell.html('<input type="text" name="quantity[]" id="quatity_' + numbering + '" value="">');
+    cell = $(row.insertCell(-1));
+    cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="">');
 
-    cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="prod_name[]" value="' + description + '">');
-    
-    cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="price[]" value="' + price + '">');
-
-    cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="quantity[]" value="' + quantity + '">');
-
-    cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="amount[]" value="' + amount + '">');
-   
-    // Add Button cell for removal.
+    //Add Button cell.
     cell = $(row.insertCell(-1));
     var btnRemove = $('<button class="mt-1" id="action_menu_btn"><i class="fa-regular fa-trash-can fa-xl" style="color:#ff0000"></i></button>');
     btnRemove.attr("type", "button");
-    btnRemove.click(function() {
-        Remove(this);
-    });
+    btnRemove.attr("onclick", "Remove(this);");
+    btnRemove.val("Remove");
     cell.append(btnRemove);
-}
+};
 
 function Remove(button) {
     // Determine the reference of the Row using the Button.
@@ -120,9 +134,11 @@ function Remove(button) {
     if (confirm("Do you want to delete: " + name)) {
         row.remove();
     }
+    calculateSubtotal();
+    calculateTotal();
 }
 
-// // product autofill
+// product autofill
 // function prodInfo(element) {
 //     var id = $(element).attr('id').split('_');
 //     id = id[(id.length) - 1];
@@ -149,40 +165,48 @@ function Remove(button) {
 //     }
 // }
 
-// function prodInfoAutoFill(element) {
-//     var id = $(element).attr('id').split('_');
-//     id = id[(id.length) - 1];
-//     var prodArr = [];
-//     var wgtArr = [];
-//     var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
 
-//     var retrieveProdInfo = async () => {
-//         prodArr = await retrieveJSONData($(element).attr('value'), 'id', '<?= PROD ?>');
-//     }
 
-//     var setProdInfo = async () => {
-//         $('#wgt_' + id).val(prodArr[0]['weight']);
-//         $('#wgt_unit_val_' + id).val(prodArr[0]['weight_unit']);
-//         $('#barcode_status_' + id).val(prodArr[0]['barcode_status']);
-//         $('#barcode_slot_' + id).val(prodArr[0]['barcode_slot']);
-//     }
+function calculateTotal() {
+    var subtotalInput = document.getElementById("cni_sub");
+    var discountInput = document.getElementById("cni_disc");
+    var taxInput = document.getElementById("cni_tax");
+    var totalSpan = document.getElementById("cni_total");
 
-//     var retrieveWgtUnit = async () => {
-//         wgtArr = await retrieveJSONData($('#wgt_unit_val_' + id).attr('value'), 'id', '<?= WGT_UNIT ?>');
-//     }
+    var subtotal = parseFloat(subtotalInput.value) || 0;
+    var discount = parseFloat(discountInput.value) || 0;
+    var tax = parseFloat(taxInput.value) || 0;
 
-//     var setWgtUnit = async () => {
-//         $('#wgt_unit_' + id).val(wgtArr[0]['unit']);
-//     }
+    var total = subtotal + discount + tax;
 
-//     var allFunc = async () => {
-//         await retrieveProdInfo();
-//         await setProdInfo();
-//         await retrieveWgtUnit();
-//         await setWgtUnit();
-//         await setBarcodeSlotTotal(rowCount);
-//     }
+    totalSpan.textContent = total.toFixed(2);
 
-//     allFunc();
-// }
+    var totalInput = document.getElementById("cni_total_input");
+    totalInput.value = total.toFixed(2);
+}
 
+function calculateSubtotal() {
+    const amountInputs = document.getElementsByName("amount[]");
+    let subtotal = 0;
+
+    for (let i = 0; i < amountInputs.length; i++) {
+        const amountValue = parseFloat(amountInputs[i].value) || 0;
+        subtotal += amountValue;
+    }
+
+    const subtotalInput = document.getElementById("cni_sub");
+    subtotalInput.value = subtotal.toFixed(2);
+    calculateTotal();
+}
+function calculateAmount(rowNum) {
+    var priceInput = document.getElementById('price_' + rowNum);
+    var quantityInput = document.getElementById('quantity_' + rowNum);
+    var amountInput = document.getElementById('amount_' + rowNum);
+
+    var price = parseFloat(priceInput.value) || 0;
+    var quantity = parseFloat(quantityInput.value) || 0;
+
+    var amount = price * quantity;
+    amountInput.value = amount.toFixed(2);
+    calculateSubtotal();
+}

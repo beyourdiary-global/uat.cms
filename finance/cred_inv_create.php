@@ -244,34 +244,38 @@ $pic_row = $pic_result->fetch_assoc();
                                                             <th scope="col">Price</th>
                                                             <th scope="col">Quantity</th>
                                                             <th scope="col">Amount</th>
-                                                            <th scope="col" id="action_col"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        <?php
+                                                        $productIDs = explode(',', $row['products']);
+                                                        $productData = array();
+                                                        // Loop through each product ID
+                                                        foreach ($productIDs as $productID) {
+                                                            // Retrieve product details from the database based on the product ID
+                                                            $query = "SELECT * FROM " . CRED_INV_PROD . " WHERE id = $productID";
+                                                            $result = mysqli_query($finance_connect, $query);
+
+                                                            // Check if the query was successful and if there is any result
+                                                            if ($result && mysqli_num_rows($result) > 0) {
+                                                                $product = mysqli_fetch_assoc($result);
+                                                                // Add the retrieved product data to the $productData array
+                                                                $productData[] = $product;
+                                                            }
+                                                        }
+
+                                                        foreach ($productData as $index => $product) {
+                                                            echo "<tr>";
+                                                            echo "<th scope='row'>" . ($index + 1) . "</th>";
+                                                            echo "<td>" . $product['description'] . "</td>";
+                                                            echo "<td>" . $product['price'] . "</td>";
+                                                            echo "<td>" . $product['quantity'] . "</td>";
+                                                            echo "<td>" . $product['amount'] . "</td>";
+                                                            echo "</tr>";
+                                                        }
+                                                        ?>
                                                     </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <td scope="col" colspan="5" style="text-align:right">Total
-                                                                Barcode
-                                                            </td>
-                                                            <td scope="col" id="barcode_slot_total"
-                                                                style="text-align:center">
-                                                                <?php
-                                                                if (isset($barcode_slot_total) && $barcode_slot_total != '')
-                                                                    echo $barcode_slot_total;
-                                                                else {
-                                                                    if (isset($dataExisted) && isset($row['barcode_slot_total']))
-                                                                        echo $row['barcode_slot_total'];
-                                                                    else
-                                                                        echo '0';
-                                                                }
-                                                                ?><input name="barcode_slot_total_hidden"
-                                                                    id="barcode_slot_total_hidden" type="hidden"
-                                                                    value="<?php echo (isset($row['barcode_slot_total'])) ? $row['barcode_slot_total'] : ''; ?>">
-                                                            </td>
-                                                            <td scope="col"></td>
-                                                        </tr>
-                                                    </tfoot>
+
                                                 </table>
                                             </div>
                                         </div>
@@ -305,22 +309,60 @@ $pic_row = $pic_result->fetch_assoc();
                                                     </div>
                                                     <div class="mt-auto mb-auto col-12 col-md-4 justify-content-end">
                                                         <div class="invoice-calculations">
+                                                            <?php
+                                                            // Check if currency is set and not empty
+                                                            if (isset($row['currency']) && !empty($row['currency'])) {
+                                                                $curr_rst = getData('unit', "id = '" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                                                                if (!$curr_rst) {
+                                                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                                }
+                                                                $curr_row = $curr_rst->fetch_assoc();
+                                                                $currency = ' ' . $curr_row['unit'];
+                                                            } else {
+                                                                $currency = ''; // Set empty string if currency is not available
+                                                            }
+                                                            ?>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Subtotal:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['subtotal'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['subtotal'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Discount:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['discount'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['discount'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <div class="d-flex justify-content-between mb-2">
                                                                 <span class="w-px-100">Tax:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['tax'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['tax'], 2) . $currency .  '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                             <hr />
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="w-px-100">Total:</span>
-                                                                <span class="fw-medium">$00.00</span>
+                                                                <?php if (isset($row['total'])) {
+                                                                    // Output the formatted string with discount
+                                                                    echo '<span class="fw-medium">' . '$' . number_format($row['total'], 2) . $currency . '</span>';
+                                                                } else {
+                                                                    echo '<span class="fw-medium">$00.00</span>';
+                                                                }
+                                                                ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -353,16 +395,15 @@ $pic_row = $pic_result->fetch_assoc();
                                         </button>
 
                                         <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>"
-                                            class="btn btn-primary d-grid w-100 mb-2 download" name="actionBtn"
-                                            id="actionBtn"><span>Print/Download</span>
+                                            target="_blank" class="btn btn-primary d-grid w-100 mb-2 download"
+                                            name="actionBtn" id="actionBtn"><span>Print/Download</span>
                                         </a>
                                         <a href="<?= $edit_page . "?id=" . $dataID . '&act=' . $act_2 ?>"
                                             class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
                                             id="actionBtn"><span>Edit Invoice</span>
                                         </a>
-                                        <a href="<?= $redirect_page ?>"
-                                            class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
-                                            id="actionBtn"><span>Back</span>
+                                        <a href="<?= $redirect_page ?>" class="btn btn-primary d-grid w-100 mb-2 cancel"
+                                            name="actionBtn" id="actionBtn"><span>Back</span>
                                         </a>
 
                                     </div>

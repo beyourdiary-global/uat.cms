@@ -155,8 +155,8 @@ define('STRIPE_TRANS_BACKUP', 'stripe_transaction_backup');
 define('JT_TRANS_BACKUP','jt_transaction_backup');
 define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
 define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
+define('CRED_INV_PROD', 'cred_inv_products');
 define('WEB_ORDER_REQ', 'website_order_request');
-
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
