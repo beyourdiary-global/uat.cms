@@ -8,8 +8,17 @@ ini_set("gd.jpeg_ignore_warning", 1);
 //post variables 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+$isDebit = !empty(input('isDebit')) ? input('isDebit') : post('isDebit');
 
-$tblName = CRED_NOTES_INV;
+// Now you can use $isDebit in your logic
+if ($isDebit) {
+    $tblName = DEBIT_NOTES_INV;
+    $tblName2 = DEBIT_INV_PROD;
+} else {
+    $tblName = CRED_NOTES_INV;
+    $tblName2 = CRED_INV_PROD;
+}
+
 //Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 
