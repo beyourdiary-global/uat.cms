@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Website Customer Record (Deals)";
+$pageTitle = "Lazada Customer Record (Deals)";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
@@ -9,8 +9,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/website_customer_record.php';
-$result = getData('*', '', '', WEB_CUST_RCD, $connect);
+$redirect_page = $SITEURL . '/lazada_cust_rcd.php';
+$result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +22,7 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('web_cust_deals');
+        createSortingTable('lzd_cust_deals');
     });
 </script>
 
@@ -63,16 +63,15 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
     } else {
         ?>
 
-        <table class="table table-striped" id="web_cust_deals">
+        <table class="table table-striped" id="lzd_cust_deals">
             <thead>
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col" width="60px">S/N</th>
                     <th scope="col">Customer ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Contact</th>
+                    <th scope="col">Customer Name</th>
                     <th scope="col">Customer Email</th>
-                    <th scope="col">Customer Birthday</th>
+                    <th scope="col">Customer Phone</th>
                     <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
                     <th scope="col">Brand</th>
@@ -107,9 +106,8 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                         <th scope="row">
                             <?= $num++; ?>
                         </th>
-
                         <td scope="row">
-                            <?= $row['cust_id'] ?>
+                            <?= $row['lcr_id'] ?>
                         </td>
 
                         <td scope="row">
@@ -117,15 +115,11 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                         </td>
 
                         <td scope="row">
-                            <?= $row['contact'] ?>
+                            <?= $row['email'] ?>
                         </td>
 
                         <td scope="row">
-                            <?= $row['cust_email'] ?>
-                        </td>
-
-                        <td scope="row">
-                            <?= $row['cust_birthday'] ?>
+                            <?= $row['phone'] ?>
                         </td>
 
                         <td scope="row"><?= isset($pic['name']) ? $pic['name'] : ''  ?></td>
@@ -173,7 +167,7 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                                     <li>
                                         <?php if (isActionAllowed("Delete", $pinAccess)): ?>
                                             <a class="dropdown-item"
-                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/website_customer_record_table.php','D')">Delete</a>
+                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['lcr_id'] ?>','<?= $row['name'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/website_customer_record_table.php','D')">Delete</a>
                                         <?php endif; ?>
                                     </li>                              
                                 </ul>
@@ -187,10 +181,9 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col" width="60px">S/N</th>
                     <th scope="col">Customer ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Contact</th>
+                    <th scope="col">Customer Name</th>
                     <th scope="col">Customer Email</th>
-                    <th scope="col">Customer Birthday</th>
+                    <th scope="col">Customer Phone</th>
                     <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
                     <th scope="col">Brand</th>
@@ -225,7 +218,7 @@ common.fun.js
 function(id)
 to resize table with bootstrap 5 classes
 */
-datatableAlignment('web_cust_deals');
+datatableAlignment('lzd_cust_deals');
 </script>
 
 </html>

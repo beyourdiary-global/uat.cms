@@ -268,10 +268,11 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     <span class="mt-n2" style="font-size: 21px;"><?php if (isset($err1)) echo $err1; ?></span>
                 </div>
 
-                <div class="form-group mb-3 row">
-    <div class="col-md-6">
+
+                <div class="row">
+    <div class="col-md-6 mb-3">
         <label class="form-label form_lbl" id="commission_lbl" for="commission">Commission Fees Rate (%)<span class="requireRed">*</span></label>
-        <input class="form-control" type="number"  step=".01" name="commission" id="commission" value="<?php 
+        <input class="form-control" type="number" step=".01" name="commission" id="commission" value="<?php 
             if (isset($dataExisted) && isset($row['commission']) && !isset($commission)) {
                 echo $row['commission'];
             } else if (isset($dataExisted) && isset($row['commission']) && isset($commission)) {
@@ -286,7 +287,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <?php } ?>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-6 mb-3">
         <label class="form-label form_lbl" id="service_lbl" for="service">Service Fee Rate (%)<span class="requireRed">*</span></label>
         <input class="form-control" type="number" step=".01" name="service" id="service" value="<?php 
             if (isset($dataExisted) && isset($row['service']) && !isset($service)) {
@@ -304,10 +305,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 </div>
 
-<div class="form-group mb-3 row">
-    <div class="col-md-6">
+<div class="row">
+<div class="col-md-6 mb-3">
         <label class="form-label form_lbl" id="transaction_lbl" for="transaction">Transaction Fee (%)<span class="requireRed">*</span></label>
-        <input class="form-control" type="number" name="transaction" id="transaction" value="<?php 
+        <input class="form-control" type="number" step=".01" name="transaction" id="transaction" value="<?php 
             if (isset($dataExisted) && isset($row['transaction']) && !isset($transaction)) {
                 echo $row['transaction'];
             } else if (isset($dataExisted) && isset($row['transaction']) && isset($transaction)) {
@@ -321,7 +322,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             </div>
         <?php } ?>
     </div>
-</div>
+    </div>
+
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php

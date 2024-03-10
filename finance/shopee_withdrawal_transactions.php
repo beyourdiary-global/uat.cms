@@ -433,7 +433,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <div class="col-12 col-md-4">
             <div class="form-group mb-3">
                 <label class="form-label form_lbl" id="swt_amt_lbl" for="swt_amt">Withdrawal Amount<span class="requireRed">*</span></label>
-                <input class="form-control" type="number" name="swt_amt" id="swt_amt" value="<?php
+                <input class="form-control" type="number" step=".01" name="swt_amt" id="swt_amt" value="<?php
                     if (isset($dataExisted) && isset($row['amount']) && !isset($swt_amt)) {
                         echo $row['amount'];
                     } else if (isset($swt_amt)) {
