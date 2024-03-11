@@ -81,7 +81,7 @@ $(document).ready(function() {
 
   
    
-    $('#datepicker input, #datepicker2 input, #datepicker3 input, #datepicker4 input').change(function() {
+    $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="end"], #datepicker4 input[name="end"]').change(function() {
     var time =  $('#datepicker input').val();
     var timeInterval = $('#timeInterval').val();
     var startDate = $('#datepicker2 input[name="start"]').val();
@@ -134,7 +134,7 @@ $(document).ready(function() {
     });
 
 
-    $('#datepicker2').datepicker({
+    $('#datepicker2 input[name="start"]').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd',
         weekStart: 1,
@@ -144,15 +144,38 @@ $(document).ready(function() {
         orientation: 'bottom',
     });
 
+    $('#datepicker2 input[name="end"]').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        weekStart: 1,
+        maxViewMode: 1,
+        todayHighlight: true,
+        toggleActive: true,
+        orientation: 'bottom',
+    });
         
-    $('#datepicker3').datepicker({
+    $('#datepicker3 input[name="start"]').datepicker({
         format: "yyyy-mm",
         minViewMode: 1,
         autoclose: true,
         orientation: 'bottom',
     });
 
-    $('#datepicker4').datepicker({
+    $('#datepicker3 input[name="end"]').datepicker({
+        format: "yyyy-mm",
+        minViewMode: 1,
+        autoclose: true,
+        orientation: 'bottom',
+    });
+
+    $('#datepicker4 input[name="start"]').datepicker({
+        format: "yyyy",
+        minViewMode: 2,
+        autoclose: true,
+        orientation: 'bottom',
+    });
+
+    $('#datepicker4 input[name="end"]').datepicker({
         format: "yyyy",
         minViewMode: 2,
         autoclose: true,
