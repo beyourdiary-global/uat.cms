@@ -137,6 +137,9 @@ define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 define('CRED_NOTES_INV', 'credit_notes_invoice');
+define('CRED_INV_PROD', 'cred_inv_products');
+define('DEBIT_NOTES_INV', 'debit_notes_invoice');
+define('DEBIT_INV_PROD', 'debit_inv_products');
 define('AGENT','agent');
 define('TAX_SETT','tax_setting');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
@@ -155,8 +158,8 @@ define('STRIPE_TRANS_BACKUP', 'stripe_transaction_backup');
 define('JT_TRANS_BACKUP','jt_transaction_backup');
 define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
 define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
+define('CRED_INV_PROD', 'cred_inv_products');
 define('WEB_ORDER_REQ', 'website_order_request');
-
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);

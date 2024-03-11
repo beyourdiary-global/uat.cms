@@ -1,20 +1,20 @@
 <?php
-$pageTitle = "Credit Notes (Invoice)";
+$pageTitle = "Debit Notes (Invoice)";
 $isFinance = 1;
 $redirectToCreateInvoicePage = 0; // Default value
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = CRED_NOTES_INV;
+$tblName = DEBIT_NOTES_INV;
 //Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 $act = !empty(input('act')) ? input('act') : post('act');
 $actionBtnValue = ($act === 'I') ? 'addData' : 'updData';
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
-$redirect_page = $SITEURL . '/finance/cred_notes_inv_table.php';
-$create_page = $SITEURL . '/finance/cred_inv_create.php';
+$redirect_page = $SITEURL . '/finance/debit_notes_inv_table.php';
+$create_page = $SITEURL . '/finance/debit_inv_create.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -82,7 +82,7 @@ if (!$proj_result) {
 }
 
 $proj_row = $proj_result->fetch_assoc();
-$inv_num = $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
+$inv_num = $proj_row['invoice_prefix_debit'] . $proj_row['invoice_next_number_debit'];
 $redirectToCreateInvoicePage = postSpaceFilter('createInvoice');
 //Edit And Add Data
 if (post('actionBtn')) {
@@ -94,22 +94,22 @@ if (post('actionBtn')) {
         case 'updData':
             $redirectToCreateInvoicePage = postSpaceFilter('createInvoice');
             $inv_id = postSpaceFilter('invID');
-            $date = postSpaceFilter('cni_date');
-            $due = postSpaceFilter('cni_due');
-            $cni_curr = postSpaceFilter('cni_curr_hidden');
-            $mName = postSpaceFilter('cni_name_hidden');
-            $mEmail = postSpaceFilter('cni_email');
-            $mAdd = postSpaceFilter('cni_address');
-            $mCtc = postSpaceFilter('cni_ctc');
-            $cni_pic = postSpaceFilter('cni_pic_hidden');
-            $cni_remark = postSpaceFilter('cni_remark');
-            $cni_sub = postSpaceFilter('cni_sub');
-            $cni_disc = postSpaceFilter('cni_disc');
-            $cni_tax = postSpaceFilter('cni_tax');
-            $cni_total = postSpaceFilter('cni_total_input');
-            $cni_notes = postSpaceFilter('internal_notes');
-            $cni_pay = postSpaceFilter('cni_pay');
-            $cni_pay_details = postSpaceFilter('cni_pay_details');
+            $date = postSpaceFilter('dni_date');
+            $due = postSpaceFilter('dni_due');
+            $dni_curr = postSpaceFilter('dni_curr_hidden');
+            $mName = postSpaceFilter('dni_name_hidden');
+            $mEmail = postSpaceFilter('dni_email');
+            $mAdd = postSpaceFilter('dni_address');
+            $mCtc = postSpaceFilter('dni_ctc');
+            $dni_pic = postSpaceFilter('dni_pic_hidden');
+            $dni_remark = postSpaceFilter('dni_remark');
+            $dni_sub = postSpaceFilter('dni_sub');
+            $dni_disc = postSpaceFilter('dni_disc');
+            $dni_tax = postSpaceFilter('dni_tax');
+            $dni_total = postSpaceFilter('dni_total_input');
+            $dni_notes = postSpaceFilter('internal_notes');
+            $dni_pay = postSpaceFilter('dni_pay');
+            $dni_pay_details = postSpaceFilter('dni_pay_details');
 
             $descriptions = $_POST["prod_desc"];
             $prices = $_POST["price"];
@@ -127,7 +127,7 @@ if (post('actionBtn')) {
                 $amount = $_POST['amount'][$index];
 
                 // Check if a row already exists for the current invoice_row and description
-                $queryCheck = "SELECT id FROM " . CRED_INV_PROD . " WHERE invoice_row = '$inv_id' AND description = '$description'";
+                $queryCheck = "SELECT id FROM " . DEBIT_INV_PROD . " WHERE invoice_row = '$inv_id' AND description = '$description'";
                 $resultCheck = mysqli_query($finance_connect, $queryCheck);
 
                 if (mysqli_num_rows($resultCheck) > 0) {
@@ -136,13 +136,13 @@ if (post('actionBtn')) {
                     $productID = $rowCheck['id'];
 
                     // Update product details
-                    $queryUpdate = "UPDATE " . CRED_INV_PROD . " 
+                    $queryUpdate = "UPDATE " . DEBIT_INV_PROD . " 
                                     SET price = '$price', quantity = '$quantity', amount = '$amount' 
                                     WHERE id = '$productID'";
                     $update_prod = mysqli_query($finance_connect, $queryUpdate);
                 } else {
                     // Row doesn't exist, insert a new row
-                    $queryInsert = "INSERT INTO " . CRED_INV_PROD . " 
+                    $queryInsert = "INSERT INTO " . DEBIT_INV_PROD . " 
                                     (invoice_row, description, price, quantity, amount, create_by, create_date, create_time) 
                                     VALUES ('$inv_id', '$description', '$price', '$quantity', '$amount', '" . USER_ID . "', curdate(), curtime())";
                     $insert_prod = mysqli_query($finance_connect, $queryInsert);
@@ -177,8 +177,8 @@ if (post('actionBtn')) {
                         array_push($datafield, 'due date');
                     }
 
-                    if ($cni_curr) {
-                        array_push($newvalarr, $cni_curr);
+                    if ($dni_curr) {
+                        array_push($newvalarr, $dni_curr);
                         array_push($datafield, 'currency');
                     }
 
@@ -202,48 +202,48 @@ if (post('actionBtn')) {
                         array_push($datafield, 'contact');
                     }
 
-                    if ($cni_pic) {
-                        array_push($newvalarr, $cni_pic);
+                    if ($dni_pic) {
+                        array_push($newvalarr, $dni_pic);
                         array_push($datafield, 'PIC');
                     }
 
-                    if ($cni_remark) {
-                        array_push($newvalarr, $cni_remark);
+                    if ($dni_remark) {
+                        array_push($newvalarr, $dni_remark);
                         array_push($datafield, 'remark');
                     }
 
-                    if ($cni_sub) {
-                        array_push($newvalarr, $cni_sub);
+                    if ($dni_sub) {
+                        array_push($newvalarr, $dni_sub);
                         array_push($datafield, 'subtotal');
                     }
 
-                    if ($cni_disc) {
-                        array_push($newvalarr, $cni_disc);
+                    if ($dni_disc) {
+                        array_push($newvalarr, $dni_disc);
                         array_push($datafield, 'discount');
                     }
 
-                    if ($cni_tax) {
-                        array_push($newvalarr, $cni_tax);
+                    if ($dni_tax) {
+                        array_push($newvalarr, $dni_tax);
                         array_push($datafield, 'tax');
                     }
 
-                    if ($cni_total) {
-                        array_push($newvalarr, $cni_total);
+                    if ($dni_total) {
+                        array_push($newvalarr, $dni_total);
                         array_push($datafield, 'total');
                     }
 
-                    if ($cni_notes) {
-                        array_push($newvalarr, $cni_notes);
+                    if ($dni_notes) {
+                        array_push($newvalarr, $dni_notes);
                         array_push($datafield, 'internal notes');
                     }
 
-                    if ($cni_pay) {
-                        array_push($newvalarr, $cni_pay);
+                    if ($dni_pay) {
+                        array_push($newvalarr, $dni_pay);
                         array_push($datafield, 'pay method');
                     }
 
-                    if ($cni_pay_details) {
-                        array_push($newvalarr, $cni_pay_details);
+                    if ($dni_pay_details) {
+                        array_push($newvalarr, $dni_pay_details);
                         array_push($datafield, 'payment details');
                     }
 
@@ -252,10 +252,10 @@ if (post('actionBtn')) {
                         array_push($datafield, 'products');
                     }
 
-                    $query2 = "UPDATE " . PROJ . " SET invoice_next_number_credit = invoice_next_number_credit + 1 WHERE id = 1;";
+                    $query2 = "UPDATE " . PROJ . " SET invoice_next_number_debit = invoice_next_number_debit + 1 WHERE id = 1;";
                     $update_inv_no = mysqli_query($connect, $query2);
 
-                    $query = "INSERT INTO " . $tblName . "(projectID, invoice, date, due_date, currency, bill_nameID, bill_add, bill_email, bill_contact, products, pay_method, pay_terms, pay_details, sales_pic, remark, subtotal, discount, tax, total, inv_note, create_by, create_date, create_time) VALUES ('1','$inv_id','$date','$due','$cni_curr','$mName','$mAdd','$mEmail','$mCtc','$productIDString','$cni_pay','$pay_terms','$cni_pay_details','$cni_pic','$cni_remark','$cni_sub','$cni_disc','$cni_tax','$cni_total','$cni_notes','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(projectID, invoice, date, due_date, currency, bill_nameID, bill_add, bill_email, bill_contact, products, pay_method, pay_terms, pay_details, sales_pic, remark, subtotal, discount, tax, total, inv_note, create_by, create_date, create_time) VALUES ('1','$inv_id','$date','$due','$dni_curr','$mName','$mAdd','$mEmail','$mCtc','$productIDString','$dni_pay','$pay_terms','$dni_pay_details','$dni_pic','$dni_remark','$dni_sub','$dni_disc','$dni_tax','$dni_total','$dni_notes','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
                     $dataID = $finance_connect->insert_id;
 
@@ -275,9 +275,9 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $due);
                         array_push($datafield, 'due date');
                     }
-                    if ($row['currency'] != $cni_curr) {
+                    if ($row['currency'] != $dni_curr) {
                         array_push($oldvalarr, $row['currency']);
-                        array_push($chgvalarr, $cni_curr);
+                        array_push($chgvalarr, $dni_curr);
                         array_push($datafield, 'currency');
                     }
                     if ($row['bill_nameID'] != $mName) {
@@ -300,14 +300,14 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $mCtc);
                         array_push($datafield, 'billing contact');
                     }
-                    if ($row['pay_method'] != $cni_pay) {
+                    if ($row['pay_method'] != $dni_pay) {
                         array_push($oldvalarr, $row['pay_method']);
-                        array_push($chgvalarr, $cni_pay);
+                        array_push($chgvalarr, $dni_pay);
                         array_push($datafield, 'pay_method');
                     }
-                    if ($row['pay_details'] != $cni_pay_details) {
+                    if ($row['pay_details'] != $dni_pay_details) {
                         array_push($oldvalarr, $row['pay_details']);
-                        array_push($chgvalarr, $cni_pay_details);
+                        array_push($chgvalarr, $dni_pay_details);
                         array_push($datafield, 'pay_details');
                     }
                     if ($row['pay_terms'] != $pay_terms) {
@@ -315,39 +315,39 @@ if (post('actionBtn')) {
                         array_push($chgvalarr, $pay_terms);
                         array_push($datafield, 'payment terms');
                     }
-                    if ($row['sales_pic'] != $cni_pic) {
+                    if ($row['sales_pic'] != $dni_pic) {
                         array_push($oldvalarr, $row['sales_pic']);
-                        array_push($chgvalarr, $cni_pic);
+                        array_push($chgvalarr, $dni_pic);
                         array_push($datafield, 'sales_pic');
                     }
-                    if ($row['remark'] != $cni_remark) {
+                    if ($row['remark'] != $dni_remark) {
                         array_push($oldvalarr, $row['remark']);
-                        array_push($chgvalarr, $cni_remark);
+                        array_push($chgvalarr, $dni_remark);
                         array_push($datafield, 'remark');
                     }
-                    if ($row['subtotal'] != $cni_sub) {
+                    if ($row['subtotal'] != $dni_sub) {
                         array_push($oldvalarr, $row['subtotal']);
-                        array_push($chgvalarr, $cni_sub);
+                        array_push($chgvalarr, $dni_sub);
                         array_push($datafield, 'subtotal');
                     }
-                    if ($row['discount'] != $cni_disc) {
+                    if ($row['discount'] != $dni_disc) {
                         array_push($oldvalarr, $row['discount']);
-                        array_push($chgvalarr, $cni_disc);
+                        array_push($chgvalarr, $dni_disc);
                         array_push($datafield, 'discount');
                     }
-                    if ($row['tax'] != $cni_tax) {
+                    if ($row['tax'] != $dni_tax) {
                         array_push($oldvalarr, $row['tax']);
-                        array_push($chgvalarr, $cni_tax);
+                        array_push($chgvalarr, $dni_tax);
                         array_push($datafield, 'tax');
                     }
-                    if ($row['total'] != $cni_total) {
+                    if ($row['total'] != $dni_total) {
                         array_push($oldvalarr, $row['total']);
-                        array_push($chgvalarr, $cni_total);
+                        array_push($chgvalarr, $dni_total);
                         array_push($datafield, 'total');
                     }
-                    if ($row['inv_note'] != $cni_notes) {
+                    if ($row['inv_note'] != $dni_notes) {
                         array_push($oldvalarr, $row['inv_note']);
-                        array_push($chgvalarr, $cni_notes);
+                        array_push($chgvalarr, $dni_notes);
                         array_push($datafield, 'notes');
                     }
                     if ($row['products'] != $productIDString) {
@@ -359,7 +359,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET invoice = '$inv_id ',date='$date',due_date='$due',currency='$cni_curr',bill_nameID='$mName',bill_add='$mAdd',bill_email='$mEmail',bill_contact='$mCtc', products='$productIDString',pay_method='$cni_pay',pay_details='$cni_pay_details',pay_terms='$pay_terms',sales_pic='$cni_pic',remark='$cni_remark',subtotal='$cni_sub',discount='$cni_disc',tax='$cni_tax',total='$cni_total',inv_note='$cni_notes', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET invoice = '$inv_id ',date='$date',due_date='$due',currency='$dni_curr',bill_nameID='$mName',bill_add='$mAdd',bill_email='$mEmail',bill_contact='$mCtc', products='$productIDString',pay_method='$dni_pay',pay_details='$dni_pay_details',pay_terms='$pay_terms',sales_pic='$dni_pic',remark='$dni_remark',subtotal='$dni_sub',discount='$dni_disc',tax='$dni_tax',total='$dni_total',inv_note='$dni_notes', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -493,7 +493,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                                         } else if (isset($inv_id)) {
                                                             echo $inv_id;
                                                         } else {
-                                                            echo $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
+                                                            echo $proj_row['invoice_prefix_debit'] . '-' . date('Y') . '-' . $proj_row['invoice_next_number_debit'];
                                                         } ?>" name="invID" id="invID" />
                                                     </div>
                                                 </dd>
@@ -502,11 +502,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                 </dt>
                                                 <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
-                                                        name="cni_date" id="cni_date" placeholder="YYYY-MM-DD" value="<?php
-                                                        if (isset($dataExisted) && isset($row['date']) && !isset($cni_date)) {
+                                                        name="dni_date" id="dni_date" placeholder="YYYY-MM-DD" value="<?php
+                                                        if (isset($dataExisted) && isset($row['date']) && !isset($dni_date)) {
                                                             echo $row['date'];
-                                                        } else if (isset($cni_date)) {
-                                                            echo $cni_date;
+                                                        } else if (isset($dni_date)) {
+                                                            echo $dni_date;
                                                         } else {
                                                             echo $defaultDate;
                                                         }
@@ -525,11 +525,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                 </dt>
                                                 <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
-                                                        name="cni_due" id="cni_due" placeholder="YYYY-MM-DD" value="<?php
-                                                        if (isset($dataExisted) && isset($row['due_date']) && !isset($cni_due)) {
+                                                        name="dni_due" id="dni_due" placeholder="YYYY-MM-DD" value="<?php
+                                                        if (isset($dataExisted) && isset($row['due_date']) && !isset($dni_due)) {
                                                             echo $row['due_date'];
-                                                        } else if (isset($cni_due)) {
-                                                            echo $cni_due;
+                                                        } else if (isset($dni_due)) {
+                                                            echo $dni_due;
                                                         }
                                                         ?>" <?php if ($act == '')
                                                             echo 'disabled' ?>>
@@ -561,11 +561,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             $curr_row = $curr_rst->fetch_assoc();
                                                         }
                                                         ?>
-                                                        <input class="form-control" type="text" name="cni_curr"
-                                                            id="cni_curr" <?php if ($act == '')
+                                                        <input class="form-control" type="text" name="dni_curr"
+                                                            id="dni_curr" <?php if ($act == '')
                                                                 echo 'disabled' ?>
                                                                 value="<?php echo !empty($echoVal) ? $curr_row['unit'] : '' ?>">
-                                                        <input type="hidden" name="cni_curr_hidden" id="cni_curr_hidden"
+                                                        <input type="hidden" name="dni_curr_hidden" id="dni_curr_hidden"
                                                             value="<?php echo (isset($row['currency'])) ? $row['currency'] : ''; ?>">
 
                                                         <?php if (isset($curr_err)) { ?>
@@ -601,10 +601,10 @@ if ($redirectToCreateInvoicePage == 1) {
                                                     }
                                                     ?>
                                                     <input class="form-control" type="text" placeholder="Customer Name"
-                                                        name="cni_name" id="cni_name" <?php if ($act == '')
+                                                        name="dni_name" id="dni_name" <?php if ($act == '')
                                                             echo 'disabled' ?>
                                                             value="<?php echo !empty($echoVal) ? $mrcht_row['name'] : '' ?>">
-                                                    <input type="hidden" name="cni_name_hidden" id="cni_name_hidden"
+                                                    <input type="hidden" name="dni_name_hidden" id="dni_name_hidden"
                                                         value="<?php echo (isset($echoVal)) ? $echoVal : ''; ?>">
                                                     <?php if (isset($name_err)) { ?>
                                                         <div id="err_msg">
@@ -615,13 +615,13 @@ if ($redirectToCreateInvoicePage == 1) {
                                                     <?php } ?>
                                                 </div>
                                                 <div class="col-12">
-                                                    <textarea class="form-control" name="cni_address" id="cni_address"
+                                                    <textarea class="form-control" name="dni_address" id="dni_address"
                                                         rows="3" placeholder="Enter Address" <?php if ($act == '')
                                                             echo 'disabled' ?>><?php
-                                                        if (isset($dataExisted) && isset($row['bill_add']) && !isset($cni_address)) {
+                                                        if (isset($dataExisted) && isset($row['bill_add']) && !isset($dni_address)) {
                                                             echo $row['bill_add'];
-                                                        } else if (isset($dataExisted) && isset($row['bill_add']) && isset($cni_address)) {
-                                                            echo $cni_address;
+                                                        } else if (isset($dataExisted) && isset($row['bill_add']) && isset($dni_address)) {
+                                                            echo $dni_address;
                                                         } ?></textarea>
                                                 </div>
                                             </div>
@@ -630,11 +630,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                             <div class="row gy-2">
                                                 <div class="col-12">
                                                     <input class="form-control" type="text" placeholder="Customer Email"
-                                                        name="cni_email" id="cni_email" value="<?php
-                                                        if (isset($dataExisted) && isset($row['bill_email']) && !isset($cni_email)) {
+                                                        name="dni_email" id="dni_email" value="<?php
+                                                        if (isset($dataExisted) && isset($row['bill_email']) && !isset($dni_email)) {
                                                             echo $row['bill_email'];
-                                                        } else if (isset($dataExisted) && isset($row['bill_email']) && isset($cni_email)) {
-                                                            echo $cni_email;
+                                                        } else if (isset($dataExisted) && isset($row['bill_email']) && isset($dni_email)) {
+                                                            echo $dni_email;
                                                         } ?>" <?php if ($act == '')
                                                              echo 'disabled' ?>>
                                                     <?php if (isset($email_err)) { ?>
@@ -647,11 +647,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                 </div>
                                                 <div class="col-12">
                                                     <input class="form-control" type="text" placeholder="Phone Number"
-                                                        name="cni_ctc" id="cni_ctc" value="<?php
-                                                        if (isset($dataExisted) && isset($row['bill_contact']) && !isset($cni_ctc)) {
+                                                        name="dni_ctc" id="dni_ctc" value="<?php
+                                                        if (isset($dataExisted) && isset($row['bill_contact']) && !isset($dni_ctc)) {
                                                             echo $row['bill_contact'];
-                                                        } else if (isset($dataExisted) && isset($row['bill_contact']) && isset($cni_ctc)) {
-                                                            echo $cni_ctc;
+                                                        } else if (isset($dataExisted) && isset($row['bill_contact']) && isset($dni_ctc)) {
+                                                            echo $dni_ctc;
                                                         } ?>" <?php if ($act == '')
                                                              echo 'disabled' ?>>
                                                     <?php if (isset($ctc_err)) { ?>
@@ -703,7 +703,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             $echoVal = explode(',', $echoVal);
                                                             foreach ($echoVal as $prod_id) {
                                                                 // product info
-                                                                $product_info_result = getData('*', "id = '$prod_id'", '', CRED_INV_PROD, $finance_connect);
+                                                                $product_info_result = getData('*', "id = '$prod_id'", '', DEBIT_INV_PROD, $finance_connect);
                                                                 $product_info_row = $product_info_result->fetch_assoc();
 
                                                                 $pid = $product_info_row['id'];
@@ -822,12 +822,12 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                     $pic_row = $pic_result->fetch_assoc();
                                                                 }
                                                                 ?>
-                                                                <input class="form-control" type="text" name="cni_pic"
-                                                                    id="cni_pic"
+                                                                <input class="form-control" type="text" name="dni_pic"
+                                                                    id="dni_pic"
                                                                     value="<?php echo !empty($echoVal) ? $pic_row['name'] : '' ?>" <?php if ($act == '')
                                                                                echo 'readonly' ?>>
-                                                                    <input type="hidden" name="cni_pic_hidden"
-                                                                        id="cni_pic_hidden"
+                                                                    <input type="hidden" name="dni_pic_hidden"
+                                                                        id="dni_pic_hidden"
                                                                         value="<?php echo (isset($echoVal)) ? $echoVal : ''; ?>">
                                                                 <div id="err_msg">
                                                                     <span class="mt-n1">
@@ -840,9 +840,9 @@ if ($redirectToCreateInvoicePage == 1) {
                                                         </dl>
                                                         <div class="form-group mb-3">
                                                             <label class="form-label form_lbl"
-                                                                for="cni_remark">Remark:</label>
-                                                            <textarea class="form-control" name="cni_remark"
-                                                                id="cni_remark" rows="3" <?php if ($act == '')
+                                                                for="dni_remark">Remark:</label>
+                                                            <textarea class="form-control" name="dni_remark"
+                                                                id="dni_remark" rows="3" <?php if ($act == '')
                                                                     echo 'disabled' ?>><?php if (isset($row['remark']))
                                                                     echo $row['remark'] ?></textarea>
                                                             </div>
@@ -853,11 +853,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                     <span class="w-px-100">Subtotal:</span>
                                                                     <div class="col-6">
                                                                         <input class="form-control text-end" type="number"
-                                                                            step="0.01" name="cni_sub" id="cni_sub" value="<?php
-                                                                if (isset($dataExisted) && isset($row['subtotal']) && !isset($cni_sub)) {
+                                                                            step="0.01" name="dni_sub" id="dni_sub" value="<?php
+                                                                if (isset($dataExisted) && isset($row['subtotal']) && !isset($dni_sub)) {
                                                                     echo $row['subtotal'];
-                                                                } else if (isset($dataExisted) && isset($row['subtotal']) && isset($cni_sub)) {
-                                                                    echo $cni_sub;
+                                                                } else if (isset($dataExisted) && isset($row['subtotal']) && isset($dni_sub)) {
+                                                                    echo $dni_sub;
                                                                 } else {
                                                                     echo '';
                                                                 } ?>" <?php if ($act == '')
@@ -875,11 +875,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                 <span class="w-px-100">Discount:</span>
                                                                 <div class="col-6">
                                                                     <input class="form-control text-end" type="number"
-                                                                        step="0.01" name="cni_disc" id="cni_disc" value="<?php
-                                                                        if (isset($dataExisted) && isset($row['discount']) && !isset($cni_disc)) {
+                                                                        step="0.01" name="dni_disc" id="dni_disc" value="<?php
+                                                                        if (isset($dataExisted) && isset($row['discount']) && !isset($dni_disc)) {
                                                                             echo $row['discount'];
-                                                                        } else if (isset($dataExisted) && isset($row['discount']) && isset($cni_disc)) {
-                                                                            echo $cni_disc;
+                                                                        } else if (isset($dataExisted) && isset($row['discount']) && isset($dni_disc)) {
+                                                                            echo $dni_disc;
                                                                         } else {
                                                                             echo '';
                                                                         } ?>" <?php if ($act == '')
@@ -897,11 +897,11 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                 <span class="w-px-100">Tax:</span>
                                                                 <div class="col-6">
                                                                     <input class="form-control text-end" type="number"
-                                                                        step="0.01" name="cni_tax" id="cni_tax" value="<?php
-                                                                        if (isset($dataExisted) && isset($row['tax']) && !isset($cni_tax)) {
+                                                                        step="0.01" name="dni_tax" id="dni_tax" value="<?php
+                                                                        if (isset($dataExisted) && isset($row['tax']) && !isset($dni_tax)) {
                                                                             echo $row['tax'];
-                                                                        } else if (isset($dataExisted) && isset($row['tax']) && isset($cni_tax)) {
-                                                                            echo $cni_tax;
+                                                                        } else if (isset($dataExisted) && isset($row['tax']) && isset($dni_tax)) {
+                                                                            echo $dni_tax;
                                                                         } else {
                                                                             echo '';
                                                                         } ?>" <?php if ($act == '')
@@ -918,9 +918,9 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             <hr />
                                                             <div class="d-flex justify-content-between">
                                                                 <span class="w-px-100">Total:</span>
-                                                                <span class="fw-medium" id="cni_total">00.00</span>
-                                                                <input type="hidden" name="cni_total_input"
-                                                                    id="cni_total_input" value="">
+                                                                <span class="fw-medium" id="dni_total">00.00</span>
+                                                                <input type="hidden" name="dni_total_input"
+                                                                    id="dni_total_input" value="">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -972,7 +972,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                 </div>
                                 <div>
                                     <p class="mb-2">Accept payments via</p>
-                                    <select class="form-select mb-2" id="cni_pay" name="cni_pay" <?php if ($act == '')
+                                    <select class="form-select mb-2" id="dni_pay" name="dni_pay" <?php if ($act == '')
                                         echo 'disabled' ?>>
                                             <option value="0" disabled selected>Select Payment Method</option>
                                             <?php
@@ -980,10 +980,10 @@ if ($redirectToCreateInvoicePage == 1) {
                                         $pay_list_result->data_seek(0);
                                         while ($row2 = $pay_list_result->fetch_assoc()) {
                                             $selected = "";
-                                            if (isset($dataExisted, $row['pay_method']) && (!isset($cni_pay))) {
+                                            if (isset($dataExisted, $row['pay_method']) && (!isset($dni_pay))) {
                                                 $selected = $row['pay_method'] == $row2['id'] ? "selected" : "";
-                                            } else if (isset($cni_pay)) {
-                                                $selected = $cni_pay == $row2['id'] ? "selected" : "";
+                                            } else if (isset($dni_pay)) {
+                                                $selected = $dni_pay == $row2['id'] ? "selected" : "";
                                             }
                                             echo "<option value=\"" . $row2['id'] . "\" $selected>" . $row2['name'] . "</option>";
                                         }
@@ -994,13 +994,13 @@ if ($redirectToCreateInvoicePage == 1) {
                                     </select>
 
                                     <div class="d-flex justify-content-between mb-2">
-                                        <textarea class="form-control" name="cni_pay_details" id="cni_pay_details"
+                                        <textarea class="form-control" name="dni_pay_details" id="dni_pay_details"
                                             rows="2" placeholder="Payment Details" <?php if ($act == '')
                                                 echo 'disabled' ?>><?php
-                                            if (isset($dataExisted) && isset($row['pay_details']) && !isset($cni_pay_details)) {
+                                            if (isset($dataExisted) && isset($row['pay_details']) && !isset($dni_pay_details)) {
                                                 echo $row['pay_details'];
-                                            } else if (isset($dataExisted) && isset($row['pay_details']) && isset($cni_pay_details)) {
-                                                echo $cni_pay_details;
+                                            } else if (isset($dataExisted) && isset($row['pay_details']) && isset($dni_pay_details)) {
+                                                echo $dni_pay_details;
                                             } ?></textarea>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
@@ -1056,7 +1056,7 @@ if ($redirectToCreateInvoicePage == 1) {
 </body>
 
 <script>
-    <?php include '../js/cred_inv.js'; ?>
+    <?php include '../js/debit_inv.js'; ?>
 </script>
 
 </html>

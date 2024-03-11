@@ -1,18 +1,18 @@
 <?php
-$pageTitle = "Credit Notes (Invoice)";
+$pageTitle = "Debit Notes (Invoice)";
 $isFinance = 1;
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = CRED_NOTES_INV;
+$tblName = DEBIT_NOTES_INV;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/cred_notes_inv.php';
+$redirect_page = $SITEURL . '/finance/debit_notes_inv.php';
 $result = getData('*', '', '', $tblName, $finance_connect);
 
 if (post('pay_status_option')) {
@@ -86,7 +86,7 @@ if (post('pay_status_option')) {
     preloader(300);
 
     $(document).ready(() => {
-        createSortingTable('cred_notes_inv_table');
+        createSortingTable('debit_notes_inv_table');
     });
 </script>
 
@@ -125,7 +125,7 @@ if (post('pay_status_option')) {
                     </div>
                 </div>
 
-                <table class="table table-striped" id="cred_notes_inv_table">
+                <table class="table table-striped" id="debit_notes_inv_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
@@ -233,12 +233,12 @@ if (post('pay_status_option')) {
                                                 title="Edit"><i class="fas fa-edit bg-label-warning"></i></a>
                                         <?php endif; ?>
 
-                                        <a class="icon-buttons rounded p-1 bg-label-info" target="_blank" href="generate_pdf.php?id=<?= $row['id'] . '&act=' . $act_2  ?>"
+                                        <a class="icon-buttons rounded p-1 bg-label-info" target="_blank" href="generate_pdf.php?id=<?= $row['id'] . '&act=' . $act_2  . '&isDebit=1' ?>"
                                             title="Download"><i class="fas fa-download bg-label-info"></i></a>
 
                                         <?php if (isActionAllowed("Delete", $pinAccess)): ?>
                                             <a class="icon-buttons rounded p-1 bg-label-danger"
-                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['invoice'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cred_notes_inv_table.php','D')"
+                                                onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['invoice'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/debit_notes_inv_table.php','D')"
                                                 title="Delete"><i class="fas fa-trash-alt bg-label-danger"></i></a>
                                         <?php endif; ?>
                                     </div>
@@ -273,7 +273,7 @@ if (post('pay_status_option')) {
     checkCurrentPage(page, action);
     dropdownMenuDispFix();
     setButtonColor();
-    datatableAlignment('cred_notes_inv_table');
+    datatableAlignment('debit_notes_inv_table');
 
     var pendingElem = $('#pendingOption');
     var paidElem = $('#paidOption');
@@ -284,7 +284,7 @@ if (post('pay_status_option')) {
         console.log('Data sent:', { inv_id: id, pay_status_option: status });
 
         $.ajax({
-            url: 'cred_notes_inv_table.php',
+            url: 'debit_notes_inv_table.php',
             type: 'post',
             data: {
                 inv_id: id,
@@ -293,7 +293,7 @@ if (post('pay_status_option')) {
             success: function (data) {
                 console.log('AJAX Success:', data);
                 // Reload the page after successful update
-                window.location.href = 'cred_notes_inv_table.php';
+                window.location.href = 'debit_notes_inv_table.php';
             },
             error: function (xhr, status, error) {
                 console.log('AJAX Error:', error);

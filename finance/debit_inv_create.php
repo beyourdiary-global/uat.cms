@@ -1,17 +1,17 @@
 <?php
-$pageTitle = "Credit Notes (Invoice)";
+$pageTitle = "Debit Notes (Invoice)";
 $isFinance = 1;
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = CRED_NOTES_INV;
+$tblName = DEBIT_NOTES_INV;
 //Current Page Action And Data ID
 $dataID = !empty(input('id')) ? input('id') : post('id');
 
 //Page Redirect Link , Clean LocalStorage , Error Alert Msg 
-$redirect_page = $SITEURL . '/finance/cred_notes_inv_table.php';
-$edit_page = $SITEURL . '/finance/cred_notes_inv.php';
+$redirect_page = $SITEURL . '/finance/debit_notes_inv_table.php';
+$edit_page = $SITEURL . '/finance/debit_notes_inv.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
 
@@ -253,7 +253,7 @@ $pic_row = $pic_result->fetch_assoc();
                                                         // Loop through each product ID
                                                         foreach ($productIDs as $productID) {
                                                             // Retrieve product details from the database based on the product ID
-                                                            $query = "SELECT * FROM " . CRED_INV_PROD . " WHERE id = $productID";
+                                                            $query = "SELECT * FROM " . DEBIT_INV_PROD . " WHERE id = $productID";
                                                             $result = mysqli_query($finance_connect, $query);
 
                                                             // Check if the query was successful and if there is any result
@@ -387,14 +387,7 @@ $pic_row = $pic_result->fetch_assoc();
                             <div class="col-lg-3 col-12 invoice-actions hide mb-4">
                                 <div class="card mb-4">
                                     <div class="card-body">
-                                        <button class="btn btn-primary d-grid w-100 mb-2" data-bs-toggle="offcanvas"
-                                            data-bs-target="#sendInvoiceOffcanvas">
-                                            <span
-                                                class="d-flex align-items-center justify-content-center text-nowrap"><i
-                                                    class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
-                                        </button>
-
-                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>"
+                                        <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2  . '&isDebit=1' ?>"
                                             target="_blank" class="btn btn-primary d-grid w-100 mb-2 download"
                                             name="actionBtn" id="actionBtn"><span>Print/Download</span>
                                         </a>
@@ -432,7 +425,7 @@ $pic_row = $pic_result->fetch_assoc();
 </body>
 
 <script>
-    <?php include '../js/cred_inv.js'; ?>
+    <?php include '../js/debit_inv.js'; ?>
 </script>
 
 </html>
