@@ -38,6 +38,36 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $customer_id = $_POST['customer_id'];
+    $customer_name = $_POST['customer_name'];
+    $customer_email = $_POST['customer_email'];
+    $customer_birthday = $_POST['customer_birthday'];
+    $brand = $_POST['brand_hidden'];
+    $series = $_POST['series_hidden'];
+    $shipping_name = $_POST['shipping_name'];
+    $shipping_address = $_POST['shipping_address'];
+    $shipping_contact = $_POST['shipping_contact'];
+    
+    $duplicate_check_query = "SELECT * FROM customer_website_deals_transaction WHERE cust_id = '$customer_id'";
+    $duplicate_result = mysqli_query($connect, $duplicate_check_query);
+    
+    if (mysqli_num_rows($duplicate_result) > 0) {
+        echo "Error: Duplicate record found!";
+    } else {
+        $insert_query = "INSERT INTO customer_website_deals_transaction (cust_id, name, cust_email, cust_birthday, brand, series, ship_rec_name, ship_rec_add, ship_rec_contact) 
+                         VALUES ('$customer_id', '$customer_name', '$customer_email', '$customer_birthday', '$brand', '$series', '$shipping_name', '$shipping_address', '$shipping_contact')";
+    
+        if (mysqli_query($connect, $insert_query)) {
+            echo "New record created successfully";
+        } else {
+            echo "Error: " . $insert_query . "<br>" . mysqli_error($connect);
+        }
+    }
+}
+
+
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
@@ -757,40 +787,36 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 </div>
 
-
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">
     <legend class="float-none w-auto p-2">Customer Info</legend>
     <div class="form-group">
         <div class="row">
-            <div class="col-md-6 autocomplete mb-3">
-                <label class="form-label form_lbl" id="wor_cust_id_lbl" for="wor_cust_id">Customer ID<span class="requireRed">*</span></label>
-                <?php
-                unset($echoVal);
+        <div class="col-md-4 mb-3 autocomplete">
+            <label class="form-label form_lbl" id="wor_cust_id_lbl" for="wor_cust_id">Customer ID<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
 
-                if (isset($row['cust_id']))
-                    $echoVal = $row['cust_id'];
+            if (isset($row['cust_id']))
+                $echoVal = $row['cust_id'];
 
-                if (isset($echoVal)) {
-                    $cust_id_rst = getData('cust_id', "id = '$echoVal'", '', WEB_CUST_RCD, $connect);
-                    if (!$cust_id_rst) {
-                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                    }
-                    $cust_id_row = $cust_id_rst->fetch_assoc();
+            if (isset($echoVal)) {
+                $cust_id_rst = getData('cust_id', "id = '$echoVal'", '', WEB_CUST_RCD, $connect);
+                if (!$cust_id_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                 }
-                ?>
-                <input class="form-control" type="text" name="wor_cust_id" id="wor_cust_id" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $cust_id_row['cust_id'] : '' ?>">
-                <input type="hidden" name="wor_cust_id_hidden" id="wor_cust_id_hidden" value="<?php echo (isset($row['cust_id'])) ? $row['cust_id'] : ''; ?>">
-
-                <?php if (isset($cust_id_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1">
-                            <?php echo $cust_id_err; ?>
-                        </span>
-                    </div>
-                <?php } ?>
-            </div>
-
+                $cust_id_row = $cust_id_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="wor_cust_id" id="wor_cust_id" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $cust_id_row['cust_id'] : '' ?>">
+            <input type="hidden" name="wor_cust_id_hidden" id="wor_cust_id_hidden" value="<?php echo (isset($row['cust_id'])) ? $row['cust_id'] : ''; ?>">
+            <?php if (isset($cust_id_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $cust_id_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    
             <div class="col-md-6 mb-3">
                 <label class="form-label form_lbl" id="wor_cust_name_lbl" for="wor_cust_name">Customer Name<span class="requireRed">*</span></label>
                 <input class="form-control" type="text" name="wor_cust_name" id="wor_cust_name" value="<?php
@@ -850,130 +876,110 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             </div>
         </div>
 
-        <div class="form-group mb-3">
-            <div class="row">
-                <div id="WOR_CreateCustID" hidden>
-                    <div class="col-md-6">
-                        <label class="form-label form_lbl" id="wor_customer_id_lbl" for="wor_customer_id">Customer ID*</label>
-                        <input class="form-control" type="text" name="wor_customer_id" id="wor_customer_id" <?php if ($act == '') echo 'readonly' ?>>
-                        <?php if (isset($customer_id_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $customer_id_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div id="WOR_CreateCustBrand" hidden>
-                    <div class="col-md-6 mb-3 autocomplete">
-                        <label class="form-label form_lbl" id="wor_cust_brand_lbl" for="wor_cust_brand">Brand<span class="requireRed">*</span></label>
-                        <?php
-                        unset($echoVal);
-
-                        if (isset($row['brand']))
-                            $echoVal = $row['brand'];
-
-                        if (isset($echoVal)) {
-                            $cust_brand_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
-                            if (!$cust_brand_rst) {
-                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                            }
-                            $cust_brand_row = $cust_brand_rst->fetch_assoc();
-                        }
-                        ?>
-                        <input class="form-control" type="text" name="wor_cust_brand" id="wor_cust_brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $cust_brand_row['name'] : '' ?>">
-                        <input type="hidden" name="wor_cust_brand_hidden" id="wor_cust_brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
-
-                        <?php if (isset($cust_brand_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $cust_brand_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div id="WOR_CreateCustSeries" hidden>
-                    <div class="col-md-6 mb-3 autocomplete">
-                        <label class="form-label form_lbl" id="wor_cust_series_lbl" for="wor_cust_series">Series<span class="requireRed">*</span></label>
-                        <?php
-                        unset($echoVal);
-
-                        if (isset($row['series']))
-                            $echoVal = $row['series'];
-
-                        if (isset($echoVal)) {
-                            $cust_series_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
-                            if (!$cust_series_rst) {
-                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                            }
-                            $cust_series_row = $cust_series_rst->fetch_assoc();
-                        }
-                        ?>
-                        <input class="form-control" type="text" name="wor_cust_series" id="wor_cust_series" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $cust_series_row['name'] : '' ?>">
-                        <input type="hidden" name="wor_cust_series_hidden" id="wor_cust_series_hidden" value="<?php echo (isset($row['series'])) ? $row['series'] : ''; ?>">
-
-                        <?php if (isset($cust_series_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $cust_series_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div id="WOR_CreateCustShipName" hidden>
-                    <div class="col-md-6">
-                        <label class="form-label form_lbl" id="wor_cust_ship_name_lbl" for="wor_cust_ship_name">Customer Shipping Name*</label>
-                        <input class="form-control" type="text" name="wor_cust_ship_name" id="wor_cust_ship_name" <?php if ($act == '') echo 'readonly' ?>>
-                        <?php if (isset($cust_ship_name_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $cust_ship_name_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div id="WOR_CreateCustShipAddress" hidden>
-                    <div class="col-md-6">
-                        <label class="form-label form_lbl" id="wor_cust_ship_address_lbl" for="wor_cust_ship_address">Customer Shipping Address*</label>
-                        <input class="form-control" type="text" name="wor_cust_ship_address" id="wor_cust_ship_address" <?php if ($act == '') echo 'readonly' ?>>
-                        <?php if (isset($cust_ship_address_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $cust_ship_address_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div id="WOR_CreateCustShipContact" hidden>
-                    <div class="col-md-6">
-                        <label class="form-label form_lbl" id="wor_cust_ship_contact_lbl" for="wor_cust_ship_contact">Customer Shipping Contact*</label>
-                        <input class="form-control" type="text" name="wor_cust_ship_contact" id="wor_cust_ship_contact" <?php if ($act == '') echo 'readonly' ?>>
-                        <?php if (isset($cust_ship_contact_err)) { ?>
-                            <div id="err_msg">
-                                <span class="mt-n1">
-                                    <?php echo $cust_ship_contact_err; ?>
-                                </span>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-4 mb-3">
+        <button type="button" onclick="toggleNewCustomerSection()">Create New Customer ID</button>
         </div>
-    </div>
-</fieldset>
+        
+        <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <div id="new_customer_section" style="display: none;">
 
+        <div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="customer_id">Customer ID</label>
+        <input class="form-control" type="text" id="customer_id" name="customer_id">
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="customer_name">Customer Name</label>
+        <input class="form-control" type="text" id="customer_name" name="customer_name">
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="customer_email">Customer Email</label>
+        <input class="form-control" type="email" id="customer_email" name="customer_email">
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="customer_birthday">Customer Birthday</label>
+        <input class="form-control" type="date" id="customer_birthday" name="customer_birthday">
+    </div>
+
+    <div class="col-md-4 mb-3 autocomplete">
+        <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['brand']))
+                $echoVal = $row['brand'];
+
+            if (isset($echoVal)) {
+                $pay_rst = getData('name', "id = '$echoVal'", '', BRAND, $connect);
+                if (!$pay_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $pay_row = $pay_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="brand" id="brand" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>">
+            <input type="hidden" name="brand_hidden" id="brand_hidden" value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
+            <?php if (isset($brand_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $brand_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+
+    <div class="col-md-4 mb-3 autocomplete">
+        <label class="form-label form_lbl" id="series_lbl" for="brand">Series<span class="requireRed">*</span></label>
+            <?php
+            unset($echoVal);
+
+            if (isset($row['series']))
+                $echoVal = $row['series'];
+
+            if (isset($echoVal)) {
+                $pay_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
+                if (!$pay_rst) {
+                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                }
+                $pay_row = $pay_rst->fetch_assoc();
+            }
+            ?>
+            <input class="form-control" type="text" name="series" id="series" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $series_row['name'] : '' ?>">
+            <input type="hidden" name="series_hidden" id="series_hidden" value="<?php echo (isset($row['series'])) ? $row['series'] : ''; ?>">
+            <?php if (isset($series_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $series_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="shipping_name">Shipping Name</label>
+        <input class="form-control" type="text" id="shipping_name" name="shipping_name">
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="shipping_address">Shipping Address</label>
+        <input class="form-control" type="text" id="shipping_address" name="shipping_address">
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <label class="form-label form_lbl" for="shipping_contact">Shipping Contact</label>
+        <input class="form-control" type="number" id="shipping_contact" name="shipping_contact">
+    </div>
+</div>
+        <input type="submit" value="Submit">
+    </form>
+     
+</fieldset>
 
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">
     <legend class="float-none w-auto p-2">Shipping Address</legend>
