@@ -120,7 +120,7 @@ if (!$result) {
                                             </li>
                                             <li>
                                                 <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>','','<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_cust_info_table.php','D')">Delete</a>
+                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['buyer_username'] ?>','<?= $row3['nicename'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_cust_info_table.php','D')">Delete</a>
                                                 <?php endif; ?>
                                             </li>
                                         </ul>

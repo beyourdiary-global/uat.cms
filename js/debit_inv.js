@@ -1,10 +1,10 @@
-$("#cni_date").datepicker({
+$("#dni_date").datepicker({
     format: "yyyy-mm-dd",
     orientation: "bottom",
     autoclose: true
 });
 
-$("#cni_due").datepicker({
+$("#dni_due").datepicker({
     format: "yyyy-mm-dd",
     orientation: "bottom",
     autoclose: true
@@ -17,10 +17,10 @@ $('.createInvoiceButton').on('click', () => {
 $(document).ready(function () {
     calculateTotal();
     $('input[name="amount[]"]').on('input', calculateSubtotal);
-    $("#cni_sub").on('change', calculateTotal);
+    $("#dni_sub").on('change', calculateTotal);
 
-    if (!($("#cni_name").attr('disabled'))) {
-        $("#cni_name").keyup(function () {
+    if (!($("#dni_name").attr('disabled'))) {
+        $("#dni_name").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -31,8 +31,8 @@ $(document).ready(function () {
             searchInput(param, '<?= $SITEURL ?>');
         });
     }
-    if (!($("#cni_pic").attr('disabled'))) {
-        $("#cni_pic").keyup(function () {
+    if (!($("#dni_pic").attr('disabled'))) {
+        $("#dni_pic").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -43,8 +43,8 @@ $(document).ready(function () {
             searchInput(param, '<?= $SITEURL ?>');
         });
     }
-    if (!($("#cni_curr").attr('disabled'))) {
-        $("#cni_curr").keyup(function () {
+    if (!($("#dni_curr").attr('disabled'))) {
+        $("#dni_curr").keyup(function () {
             var param = {
                 search: $(this).val(),
                 searchType: 'unit', // column of the table
@@ -55,7 +55,7 @@ $(document).ready(function () {
             searchInput(param, '<?= $SITEURL ?>');
         });
     }
-    $("#cni_name").change(autofillMrcht);
+    $("#dni_name").change(autofillMrcht);
 
     $('#payment-terms').change(function () {
         if ($(this).is(':checked')) {
@@ -74,7 +74,7 @@ $(document).ready(function () {
 })
 function autofillMrcht() {
     var paramMrcht = {
-        search: $("#cni_name_hidden").val(),
+        search: $("#dni_name_hidden").val(),
         searchCol: 'id',
         searchType: '*',
         dbTable: '<?= MERCHANT ?>',
@@ -83,9 +83,9 @@ function autofillMrcht() {
 
     retrieveDBData(paramMrcht, '<?= $SITEURL ?>', function (result) {
         if (result && result.length > 0) {
-            $("#cni_email").val(result[0]['email']);
-            $("#cni_address").val(result[0]['address']);
-            $("#cni_ctc").val(result[0]['contact']);
+            $("#dni_email").val(result[0]['email']);
+            $("#dni_address").val(result[0]['address']);
+            $("#dni_ctc").val(result[0]['contact']);
         }
     });
 }
@@ -138,50 +138,21 @@ function Remove(button) {
     calculateTotal();
 }
 
-// product autofill
-// function prodInfo(element) {
-//     var id = $(element).attr('id').split('_');
-//     id = id[(id.length) - 1];
-
-//     if (!($(element).attr('readonly'))) {
-//         var param = {
-//             search: $(element).val(),
-//             searchType: 'name',
-//             page: 'package',
-//             elementID: $(element).attr('id'),
-//             hiddenElementID: 'prod_val_' + id,
-//             dbTable: '<?= PROD ?>'
-//         }
-//         searchInput(param, '<?= $SITEURL ?>');
-
-//         if ($(element).val() == '') {
-//             $('#prod_val_' + id).val('');
-//             $('#wgt_' + id).val('');
-//             $('#wgt_unit_' + id).val('');
-//             $('#wgt_unit_val_' + id).val('');
-//             $('#barcode_status_' + id).val('');
-//             $('#barcode_slot_' + id).val('');
-//         }
-//     }
-// }
-
-
-
 function calculateTotal() {
-    var subtotalInput = document.getElementById("cni_sub");
-    var discountInput = document.getElementById("cni_disc");
-    var taxInput = document.getElementById("cni_tax");
-    var totalSpan = document.getElementById("cni_total");
+    var subtotalInput = document.getElementById("dni_sub");
+    var discountInput = document.getElementById("dni_disc");
+    var taxInput = document.getElementById("dni_tax");
+    var totalSpan = document.getElementById("dni_total");
 
     var subtotal = parseFloat(subtotalInput.value) || 0;
     var discount = parseFloat(discountInput.value) || 0;
     var tax = parseFloat(taxInput.value) || 0;
 
-    var total = subtotal + discount + tax;
+    var total = (subtotal - discount) + tax;
 
     totalSpan.textContent = total.toFixed(2);
 
-    var totalInput = document.getElementById("cni_total_input");
+    var totalInput = document.getElementById("dni_total_input");
     totalInput.value = total.toFixed(2);
 }
 
@@ -194,7 +165,7 @@ function calculateSubtotal() {
         subtotal += amountValue;
     }
 
-    const subtotalInput = document.getElementById("cni_sub");
+    const subtotalInput = document.getElementById("dni_sub");
     subtotalInput.value = subtotal.toFixed(2);
     calculateTotal();
 }

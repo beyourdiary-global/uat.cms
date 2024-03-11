@@ -634,6 +634,14 @@ input {
     min-width: 40px;
 }
 
+.icon-buttons {
+    width: 80px; 
+    height: 80px; 
+}
+.bg-label-success{background-color:#9ff3c2 !important;color:#28c76f !important}
+.bg-label-info{background-color:#a8ecf5 !important;color:#00cfe8 !important}
+.bg-label-warning{background-color:#ffd1a3 !important;color:#ff9f43 !important}
+.bg-label-danger{background-color:#f18e93 !important;color:#ea5455 !important}
 /*date picker*/
 .date-separator {
     padding: 4px 5px;

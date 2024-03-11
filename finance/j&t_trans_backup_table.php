@@ -214,8 +214,7 @@ $img_path = SITEURL . img_server . 'finance/j&t_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"><i
-                                        class="fa-solid fa-file-export"></i> Export</a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
