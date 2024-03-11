@@ -271,7 +271,27 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
-                        }                  
+                        }else if ($groupOption === 'metaaccount' && $groupOption4 === 'yearly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime('first day of January ' . trim($dateRange[0]));
+                            $endDate = strtotime('last day of December ' . trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                $year = date('Y', $paymentDateTimestamp);
+                        
+                                if (!isset($groupedRows[$accName])) {
+                                    $groupedRows[$accName] = [
+                                        'ids' => [$row['id']], 
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$accName]['ids'][] = $row['id'];
+                                    $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }                         
                         
                     } else {
                         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);

@@ -84,8 +84,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                 <td scope="row"><?php if (isset($row['payment_date'])) echo $row['payment_date'] ?></td>
                                 <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
                                 <td scope="row"><?php if (isset($row['topup_amt'])) echo  $row['topup_amt'] ?></td>
-                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                 <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
+                                <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                 <td scope="row">
                                     <div class="dropdown" style="text-align:center">
                                         <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
