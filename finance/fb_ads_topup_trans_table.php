@@ -51,12 +51,11 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
             </div>
            
             <div class="container">
-                <div class="row mb-3">
-                    <div class="col-md-2 dateFilters">
+            <div class="row mb-3">
+                    <div class="col-md-4 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
-                       <select class="form-select" id="timeInterval" <?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>>
+                       <select class="form-select" id="timeInterval" >
 
-                        
                             <option value="daily">Daily</option>
                             <option value="weekly">Weekly</option>
                             <option value="monthly">Monthly</option>
@@ -66,148 +65,354 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     <div class="col-md-4 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
                         <div class="input-group date" id="datepicker"> 
-                        <input type="text" class="form-control" placeholder="Select date" <?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>>
+                        <input type="text" class="form-control" placeholder="Select date" >
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
                         <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start date"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
                         </div>
                         <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start month"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
                             
                             </div>
                         <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"<?php if (!isset($_GET['group']) || $_GET['group'] == '' || $_GET['group'] == 'metaaccount') echo "disabled" ?>/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
                             
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
                             <option value="metaaccount" selected>Meta Account</option>
                             <option value="invoice">Invoice/Payment Date</option>
                         </select>
                     </div>
-                    <div class="col-md-3 meta">
-                        <label class="form-label">Group by Meta Account:</label>
-                        <select class="form-select" id="metagroup"<?php if ( $_GET['group'] == 'invoice') echo "disabled" ?>>
-                            <option value="" selected>Select a Meta account</option>
-                            <?php
-                            $uniqueNames = array();
-
-                            foreach ($result2 as $row1) {
-                                $metaQuery1 = getData('*', "id='" . $row1['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-                                $meta_acc1 = $metaQuery1->fetch_assoc();
-                                $accNames = isset($meta_acc1['accName']) ? $meta_acc1['accName'] : '';
-
-                                if (!in_array($accNames, $uniqueNames)) {
-                                    echo '<option value="' . $accNames . '">' . $accNames . '</option>';
-                                    $uniqueNames[] = $accNames;
-                                }
-                            }
-                            ?>
-                        </select>
-                    </div>
+                    
         
                  
                 </div>
+           
+                <input type="hidden" id="groupParam" name="group" value="">
+                
+                <input type="hidden" id="timeIntervalParam" name="timeInterval" value="">
+                <input type="hidden" id="timeRangeParam" name="timeRange" value="">
+                
+            
+                
              
-                    
+                
                 
             </div>
          
             
             <table class="table table-striped" id="fb_ads_topup_trans_table">
                 <thead>
-                    <tr>
+                <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>
-                        <th id="group_header" scope="col">
-                            <?php 
-                            if (isset($_GET['group']) ) {
-                                if ($_GET['group'] == 'metaaccount'){
-                                echo "Meta Account";
-                                } else {
-                                echo "Invoice/Payment Date";
-                                }
-                            }else{
-                                echo "Meta Account";
-                            }
-                            ?>
-                        </th>
-
-
+                        <th scope="col" width="60px">S/N</th>                       
+                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] == 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
                         <th scope="col">Total Top-up Amount</th>
-                        
                         
                     </tr>
                 </thead>
 
                  
                 <tbody>
-    <?php
-   
-    $groupOption = isset($_GET['group']) ? $_GET['group'] : 'metaaccount'; // Default to 'metaaccount' if no group is selected
-    
-    $groupedRows = [];
+                <?php
 
-    while ($row = $result->fetch_assoc()) {
-        $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
-        $meta_acc = $metaQuery->fetch_assoc();
-        $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
-        $paymentDate = $row['payment_date'];
+                $groupOption = isset($_GET['group']) ? $_GET['group'] : 'metaaccount'; 
+           
+                $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
+                $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
+                $groupedRows = [];
+                $counters = 1;
 
-        if ($groupOption === 'metaaccount') {
-            $totalTopupAmount = isset($groupedRows[$accName]['totalTopupAmount']) ? $groupedRows[$accName]['totalTopupAmount'] : 0;
-            $totalTopupAmount += $row['topup_amt'];
-
-            $groupedRows[$accName] = [
-                'id' => $row['id'],
-                'num' => isset($groupedRows[$accName]['num']) ? $groupedRows[$accName]['num'] + 1 : 1,
-                'totalTopupAmount' => number_format($row['topup_amt'], 0, '.', '') 
+                function generateTableRow($id, &$counters, $accName, $paymentDate, $topupAmt) {
+                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . $id . '\';" style="cursor:pointer;">';
+                    echo '<th class="hideColumn" scope="row">' . $id . '</th>';
+                    echo '<th scope="row">' . $counters++ . '</th>';
+                    echo '<td scope="row">' . $accName . '</td>';
+                    echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
+                    echo '</tr>';
+                }
                 
-            ];
-        } else{
+                
+                
+                $groupedRows = [];
+                while ($row = $result->fetch_assoc()) {
+                    $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+                    $meta_acc = $metaQuery->fetch_assoc();
+                    $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
+                    $paymentDate = $row['payment_date'];
+                
+                    if ($groupOption && $groupOption3) {
+                        if ($groupOption === 'metaaccount' && $groupOption3 === $paymentDate) {
+                            if (!isset($groupedRows[$accName])) {
+                                $groupedRows[$accName] = [
+                                    'ids' => [$row['id']], // Store the ID in an array
+                                    'totalTopupAmount' => $row['topup_amt']
+                                ];
+                            } else {
+                                $groupedRows[$accName]['ids'][] = $row['id']; // Add ID to the array
+                                $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
+                            }
+                        }else if ($groupOption === 'invoice' && $groupOption3 === $paymentDate) {
+                            if (!isset($groupedRows[$paymentDate])) {
+                                $groupedRows[$paymentDate] = [
+                                    'ids' => [$row['id']],
+                                    'totalTopupAmount' => $row['topup_amt']
+                                ];
+                            } else {
+                                $groupedRows[$paymentDate]['ids'][] = $row['id']; // Add ID to the array
+                                $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+                            }
 
-            if (!isset($groupedRows[$paymentDate])) {
-                $groupedRows[$paymentDate] = [
-                    'id' => $row['id'],
-                    'num' => 1,
-                    'totalTopupAmount' => number_format($row['topup_amt'], 0, '.', '') 
-                ];
-            } else {
-                $groupedRows[$paymentDate]['num']++;
-                $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
-            }
-        }
-    }
+                        }else if ($groupOption === 'invoice' && $groupOption4 === 'weekly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime(trim($dateRange[0]));
+                            $endDate = strtotime(trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                if (!isset($groupedRows[$paymentDate])) {
+                                    $groupedRows[$paymentDate] = [
+                                        'ids' => [$row['id']],
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$paymentDate]['ids'][] = $row['id']; // Add ID to the array
+                                    $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }else if ($groupOption === 'metaaccount' && $groupOption4 === 'weekly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime(trim($dateRange[0]));
+                            $endDate = strtotime(trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                if (!isset($groupedRows[$accName])) {
+                                    $groupedRows[$accName] = [
+                                        'ids' => [$row['id']], 
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$accName]['ids'][] = $row['id']; // Add ID to the array
+                                    $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }else if ($groupOption === 'invoice' && $groupOption4 === 'monthly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime(trim($dateRange[0]));
+                            $endDate = strtotime('last day of ' . trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                $monthYear = date('Y-m', $paymentDateTimestamp);
+                        
+                                if (!isset($groupedRows[$paymentDate])) {
+                                    $groupedRows[$paymentDate] = [
+                                        'ids' => [$row['id']],
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$paymentDate]['ids'][] = $row['id']; // Add ID to the array
+                                    $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }else if ($groupOption === 'metaaccount' && $groupOption4 === 'monthly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime(trim($dateRange[0]));
+                            $endDate = strtotime('last day of ' . trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                $monthYear = date('Y-m', $paymentDateTimestamp);
+                        
+                                if (!isset($groupedRows[$accName])) {
+                                    $groupedRows[$accName] = [
+                                        'ids' => [$row['id']], 
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$accName]['ids'][] = $row['id']; // Add ID to the array
+                                    $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }else if ($groupOption === 'invoice' && $groupOption4 === 'yearly') {
+                            $dateRange = explode('to', $groupOption3);
+                            $startDate = strtotime('first day of January ' . trim($dateRange[0]));
+                            $endDate = strtotime('last day of December ' . trim($dateRange[1]));
+                        
+                            $paymentDateTimestamp = strtotime($paymentDate);
+                        
+                            if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                                $year = date('Y', $paymentDateTimestamp);
+                        
+                                if (!isset($groupedRows[$paymentDate])) {
+                                    $groupedRows[$paymentDate] = [
+                                        'ids' => [$row['id']],
+                                        'totalTopupAmount' => $row['topup_amt']
+                                    ];
+                                } else {
+                                    $groupedRows[$paymentDate]['ids'][] = $row['id']; // Add ID to the array
+                                    $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+                                }
+                            }
+                        }                  
+                        
+                    } else {
+                        generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                    }
+                }
+                
+                // Display the grouped rows
+                foreach ($groupedRows as $key => $groupedRow) {
+                    $ids = implode(',', $groupedRow['ids']);
+                    $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=$ids" : "fb_ads_topup_trans_table_summary.php?ids=$ids";
+                    echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+                    echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; // Display IDs
+                    echo '<th scope="row">' . $counters++ . '</th>';
+                    echo '<td scope="row">' . $key . '</td>';
+                    echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
+                    echo '</tr>';
+                }
+                
+                
 
-    foreach ($groupedRows as $key => $groupedRow) {
-        echo '<tr>';
-        echo '<th class="hideColumn" scope="row">' . $groupedRow['id'] . '</th>';
-        echo '<th scope="row">' . $groupedRow['num'] . '</th>';
-        echo '<td scope="row">' . $key . '</td>';
 
-        echo '<td scope="row">' . $groupedRow['totalTopupAmount'] . '</td>';
-        echo '</tr>';
-    }
-    ?>
-</tbody>
+                //     else if ($groupOption === 'invoice' && $groupOption2 === '' && $groupOption3 ===  $paymentDate ) {
+                //         generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }else if ($groupOption === 'invoice' && $groupOption4 === 'weekly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startDate = strtotime(trim($dateRange[0]));
+                //         $endDate = strtotime(trim($dateRange[1]));
+                    
+                //         $paymentDateTimestamp = strtotime($paymentDate);
+                    
+                //         if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                //             generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //         }
+                //     }else if ($groupOption === 'invoice' && $groupOption4 === 'monthly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startDate = strtotime(trim($dateRange[0] . '-01')); 
+                //         $endDate = strtotime('+1 month', strtotime(trim($dateRange[1] . '-01'))) - 1; // End of the month
+                    
+                //         $paymentDateParts = explode('-', $paymentDate);
+                //         $paymentYear = $paymentDateParts[0];
+                //         $paymentMonth = $paymentDateParts[1];
+                    
+                    
+                //         $paymentStartDate = strtotime($paymentYear . '-' . $paymentMonth . '-01');
+                //         $paymentEndDate = strtotime('+1 month', $paymentStartDate) - 1;
+                    
+                //         if ($paymentStartDate >= $startDate && $paymentStartDate <= $endDate) {
+                //             generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //         }
+                //     }else if ($groupOption === 'invoice' && $groupOption4 === 'yearly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startYear = trim($dateRange[0]);
+                //         $endYear = trim($dateRange[1]);
+                    
+                //         $paymentYear = date('Y', strtotime($paymentDate));
+                    
+                //         if ($paymentYear >= $startYear && $paymentYear <= $endYear) {
+                //             generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //         }
+                //     }
+                //     else if ($groupOption === 'metaaccount' && $groupOption4 === 'weekly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startDate = strtotime(trim($dateRange[0]));
+                //         $endDate = strtotime(trim($dateRange[1]));
+                    
+                //         $paymentDateTimestamp = strtotime($paymentDate);
+                    
+                //         if ($paymentDateTimestamp >= $startDate && $paymentDateTimestamp <= $endDate) {
+                //             generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //             $totalTopupAmount += $row['topup_amt']; // Accumulate the topup_amt value
+                //         }
+                //     }else if ($groupOption === 'metaaccount' && $groupOption4 === 'monthly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startDate = strtotime(trim($dateRange[0] . '-01')); 
+                //         $endDate = strtotime('+1 month', strtotime(trim($dateRange[1] . '-01'))) - 1; // End of the month
+                    
+                //         $paymentDateParts = explode('-', $paymentDate);
+                //         $paymentYear = $paymentDateParts[0];
+                //         $paymentMonth = $paymentDateParts[1];
+                    
+                    
+                //         $paymentStartDate = strtotime($paymentYear . '-' . $paymentMonth . '-01');
+                //         $paymentEndDate = strtotime('+1 month', $paymentStartDate) - 1;
+                    
+                //         if ($paymentStartDate >= $startDate && $paymentStartDate <= $endDate) {
+                //             generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //         }
+                //     }else if ($groupOption === 'metaaccount' && $groupOption4 === 'yearly') {
+                //         $dateRange = explode('to', $groupOption3);
+                //         $startYear = trim($dateRange[0]);
+                //         $endYear = trim($dateRange[1]);
+                    
+                //         $paymentYear = date('Y', strtotime($paymentDate));
+                    
+                //         if ($paymentYear >= $startYear && $paymentYear <= $endYear) {
+                //             generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //         }
+                //     }
+                    
+                    
+                // } 
+                // else if($groupOption && $groupOption2 && !$groupOption3) {
+                //     if ($groupOption === 'invoice' && $groupOption2 === '') {
+                //          generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     } 
+                //     else if ($groupOption === 'metaaccount' && $accName === $groupOption2){
+                //         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }
+                // }else if($groupOption && !$groupOption2 && $groupOption3){
+                //     if  ($groupOption === 'metaaccount' && $groupOption3 === $paymentDate){
+                //         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }
+                //     else if  ($groupOption === 'invoice' && $groupOption3 === $paymentDate){
+                //         generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }
+                // }else if($groupOption && !$groupOption2 && !$groupOption3){
+                //     if ($groupOption === 'invoice'){
+                //         generateTableRow2($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }
+                //     else if ($groupOption === 'metaaccount'){
+                //         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                //     }
+                           
+                // }else if(!$groupOption && !$groupOption2 && $groupOption3){
+                //         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                // }
+                
+                // else{
+                //     generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
+                // }
+                    
+                ?>
+
+
+                </tbody>
    
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] == 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
-
+                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] === 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
                         <th scope="col">Total Top-up Amount</th>
                         
                     </tr>
@@ -220,13 +425,10 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 </body>
 <script>
 
-    window.onload = function() {
-        document.getElementById("timeInterval").value = 'daily';
-        document.getElementById("metagroup").value = '';
-};
+  
 
 $(document).ready(function() {
-    var selectedMetaAccount = $('#metagroup').val();
+  
     function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -236,12 +438,112 @@ $(document).ready(function() {
     if (groupParam) {
         $('#group').val(groupParam);
     }
+  
+    var timeParam3 = getParameterByName('timeInterval');
+    var timeParam4 = getParameterByName('timeRange');
+    var timeInterval = $('#timeInterval').val();
+    if (timeParam3 == 'weekly') {
+    $('#timeInterval').val(timeParam3);
+    var dateRange = timeParam4.split('to');
+    $('#datepicker2 input[name="start"]').val(dateRange[0]);
+    $('#datepicker2 input[name="end"]').val(dateRange[1]);
+    handleTimeIntervalChange();
+    $('#timeRangeParam').val(timeParam4);
+    $('#timeIntervalParam').val(timeParam3);
+    } else if (timeParam3 == 'monthly') {
+        $('#timeInterval').val(timeParam3);
+        var dateRange = timeParam4.split('to');
+        $('#datepicker3 input[name="start"]').val(dateRange[0]);
+        $('#datepicker3 input[name="end"]').val(dateRange[1]);
+        handleTimeIntervalChange();
+        $('#timeRangeParam').val(timeParam4);
+        $('#timeIntervalParam').val(timeParam3); 
+    } else if (timeParam3 == 'yearly') {
+        $('#timeInterval').val(timeParam3);
+        var dateRange = timeParam4.split('to');
+        $('#datepicker4 input[name="start"]').val(dateRange[0]);
+        $('#datepicker4 input[name="end"]').val(dateRange[1]);
+        handleTimeIntervalChange();
+        $('#timeRangeParam').val(timeParam4);
+        $('#timeIntervalParam').val(timeParam3);
+    } else if (timeParam3 == 'daily') {
+        $('#timeInterval').val('daily');
+        $('#timeIntervalParam').val('daily');
+        $('#timeRangeParam').val(timeParam4);
+        $('#datepicker input').val(timeParam4);
+        handleTimeIntervalChange();
+    }
+    if (timeParam3 === 'daily') {
+        $('#datepicker').prop('disabled', false).show();
+    } else if (timeParam3 === 'weekly') {
+        $('#datepicker2').prop('disabled', false).show();
+    } else if (timeParam3 === 'monthly') {
+        $('#datepicker3').prop('disabled', false).show();
+    } else if (timeParam3 === 'yearly') {
+        $('#datepicker4').prop('disabled', false).show();
+    }   
+
     $('#group').change(function(){
-        var group = $(this).val();
-        window.location.search = '?group=' + group;
-       
+    var group = $(this).val();
+   
+          
+          if(timeParam4){
+            
+              window.location.search = '?group=' + group + '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '');
+          }else{
+              
+              window.location.search = '?group=' + group ;
+          }
+         
+        
+      
+   
+
     });
 
+  
+   
+    $('#datepicker input, #datepicker2 input, #datepicker3 input, #datepicker4 input').change(function() {
+    var time =  $('#datepicker input').val();
+    var timeInterval = $('#timeInterval').val();
+    var startDate = $('#datepicker2 input[name="start"]').val();
+    var endDate = $('#datepicker2 input[name="end"]').val();
+    var startMonth = $('#datepicker3 input[name="start"]').val();
+    var endMonth = $('#datepicker3 input[name="end"]').val();
+    var startYear = $('#datepicker4 input[name="start"]').val();
+    var endYear = $('#datepicker4 input[name="end"]').val();
+
+    var timeRange;
+    if (timeInterval === 'weekly') {
+    timeRange = startDate + 'to' + endDate;
+    } else if (timeInterval === 'monthly') {
+        timeRange = startMonth + 'to' + endMonth;
+    } else if (timeInterval === 'yearly') {
+        timeRange = startYear + 'to' + endYear;
+    } else if (timeInterval === 'daily') {
+        timeRange = time;
+    }
+
+    
+
+    var group = $('#group').val();
+
+
+    if (group === 'metaaccount') {
+      
+            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+        
+    } else if (group === 'invoice'){
+        
+            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+        
+    } else{
+        window.location.search = (timeRange ? '?timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+    }
+
+
+
+    });
     $('#datepicker').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd',
@@ -280,92 +582,9 @@ $(document).ready(function() {
     });
 
  
-   function filterTable() {
-        var selectedOption = $('#timeInterval').val();
-        var selectedMetaAccount = $('#metagroup').val();
-         if (selectedMetaAccount){
-            
-            $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var metaAccount = $(this).find('td:nth-child(3)').text()
-         
-                if (metaAccount.toLowerCase() === selectedMetaAccount.toLowerCase()) {
-                     $(this).show();     
-                } else {
-                    $(this).hide();
-                }
-            });
-          
-           
-         }
-        if (selectedOption === 'daily' && !selectedMetaAccount) {
-            var selectedDate = $('#datepicker input').val();
-            $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(3)').text();
-                if (paymentDate === selectedDate) {
-                    $(this).show();
-                
-                    
-                } else {
-                    $(this).hide();
-                }
-            });
-        } 
-        
-        else if (selectedOption === 'weekly') {
-            var startDate = $('#datepicker2 input[name="start"]').val();
-            var endDate = new Date(startDate);
-            endDate.setDate(endDate.getDate() + 6); // Add 6 days to get a total of 7 days
-            var endDateFormatted = endDate.toISOString().split('T')[0]; // Format the date as yyyy-mm-dd
-            $('#datepicker2 input[name="end"]').val(endDateFormatted);
-            var selectedMetaAccount = $('#metagroup').val();
-            
-            $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(3)').text();
-                if ((startDate === '' || paymentDate >= startDate) && (endDateFormatted === '' || paymentDate <= endDateFormatted)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-
-        else if (selectedOption === 'monthly') {
-            var startMonth = $('#datepicker3 input[name="start"]').val();
-            var endMonth = $('#datepicker3 input[name="end"]').val();
-
-            $('#fb_ads_topup_trans_table tbody tr').each(function() {
-                var paymentDate = $(this).find('td:nth-child(3)').text();
-                var paymentMonth = new Date(paymentDate).getMonth() + 1; // Get the month (1-12) from the payment date
-                var paymentYear = new Date(paymentDate).getFullYear(); // Get the year from the payment date
-
-                if ((startMonth === '' || (paymentYear + '-' + ('0' + paymentMonth).slice(-2)) >= startMonth) &&
-                    (endMonth === '' || (paymentYear + '-' + ('0' + paymentMonth).slice(-2)) <= endMonth)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-
-        else if (selectedOption === 'yearly') {
-        var startYear = $('#datepicker4 input[name="start"]').val();
-        var endYear = $('#datepicker4 input[name="end"]').val();
-        $('#fb_ads_topup_trans_table tbody tr').each(function() {
-            var paymentYear = $(this).find('td:nth-child(3)').text().slice(0, 4);
-            if ((startYear === '' || paymentYear >= startYear) && (endYear === '' || paymentYear <= endYear)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-            });
-        }
-
-    }
-    $('#datepicker, #datepicker2, #datepicker3, #datepicker4').on('changeDate', filterTable);
-    $('#metagroup').change(filterTable);
-
-   $('#timeInterval').change(function() {
-    var selectedOption = $(this).val();
+   
+    function handleTimeIntervalChange() {
+    var selectedOption = $('#timeInterval').val();
     $('#datepicker, #datepicker2, #datepicker3, #datepicker4').prop('disabled', true).hide();
 
     if (selectedOption === 'daily') {
@@ -377,8 +596,9 @@ $(document).ready(function() {
     } else if (selectedOption === 'yearly') {
         $('#datepicker4').prop('disabled', false).show();
     }
-});
+}
  
+$('#timeInterval').change(handleTimeIntervalChange);
 });
 </script>
 
