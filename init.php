@@ -137,7 +137,6 @@ define('ITL_CSM_ITEM', 'internal_consume_item');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 define('CRED_NOTES_INV', 'credit_notes_invoice');
-define('CRED_INV_PROD', 'cred_inv_products');
 define('DEBIT_NOTES_INV', 'debit_notes_invoice');
 define('DEBIT_INV_PROD', 'debit_inv_products');
 define('AGENT','agent');
