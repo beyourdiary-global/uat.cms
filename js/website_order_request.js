@@ -1,3 +1,13 @@
+//save new customer id
+function toggleNewCustomerSection() {
+    var newCustomerSection = document.getElementById("new_customer_section");
+    if (newCustomerSection.style.display === "none") {
+        newCustomerSection.style.display = "block";
+    } else {
+        newCustomerSection.style.display = "none";
+    }
+}
+
 //total
 document.getElementById("wor_price").addEventListener("input", calculateTotal);
 document.getElementById("wor_shipping").addEventListener("input", calculateTotal);
@@ -76,8 +86,8 @@ $(document).ready(function() {
     }
 
     //brand
-    if (!($("#wor_cust_brand").attr('disabled'))) {
-        $("#wor_cust_brand").keyup(function() {
+    if (!($("#brand").attr('disabled'))) {
+        $("#brand").keyup(function() {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -90,8 +100,8 @@ $(document).ready(function() {
 
     }
     //series
-    if (!($("#wor_cust_series").attr('disabled'))) {
-        $("#wor_cust_series").keyup(function() {
+    if (!($("#series").attr('disabled'))) {
+        $("#series").keyup(function() {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table
@@ -121,38 +131,18 @@ $(document).ready(function() {
 
     //cutomer ID
         if (!($("#wor_cust_id").attr('readonly'))) {
-            var selectedValue = '';
             $("#wor_cust_id").keyup(function() {
-                console.log("Keyup event triggered");
                 var param = {
                     search: $(this).val(),
                     searchType: 'cust_id', // column of the table
                     elementID: $(this).attr('id'), // id of the input
                     hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                     dbTable: '<?= WEB_CUST_RCD ?>', // json filename (generated when login)
-                    addSelection: 'Create New Customer ID'
                 }
-                console.log("Element ID:", param["elementID"]);
-                console.log("Site URL:", '<?= $SITEURL ?>');
                 searchInput(param, '<?= $SITEURL ?>');
             });
     
-            $("#wor_cust_id").on('change', function() {
-                console.log("Change event triggered");
-                selectedValue = $(this).val();
-                console.log("Selected value:", selectedValue);
-                console.log("Site URL:", '<?= $SITEURL ?>');
-                var create_cust_id_sect = document.getElementById('WOR_CreateCustID');
-    
-                // Check if the selected value is 'Create New Customer ID'
-                if (selectedValue == 'Create New Customer ID') {
-                    console.log("Selected value is 'Create New Customer ID'");
-                    create_cust_id_sect.hidden = false; // Show WOR_CreateCustID
-                } else {
-                    console.log("Selected value is not 'Create New Customer ID'");
-                    create_cust_id_sect.hidden = true; // Hide WOR_CreateCustID
-                }
-            });
+        
         }
     })
 
