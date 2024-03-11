@@ -1,5 +1,12 @@
 $(document).ready(function() {
-  
+    var timeParam3 = getParameterByName('timeInterval');
+    window.onload = function() {
+        if(timeParam3 == null){
+            document.getElementById("timeInterval").value = 'daily'; 
+        }
+        
+        
+};
     function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -10,7 +17,7 @@ $(document).ready(function() {
         $('#group').val(groupParam);
     }
   
-    var timeParam3 = getParameterByName('timeInterval');
+    
     var timeParam4 = getParameterByName('timeRange');
     var timeInterval = $('#timeInterval').val();
     if (timeParam3 == 'weekly') {
