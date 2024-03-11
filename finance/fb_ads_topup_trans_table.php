@@ -50,7 +50,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 </div>
             </div>
            
-            <div class="container">
+            
             <div class="row mb-3">
                     <div class="col-md-4 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
@@ -109,7 +109,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
              
                 
                 
-            </div>
+            
          
             
             <table class="table table-striped" id="fb_ads_topup_trans_table">
