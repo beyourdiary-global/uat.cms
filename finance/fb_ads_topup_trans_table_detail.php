@@ -70,6 +70,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         if (isset($_GET['ids'])) {
                             $ids = explode(',', $_GET['ids']);
                             foreach ($ids as $id) {
+                                $decodedId = urldecode($id);
                             if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID']) && $row['id'] == $id) {
                             $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
                             $meta_acc = $metaQuery->fetch_assoc();

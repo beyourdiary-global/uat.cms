@@ -63,9 +63,10 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 </thead>
                 <tbody>
                     <?php while ($row = $result->fetch_assoc()) {
-                        if (isset($_GET['ids'])) {
-                            $ids = explode(',', $_GET['ids']);
-                            foreach ($ids as $id) {
+                      if (isset($_GET['ids'])) {
+                        $ids = explode(',', $_GET['ids']);
+                        foreach ($ids as $id) {
+                            $decodedId = urldecode($id);
                             if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID']) && $row['id'] == $id) {
                             $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
                             $meta_acc = $metaQuery->fetch_assoc();
@@ -73,7 +74,8 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                             $usr = $pic->fetch_assoc();
                     ?>
                    
-                   <tr onclick="window.location='fb_ads_topup_trans_table_detail.php?ids=<?= $row['id'] ?>';" style="cursor:pointer;">
+                   <tr onclick="window.location='fb_ads_topup_trans_table_detail.php?ids=<?= urlencode($row['id']) ?>';" style="cursor:pointer;">
+
                         <td class="hideColumn" scope="row"><?= $row['id'] ?></td>
                         <td scope="row"><?= $num++; ?></td>
                         <td scope="row"><?php if (isset($meta_acc['accName'])) echo $meta_acc['accName'] ?></td>

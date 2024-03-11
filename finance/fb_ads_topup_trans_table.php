@@ -147,7 +147,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 $counters = 1;
 
                 function generateTableRow($id, &$counters, $accName, $paymentDate, $topupAmt) {
-                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . $id . '\';" style="cursor:pointer;">';
+                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
                     echo '<th class="hideColumn" scope="row">' . $id . '</th>';
                     echo '<th scope="row">' . $counters++ . '</th>';
                     echo '<td scope="row">' . $accName . '</td>';
@@ -155,7 +155,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     echo '</tr>';
                 }
                 function generateTableRow2($id, &$counters, $accName, $paymentDate, $topupAmt) {
-                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . $id . '\';" style="cursor:pointer;">';
+                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
                     echo '<th class="hideColumn" scope="row">' . $id . '</th>';
                     echo '<th scope="row">' . $counters++ . '</th>';
                     echo '<td scope="row">' . $paymentDate . '</td>';
@@ -359,8 +359,9 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 foreach ($groupedRows as $key => $groupedRow) {
 
                     $ids = implode(',', $groupedRow['ids']);
-                    $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=$ids" : "fb_ads_topup_trans_table_summary.php?ids=$ids";
+                    $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=" . urlencode($ids) : "fb_ads_topup_trans_table_summary.php?ids=" . urlencode($ids);
                     echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+
                     echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
                     echo '<th scope="row">' . $counters++ . '</th>';
                     echo '<td scope="row">' . $key . '</td>';
