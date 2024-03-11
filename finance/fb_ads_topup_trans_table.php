@@ -154,6 +154,14 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
                     echo '</tr>';
                 }
+                function generateTableRow2($id, &$counters, $accName, $paymentDate, $topupAmt) {
+                    echo '<tr onclick="window.location=\'fb_ads_topup_trans_table_summary.php?ids=' . $id . '\';" style="cursor:pointer;">';
+                    echo '<th class="hideColumn" scope="row">' . $id . '</th>';
+                    echo '<th scope="row">' . $counters++ . '</th>';
+                    echo '<td scope="row">' . $paymentDate . '</td>';
+                    echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
+                    echo '</tr>';
+                }
                 
                 $groupedRows = [];
                 while ($row = $result->fetch_assoc()) {
@@ -341,7 +349,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         }                         
                         
                     }  else if ($groupOption === 'invoice') {
-                        generateTableRow($row['id'],$counters, $accName, $paymentDate,  $row['topup_amt']);
+                        generateTableRow2($row['id'],$counters, $accName, $paymentDate,  $row['topup_amt']);
                     }else if ($groupOption === 'metaaccount') {
                         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
                     }
