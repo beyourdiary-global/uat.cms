@@ -101,7 +101,6 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 </div>
            
                 <input type="hidden" id="groupParam" name="group" value="">
-                
                 <input type="hidden" id="timeIntervalParam" name="timeInterval" value="">
                 <input type="hidden" id="timeRangeParam" name="timeRange" value="">
                 
@@ -116,19 +115,31 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
             <table class="table table-striped" id="fb_ads_topup_trans_table">
                 <thead>
                 <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>                       
-                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] == 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
-                        <th scope="col">Total Top-up Amount</th>
-                        
-                    </tr>
+                <?php if (!isset($_GET['group'])): ?>
+                    <th class="hideColumn" scope="col">ID</th>
+                    <th scope="col" width="60px">S/N</th>
+                    <th scope="col">Meta Account</th>
+                    <th scope="col">Transaction ID</th>
+                    <th scope="col">Invoice/Payment Date</th>
+                    <th scope="col">Person In Charge</th>
+                    <th scope="col">Top-up Amount</th>
+                    <th scope="col">Attachment</th>
+                    <th scope="col">Remark</th>
+                    <th scope="col" id="action_col">Action</th>
+                    <?php else: ?>
+                    <th class="hideColumn" scope="col">ID</th>
+                    <th scope="col" width="60px">S/N</th>                       
+                    <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] == 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
+                    <th scope="col">Total Top-up Amount</th>
+                    <?php endif; ?>
+                </tr>
                 </thead>
 
                  
                 <tbody>
                 <?php
 
-                $groupOption = isset($_GET['group']) ? $_GET['group'] : 'metaaccount'; 
+                $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
            
                 $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
                 $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
@@ -144,15 +155,51 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     echo '</tr>';
                 }
                 
-                
-                
                 $groupedRows = [];
                 while ($row = $result->fetch_assoc()) {
                     $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
                     $meta_acc = $metaQuery->fetch_assoc();
                     $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
                     $paymentDate = $row['payment_date'];
-                
+                    $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                    $usr = $pic->fetch_assoc();
+                    if ($groupOption === '') {
+                        echo '<tr>
+                            <th class="hideColumn" scope="row">' . $row['id'] . '</th>
+                            <th scope="row">' . $num++ . '</th>
+                            <td scope="row">' . (isset($meta_acc['accName']) ? $meta_acc['accName'] : '') . '</td>
+                            <td scope="row">' . $row['transactionID'] . '</td>
+                            <td scope="row">' . (isset($row['payment_date']) ? $row['payment_date'] : '') . '</td>
+                            <td scope="row">' . (isset($usr['name']) ? $usr['name'] : '') . '</td>
+                            <td scope="row">' . (isset($row['topup_amt']) ? $row['topup_amt'] : '') . '</td>
+                            <td scope="row">' . (isset($row['attachment']) ? $row['attachment'] : '') . '</td>
+                            <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
+                            <td scope="row">
+                                <div class="dropdown" style="text-align:center">
+                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
+                                        <li>';
+                                            if (isActionAllowed("View", $pinAccess)) {
+                                                echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '">View</a>';
+                                            }
+                                            echo '</li>
+                                        <li>';
+                                            if (isActionAllowed("Edit", $pinAccess)) {
+                                                echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '">Edit</a>';
+                                            }
+                                            echo '</li>
+                                        <li>';
+                                            if (isActionAllowed("Delete", $pinAccess)) {
+                                                echo '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . '\',[\'' . $row['meta_acc'] . '\',\'' . $row['transactionID'] . '\'],\'' . $pageTitle . '\',\'' . $redirect_page . '\',\'' . $SITEURL . '/fb_ads_topup_trans_table.php\',\'D\')">Delete</a>';
+                                            }
+                                            echo '</li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>';
+                    }
                     if ($groupOption && $groupOption3) {
                         if ($groupOption === 'metaaccount' && $groupOption3 === $paymentDate) {
                             if (!isset($groupedRows[$accName])) {
@@ -293,13 +340,16 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                             }
                         }                         
                         
-                    } else {
+                    }  else if ($groupOption === 'invoice') {
+                        generateTableRow($row['id'],$counters, $accName, $paymentDate,  $row['topup_amt']);
+                    }else if ($groupOption === 'metaaccount') {
                         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
                     }
                 }
                 
               
                 foreach ($groupedRows as $key => $groupedRow) {
+
                     $ids = implode(',', $groupedRow['ids']);
                     $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=$ids" : "fb_ads_topup_trans_table_summary.php?ids=$ids";
                     echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
@@ -308,6 +358,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     echo '<td scope="row">' . $key . '</td>';
                     echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
                     echo '</tr>';
+                   
                 }
                     
                 ?>
@@ -317,11 +368,23 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
    
                 <tfoot>
                     <tr>
-                        <th class="hideColumn" scope="col">ID</th>
+                    <?php if (!isset($_GET['group'])): ?>
+                    <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] === 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
+                        <th scope="col">Meta Account</th>
+                        <th scope="col">Transaction ID</th>
+                        <th scope="col">Invoice/Payment Date</th>
+                        <th scope="col">Person In Charge</th>
+                        <th scope="col">Top-up Amount</th>
+                        <th scope="col">Attachment</th>
+                        <th scope="col">Remark</th>
+                        <th scope="col" id="action_col">Action</th>
+                        <?php else: ?>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>                       
+                        <th id="group_header" scope="col"><?php echo isset($_GET['group']) && $_GET['group'] == 'metaaccount' ? "Meta Account" : "Invoice/Payment Date"; ?></th>
                         <th scope="col">Total Top-up Amount</th>
-                        
+                        <?php endif; ?>
                     </tr>
                 </tfoot>
             </table>
