@@ -98,20 +98,12 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     
         
                  
-                </div>
+            </div>
            
-                <input type="hidden" id="groupParam" name="group" value="">
-                <input type="hidden" id="timeIntervalParam" name="timeInterval" value="">
-                <input type="hidden" id="timeRangeParam" name="timeRange" value="">
-                
-            
-                
+            <input type="hidden" id="groupParam" name="group" value="">
+            <input type="hidden" id="timeIntervalParam" name="timeInterval" value="">
+            <input type="hidden" id="timeRangeParam" name="timeRange" value="">
              
-                
-                
-            
-         
-            
             <table class="table table-striped" id="fb_ads_topup_trans_table">
                 <thead>
                 <tr>
