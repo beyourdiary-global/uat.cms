@@ -142,13 +142,6 @@ if (post('actionBtn')) {
                 $pic_err = "Person In Charge cannot be empty.";
                 break;
 
-            }else if (($wor_cust_id == 'Create New Customer ID') && !isset($wor_customer_id)) {
-                    $customer_id_err = "Customer ID is required!";
-                break;
-            } else if (($wor_cust_id == 'Create New Customer ID') && isDuplicateRecord("cust_id", $wor_customer_id, WEB_CUST_RCD, $connect, '')) {
-                    $customer_id_err = "Duplicate record found for Customer ID.";
-                    $isDuplicateCustID = true;
-                break;
             } else if (!$wor_cust_name) {
                 $cust_name_err = "Customer Name cannot be empty.";
                 break;
@@ -171,15 +164,6 @@ if (post('actionBtn')) {
             } else if ($action == 'addRecord') {
                 try {
                     //check values
-
-                    if (($wor_cust_id == 'Create New Customer ID') && !($isDuplicateCustID)) {
-                            try {
-                                $wor_cust_id = insertNewCustID($wor_customer_id, USER_ID, $finance_connect);
-                                generateDBData(WEB_CUST_RCD, $connect);
-                            } catch (Exception $e) {
-                                $errorMsg = $e->getMessage();
-                            }
-                    }
 
                     if ($wor_order_id) {
                         array_push($newvalarr, $wor_order_id);
@@ -790,8 +774,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">
     <legend class="float-none w-auto p-2">Customer Info</legend>
     <div class="form-group">
-        <div class="row">
-        <div class="col-md-4 mb-3 autocomplete">
+    <div class="row">
+        <div class="col-md-6 mb-3 autocomplete">
             <label class="form-label form_lbl" id="wor_cust_id_lbl" for="wor_cust_id">Customer ID<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);
@@ -816,25 +800,27 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             <?php } ?>
         </div>
-    
-            <div class="col-md-6 mb-3">
-                <label class="form-label form_lbl" id="wor_cust_name_lbl" for="wor_cust_name">Customer Name<span class="requireRed">*</span></label>
-                <input class="form-control" type="text" name="wor_cust_name" id="wor_cust_name" value="<?php
-                if (isset($dataExisted) && isset($row['cust_name']) && !isset($wor_cust_name)) {
-                    echo $row['cust_name'];
-                } else if (isset($wor_cust_name)) {
-                    echo $wor_cust_name;
-                }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
-                <?php if (isset($cust_name_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1">
-                            <?php echo $cust_name_err; ?>
-                        </span>
-                    </div>
-                <?php } ?>
-            </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label form_lbl" id="wor_cust_name_lbl" for="wor_cust_name">Customer Name<span class="requireRed">*</span></label>
+            <input class="form-control" type="text" name="wor_cust_name" id="wor_cust_name" value="<?php
+            if (isset($dataExisted) && isset($row['cust_name']) && !isset($wor_cust_name)) {
+                echo $row['cust_name'];
+            } else if (isset($wor_cust_name)) {
+                echo $wor_cust_name;
+            }
+            ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($cust_name_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1">
+                        <?php echo $cust_name_err; ?>
+                    </span>
+                </div>
+            <?php } ?>
         </div>
+    </div>
+</div>
+
 
         <div class="row">
             <div class="col-md-6 mb-3">
