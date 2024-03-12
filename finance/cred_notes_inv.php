@@ -36,6 +36,7 @@ if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
     $_SESSION['tempValConfirmBox'] = true;
     $act = "F";
 }
+var_dump($row);
 
 //Delete Data
 if ($act == 'D') {

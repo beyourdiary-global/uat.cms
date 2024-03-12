@@ -387,12 +387,6 @@ $pic_row = $pic_result->fetch_assoc();
                             <div class="col-lg-3 col-12 invoice-actions hide mb-4">
                                 <div class="card mb-4">
                                     <div class="card-body">
-                                        <button class="btn btn-primary d-grid w-100 mb-2" data-bs-toggle="offcanvas"
-                                            data-bs-target="#sendInvoiceOffcanvas">
-                                            <span
-                                                class="d-flex align-items-center justify-content-center text-nowrap"><i
-                                                    class="ti ti-send ti-xs me-2"></i>Send Invoice</span>
-                                        </button>
 
                                         <a href="generate_pdf.php<?= "?id=" . $dataID . '&act=' . $act_2 ?>"
                                             target="_blank" class="btn btn-primary d-grid w-100 mb-2 download"

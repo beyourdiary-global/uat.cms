@@ -40,8 +40,6 @@ if (post('pay_status_option')) {
         array_push($datafield, 'payment_status');
     }
 
-    echo "<script>console.log('TEST4')</script>";
-
     if ($oldvalarr && $chgvalarr) {
         try {
             $query = "UPDATE " . $tblName . " SET payment_status = '$payment_status' WHERE id = '$inv_id'";
@@ -64,9 +62,8 @@ if (post('pay_status_option')) {
             'connect' => $connect,
             'oldval' => implodeWithComma($oldvalarr),
             'changes' => implodeWithComma($chgvalarr),
-            'act_msg' => actMsgLog($payment_status, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
+            'act_msg' => actMsgLog($inv_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
         ];
-        echo "<script>console.log('TEST5')</script>";
 
         audit_log($log);
     } else {
@@ -297,8 +294,6 @@ if (post('pay_status_option')) {
             },
             error: function (xhr, status, error) {
                 console.log('AJAX Error:', error);
-                // Handle error gracefully
-                // For example, display an alert message
                 alert('An error occurred while updating payment status. Please try again later.');
             }
         });
