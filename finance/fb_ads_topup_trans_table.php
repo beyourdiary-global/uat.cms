@@ -52,7 +52,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
            
             
             <div class="row mb-3">
-                    <div class="col-md-4 dateFilters">
+                    <div class="col-md-3 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
                        <select class="form-select" id="timeInterval" >
 
@@ -62,7 +62,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                             <option value="yearly">Yearly</option>
                         </select>
                     </div>
-                    <div class="col-md-4 dateFilters">
+                    <div class="col-md-5 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
                         <div class="input-group date" id="datepicker"> 
                         <input type="text" class="form-control" placeholder="Select date" >
