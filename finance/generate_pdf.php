@@ -140,6 +140,7 @@ $html = str_replace(
         $term_row['name'] = isset($row['pay_terms']) && $row['pay_terms'] > 0 ? $term_row['name'] : 'NA',
         $pay_row['name'] = isset($pay_row['name']) && $pay_row['name'] > 0 ? $pay_row['name'] : 'NA',
         $row['pay_details'] = isset($row['pay_details']) && $row['pay_details'] > 0 ? $row['pay_details'] : 'NA',
+        $productRows,
         $curr_row['unit'] = isset($row['currency']) && $row['currency'] > 0 ? $curr_row['unit'] : '',
 
     ],
@@ -148,6 +149,10 @@ $html = str_replace(
 
 $dompdf->loadHtml($html);
 $dompdf->render();
-$dompdf->stream("invoice.pdf", ["Attachment" => 0]);
+if ($isDebit) {
+    $pdfName = "DebitNote_". $row['invoice'] .".pdf";
+} else {
+    $pdfName = "CreditNote_". $row['invoice'] .".pdf";}
+$dompdf->stream($pdfName, ["Attachment" => 0]);
 
 ?>
