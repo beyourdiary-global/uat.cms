@@ -1,8 +1,15 @@
 $(document).ready(function() {
     var timeParam3 = getParameterByName('timeInterval');
+    var groupParam = getParameterByName('group');
     window.onload = function() {
         if(timeParam3 == null){
             document.getElementById("timeInterval").value = 'daily'; 
+        }else if(timeParam3){
+            document.getElementById("timeInterval").value = timeParam3; 
+            document.getElementById("group").value = groupParam; 
+        }else{
+            document.getElementById("timeInterval").value = 'daily'; 
+            document.getElementById("group").value = 'courier'; 
         }
         
         
@@ -46,6 +53,7 @@ $(document).ready(function() {
         $('#timeIntervalParam').val(timeParam3);
     } else if (timeParam3 == 'daily') {
         $('#timeInterval').val('daily');
+        $('#timeInterval').val(timeParam3);
         $('#timeIntervalParam').val('daily');
         $('#timeRangeParam').val(timeParam4);
         $('#datepicker input').val(timeParam4);
@@ -107,11 +115,11 @@ $(document).ready(function() {
     var group = $('#group').val();
 
 
-    if (group === 'metaaccount') {
+    if (group === 'metaaccount' || group === 'courier') {
       
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
-    } else if (group === 'invoice'){
+    } else if (group === 'invoice' || group === 'currency'){
         
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
