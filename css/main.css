@@ -23,9 +23,9 @@ h7 {
 }
 
 @media (max-width: 320px) {
-    .container,
-    .container-fluid {
-        width: 90%;
+    .container {
+        width: 95%;
+        margin:auto;
     }
 
 }
@@ -659,8 +659,6 @@ input {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
     
- 
-
  .input-group > input {
     border: none;
  }
@@ -669,5 +667,6 @@ input {
     border: none; 
     outline: none; 
   }
+
 
 

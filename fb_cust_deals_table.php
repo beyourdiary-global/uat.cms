@@ -12,6 +12,7 @@ $num = 1;   // numbering
 $reg_member_page = $SITEURL . '/urb_cust_reg.php';
 
 $redirect_page = $SITEURL . '/fb_cust_deals.php';
+$deleteRedirectPage = $SITEURL . '/fb_cust_deals_table.php';
 $result = getData('*', '', '', FB_CUST_DEALS, $connect);
 ?>
 
@@ -27,6 +28,15 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
         createSortingTable('fb_cust_deals');
     });
 </script>
+
+
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+</style>
 
 <body>
 
@@ -69,7 +79,8 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Name</th>
                             <th scope="col">Facebook Link</th>
                             <th scope="col">Contact</th>
@@ -83,7 +94,6 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                             <th scope="col">Shipping Receiver Address</th>
                             <th scope="col">Shipping Receiver Contact</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,6 +127,38 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
+                                <td>
+    
+                                <div class="d-flex align-items-center">
+                                     <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
+                                    <?php endif; ?>
+                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
+                                    <?php endif; ?>
+                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                         <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                    <?php endif; ?>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-users"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <?php 
+                                         $member_exist = getData('name', "name='" . $row['id'] . "'", '', URBAN_CUST_REG, $connect); 
+                
+                                         if ($member_exist->fetch_assoc()) {
+                                            $reg_url = $reg_member_page . "?id=" . $row['id'] . '&act=' . $act_2;
+                                         } else {
+                                            $reg_url = $reg_member_page . "?id=" . $row['id'] . '&act=' . $act_1;
+                                        }
+                                        ?>
+                                        <li><a class="dropdown-item" href="<?= $reg_url ?>">Urbanism Member</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+
                                 <td scope="row">
                                     <?= $row['name'] ?>
                                 </td>
@@ -207,7 +249,8 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Name</th>
                             <th scope="col">Facebook Link</th>
                             <th scope="col">Contact</th>
@@ -221,7 +264,6 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                             <th scope="col">Shipping Receiver Address</th>
                             <th scope="col">Shipping Receiver Contact</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>
