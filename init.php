@@ -115,6 +115,7 @@ define('FB_CUST_DEALS', 'customer_facebook_deals_transaction');
 define('URBAN_CUST_REG', 'urbanism_customer_register_info');
 define('WEB_CUST_RCD', 'customer_website_deals_transaction');
 define('LAZADA_CUST_RCD', 'customer_lazada_deals_transaction');
+define('LAZADA_ORDER_REQ', 'lazada_order_request');
 
 //finance
 define('MERCHANT', 'merchant');
