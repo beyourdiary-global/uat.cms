@@ -996,6 +996,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['commision'];
         } else if (isset($lor_commision)) {
             echo $lor_commision;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($commision_err)) { ?>
@@ -1014,6 +1016,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['other_discount'];
         } else if (isset($lor_ship_rec_contact)) {
             echo $lor_other_discount;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($other_discount_err)) { ?>
@@ -1035,6 +1039,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['pay_fee'];
         } else if (isset($lor_pay_fee)) {
             echo $lor_pay_fee;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($pay_fee_err)) { ?>

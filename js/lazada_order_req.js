@@ -553,76 +553,74 @@ function calculateCountry() {
         }
     }
     
-    
     function calculatePrice() {
-    var paramPkg = {
-        search: $("#lor_item_price_credit_hidden").val(),
-        searchCol: 'id',
-        searchType: '*',
-        dbTable: '<?= PKG ?>',
-        isFin: 0,
-    };
-
-    retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
-        if (result && result.length > 0) {
-            var pkg_price = parseFloat(result[0]['price']);
-            var pkg_curr = result[0]['currency_unit'];
-            console.log('curr_unit', pkg_curr);
-            $("#lor_item_price_credit").val(pkg_price.toFixed(2));
-            $("#lor_item_price_credit").trigger("change");
-            // Retrieve account currency
-            var acc_curr = $("#lor_item_price_credit_hidden").val();
-            console.log('Account Currency:', acc_curr);
-            var pkgCurrName = '';
-
-            // Compare account currency with package currency
-            if (acc_curr !== pkg_curr) {
-                console.log('Currency mismatch: Account currency is different from package currency.');
-                var paramCurrencies = {
-                    search: acc_curr,
-                    searchCol: 'default_currency_unit` = ' + pkg_curr + ' AND `exchange_currency_unit',
-                    searchType: '*',
-                    dbTable: '<?= CURRENCIES ?>',
-                    isFin: 0,
-                };
-                retrieveDBData(paramCurrencies, '<?= $SITEURL ?>', function (result) {
-                    if (result && result.length > 0) {
-                        var exchangeRate = parseFloat(result[0]['exchange_currency_rate']);
-                        console.log(result);
-                        var priceInAccountCurrency = pkg_price * exchangeRate;
-                        console.log(pkg_price);
-                        console.log('Price in account currency:', priceInAccountCurrency);
-                        $("#lor_item_price_credit").val(priceInAccountCurrency.toFixed(2));
-                        $("#lor_item_price_credit").trigger("change");
-                    } else {
-                        var paramPkgCurr = {
-                            search: pkg_curr,
-                            searchCol: 'id',
-                            searchType: '*',
-                            dbTable: '<?= CUR_UNIT ?>',
-                            isFin: 0,
-                        };
-                        retrieveDBData(paramPkgCurr, '<?= $SITEURL ?>', function (result) {
-                            if (result && result.length > 0) {
-                                pkgCurrName = result[0]['unit'];
-                                price_curr_chk = 0;
-                                $("#lor_item_price_credit").val(0);
-                                $("#lor_item_price_credit").after(
-                                    '<span class="error-message lor-item-price-credit-err">Currency rate not found! (Package Price: ' + pkgCurrName + ' ' + pkg_price + ')</span>');
-                            }
-                        })
-                        // If data is not found, show an error message
-                        console.error('No exchange rate found for the specified currencies.');
-                    }
-                })
+        var paramPkg = {
+            search: $("#lor_pkg_hidden").val(),
+            searchCol: 'id',
+            searchType: '*',
+            dbTable: '<?= PKG ?>',
+            isFin: 0,
+        };
+    
+        retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
+            if (result && result.length > 0) {
+                var pkg_price = parseFloat(result[0]['item_price_credit']);
+                var pkg_curr = result[0]['currency_unit'];
+                console.log('curr', pkg_curr);
+                $("#lor_item_price_credit").val(pkg_price.toFixed(2));
+                $("#lor_item_price_credit").trigger("change");
+                // Retrieve account currency
+                var acc_curr = $("#lor_curr_unit_hidden").val();
+                console.log('Account Currency:', acc_curr);
+                var pkgCurrName = '';
+    
+                // Compare account currency with package currency
+                if (acc_curr !== pkg_curr) {
+                    console.log('Currency mismatch: Account currency is different from package currency.');
+                    var paramCurrencies = {
+                        search: acc_curr,
+                        searchCol: 'default_currency_unit` = ' + pkg_curr + ' AND `exchange_currency_unit',
+                        searchType: '*',
+                        dbTable: '<?= CURRENCIES ?>',
+                        isFin: 0,
+                    };
+                    retrieveDBData(paramCurrencies, '<?= $SITEURL ?>', function (result) {
+                        if (result && result.length > 0) {
+                            var exchangeRate = parseFloat(result[0]['exchange_currency_rate']);
+                            console.log(result);
+                            var priceInAccountCurrency = pkg_price * exchangeRate;
+                            console.log(pkg_price);
+                            console.log('Price in account currency:', priceInAccountCurrency);
+                            $("#sor_price").val(priceInAccountCurrency.toFixed(2));
+                            $("#sor_price").trigger("change");
+                        } else {
+                            var paramPkgCurr = {
+                                search: pkg_curr,
+                                searchCol: 'id',
+                                searchType: '*',
+                                dbTable: '<?= CUR_UNIT ?>',
+                                isFin: 0,
+                            };
+                            retrieveDBData(paramPkgCurr, '<?= $SITEURL ?>', function (result) {
+                                if (result && result.length > 0) {
+                                    pkgCurrName = result[0]['unit'];
+                                    price_curr_chk = 0;
+                                    $("#lor_item_price_credit").val(0);
+                                    $("#lor_item_price_credit").after(
+                                        '<span class="error-message sor-pricecurr-err">Currency rate not found! (Package Price: ' + pkgCurrName + ' ' + pkg_price + ')</span>');
+                                }
+                            })
+                            // If data is not found, show an error message
+                            console.error('No exchange rate found for the specified currencies.');
+                        }
+                    })
+                } else {
+                    console.log('Same Package Shopee Acc currency.');
+                    price_curr_chk = 1;
+    
+                }
             } else {
-                console.log('Same Package Lazada Acc currency.');
-                price_curr_chk = 1;
-
+                console.error('Error retrieving Package data');
             }
-        } else {
-            console.error('Error retrieving Package data');
-        }
-    });
-}
-
+        });
+    }
