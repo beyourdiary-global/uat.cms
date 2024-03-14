@@ -35,6 +35,14 @@ $result = getData('*', '', '', $tblName, $finance_connect);
     });
 </script>
 
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+</style>
+
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -73,7 +81,8 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                         <thead>
                             <tr>
                                 <th class="hideColumn" scope="col">ID</th>
-                                <th scope="col" width="60px">S/N</th>
+                                <th scope="col">S/N</th>
+                                <th scope="col" id="action_col">Action</th>
                                 <th scope="col">Merchant Name</th>
                                 <th scope="col">Merchant Business No</th>
                                 <th scope="col">Merchant Contact</th>
@@ -82,7 +91,6 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                 <th scope="col">Person In Charge</th>
                                 <th scope="col">Person In Charge Contact</th>
                                 <th scope="col">Remark</th>
-                                <th scope="col" id="action_col" width="100px">Action</th>
                             </tr>
                         </thead>
 
@@ -93,6 +101,17 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                     <tr>
                                         <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                         <th scope="row"><?= $num++; ?></th>
+                                        <td>
+                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                        <?php endif; ?>
+                                    </td>
                                         <td scope="row"><?= $row['name'] ?></td>
                                         <td scope="row"><?php if (isset($row['business_no'])) echo $row['business_no'] ?></td>
                                         <td scope="row"><?php if (isset($row['contact'])) echo $row['contact'] ?></td>
@@ -101,30 +120,6 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                         <td scope="row"><?php if (isset($row['person_in_charges'])) echo $row['person_in_charges'] ?></td>
                                         <td scope="row"><?php if (isset($row['person_in_charges_contact'])) echo $row['person_in_charges_contact'] ?></td>
                                         <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                        <td scope="row">
-                                            <div class="dropdown" style="text-align:center">
-                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                    <li>
-                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
                                     </tr>
                             <?php
                                 }
@@ -136,6 +131,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                             <tr>
                                 <th class="hideColumn" scope="col">ID</th>
                                 <th scope="col">S/N</th>
+                                <th scope="col" id="action_col">Action</th>
                                 <th scope="col">Merchant Name</th>
                                 <th scope="col">Merchant Business No</th>
                                 <th scope="col">Merchant Contact</th>
@@ -144,7 +140,6 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                 <th scope="col">Person In Charge</th>
                                 <th scope="col">Person In Charge Contact</th>
                                 <th scope="col">Remark</th>
-                                <th scope="col" id="action_col">Action</th>
                             </tr>
                         </tfoot>
                     </table>
