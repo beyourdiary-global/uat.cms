@@ -313,57 +313,55 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         </div>
 
         <div class="col-md-6 mb-3">
-            <label class="form-label form_lbl" id="commission_lbl" for="commission">Commission Fees Rate (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" step=".01" name="commission" id="commission" value="<?php 
-                if (isset($dataExisted) && isset($row['commission']) && !isset($commission)) {
-                    echo $row['commission'];
-                } else if (isset($dataExisted) && isset($row['commission']) && isset($commission)) {
-                    echo $commission;
-                } else {
-                    echo '';
-                } ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($commission_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $commission_err; ?></span>
-                </div>
-            <?php } ?>
+    <label class="form-label form_lbl" id="commission_lbl" for="commission">Commission Fees Rate (%)<span class="requireRed">*</span></label>
+    <input class="form-control" type="text" name="commission" id="commission" value="<?php 
+        if (isset($dataExisted) && isset($row['commission']) && !isset($commission)) {
+            echo $row['commission'];
+        } else if (isset($dataExisted) && isset($row['commission']) && isset($commission)) {
+            echo $commission;
+        } else {
+            echo '';
+        } ?>" <?php if ($act == '') echo 'disabled' ?> onkeypress="return isNumberKey(event)">
+    <?php if (isset($commission_err)) { ?>
+        <div id="err_msg">
+            <span class="mt-n1"><?php echo $commission_err; ?></span>
         </div>
-    </div>
+    <?php } ?>
+</div>
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label class="form-label form_lbl" id="service_lbl" for="service">Service Fee Rate (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" step=".01" name="service" id="service" value="<?php 
-                if (isset($dataExisted) && isset($row['service']) && !isset($service)) {
-                    echo $row['service'];
-                } else if (isset($dataExisted) && isset($row['service']) && isset($service)) {
-                    echo $service;
-                } else {
-                    echo '';
-                } ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($service_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $service_err; ?></span>
-                </div>
-            <?php } ?>
+<div class="col-md-6 mb-3">
+    <label class="form-label form_lbl" id="service_lbl" for="service">Service Fee Rate (%)<span class="requireRed">*</span></label>
+    <input class="form-control" type="text" name="service" id="service" value="<?php 
+        if (isset($dataExisted) && isset($row['service']) && !isset($service)) {
+            echo $row['service'];
+        } else if (isset($dataExisted) && isset($row['service']) && isset($service)) {
+            echo $service;
+        } else {
+            echo '';
+        } ?>" <?php if ($act == '') echo 'disabled' ?> onkeypress="return isNumberKey(event)">
+    <?php if (isset($service_err)) { ?>
+        <div id="err_msg">
+            <span class="mt-n1"><?php echo $service_err; ?></span>
         </div>
+    <?php } ?>
+</div>
 
         <div class="col-md-6 mb-3">
-            <label class="form-label form_lbl" id="transaction_lbl" for="transaction">Transaction Fee (%)<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" step=".01" name="transaction" id="transaction" value="<?php 
-                if (isset($dataExisted) && isset($row['transaction']) && !isset($transaction)) {
-                    echo $row['transaction'];
-                } else if (isset($dataExisted) && isset($row['transaction']) && isset($transaction)) {
-                    echo $transaction;
-                } else {
-                    echo '';
-                } ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($transaction_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $transaction_err; ?></span>
-                </div>
-            <?php } ?>
+    <label class="form-label form_lbl" id="transaction_lbl" for="transaction">Transaction Fee (%)<span class="requireRed">*</span></label>
+    <input class="form-control" type="text" name="transaction" id="transaction" value="<?php 
+        if (isset($dataExisted) && isset($row['transaction']) && !isset($transaction)) {
+            echo $row['transaction'];
+        } else if (isset($dataExisted) && isset($row['transaction']) && isset($transaction)) {
+            echo $transaction;
+        } else {
+            echo '';
+        } ?>" <?php if ($act == '') echo 'disabled' ?> onkeypress="return isNumberKey(event)">
+    <?php if (isset($transaction_err)) { ?>
+        <div id="err_msg">
+            <span class="mt-n1"><?php echo $transaction_err; ?></span>
         </div>
+    <?php } ?>
+</div>
     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -394,8 +392,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
 
     <script>
-
-
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
