@@ -34,6 +34,10 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
         font-size: 0.75rem;
         margin: 3px;
     }
+
+    .btn-container {
+        white-space: nowrap;
+    }
 </style>
 
 <body>
@@ -117,18 +121,17 @@ $result = getData('*', '', '', WEB_CUST_RCD, $connect);
                         <th scope="row">
                             <?= $num++; ?>
                         </th>
-
-                        <td>
-                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                    <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
-                                    <?php endif; ?>
-                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                    <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
-                                    <?php endif; ?>
-                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                    <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
-                                    <?php endif; ?>
-                                    </td>
+                        <td scope="row" class="btn-container">
+                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                        <?php endif; ?>
+                                        </td>
 
                         <td scope="row">
                             <?= $row['cust_id'] ?>

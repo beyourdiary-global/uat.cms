@@ -36,6 +36,9 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
         font-size: 0.75rem;
         margin: 3px;
     }
+    .btn-container {
+        white-space: nowrap;
+    }
 </style>
 
 <body>
@@ -127,8 +130,7 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
-                                <td>
-    
+                                <td scope="row" class="btn-container">
                                 <div class="d-flex align-items-center">
                                      <?php if (isActionAllowed("View", $pinAccess)) : ?>
                                         <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
