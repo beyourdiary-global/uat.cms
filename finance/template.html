@@ -107,13 +107,6 @@
         .uppercase {
             text-transform: uppercase;
         }
-        .mdi--radiobox-marked::after {
-        display: inline-block;
-        width: 1em;
-        height: 1em;
-        vertical-align: -0.125em;
-        content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M12 20a8 8 0 0 1-8-8a8 8 0 0 1 8-8a8 8 0 0 1 8 8a8 8 0 0 1-8 8m0-18A10 10 0 0 0 2 12a10 10 0 0 0 10 10a10 10 0 0 0 10-10A10 10 0 0 0 12 2m0 5a5 5 0 0 0-5 5a5 5 0 0 0 5 5a5 5 0 0 0 5-5a5 5 0 0 0-5-5'/%3E%3C/svg%3E");
-        }
     </style>
 
 
@@ -172,10 +165,7 @@
             <tr>
                 <td>{{invoice}}</td>
                 <td>{{date}}</td>
-                <td><button class="roundedSelectionBtn"  style="font-size: 12px;">
-                        <span class="mdi--radiobox-marked" ></span>
-                        {{pay_status}}
-                    </button></td>
+                <td class="uppercase">{{pay_status}}</td>
                 <td>{{due}}</td>
             </tr>
 
