@@ -36,6 +36,9 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
         font-size: 0.75rem;
         margin: 3px;
     }
+    .btn-container {
+        white-space: nowrap;
+    }
 </style>
 
 <body>
@@ -127,8 +130,7 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
-                                <td>
-    
+                                <td scope="row" class="btn-container">
                                 <div class="d-flex align-items-center">
                                      <?php if (isActionAllowed("View", $pinAccess)) : ?>
                                         <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
@@ -197,51 +199,6 @@ $result = getData('*', '', '', FB_CUST_DEALS, $connect);
                                 </td>
                                 <td scope="row">
                                     <?= $row['remark'] ?>
-                                </td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                    id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['contact'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_cust_deals_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php 
-                                                $member_exist = getData('name', "name='" . $row['id'] . "'", '', URBAN_CUST_REG, $connect); 
-
-                                                //manipulate act based on whether there is an existing member already
-                                                if ($member_exist->fetch_assoc()) {
-                                                    $reg_url = $reg_member_page . "?id=" . $row['id'] . '&act=' . $act_2;
-                                                } else {
-                                                    $reg_url = $reg_member_page . "?id=" . $row['id'] . '&act=' . $act_1;
-                                                }
-                                                ?>
-                                                <a class="dropdown-item"
-                                                    href="<?= $reg_url ?>">Urbanism
-                                                    Member</a>
-
-                                            </li>
-                                        </ul>
-                                    </div>
                                 </td>
                             </tr>
                         <?php } ?>

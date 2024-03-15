@@ -41,6 +41,9 @@ $result = getData('*', '', '', $tblName, $finance_connect);
         font-size: 0.75rem;
         margin: 3px;
     }
+    .btn-container {
+        white-space: nowrap;
+    }
 </style>
 
 <body>
@@ -101,7 +104,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                     <tr>
                                         <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                         <th scope="row"><?= $num++; ?></th>
-                                        <td>
+                                        <td scope="row" class="btn-container">
                                         <?php if (isActionAllowed("View", $pinAccess)) : ?>
                                         <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
                                         <?php endif; ?>
@@ -111,7 +114,7 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                         <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
                                         <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
                                         <?php endif; ?>
-                                    </td>
+                                        </td>
                                         <td scope="row"><?= $row['name'] ?></td>
                                         <td scope="row"><?php if (isset($row['business_no'])) echo $row['business_no'] ?></td>
                                         <td scope="row"><?php if (isset($row['contact'])) echo $row['contact'] ?></td>
