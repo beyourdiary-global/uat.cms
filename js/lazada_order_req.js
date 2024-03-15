@@ -564,7 +564,7 @@ function calculateCountry() {
     
         retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
             if (result && result.length > 0) {
-                var pkg_price = parseFloat(result[0]['item_price_credit']);
+                var pkg_price = parseFloat(result[0]['price']);
                 var pkg_curr = result[0]['currency_unit'];
                 console.log('curr', pkg_curr);
                 $("#lor_item_price_credit").val(pkg_price.toFixed(2));
@@ -615,7 +615,7 @@ function calculateCountry() {
                         }
                     })
                 } else {
-                    console.log('Same Package Shopee Acc currency.');
+                    console.log('Same Package Lazada Acc currency.');
                     price_curr_chk = 1;
     
                 }
