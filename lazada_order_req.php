@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
-    $lor_lazada_acc = postSpaceFilter('lor_lazada_acc');
+    $lor_lazada_acc = postSpaceFilter('lor_lazada_acc_hidden');
     $lor_curr_unit = postSpaceFilter('lor_curr_unit_hidden');
     $lor_lzd_country = postSpaceFilter('lor_lzd_country_hidden');
     $lor_cust_id = postSpaceFilter('lor_cust_id_hidden');
@@ -134,12 +134,12 @@ if (post('actionBtn')) {
                     }
 
                     if ($lor_cust_email) {
-                        array_push($newvalarr, $cust_email);
+                        array_push($newvalarr, $lor_cust_email);
                         array_push($datafield, 'cust_email');
                     }
 
                     if ($lor_cust_phone) {
-                        array_push($newvalarr, $cust_phone);
+                        array_push($newvalarr, $lor_cust_phone);
                         array_push($datafield, 'cust_phone');
                     }
 
@@ -612,7 +612,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
 <div class="form-group">
     <div class="row">
-    <div class="col-md-6 mb-3">
+    <div class="col-md-6 mb-3 autocomplete">
         <label class="form-label form_lbl" id="lor_cust_id_lbl" for="lor_cust_id">Customer ID<span class="requireRed">*</span></label>
         <?php
         unset($echoVal);
@@ -744,16 +744,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
     </div>
         <input type="submit" value="Submit">
-    </form>
     </div>
-</div>
+
 </fieldset>
 
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">
     <legend class="float-none w-auto p-2">Order Information</legend>
         <div class="col-md-12">
     <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3 autocomplete">
         <label class="form-label form_lbl" id="lor_country_lbl" for="lor_country">Country<span
                                         class="requireRed">*</span></label>
                                 <?php
@@ -973,7 +972,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
 <div class="row">
     <div class="col-md-4 mb-3">
-        <label class="form-label form_lbl" id="lor_item_price_credit_lbl" for="lor_item_price_credit">Item Price Credit<span class="requireRed">*</span></label>
+    <label class="form-label form_lbl" id="lor_item_price_credit_lbl" for="lor_item_price_credit">Item Price Credit<span class="requireRed">*</span></label>
         <input class="form-control" type="number" step=".01" name="lor_item_price_credit" id="lor_item_price_credit" value="<?php
         if (isset($dataExisted) && isset($row['item_price_credit']) && !isset($lor_item_price_credit)) {
             echo $row['item_price_credit'];
@@ -997,6 +996,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['commision'];
         } else if (isset($lor_commision)) {
             echo $lor_commision;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($commision_err)) { ?>
@@ -1015,6 +1016,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['other_discount'];
         } else if (isset($lor_ship_rec_contact)) {
             echo $lor_other_discount;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($other_discount_err)) { ?>
@@ -1036,6 +1039,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             echo $row['pay_fee'];
         } else if (isset($lor_pay_fee)) {
             echo $lor_pay_fee;
+        } else {
+            echo '0';
         }
         ?>" <?php if ($act == '') echo 'disabled' ?>>
         <?php if (isset($pay_fee_err)) { ?>

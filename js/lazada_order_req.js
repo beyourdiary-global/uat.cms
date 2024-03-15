@@ -8,9 +8,22 @@ function toggleNewCustomerSection() {
     }
 }
 
-
 //autocomplete
 $(document).ready(function() {
+
+     //lazada_acc
+     if (!($("#lor_lazada_acc").attr('disabled'))) {
+        $("#lor_lazada_acc").keyup(function () {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= LAZADA_ACC ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    } 
 
      //Currency unit
      if (!($("#lor_curr_unit").attr('disabled'))) {
@@ -43,6 +56,21 @@ $(document).ready(function() {
 
     }
 
+    //customer id
+    if (!($("#lor_cust_id").attr('disabled'))) {
+        $("#lor_cust_id").keyup(function () {
+            var param = {
+                search: $(this).val(),
+                searchType: 'lcr_id', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= LAZADA_CUST_RCD ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+
     //country
     if (!($("#lor_country").attr('disabled'))) {
         $("#lor_country").keyup(function() {
@@ -57,6 +85,7 @@ $(document).ready(function() {
         });
 
     }
+
     //brand
     if (!($("#lor_brand").attr('disabled'))) {
         $("#lor_brand").keyup(function() {
@@ -99,45 +128,23 @@ $(document).ready(function() {
             }
             searchInput(param, '<?= $SITEURL ?>');
         });
-        $("#lor_pkg").change(calculateItemPrice);
-    }
-
-     //customer id
-     if (!($("#lor_cust_id").attr('disabled'))) {
-        $("#lor_cust_id").keyup(function () {
-            var param = {
-                search: $(this).val(),
-                searchType: 'lcr_id', // column of the table
-                elementID: $(this).attr('id'), // id of the input
-                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
-                dbTable: '<?= LAZADA_CUST_RCD ?>', // json filename (generated when login)
-            }
-            searchInput(param, '<?= $SITEURL ?>');
-        });
-
-    }
-
-     //lazada_acc
-     if (!($("#lor_lazada_acc").attr('disabled'))) {
-        $("#lor_lazada_acc").keyup(function () {
-            var param = {
-                search: $(this).val(),
-                searchType: 'name', // column of the table
-                elementID: $(this).attr('id'), // id of the input
-                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
-                dbTable: '<?= LAZADA_ACC ?>', // json filename (generated when login)
-            }
-            searchInput(param, '<?= $SITEURL ?>');
-        });
-
     }
     $("#lor_lazada_acc").change(calculateCurrUnit); 
-    $("#lor_lazada_acc").change(calculateCountry); 
+    $("#lor_lazada_acc").change(calculateCountry);
+    $("#lor_lazada_acc, #lor_pkg").change(calculatePrice);
 })
 
 //jQuery fcbm validation
 $("#lor_lazada_acc").on("input", function() {
     $(".lor-lazada-acc-err").remove();
+});
+
+$("#lor_curr_unit").on("input", function() {
+    $(".lor-curr-unit-err").remove();
+});
+
+$("#lor_lzd_country").on("input", function() {
+    $(".lor-lzd_country-err").remove();
 });
 
 $("#lor_cust_id").on("input", function() {
@@ -223,6 +230,8 @@ $("#lor_pay_meth").on("input", function() {
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     var lazada_acc_chk = 0;
+    var curr_unit_chk = 0;
+    var lzd_country_chk = 0;
     var cust_id_chk = 0;
     var cust_name_chk = 0;
     var cust_email_chk = 0;
@@ -253,7 +262,27 @@ $('.submitBtn').on('click', () => {
         lazada_acc_chk = 1;
     }
 
-    if (($('#lor_cust_id').val() == '' || $('#lor_cust_id').val() == '0' || $('#lor_cust_id').val() === null || $('#lor_cust_id')
+     if (($('#lor_curr_unit_hidden').val() == '' || $('#lor_curr_unit_hidden').val() == '0' || $('#lor_curr_unit_hidden').val() === null || $('#lor_curr_unit_hidden')
+            .val() === undefined)) {
+        curr_unit_chk = 0;
+        $("#lor_curr_unit").after(
+            '<span class="error-message lor-curr-unit-err">Currency Unit is required!</span>');
+    } else {
+        $(".lor-curr-unit-err").remove();
+        curr_unit_chk = 1;
+    }
+
+     if (($('#lor_lzd_country_hidden').val() == '' || $('#lor_lzd_country_hidden').val() == '0' || $('#lor_lzd_country_hidden').val() === null || $('#lor_lzd_country_hidden')
+            .val() === undefined)) {
+        lzd_country_chk = 0;
+        $("#lor_lzd_country").after(
+            '<span class="error-message lor-lzd-country-err">Country is required!</span>');
+    } else {
+        $(".lor-lzd-country-name-err").remove();
+        lzd_country_chk = 1;
+    }
+    
+    if (($('#lor_cust_id_hidden').val() == '' || $('#lor_cust_id_hidden').val() == '0' || $('#lor_cust_id_hidden').val() === null || $('#lor_cust_id_hidden')
             .val() === undefined)) {
         cust_id_chk = 0;
         $("#lor_cust_id").after(
@@ -443,108 +472,155 @@ $('.submitBtn').on('click', () => {
         pay_meth_chk = 1;
     }
 
-    if (lazada_acc_chk == 1 && cust_id_chk == 1 && cust_name_chk == 1 && cust_email_chk == 1 && cust_phone_chk == 1 && country_chk == 1 && oder_number_chk == 1 && sales_pic_chk == 1 && ship_rec_name_chk == 1 && ship_rec_address_chk == 1 &&  ship_rec_contact_chk == 1 && brand_chk == 1 && series_chk == 1 && pkg_chk == 1 && item_price_credit_chk == 1 && commision_chk == 1 && other_discount_chk == 1 && pay_fee_chk == 1 && final_income_chk == 1 && pay_meth_chk == 1 )
+    if (lazada_acc_chk == 1 && curr_unit_chk == 1 && lzd_country_chk == 1 && cust_id_chk == 1 && cust_name_chk == 1 && cust_email_chk == 1 && cust_phone_chk == 1 && country_chk == 1 && oder_number_chk == 1 && sales_pic_chk == 1 && ship_rec_name_chk == 1 && ship_rec_address_chk == 1 &&  ship_rec_contact_chk == 1 && brand_chk == 1 && series_chk == 1 && pkg_chk == 1 && item_price_credit_chk == 1 && commision_chk == 1 && other_discount_chk == 1 && pay_fee_chk == 1 && final_income_chk == 1 && pay_meth_chk == 1 )
         $(this).closest('fcbm').submit();
     else
         return false;
 
 })
 
-    function calculateCurrUnit() {
+    //currency_unit
+function calculateCurrUnit() {
 
-        var paramLzdAcc = {
-            search: $("#lor_lazada_acc_hidden").val(),
-            searchCol: 'id',
-            searchType: '*',
-            dbTable: '<?= LAZADA_ACC ?>',
-            isFin: 1,
-        };
-    
-        retrieveDBData(paramLzdAcc, '<?= $SITEURL ?>', function (result) {
-            getCurrUnit(result);
-            $("#lor_curr_unit_hidden").val(result[0]['curr_unit']);
-        });
-    
-        function getCurrUnit(result) {
-            if (result && result.length > 0) {
-                curr_unit = result[0]['curr_unit'];
-                
-                    var paramCurrUnit = {
-                        search: currency_unit,
-                        searchCol: 'id',
-                        searchType: '*',
-                        dbTable: '<?= CUR_UNIT ?>',
-                        isFin: 0,
-                    };
-    
-                    retrieveDBData(paramCurrUnit, '<?= $SITEURL ?>', function (result) {
-                        $("#lor_curr_unit").val(result[0]['unit']);
-                    });
-                } else {
-                    console.error('Error retrieving lazada account data');
-                }
+    var paramLazada_acc = {
+        search: $("#lor_lazada_acc_hidden").val(),
+        searchCol: 'id',
+        searchType: '*',
+        dbTable: '<?= LAZADA_ACC ?>',
+        isFin: 1,
+    };
+
+    retrieveDBData(paramLazada_acc, '<?= $SITEURL ?>', function (result) {
+        getCurrUnit(result);
+        $("#lor_curr_unit_hidden").val(result[0]['currency_unit']);
+    });
+
+    function getCurrUnit(result) {
+        if (result && result.length > 0) {
+            currency_unit = result[0]['currency_unit'];
+            
+                var paramCurrUnit = {
+                    search: currency_unit,
+                    searchCol: 'id',
+                    searchType: '*',
+                    dbTable: '<?= CUR_UNIT ?>',
+                    isFin: 0,
+                };
+
+                retrieveDBData(paramCurrUnit, '<?= $SITEURL ?>', function (result) {
+                    $("#lor_curr_unit").val(result[0]['unit']);
+                });
+            } else {
+                console.error('Error retrieving agent data');
             }
         }
+    }
 
-        function calculateCountry() {
+       // country
+function calculateCountry() {
 
-            var paramLzdAcc = {
-                search: $("#lor_lazada_acc_hidden").val(),
-                searchCol: 'id',
-                searchType: '*',
-                dbTable: '<?= LAZADA_ACC ?>',
-                isFin: 1,
-            };
-        
-            retrieveDBData(paramLzdAcc, '<?= $SITEURL ?>', function (result) {
-                getCurrUnit(result);
-                $("#lor_country_hidden").val(result[0]['country']);
-            });
-        
-            function getCurrUnit(result) {
-                if (result && result.length > 0) {
-                    country = result[0]['country'];
-                    
-                        var paramCountry = {
-                            search: country,
-                            searchCol: 'id',
-                            searchType: '*',
-                            dbTable: '<?= COUNTRIES ?>',
-                            isFin: 0,
-                        };
-        
-                        retrieveDBData(paramCountry, '<?= $SITEURL ?>', function (result) {
-                            $("#lor_country").val(result[0]['country']);
-                        });
-                    } else {
-                        console.error('Error retrieving lazada account data');
-                    }
-                }
+    var paramLazada_acc = {
+        search: $("#lor_lazada_acc_hidden").val(),
+        searchCol: 'id',
+        searchType: '*',
+        dbTable: '<?= LAZADA_ACC ?>',
+        isFin: 1,
+    };
+
+    retrieveDBData(paramLazada_acc , '<?= $SITEURL ?>', function (result) {
+        getCountry(result);
+        $("#lor_lzd_country_hidden").val(result[0]['country']);
+    });
+
+    function getCountry(result) {
+        if (result && result.length > 0) {
+            country = result[0]['country'];
+            
+                var paramCountry = {
+                    search: country,
+                    searchCol: 'id',
+                    searchType: '*',
+                    dbTable: '<?= COUNTRIES ?>',
+                    isFin: 0,
+                };
+
+                retrieveDBData(paramCountry, '<?= $SITEURL ?>', function (result) {
+                    $("#lor_lzd_country").val(result[0]['name']);
+                });
+            } else {
+                console.error('Error retrieving data');
             }
-
-            function getItemPrice(result) {
-                if (result && result.length > 0) {
-                    pkgName = result[0]['name'];
-        
-                    var paramPackage = {
-                        search: pkgName,
-                        searchCol: 'name',
+        }
+    }
+    
+    function calculatePrice() {
+        var paramPkg = {
+            search: $("#lor_pkg_hidden").val(),
+            searchCol: 'id',
+            searchType: '*',
+            dbTable: '<?= PKG ?>',
+            isFin: 0,
+        };
+    
+        retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
+            if (result && result.length > 0) {
+                var pkg_price = parseFloat(result[0]['item_price_credit']);
+                var pkg_curr = result[0]['currency_unit'];
+                console.log('curr', pkg_curr);
+                $("#lor_item_price_credit").val(pkg_price.toFixed(2));
+                $("#lor_item_price_credit").trigger("change");
+                // Retrieve account currency
+                var acc_curr = $("#lor_curr_unit_hidden").val();
+                console.log('Account Currency:', acc_curr);
+                var pkgCurrName = '';
+    
+                // Compare account currency with package currency
+                if (acc_curr !== pkg_curr) {
+                    console.log('Currency mismatch: Account currency is different from package currency.');
+                    var paramCurrencies = {
+                        search: acc_curr,
+                        searchCol: 'default_currency_unit` = ' + pkg_curr + ' AND `exchange_currency_unit',
                         searchType: '*',
-                        dbTable: '<?= PKG ?>',
+                        dbTable: '<?= CURRENCIES ?>',
                         isFin: 0,
                     };
-        
-                    retrieveDBData(paramPackage, '<?= $SITEURL ?>', function (result) {
-                        console.log(result);
+                    retrieveDBData(paramCurrencies, '<?= $SITEURL ?>', function (result) {
                         if (result && result.length > 0) {
-                            if (result[0]['currency_unit'] !== undefined ) {
-                                currency_unit = parseFloat(result[0]['currency_unit']);
-                            }
+                            var exchangeRate = parseFloat(result[0]['exchange_currency_rate']);
+                            console.log(result);
+                            var priceInAccountCurrency = pkg_price * exchangeRate;
+                            console.log(pkg_price);
+                            console.log('Price in account currency:', priceInAccountCurrency);
+                            $("#sor_price").val(priceInAccountCurrency.toFixed(2));
+                            $("#sor_price").trigger("change");
+                        } else {
+                            var paramPkgCurr = {
+                                search: pkg_curr,
+                                searchCol: 'id',
+                                searchType: '*',
+                                dbTable: '<?= CUR_UNIT ?>',
+                                isFin: 0,
+                            };
+                            retrieveDBData(paramPkgCurr, '<?= $SITEURL ?>', function (result) {
+                                if (result && result.length > 0) {
+                                    pkgCurrName = result[0]['unit'];
+                                    price_curr_chk = 0;
+                                    $("#lor_item_price_credit").val(0);
+                                    $("#lor_item_price_credit").after(
+                                        '<span class="error-message sor-pricecurr-err">Currency rate not found! (Package Price: ' + pkgCurrName + ' ' + pkg_price + ')</span>');
+                                }
+                            })
+                            // If data is not found, show an error message
+                            console.error('No exchange rate found for the specified currencies.');
                         }
-                        currency_unitInput.val(currency_unit .toFixed(2));
-                    });
-        
+                    })
                 } else {
-                    console.error('Error retrieving data');
+                    console.log('Same Package Shopee Acc currency.');
+                    price_curr_chk = 1;
+    
                 }
+            } else {
+                console.error('Error retrieving Package data');
             }
+        });
+    }
