@@ -12,6 +12,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/website_order_request.php';
+$deleteRedirectPage = $SITEURL . '/finance/website_order_request_table.php';
 $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
 ?>
 
@@ -27,6 +28,17 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
         createSortingTable('website_order_request_table');
     });
 </script>
+
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 
 <body>
 
@@ -69,7 +81,8 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Order ID</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Series</th>
@@ -90,7 +103,6 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                             <th scope="col">Shipping Address</th>
                             <th scope="col">Shipping Contact</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,6 +137,19 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
+                                
+                                <td scope="row" class="btn-container">
+                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['order_id'] ?>','<?= $row['brand'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                        <?php endif; ?>
+                                        </td>
+
                                 <td scope="row">
                                     <?= $row['order_id'] ?? '' ?>
                                 </td>
@@ -194,42 +219,14 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                                 <td scope="row">
                                     <?= $row['remark'] ?? '' ?>
                                 </td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                    id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['order_id'] ?>','<?= $row['brand'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/fb_order_req_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>
                     <tfoot>
                         <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Order ID</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Series</th>
@@ -250,7 +247,6 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                             <th scope="col">Shipping Address</th>
                             <th scope="col">Shipping Contact</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>

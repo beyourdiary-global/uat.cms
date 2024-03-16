@@ -33,6 +33,17 @@ if (!$result) {
     });
 </script>
 
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
+
 <body>
 
 <div class="pre-load-center">
@@ -65,14 +76,14 @@ if (!$result) {
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>
+                        <th scope="col">S/N</th>
+                        <th scope="col" id="action_col">Action</th>
                         <th scope="col">Shopee Buyer Username</th>
                         <th scope="col">Sales Person In Charge</th>
                         <th scope="col">Country</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Series</th>
                         <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,36 +107,23 @@ if (!$result) {
                             <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
+                                <td scope="row" class="btn-container">
+                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
+                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
+                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
+                                        <?php endif; ?>
+                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
+                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['buyer_username'] ?>','<?= $row3['nicename'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                        <?php endif; ?>
+                                        </td>
                                 <td scope="row"><?= isset($row['buyer_username']) ? $row['buyer_username']  : '' ?></td>
                                 <td scope="row"><?= isset($row2['name']) ? $row2['name'] : '' ?></td>
                                 <td scope="row"><?= isset($row3['nicename']) ? $row3['nicename'] : '' ?></td>
                                 <td scope="row"><?= isset($row4['name']) ? $row4['name'] : '' ?></td>
                                 <td scope="row"><?= isset($row5['name']) ? $row5['name'] : '' ?></td>
                                 <td scope="row"><?= isset($row['remark']) ? $row['remark'] : '' ?></td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                            <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                            <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                    <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['buyer_username'] ?>','<?= $row3['nicename'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_cust_info_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
                             </tr>
                     <?php }
                     } ?>
@@ -133,14 +131,14 @@ if (!$result) {
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>
+                        <th scope="col">S/N</th>
+                        <th scope="col" id="action_col">Action</th>
                         <th scope="col">Shopee Buyer Username</th>
                         <th scope="col">Sales Person In Charge</th>
                         <th scope="col">Country</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Series</th>
                         <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
                     </tr>
                 </tfoot>
             </table>

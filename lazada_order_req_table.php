@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Lazada Customer Record (Deals)";
+$pageTitle = "Lazada Order Request";
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 
@@ -9,9 +9,9 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/lazada_cust_rcd.php';
-$deleteRedirectPage = $SITEURL . '/lazada_cust_rcd_table.php';
-$result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
+$redirect_page = $SITEURL . '/lazada_order_req.php';
+$deleteRedirectPage = $SITEURL . '/lazada_order_req_table.php';
+$result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@ $result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('lzd_cust_deals');
+        createSortingTable('lazada_order_req');
     });
 </script>
 
@@ -75,30 +75,41 @@ $result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
     } else {
         ?>
 
-        <table class="table table-striped" id="lzd_cust_deals">
+        <table class="table table-striped" id="lazada_order_req">
             <thead>
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col">S/N</th>
                     <th scope="col" id="action_col">Action</th>
+                    <th scope="col">Lazada Account</th>
+                    <th scope="col">Currency Unit</th>
+                    <th scope="col">Country</th>
                     <th scope="col">Customer ID</th>
                     <th scope="col">Customer Name</th>
                     <th scope="col">Customer Email</th>
                     <th scope="col">Customer Phone</th>
-                    <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Series</th>
+                    <th scope="col">Order Number</th>
+                    <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Shipping Receiver Name</th>
                     <th scope="col">Shipping Receiver Address</th>
                     <th scope="col">Shipping Receiver Contact</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Series</th>
+                    <th scope="col">Package</th>
+                    <th scope="col">Item Price Credit</th>
+                    <th scope="col">Commision</th>
+                    <th scope="col">Other Discount</th>
+                    <th scope="col">Payment Fee</th>
+                    <th scope="col">Final Income</th>
+                    <th scope="col">Payment Method</th>
                     <th scope="col">Remark</th>
                 </tr>
             </thead>
             <tbody>
                 <?php while ($row = $result->fetch_assoc()) {
-                    $q1 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
-                    $pic = $q1->fetch_assoc();
+                    $q1 = getData('name', "id='" . $row['lazada_acc'] . "'", '', LAZADA_ACC, $finance_connect);
+                    $lazada_acc = $q1->fetch_assoc();
 
                     $q2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
                     $country = $q2->fetch_assoc();
@@ -109,6 +120,17 @@ $result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
                     $q4 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
                     $series = $q4->fetch_assoc();
 
+                    $q5 = getData('unit', "id='" . $row['curr_unit'] . "'", '', CUR_UNIT, $connect);
+                    $curr_unit = $q5->fetch_assoc();
+
+                    $q6 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
+                    $series = $q6->fetch_assoc();
+
+                    $q7 = getData('name', "id='" . $row['pay_meth'] . "'", '', FIN_PAY_METH, $finance_connect);
+                    $pay_meth = $q7->fetch_assoc();
+
+                    $q8 = getData('name', "id='" . $row['pkg'] . "'", '', PKG, $connect);
+                    $package = $q8->fetch_assoc();
                     ?>
 
                     <tr>
@@ -126,48 +148,32 @@ $result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
                                         <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
                                         <?php endif; ?>
                                         <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['lcr_id'] ?>','<?= $row['name'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
+                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['curr_unit'] ?>','<?= $row['country'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
                                         <?php endif; ?>
                                         </td>
-
-                        <td scope="row">
-                            <?= $row['lcr_id'] ?>
-                        </td>
-
-                        <td scope="row">
-                            <?= $row['name'] ?>
-                        </td>
-
-                        <td scope="row">
-                            <?= $row['email'] ?>
-                        </td>
-
-                        <td scope="row">
-                            <?= $row['phone'] ?>
-                        </td>
-
-                        <td scope="row"><?= isset($pic['name']) ? $pic['name'] : ''  ?></td>
-
-                        <td scope="row">
-                            <?= $country['nicename'] ?>
-                        </td>
-
+                        <td scope="row"><?= isset($lazada_acc['name']) ? $lazada_acc['name'] : ''  ?></td>
+                        <td scope="row"><?= $row['curr_unit'] ?></td>
+                        <td scope="row"><?= $row['country'] ?></td>
+                        <td scope="row"><?= $row['cust_id'] ?></td>
+                        <td scope="row"><?= $row['cust_name'] ?></td>
+                        <td scope="row"><?= $row['cust_email'] ?></td>
+                        <td scope="row"><?= $row['cust_phone'] ?></td>
+                        <td scope="row"><?= isset($country['nicename']) ? $country['nicename'] : ''  ?></td>
+                        <td scope="row"><?= $row['oder_number'] ?></td>
+                        <td scope="row"><?= $row['sales_pic'] ?></td>
+                        <td scope="row"><?= $row['ship_rec_name'] ?></td>
+                        <td scope="row"><?= $row['ship_rec_address'] ?></td>
+                        <td scope="row"><?= $row['ship_rec_contact'] ?></td>
                         <td scope="row"><?= isset($brand['name']) ? $brand['name'] : ''  ?></td>
-
                         <td scope="row"><?= isset($series['name']) ? $series['name'] : ''  ?></td>
-
-                        <td scope="row">
-                            <?= $row['ship_rec_name'] ?>
-                        </td>
-                        <td scope="row">
-                            <?= $row['ship_rec_add'] ?>
-                        </td>
-                        <td scope="row">
-                            <?= $row['ship_rec_contact'] ?>
-                        </td>
-                        <td scope="row">
-                            <?= $row['remark'] ?>
-                        </td>
+                        <td scope="row"><?= isset($package['name']) ? $package['name'] : ''  ?></td>
+                        <td scope="row"><?= $row['item_price_credit'] ?></td>
+                        <td scope="row"><?= $row['commision'] ?></td>
+                        <td scope="row"><?= $row['other_discount'] ?></td>
+                        <td scope="row"><?= $row['pay_fee'] ?></td>
+                        <td scope="row"><?= $row['final_income'] ?></td>
+                        <td scope="row"><?= isset($pay_meth['name']) ? $pay_meth['name'] : ''  ?></td>
+                        <td scope="row"><?= $row['remark'] ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -176,17 +182,28 @@ $result = getData('*', '', '', LAZADA_CUST_RCD, $connect);
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col">S/N</th>
                     <th scope="col" id="action_col">Action</th>
+                    <th scope="col">Lazada Account</th>
+                    <th scope="col">Currency Unit</th>
+                    <th scope="col">Country</th>
                     <th scope="col">Customer ID</th>
                     <th scope="col">Customer Name</th>
                     <th scope="col">Customer Email</th>
                     <th scope="col">Customer Phone</th>
-                    <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Country</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Series</th>
+                    <th scope="col">Order Number</th>
+                    <th scope="col">Sales Person In Charge</th>
                     <th scope="col">Shipping Receiver Name</th>
                     <th scope="col">Shipping Receiver Address</th>
                     <th scope="col">Shipping Receiver Contact</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Series</th>
+                    <th scope="col">Package</th>
+                    <th scope="col">Item Price Credit</th>
+                    <th scope="col">Commision</th>
+                    <th scope="col">Other Discount</th>
+                    <th scope="col">Payment Fee</th>
+                    <th scope="col">Final Income</th>
+                    <th scope="col">Payment Method</th>
                     <th scope="col">Remark</th>
                 </tr>
             </tfoot>
@@ -213,7 +230,7 @@ common.fun.js
 function(id)
 to resize table with bootstrap 5 classes
 */
-datatableAlignment('lzd_cust_deals');
+datatableAlignment('lazada_order_req');
 </script>
 
 </html>
