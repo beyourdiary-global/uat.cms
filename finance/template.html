@@ -104,6 +104,9 @@
         .padding-left {
             padding-left: 1rem;
         }
+        .uppercase {
+            text-transform: uppercase;
+        }
     </style>
 
 
@@ -162,11 +165,7 @@
             <tr>
                 <td>{{invoice}}</td>
                 <td>{{date}}</td>
-                <td><button class="roundedSelectionBtn"  style="font-size: 12px;">
-                        <!-- <span class="mdi mdi-record-circle-outline" style=" {{pay_colour}} "></span> -->
-                        <span class="mdi mdi-record-circle-outline"></span>
-                        {{pay_status}}
-                    </button></td>
+                <td class="uppercase">{{pay_status}}</td>
                 <td>{{due}}</td>
             </tr>
 
