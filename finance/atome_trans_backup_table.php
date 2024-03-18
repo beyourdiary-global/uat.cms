@@ -25,9 +25,9 @@ if (!empty($checkboxValues)) {
     setcookie('rowID', '', time() - 3600, '/');
     // Defining column names
     $excelData = array(
-        array('S/N', 'TRANSACTION ID', 'ATOME ORDER ID', 'TRANSACTION DATE AND TIME', 'TRANSACTION OUTLET', 'E-COMMERCE PLATFORM ORDER ID','ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
+        array('S/N', 'TRANSACTION ID', 'ATOME ORDER ID', 'TRANSACTION DATE AND TIME', 'TRANSACTION OUTLET', 'E-COMMERCE PLATFORM ORDER ID','AMOUNT RECEIVABLE','ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
     );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . ATOME_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY trans_id ASC, atome_id ASC, date ASC, trans_outlet ASC, platform_id ASC");
+    $query2 = $finance_connect->query("SELECT * FROM " . ATOME_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY trans_id ASC, atome_id ASC, date ASC, trans_outlet ASC, platform_id ASC, amt_rec ASC");
 
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
@@ -50,7 +50,7 @@ if (!empty($checkboxValues)) {
             }
 
             // Define the column names in the same order as in your database query
-            $columnNames = array('trans_id', 'atome_id', 'date', 'trans_outlet', 'platform_id', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
+            $columnNames = array('trans_id', 'atome_id', 'date', 'trans_outlet', 'platform_id', 'amt_rec', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
 
             foreach ($columnNames as $columnName) {
                 // Check if the value is null, if so, replace it with an empty string
@@ -240,6 +240,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Transaction Date and Time</th>
                             <th scope="col">Transaction Outlet</th>
                             <th scope="col">E-commerce Platform Order ID</th>
+                            <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
@@ -265,6 +266,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
                                     <td scope="row"><?php if (isset($row['trans_outlet'])) echo $row['trans_outlet'] ?></td>
                                     <td scope="row"><?php if (isset($row['platform_id'])) echo $row['platform_id'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amt_rec'])) echo $row['amt_rec'] ?></td>
                                     <td scope="row">
                                         <?php if (isset($row['attachment'])) { ?><a href="<?= $img_path . $row['attachment'] ?>"
                                                 target="_blank">
@@ -317,6 +319,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Transaction Date and Time</th>
                             <th scope="col">Transaction Outlet</th>
                             <th scope="col">E-commerce Platform Order ID</th>
+                            <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
