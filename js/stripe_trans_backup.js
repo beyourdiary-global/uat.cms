@@ -1,3 +1,21 @@
+//autocomplete
+$(document).ready(function() {
+     //Currency unit
+     if (!($("#stb_curr_unit").attr('disabled'))) {
+        $("#stb_curr_unit").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'unit', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input fcb storing the value
+                dbTable: '<?= CUR_UNIT ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+})
+
 $('#stb_attach').on('change', function() {
     previewImage(this, 'stb_attach_preview')
 })

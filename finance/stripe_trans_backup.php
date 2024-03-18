@@ -48,7 +48,7 @@ if (post('actionBtn')) {
 
     $stb_payout_id = postSpaceFilter("stb_payout_id");
     $stb_date_paid = postSpaceFilter('stb_date_paid');
-    $stb_curr_unit = postSpaceFilter('stb_curr_unit');
+    $stb_curr_unit = postSpaceFilter('stb_curr_unit_hidden');
     $stb_amount = postSpaceFilter('stb_amount');
 
     $stb_attach = null;
@@ -359,41 +359,54 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </div>
 
 <div class="row">
-                <div class="col-12 col-md-6">
+    <div class="col-12 col-md-6 autocomplete">
+        <label class="form-label form_lbl" id="stb_curr_unit_lbl" for="stb_curr_unit">Currency Unit<span class="requireRed">*</span></label>
+        <?php
+        unset($echoVal);
+
+        if (isset($row['curr_unit']))
+            $echoVal = $row['curr_unit'];
+
+        if (isset($echoVal)) {
+            $curr_unit_rst = getData('unit', "id = '$echoVal'", '', CUR_UNIT, $connect);
+            if (!$curr_unit_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+            }
+            $curr_unit_row = $curr_unit_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="stb_curr_unit" id="stb_curr_unit" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $curr_unit_row['name'] : '' ?>">
+        <input type="hidden" name="stb_curr_unit_hidden" id="stb_curr_unit_hidden" value="<?php echo (isset($row['curr_unit'])) ? $row['curr_unit'] : ''; ?>">
+
+        <?php if (isset($curr_unit_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1">
+                    <?php echo $curr_unit_err; ?>
+                </span>
+            </div>
+        <?php } ?>
+    </div>
+
+    <div class="col-12 col-md-6">
         <div class="form-group mb-3">
-            <label class="form-label form_lbl" id="stb_curr_unit_lbl" for="stb_curr_unit">Currency Unit<span class="requireRed">*</span></label>
-            <input class="form-control" type="text" name="stb_curr_unit" id="stb_curr_unit" value="<?php
-                if (isset($dataExisted) && isset($row['curr_unit']) && !isset($stb_curr_unit)) {
-                    echo $row['curr_unit'];
-                } else if (isset($stb_curr_unit)) {
-                    echo $stb_curr_unit;
+            <label class="form-label form_lbl" id="stb_amount_lbl" for="stb_amount">Amount<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" name="stb_amount" id="stb_amount" value="<?php
+                if (isset($dataExisted) && isset($row['amount']) && !isset($stb_amount)) {
+                    echo $row['amount'];
+                } else if (isset($stb_amount)) {
+                    echo $stb_amount;
                 }
             ?>" <?php if ($act == '') echo 'disabled' ?>>
-            <?php if (isset($stb_curr_unit_err)) { ?>
+            <?php if (isset($stb_amount_err)) { ?>
                 <div id="err_msg">
-                    <span class="mt-n1"><?php echo $stb_curr_unit_err; ?></span>
+                    <span class="mt-n1"><?php echo $stb_amount_err; ?></span>
                 </div>
             <?php } ?>
         </div>
     </div>
+</div>
 
-    <div class="col-12 col-md-6">
-            <div class="form-group mb-3">
-                <label class="form-label form_lbl" id="stb_amount_lbl" for="stb_amount">Amount<span class="requireRed">*</span></label>
-                <input class="form-control" type="number" name="stb_amount" id="stb_amount" value="<?php
-                    if (isset($dataExisted) && isset($row['amount']) && !isset($stb_amount)) {
-                        echo $row['amount'];
-                    } else if (isset($stb_amount)) {
-                        echo $stb_amount;
-                    }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
-                <?php if (isset($stb_amount_err)) { ?>
-                    <div id="err_msg">
-                        <span class="mt-n1"><?php echo $stb_amount_err; ?></span>
-                    </div>
-                <?php } ?>
-            </div>
-        </div>
 
                 <div class="form-group">
                     <div class="row">
