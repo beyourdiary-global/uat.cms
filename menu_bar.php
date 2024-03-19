@@ -147,22 +147,10 @@ $menuList = array(
                 'expand' => array(
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
                     array('Shopee Account Management', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
-                    
                 ),
-                'pin' => array('46', '47', '58','78'),
+                'pin' => array('46', '58'),
             ),
-            array(
-                'Income',
-                'mdi mdi-finance',
-                'javascript:void(0)',
-                'y',
-                'expand' => array(
-                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
-                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/shopee_withdrawal_transactions_table.php', '51'),
-                    array('Downline Top Up Record', 'mdi storefront-outline', $SITEURL . '/finance/downline_top_up_record_table.php', '68'),
-                ),
-                'pin' => array('49', '51', '68'),
-            ),
+           
 
             array(
                 'Lazada',
@@ -171,7 +159,6 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Lazada Account Management', 'mdi storefront-outline', $SITEURL . '/finance/lazada_acc_table.php', '81'),
-                    
                 ),
                 'pin' => array('81'),
             ),
@@ -194,15 +181,13 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Stripe Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/stripe_trans_backup_table.php', '89'),
                     array('J&T Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/j&t_trans_backup_table.php', '88'),
-                    array('Atome Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/atome_trans_backup_table.php', '87'),
                 ),
-                'pin' => array('89','87','88'),
+                'pin' => array('88'),
             ),
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47', '49', '51', '58', '68','70','81','83','87','88','89','94')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47','51', '58', '68','70','81','83','87','88','89','94')
 
     ),
     array(
@@ -220,14 +205,19 @@ $menuList = array(
                     array('Facebook Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/fb_ads_topup_trans_table.php', '48'),
                     array('Delivery Fees Claim Record', 'mdi storefront-outline', $SITEURL . '/finance/del_fees_claim_table.php', '66'),
                     array('Shopee Ads Top Up Transaction', 'mdi storefront-outline', $SITEURL . '/finance/shopee_ads_topup_trans_table.php', '77'),
+                    array('Shopee Withdrawal Transactions', 'mdi storefront-outline', $SITEURL . '/finance/shopee_withdrawal_transactions_table.php', '51'),
                     array('Internal Consume Item', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_item_table.php', '67'),
                     array('Internal Consume Ticket/Credit', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_ticket_credit_table.php', '62'),
                     array('Stock Credit Top Up Record', 'mdi storefront-outline', $SITEURL . '/finance/stock_credit_top_up_request_table.php', '78'),
+                    array('Merchant Commission Record', 'mdi storefront-outline', $SITEURL . '/finance/merchant_comm_record_table.php', '49'),
+                    array('Downline Top Up Record', 'mdi storefront-outline', $SITEURL . '/finance/downline_top_up_record_table.php', '68'),
+                    array('Stripe Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/stripe_trans_backup_table.php', '89'),
+                    array('Atome Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/atome_trans_backup_table.php', '87'),
                 ),
-                'pin' => array('48','66','77','67','62','78'),
+                'pin' => array('48','66','77','51','67','62','78','49','68','89','87'),
             ),
         ),
-        'pin' => array('48','66','77','67')
+        'pin' => array('48','66','77','51','67','62','78','49','68','89','87')
     ),
     array(
         'Other',
