@@ -391,7 +391,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
             <label class="form-label form_lbl" id="stb_amount_lbl" for="stb_amount">Amount<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="stb_amount" id="stb_amount" value="<?php
+            <input class="form-control" type="number" step="0.01" name="stb_amount" id="stb_amount" value="<?php
                 if (isset($dataExisted) && isset($row['amount']) && !isset($stb_amount)) {
                     echo $row['amount'];
                 } else if (isset($stb_amount)) {
