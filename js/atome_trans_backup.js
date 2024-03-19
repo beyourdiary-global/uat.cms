@@ -8,12 +8,24 @@ $("#atb_trans_id").on("input", function() {
     $(".atb-trans-id-err").remove();
 });
 
-$("#btb_month").on("input", function() {
-    $(".btb-month-err").remove();
+$("#atb_atome_id").on("input", function() {
+    $(".atb-atome-id-err").remove();
 });
 
-$("#btb_attach").on("input", function() {
-    $(".btb-attach-err").remove();
+$("#atb_trans_outlet").on("input", function() {
+    $(".atb-trans-outlet-err").remove();
+});
+
+$("#atb_platform_id").on("input", function() {
+    $(".atb-platform-id-err").remove();
+});
+
+$("#atb_amt_rec").on("input", function() {
+    $(".atb-amt-rec-err").remove();
+});
+
+$("#atb_attach").on("input", function() {
+    $(".atb-attach-err").remove();
 });
 
 
@@ -24,6 +36,7 @@ $('.submitBtn').on('click', () => {
     var atb_atome_id_chk = 0;
     var atb_trans_outlet_chk = 0;
     var atb_platform_id_chk = 0;
+    var atb_amt_rec_chk = 0;
     var attach_chk = 0;
 
     if (($('#atb_trans_id').val() === '' || $('#atb_trans_id').val() === null || $('#atb_trans_id')
@@ -66,6 +79,16 @@ $('.submitBtn').on('click', () => {
         atb_platform_id_chk = 1;
     }
 
+    if (($('#atb_amt_rec').val() === '' || $('#atb_amt_rec').val() === null || $('#atb_amt_rec')
+            .val() === undefined)) {
+        atb_amt_rec_chk = 0;
+        $("#atb_amt_rec").after(
+            '<span class="error-message atb-amt-rec-err">Amount Receivable is required!</span>');
+    } else {
+        $(".atb-amt-rec-err").remove();
+        atb_amt_rec_chk = 1;
+    }
+
     var fileInput = $('#atb_attach')[0];
     
     // Check if a new file is selected or if there is an existing attachment
@@ -79,7 +102,7 @@ $('.submitBtn').on('click', () => {
         attach_chk = 1;
     }
 
-    if (atb_trans_id_chk == 1 && atb_atome_id_chk == 1 && atb_trans_outlet_chk == 1 && atb_platform_id_chk == 1  && attach_chk == 1)
+    if (atb_trans_id_chk == 1 && atb_atome_id_chk == 1 && atb_trans_outlet_chk == 1 && atb_platform_id_chk == 1 && atb_amt_rec_chk == 1 && attach_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
