@@ -115,7 +115,7 @@ $(document).ready(function() {
     var group = $('#group').val();
 
 
-    if (group === 'metaaccount' || group === 'courier' || group === 'shopee' || group === 'method' || group === 'brand' || group === 'package' || group === 'person' ) {
+    if (group === 'metaaccount' || group === 'courier' || group === 'shopee' || group === 'method' || group === 'brand' || group === 'package' || group === 'person' || group ==='merchant' ) {
       
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
