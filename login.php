@@ -79,10 +79,13 @@ if ($email && $password) {
                     generateDBData(FIN_PAY_METH, $finance_connect);
                     generateDBData(PROD_CATEGORY, $connect);
                     generateDBData(AGENT, $finance_connect);
-                    // generateDBData(CHANNEL, $connect);
                     generateDBData(FB_PAGE_ACC, $finance_connect);
                     generateDBData(SHOPEE_ACC, $finance_connect);
-                    
+                    generateDBData(CHANEL_SC_MD, $finance_connect);
+                    generateDBData(SHOPEE_CUST_INFO, $finance_connect);
+                    generateDBData(WEB_CUST_RCD, $connect);
+                    generateDBData(LAZADA_ACC, $finance_connect);
+                    generateDBData(LAZADA_CUST_RCD, $connect);
 
                     return header('Location: dashboard.php');
                } else {

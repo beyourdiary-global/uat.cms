@@ -74,8 +74,33 @@ $(document).ready(function() {
         });
 
     }
-    //TODO: fb page account
-    //TODO: channel
+    //fb page account
+    if (!($("#for_fbpage").attr('disabled'))) {
+        $("#for_fbpage").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= FB_PAGE_ACC ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+    // channel
+    if (!($("#for_channel").attr('disabled'))) {
+        $("#for_channel").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= CHANEL_SC_MD ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
     //payment method
     if (!($("#for_pay_meth").attr('disabled'))) {
         $("#for_pay_meth").keyup(function() {
@@ -90,7 +115,34 @@ $(document).ready(function() {
         });
 
     }
+    $("#for_pkg").keyup(function() {
+        // Empty the #for_price field
+        $("#for_price").val('');
+    });
+    $("#for_pkg").change(calculatePrice);
 })
+
+function calculatePrice() {
+    var paramPkg = {
+        search: $("#for_pkg_hidden").val(),
+        searchCol: 'id',
+        searchType: '*',
+        dbTable: '<?= PKG ?>',
+        isFin: 0,
+    };
+
+    retrieveDBData(paramPkg, '<?= $SITEURL ?>', function (result) {
+        if (result && result.length > 0) {
+            var pkg_price = parseFloat(result[0]['price']);
+            var pkg_curr = result[0]['currency_unit'];
+            console.log('curr', pkg_curr);
+            $("#for_price").val(pkg_price.toFixed(2));
+            
+        } else {
+            console.error('Error retrieving Courier data');
+        }
+    });
+}
 
 //jQuery form validation
 $("#for_name").on("input", function() {
@@ -133,6 +185,10 @@ $("#for_channel").on("input", function() {
     $(".for-channel-err").remove();
 });
 
+$("#for_price").on("input", function() {
+    $(".for-price-err").remove();
+});
+
 $("#for_pay_meth").on("input", function() {
     $(".for-pay-err").remove();
 });
@@ -166,6 +222,7 @@ $('.submitBtn').on('click', () => {
     var pkg_chk = 0;
     var fbpage_chk = 0;
     var channel_chk = 0;
+    var price_chk = 0;
     var pay_chk = 0;
     var rec_name_chk = 0;
     var rec_ctc_chk = 0;
@@ -273,6 +330,16 @@ $('.submitBtn').on('click', () => {
         channel_chk = 1;
     }
 
+    if (($('#for_price').val() == '' || $('#for_price').val() == '0' || $('#for_price').val() === null || $('#for_price')
+            .val() === undefined)) {
+        price_chk = 0;
+        $("#for_price").after(
+            '<span class="error-message for-price-err">Price is required!</span>');
+    } else {
+        $(".for-price-err").remove();
+        price_chk = 1;
+    }
+
     if (($('#for_pay_meth_hidden').val() == '' || $('#for_pay_meth_hidden').val() == '0' || $('#for_pay_meth_hidden').val() === null || $('#for_pay_meth_hidden')
             .val() === undefined)) {
         pay_chk = 0;
@@ -327,7 +394,7 @@ $('.submitBtn').on('click', () => {
         attach_chk = 1;
     }
 
-    if (name_chk == 1 && link_chk == 1 && ctc_chk == 1 && pic_chk == 1 && country_chk == 1 && brand_chk == 1 && series_chk == 1 && pkg_chk == 1 && fbpage_chk == 1 && channel_chk == 1 && pay_chk == 1 && rec_name_chk == 1 && rec_add_chk == 1 && rec_ctc_chk == 1 && attach_chk == 1)
+    if (name_chk == 1 && link_chk == 1 && ctc_chk == 1 && pic_chk == 1 && country_chk == 1 && brand_chk == 1 && series_chk == 1 && pkg_chk == 1 && fbpage_chk == 1 && channel_chk == 1 && price_chk == 1 && pay_chk == 1 && rec_name_chk == 1 && rec_add_chk == 1 && rec_ctc_chk == 1 && attach_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

@@ -1259,7 +1259,7 @@ function retrieveDBData(param, siteURL, callback) {
   var type = param["searchType"];
   var dbTable = param["dbTable"];
   var col = param["searchCol"];
-  var fin = param["isFin"]; //test
+  var fin = param["isFin"];
 
   if (search != "") {
     $.ajax({
@@ -1500,4 +1500,18 @@ function setAutofocus(action) {
     }
   }
 
+}
+
+//export notification
+function exportData() {
+  var checkboxes = document.querySelectorAll('.export:checked');
+  if (checkboxes.length === 0) {
+      alert('Please select data to export.');
+      return false;
+  }
+  return true;
+}
+
+function showExportNotification() {
+  alert('Export successful!'); 
 }

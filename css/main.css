@@ -23,9 +23,9 @@ h7 {
 }
 
 @media (max-width: 320px) {
-    .container,
-    .container-fluid {
-        width: 90%;
+    .container {
+        width: 95%;
+        margin:auto;
     }
 
 }
@@ -236,7 +236,7 @@ input {
     }
 
     .nav-link {
-        padding: 16px 15px 16px 15px;
+        padding: 16px 10px 16px 10px;
         /* padding: 16px 15px 16px 16px; */
         text-transform: none;
         display: flex;
@@ -614,3 +614,59 @@ input {
 .requiredRed{
     color: red !important;
 }
+
+@media(max-width: 575.98px) {
+    .invoice-edit .invoice-preview-card .invoice-calculations,.invoice-add .invoice-preview-card .invoice-calculations {
+        width:100%
+    }
+}
+
+.invoice-edit .invoice-preview-card .repeater-wrapper:not(:last-child),.invoice-add .invoice-preview-card .repeater-wrapper:not(:last-child) {
+    margin-bottom: 1.5rem
+}
+
+#row-password-input i {
+    position: absolute;
+}
+
+.hide_icon {
+    padding: 10px;
+    min-width: 40px;
+}
+
+.icon-buttons {
+    width: 80px; 
+    height: 80px; 
+}
+.bg-label-success{background-color:#9ff3c2 !important;color:#28c76f !important}
+.bg-label-info{background-color:#a8ecf5 !important;color:#00cfe8 !important}
+.bg-label-warning{background-color:#ffd1a3 !important;color:#ff9f43 !important}
+.bg-label-danger{background-color:#f18e93 !important;color:#ea5455 !important}
+/*date picker*/
+.date-separator {
+    padding: 4px 5px;
+}
+
+.input-group { 
+    padding: 1px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+
+    border: 1px solid #a7a6a6;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+    
+ .input-group > input {
+    border: none;
+ }
+
+ .input-group > input:focus {
+    border: none; 
+    outline: none; 
+  }
+
+
+

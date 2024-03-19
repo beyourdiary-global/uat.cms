@@ -5,11 +5,11 @@ $('#dtur_attach').on('change', function() {
 //autocomplete
 $(document).ready(function() {
     
-    if (!($("#dtur_brand").attr('disabled'))) {
-        $("#dtur_brand").keyup(function () {
-            var param = {
-                search: $(this).val(),
-                searchType: 'unit', // column of the table
+    if (!($("#dtur_brand").attr('disabled'))) { 
+        $("#dtur_brand").keyup(function() { 
+            var param = { 
+                search: $(this).val(), 
+                searchType: 'name', // column of the table
                 elementID: $(this).attr('id'), // id of the input
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= BRAND ?>', // json filename (generated when login)
@@ -32,6 +32,7 @@ $(document).ready(function() {
         });
 
     }
+    $("#dtur_agent").change(calculateBrand); 
 })
 
 //jQuery form validation
@@ -43,12 +44,22 @@ $("#dtur_amount").on("input", function() {
     $(".dtur-amount-err").remove();
 });
 
+$("#curr").on("input", function() {
+    $(".curr-err").remove();
+});
+
+$("#dtur_brand").on("input", function() {
+    $(".dtur-brand-err").remove();
+});
+
+
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     //event.preventDefault();
     var agent_chk = 0;
     var amount_chk = 0;
-
+    var curr_chk = 0;
+    var brand_chk = 0;
 
     if (($('#dtur_agent').val() === '' || $('#dtur_agent').val() === null || $('#dtur_agent')
             .val() === undefined)) {
@@ -70,17 +81,36 @@ $('.submitBtn').on('click', () => {
         amount_chk = 1;
     }
 
+    if (($('#curr').val() === '' || $('#curr').val() === null || $('#curr')
+            .val() === undefined)) {
+        curr_chk = 0;
+        $("#curr").after(
+            '<span class="error-message curr-err">Currency Unit is required!</span>');
+    } else {
+        $(".curr-err").remove();
+        curr_chk = 1;
+    }
 
-    if (agent_chk == 1 && amount_chk == 1 )
+    if (($('#dtur_brand').val() === '' || $('#dtur_brand').val() === null || $('#dtur_brand')
+            .val() === undefined)) {
+                brand_chk = 0;
+        $("#dtur_brand").after(
+            '<span class="error-message dtur-brand-err">Brand is required!</span>');
+    } else {
+        $(".dtur-brand-err").remove();
+        brand_chk = 1;
+    }
+
+    if (agent_chk == 1 && amount_chk == 1 && curr_chk == 1&& brand_chk == 1)
         $(this).closest('form').submit();
     else
         return false;
 
 })
 
-function calculateCurr() {
+function calculateBrand() {
 
-    var paramCurr = {
+    var paramAgent = {
         search: $("#dtur_agent_hidden").val(),
         searchCol: 'id',
         searchType: '*',
@@ -88,24 +118,24 @@ function calculateCurr() {
         isFin: 1,
     };
 
-    retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+    retrieveDBData(paramAgent, '<?= $SITEURL ?>', function (result) {
         getBrand(result);
         $("#dtur_brand_hidden").val(result[0]['brand']);
     });
 
     function getBrand(result) {
         if (result && result.length > 0) {
-            curr = result[0]['brand'];
-
-                var paramCurr = {
-                    search: curr,
+            brand = result[0]['brand'];
+            
+                var paramBrand = {
+                    search: brand,
                     searchCol: 'id',
                     searchType: '*',
                     dbTable: '<?= BRAND ?>',
                     isFin: 0,
                 };
 
-                retrieveDBData(paramCurr, '<?= $SITEURL ?>', function (result) {
+                retrieveDBData(paramBrand, '<?= $SITEURL ?>', function (result) {
                     $("#dtur_brand").val(result[0]['name']);
                 });
             } else {

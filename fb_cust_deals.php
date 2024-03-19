@@ -608,9 +608,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     $echoVal = $row['channel'];
 
                                 if (isset($echoVal)) {
-                                    $channel_rst = getData('*', "id = '$echoVal'", '', CHANNEL, $connect);
+                                    $channel_rst = getData('*', "id = '$echoVal'", '', CHANEL_SC_MD, $finance_connect);
                                 } else {
-                                    $channel_rst = getData('*', "name = 'Facebook'", '', CHANNEL, $connect);
+                                    $channel_rst = getData('*', "name = 'Facebook'", '', CHANEL_SC_MD, $finance_connect);
                                 }
 
                                 if (!$channel_rst) {

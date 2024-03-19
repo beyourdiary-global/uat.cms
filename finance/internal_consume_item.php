@@ -31,7 +31,6 @@ if ($dataID) { //edit/remove/view
         $act = "F";
     }
 }
-
 if (!($dataID) && !($act)) {
     echo '<script>
     alert("Invalid action.");
@@ -45,24 +44,31 @@ if ($act == 'D') {
     $_SESSION['delChk'] = 1;
 }
 
-$pic_list_result = getData('*', '', '', USR_USER, $connect);
 $brand_list_result = getData('*', '', '', BRAND, $connect);
-$package_list_result = getData('*', '', '', PKG, $connect);
 
 if (post('actionBtn')) {
-    $ici_date = postSpaceFilter("ici_date");
-    $ici_pic = postSpaceFilter("ici_pic_hidden");
-    $ici_brand = postSpaceFilter('ici_brand');
-    $ici_package = postSpaceFilter('ici_package');
-    $ici_cost = postSpaceFilter('ici_cost_hidden');
-    $ici_remark = postSpaceFilter('ici_remark');
     $action = post('actionBtn');
-
-    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
     switch ($action) {
         case 'addTransaction':
         case 'updTransaction':
+            
+    $ici_date = postSpaceFilter("ici_date");
+    $ici_pic = postSpaceFilter("ici_pic_hidden");
+    $ici_brand = postSpaceFilter('ici_brand');
+    $ici_package = postSpaceFilter('ici_package_hidden');
+    $ici_cost = postSpaceFilter('ici_cost');
+    $ici_remark = postSpaceFilter('ici_remark');
+
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+
+    $fields = array('date', 'pic', 'brand', 'package'); // Define fields to check for duplicates
+    $values = array($ici_date,$ici_pic, $ici_brand, $ici_package); // Values of the fields
+    
+    if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
+        $date_err = "Duplicate record found for date, pic, brand, package.";
+        break;}
+
 
             if (!$ici_date) {
                 $date_err = "Please specify the date.";
@@ -70,15 +76,13 @@ if (post('actionBtn')) {
             } else if (!$ici_pic && $ici_pic < 1) {
                 $pic_err = "Please specify the person-in-charge.";
                 break;
-            } else if (!$ici_brand && $coh_brand < 1) {
+            } else if (!$ici_brand && $ici_brand < 1) {
                 $brand_err = "Please specify the brand.";
                 break;
             } else if (!$ici_package && $ici_package < 1) {
                 $package_err = "Please specify the package.";
                 break;
-            } else if (!$ici_cost) {
-                $cost_err = "Please specify the cost.";
-                break;
+
             } else if ($action == 'addTransaction') {
                 try {
 
@@ -110,11 +114,11 @@ if (post('actionBtn')) {
                     }
 
                     if ($ici_remark) {
-                        array_push($newvalarr, $iciremark);
+                        array_push($newvalarr, $ici_remark);
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(date,pic,date,brand,package,cost,remark,create_by,create_date,create_time) VALUES ('$ici_date','$ici_pic','$ici_brand','$ici_package','$ici_cost','$ici_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(date,pic,brand,package,cost,remark,create_by,create_date,create_time) VALUES ('$ici_date','$ici_pic','$ici_brand','$ici_package','$ici_cost','$ici_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -124,9 +128,9 @@ if (post('actionBtn')) {
                 }
             } else {
                 try {
-                    // take old value
-                    $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
-                    $row = $rst->fetch_assoc();
+                   // take old value
+                   $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
+                   $row = $rst->fetch_assoc();
 
                     // check value
 
@@ -172,7 +176,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET ici_date = '$ici_date', pic = '$ici_pic', brand = '$ici_brand', package = '$ici_package', cost = '$ici_cost', remark ='$ici_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET date = '$ici_date', pic = '$ici_pic', brand = '$ici_brand', package = '$ici_package', cost = '$ici_cost', remark ='$ici_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -346,93 +350,88 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label form_lbl" id="ici_brand_lbl" for="ici_brand">Brand<span class="requireRed">*</span></label>
-                            <select class="form-select" id="ici_brand" name="ici_brand" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Brand</option>
-                                <?php
-                                if ($brand_list_result->num_rows >= 1) {
-                                    $brand_list_result->data_seek(0);
-                                    while ($row2 = $brand_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['brand']) && !isset($ici_brand)) {
-                                            $selected = $row['brand'] == $row2['id'] ? " selected" : "";
-                                        } else if (isset($ici_brand)) {
-                                            $selected = $ici_brand == $row2['id'] ? " selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                            </select>
+    <div class="col-md-6 mb-3">
+        <label class="form-label form_lbl" id="ici_brand_lbl" for="ici_brand">Brand<span class="requireRed">*</span></label>
+        <select class="form-select" id="ici_brand" name="ici_brand" <?php if ($act == '') echo 'disabled' ?>>
+            <option value="0" disabled selected>Select Brand</option>
+            <?php
+            if ($brand_list_result->num_rows >= 1) {
+                $brand_list_result->data_seek(0);
+                while ($row2 = $brand_list_result->fetch_assoc()) {
+                    $selected = "";
+                    if (isset($dataExisted, $row['brand']) && !isset($ici_brand)) {
+                        $selected = $row['brand'] == $row2['id'] ? " selected" : "";
+                    } else if (isset($ici_brand)) {
+                        $selected = $ici_brand == $row2['id'] ? " selected" : "";
+                    }
+                    echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
+                }
+            } else {
+                echo "<option value=\"0\">None</option>";
+            }
+            ?>
+        </select>
 
-                            <?php if (isset($brand_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $brand_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
+        <?php if (isset($brand_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $brand_err; ?></span>
+            </div>
+        <?php } ?>
+    </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label form_lbl" id="ici_package_lbl" for="ici_package">Package<span class="requireRed">*</span></label>
-                            <select class="form-select" id="ici_package" name="ici_package" <?php if ($act == '') echo 'disabled' ?>>
-                                <option value="0" disabled selected>Select Package</option>
-                                <?php
-                                if ($package_list_result->num_rows >= 1) {
-                                    $package_list_result->data_seek(0);
-                                    while ($row2 = $package_list_result->fetch_assoc()) {
-                                        $selected = "";
-                                        if (isset($dataExisted, $row['package']) && !isset($ici_package)) {
-                                            $selected = $row['package'] == $row2['id'] ? " selected" : "";
-                                        } else if (isset($ici_package)) {
-                                            $selected = $ici_package == $row2['id'] ? " selected" : "";
-                                        }
-                                        echo "<option value=\"" . $row2['id'] . "\"$selected>" . $row2['name'] . "</option>";
-                                    }
-                                } else {
-                                    echo "<option value=\"0\">None</option>";
-                                }
-                                ?>
-                            </select>
-
-                            <?php if (isset($package_err)) { ?>
-                                <div id="err_msg">
-                                    <span class="mt-n1"><?php echo $package_err; ?></span>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="row">
-    <div class="col-md-6 mb-3 autocomplete">
-        <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span class="requireRed">*</span></label>
+    <div class="col-md mb-3 autocomplete">
+        <label class="form-label form_lbl" id="ici_package_lbl" for="ici_package">Package<span class="requireRed">*</span></label>
         <?php
         unset($echoVal);
 
-        if (isset($row['cost']))
-            $echoVal = $row['cost'];
+        if (isset($row['package']))
+            $echoVal = $row['package'];
 
         if (isset($echoVal)) {
-            $cost_rst = getData('cost', "id = '$echoVal'", '', PKG, $connect);
-            if (!$cost_rst) {
+            $package_rst = getData('*', "id = '$echoVal'", '', PKG, $connect);
+            if (!$package_rst) {
                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            $cost_row = $cost_rst->fetch_assoc();
+            $package_row = $package_rst->fetch_assoc();
         }
         ?>
-        <input class="form-control" type="text" name="ici_cost" id="ici_cost" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $cost_row['cost'] : '' ?>">
-        <input type="hidden" name="ici_cost_hidden" id="ici_cost_hidden" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>">
+        <input class="form-control" type="text" name="ici_package" id="ici_package" <?php if ($act == '') echo 'disabled' ?>
+            value="<?php echo !empty($echoVal) ? $package_row['name'] : '' ?>">
+        <input type="hidden" name="ici_package_hidden" id="ici_package_hidden"
+            value="<?php echo (isset($row['package'])) ? $row['package'] : ''; ?>">
 
-        <?php if (isset($cost_err)) { ?>
+        <?php if (isset($pkg_err)) { ?>
             <div id="err_msg">
-                <span class="mt-n1"><?php echo $cost_err; ?></span>
+                <span class="mt-n1">
+                    <?php echo $pkg_err; ?>
+                </span>
             </div>
         <?php } ?>
     </div>
 </div>
+
+                            <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label form_lbl" id="ici_cost_lbl" for="ici_cost">Cost<span
+                                        class="requireRed">*</span></label>
+                                <input class="form-control" type="text" name="ici_cost" id="ici_cost" value="<?php
+                                if (isset($dataExisted) && isset($row['cost']) && !isset($ici_cost)) {
+                                    echo $row['cost'];
+                                } else if (isset($ici_cost)) {
+                                    echo $ici_cost;
+                                }
+                                ?>" <?php if ($act == '')
+                                    echo 'disabled' ?>>
+                                <?php if (isset($cost_err)) { ?>
+                                    <div id="err_msg">
+                                        <span class="mt-n1">
+                                            <?php echo $cost_err; ?>
+                                        </span>
+                                    </div>
+                                <?php } ?>
+                            </div>
 
 <div class="form-group mb-3" style="margin-top: 10px;">
     <label class="form-label form_lbl" id="ici_remark_lbl" for="ici_remark">Remark</label>
@@ -444,10 +443,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <?php
                         switch ($act) {
                             case 'I':
-                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Transaction</button>';
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addTransaction">Add Item</button>';
                                 break;
                             case 'E':
-                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Transaction</button>';
+                                echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="updTransaction">Edit Item</button>';
                                 break;
                         }
                         ?>
@@ -471,27 +470,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
     }
     ?>
-
-    <?php
-    /*
-        oufei 20231014
-        common.fun.js
-        function(title, subtitle, page name, ajax url path, redirect path, action)
-        to show action dialog after finish certain action (eg. edit)
-    */
-    if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo $clearLocalStorage;
-        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
-    }
-    ?>
     <script>
-        //Initial Page And Action Value
-        var page = "<?= $pageTitle ?>";
-        var action = "<?php echo isset($act) ? $act : ''; ?>";
-
-        checkCurrentPage(page, action);
-
         <?php include "../js/internal_consume_item.js" ?>
     </script>
 
