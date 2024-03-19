@@ -392,35 +392,35 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 
                     <div class="row">
-    <div class="col-12 col-md-6">
-        <div class="form-group mb-3 autocomplete">
-            <label class="form-label form_lbl" id="agt_pic_lbl" for="agt_pic">Person-In-Charge*</span></label>
-            <?php
-            unset($echoVal);
+    <div class="col-12 col-md-6 autocomplete">
+    <label class="form-label form_lbl" id="agt_pic_lbl" for="agt_pic">Person-In-Charge*<span class="requireRed"></span></label>
+        <?php
+        unset($echoVal);
 
-            if (isset($row['pic']))
-                $echoVal = $row['pic'];
+        if (isset($row['pic']))
+            $echoVal = $row['pic'];
 
-            if (isset($echoVal)) {
-                $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
-                if (!$user_rst) {
-                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                }
-                $user_row = $user_rst->fetch_assoc();
-                $pic_row = $user_row;
+        if (isset($echoVal)) {
+            $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+            if (!$user_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
             }
-            ?>
-            <input class="form-control" type="text" name="agt_pic" id="agt_pic" <?php if ($act == '') echo 'readonly' ?>value="<?php echo !empty($echoVal) ? $pic_row['pic'] : ''  ?>">
-            <input type="hidden" name="agt_pic_hidden" id="agt_pic_hidden" value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+            $user_row = $user_rst->fetch_assoc();
+        }
+        ?>
+        <input class="form-control" type="text" name="agt_pic" id="agt_pic" <?php if ($act == '') echo 'disabled' ?>
+            value="<?php echo !empty($echoVal) ? $user_row['name'] : ''  ?>">
+        <input type="hidden" name="agt_pic_hidden" id="agt_pic_hidden"
+            value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
 
-            <?php if (isset($pic_err)) { ?>
-                <div id="err_msg">
-                    <span class="mt-n1"><?php echo $pic_err; ?></span>
-                </div>
-            <?php } ?>
-        </div>
+        <?php if (isset($pic_err)) { ?>
+            <div id="err_msg">
+                <span class="mt-n1"><?php echo $pic_err; ?></span>
+            </div>
+        <?php } ?>
     </div>
+
 
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
