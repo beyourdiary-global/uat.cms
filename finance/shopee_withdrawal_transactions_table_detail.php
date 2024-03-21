@@ -1,27 +1,19 @@
 <?php
-$pageTitle = "Internal Consume Ticket/Credit Detail";
+$pageTitle = "Shopee Withdrawal Transactions";
 $isFinance = 1;
 
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-$tblName = INTERNAL_CONSUME;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/internal_consume_ticket_credit.php';
-$deleteRedirectPage = $SITEURL . '/finance/internal_consume_ticket_credit_table.php';
-
-$result = getData('*', '', '', $tblName, $finance_connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+$redirect_page = $SITEURL . '/finance/shopee_withdrawal_transactions.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_withdrawal_transactions_table.php';
+$result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +25,7 @@ if (!$result) {
 
 <script>
     $(document).ready(() => {
-        createSortingTable('table');
+        createSortingTable('swt_table');
     });
 </script>
 
@@ -41,7 +33,7 @@ if (!$result) {
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-11">
+        <div class="col-12 col-md-8">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -60,18 +52,18 @@ if (!$result) {
                 </div>
             </div>
 
-                <table class="table table-striped" id="table">
+                <table class="table table-striped" id="swt_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Brand</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
                             <th scope="col">Currency Unit</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>  
+                            <th scope="col">Withdrawal Amount</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th> 
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
@@ -81,31 +73,28 @@ if (!$result) {
                         <?php while ($row = $result->fetch_assoc()) {    
                            if (isset($_GET['ids'])) {
                             $ids = explode(',', $_GET['ids']);
-                           foreach ($ids as $id) {
-                            $decodedId = urldecode($id);
-                           if (isset($row['id']) && !empty($row['id']&& $row['id'] == $id)) {
+                            foreach ($ids as $id) {
+                            $decodedId = urldecode($id);  
+                            if (isset($row['id']) && !empty($row['id']&& $row['id'] == $id)) {
+                           $currency = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                           $row2 = $currency->fetch_assoc();
 
-                            $picResult = getData('name', "id='" . $row['PIC'] . "'", '', USR_USER, $connect);
-                            $picRow = $picResult->fetch_assoc();
-                            $brandResult = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-                            $brandRow = $brandResult->fetch_assoc();
+                           $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
+                           $usr = $pic->fetch_assoc();
+                                
+                                ?>
 
-                            $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
-                            $currRow = $currResult->fetch_assoc();
-                        ?>
-                            
 
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?php if (isset($picRow['name'])) echo $picRow['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($brandRow['name'])) echo $brandRow['name'] ?></td>
-                                    <td scope="row"><?php if (isset($currRow['unit'])) echo $currRow['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['swt_id'])) echo $row['swt_id'] ?></td>
+                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
-                                    
+                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
 
                                     <td scope="row">
                                          <div class="dropdown" style="text-align:center">
@@ -128,7 +117,7 @@ if (!$result) {
                                     </li>
                                     <li>
                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $picRow['name'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['swt_id'] ?>','<?= $row['remark'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
                                                     <?php endif; ?>
                                     </li>
                                 </ul>
@@ -136,21 +125,22 @@ if (!$result) {
                         </td>
                     </tr>
                     <?php }
-                                }
                             }
-                        } ?>
+                        }
+                    }
+                     ?>
                 </tbody>
                 <tfoot>
                         <tr>
-                        <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Brand</th>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">Withdrawal Date</th>
+                            <th scope="col">Withdrawal ID</th>
                             <th scope="col">Currency Unit</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>       
+                            <th scope="col">Withdrawal Amount</th>
+                            <th scope="col">Person In Charge</th>
+                            <th scope="col">Attachment</th>
+                            <th scope="col">Remark</th>       
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
@@ -163,7 +153,7 @@ if (!$result) {
         //to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
         dropdownMenuDispFix();
         //to resize table with bootstrap 5 classes
-        datatableAlignment('table');
+        datatableAlignment('swt_table');
         setButtonColor();
     </script>
 

@@ -534,23 +534,26 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             });
         });
 
-        // 在提交按钮被点击时执行验证
-$("#actionBtn").click(function() {
-    // 如果按钮值为 "back"，则直接返回，不执行验证
-    if ($(this).val() === "back") {
-        return true;
-    }
+        $("#actionBtn").click(function() {
+            var btnValue = $(this).val();
     
-    // 获取电子邮件输入的值
-    var email = $("#cusEmail").val();
-    // 检查电子邮件是否有效
-    if (!validateEmail(email)) {
-        // 如果电子邮件无效，则显示错误消息
-        $("#emailMsg").text("Invalid email format");
-        // 阻止表单提交
-        return false;
-    }
-});
+            if (btnValue === "back") {
+                return true;
+            }
+    
+            var email = $("#cusEmail").val();  
+            if (email.trim() === "") {
+                 return true;
+                }
+
+                var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                if (reg.test(email)) {
+                    return true;
+                } else {
+                    $("#emailMsg").text("Invalid email format！").css("color", "red");
+                    return false;
+                }
+            });
 
     </script>
 
