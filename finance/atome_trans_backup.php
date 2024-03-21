@@ -52,6 +52,7 @@ if (post('actionBtn')) {
     $atb_date = postSpaceFilter("atb_date");
     $atb_trans_outlet = postSpaceFilter("atb_trans_outlet");
     $atb_platform_id = postSpaceFilter("atb_platform_id");
+    $atb_amt_rec = postSpaceFilter("atb_amt_rec");
 
     $atb_attach = null;
     if (isset($_FILES["atb_attach"]) && $_FILES["atb_attach"]["size"] != 0) {
@@ -115,6 +116,9 @@ if (post('actionBtn')) {
             } else if (!$atb_platform_id) {
                 $atb_platform_id_err = "Please specify the E-commerce Platform Order ID.";
                 break;
+            } else if (!$atb_amt_rec) {
+                $atb_amt_rec_err = "Please specify the Amount Receivable.";
+                break;
             } else if (!$atb_attach) {
                 $attach_err = "Please attach the file.";
                 break;
@@ -149,12 +153,18 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $atb_platform_id);
                         array_push($datafield, 'platform_id');
                     }
+
+                    if ($atb_amt_rec) {
+                        array_push($newvalarr, $atb_platform_id);
+                        array_push($datafield, 'amt_rec');
+                    }
+
                     if ($atb_attach) {
                         array_push($newvalarr, $atb_attach);
                         array_push($datafield, 'attachment');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(trans_id,atome_id,date,trans_outlet,platform_id,attachment,create_by,create_date,create_time) VALUES ('$atb_trans_id','$atb_atome_id','$atb_date','$atb_trans_outlet','$atb_platform_id','$atb_attach','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(trans_id,atome_id,date,trans_outlet,platform_id,amt_rec,attachment,create_by,create_date,create_time) VALUES ('$atb_trans_id','$atb_atome_id','$atb_date','$atb_trans_outlet','$atb_platform_id','$atb_amt_rec','$atb_attach','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -199,6 +209,12 @@ if (post('actionBtn')) {
                         array_push($datafield, 'platform_id');
                     }
 
+                    if ($row['amt_rec'] != $atb_amt_rec) {
+                        array_push($oldvalarr, $row['amt_rec']);
+                        array_push($chgvalarr, $atb_amt_rec);
+                        array_push($datafield, 'amt_rec');
+                    }
+
                     $atb_attach = isset($atb_attach) ? $atb_attach : '';
                     if (($row['attachment'] != $atb_attach) && ($atb_attach != '')) {
                         array_push($oldvalarr, $row['attachment']);
@@ -212,7 +228,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName  . " SET trans_id = '$atb_trans_id', atome_id = '$atb_atome_id', date = '$atb_date', trans_outlet = '$atb_trans_outlet', platform_id = '$atb_platform_id', attachment ='$atb_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName  . " SET trans_id = '$atb_trans_id', atome_id = '$atb_atome_id', date = '$atb_date', trans_outlet = '$atb_trans_outlet', platform_id = '$atb_platform_id', amt_rec = '$atb_amt_rec', attachment ='$atb_attach', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -422,10 +438,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
     </div>
+
+    <div class="col-12 col-md-6">
+        <div class="form-group mb-3">
+        <label class="form-label form_lbl" id="atb_amt_rec_lbl" for="atb_amt_rec">Amount Receivable<span class="requireRed">*</span></label>
+            <input class="form-control" type="number" step='0.01' name="atb_platform_id" id="atb_amt_rec" value="<?php
+                if (isset($dataExisted) && isset($row['amt_rec']) && !isset($atb_amt_rec)) {
+                    echo $row['amt_rec'];
+                } else if (isset($atb_amt_rec)) {
+                    echo $atb_amt_rec;
+                }
+            ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php if (isset($atb_amt_rec_err)) { ?>
+                <div id="err_msg">
+                    <span class="mt-n1"><?php echo $atb_amt_rec_err; ?></span>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
 </div>
-
-
-               
+          
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6 mb-3">

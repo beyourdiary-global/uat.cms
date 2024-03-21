@@ -493,7 +493,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                                         } else if (isset($inv_id)) {
                                                             echo $inv_id;
                                                         } else {
-                                                            echo $proj_row['invoice_prefix_debit'] . '-' . date('Y') . '-' . $proj_row['invoice_next_number_debit'];
+                                                            echo $proj_row['invoice_prefix_debit'] . $proj_row['invoice_next_number_debit'];
                                                         } ?>" name="invID" id="invID" />
                                                     </div>
                                                 </dd>
