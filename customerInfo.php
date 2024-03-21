@@ -534,17 +534,26 @@ if (isset($_SESSION['tempValConfirmBox'])) {
             });
         });
 
-        function validateEmail() {
-            // get value of input email
-            var email = $("#cusEmail").val();
-            // use reular expression
-            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
-            if (reg.test(email)) {
+        $("#actionBtn").click(function() {
+            var btnValue = $(this).val();
+    
+            if (btnValue === "back") {
                 return true;
-            } else {
-                return false;
             }
-        }
+    
+            var email = $("#cusEmail").val();  
+            if (email.trim() === "") {
+                 return true;
+                }
+
+                var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                if (reg.test(email)) {
+                    return true;
+                } else {
+                    $("#emailMsg").text("Invalid email format！").css("color", "red");
+                    return false;
+                }
+            });
     </script>
 
 </body>

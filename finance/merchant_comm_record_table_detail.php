@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Cash On Hand Transaction";
+$pageTitle = "Merchant Commission Record Detail";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
@@ -10,8 +10,8 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/cash_on_hand_trans.php';
-$result = getData('*', '', '', CAONHD, $finance_connect);
+$redirect_page = $SITEURL . '/finance/merchant_comm_record.php';
+$result = getData('*', '', '', MRCHT_COMM, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -23,7 +23,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('cash_on_hand_trans_table');
+        createSortingTable('merchant_comm_table');
     });
 </script>
 
@@ -31,7 +31,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-11">
+        <div class="col-12 col-md-8">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -41,16 +41,12 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
-                        <?php
-                        if ($result) {
-                        ?>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                        Transaction </a>
-                                <?php endif; ?>
-                            </div>
-                        <?php } ?>
+                        <div class="mt-auto mb-auto">
+                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                    Transaction </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,54 +56,37 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
             } else {
             ?>
 
-                <table class="table table-striped" id="cash_on_hand_trans_table">
+                <table class="table table-striped" id="merchant_comm_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Transaction ID</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">PIC</th>
+                            <th scope="col">Merchant ID</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Bank</th>
-                            <th scope="col">Currency</th>
+                            <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Previous Amount Record</th>
-                            <th scope="col">Final Amount Record</th>
-                            <th scope="col">Description</th>
                             <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                            if (isset($row['transactionID'], $row['id']) && !empty($row['transactionID'])) {
-
+                              if (isset($_GET['ids'])) {
+                                $ids = explode(',', $_GET['ids']);
+                               foreach ($ids as $id) {
+                                $decodedId = urldecode($id);   
+                            if (isset($row['merchantID'], $row['id']) && !empty($row['merchantID']&& $row['id'] == $id)) {
                                 $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                                 $row2 = $curr->fetch_assoc();
-
-                                $bank = getData('name', "id='" . $row['bank'] . "'", '', BANK, $connect);
-                                $row3 = $bank->fetch_assoc();
-
-                                $pic = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                                $usr = $pic->fetch_assoc();
                         ?>
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row"><?= $row['transactionID'] ?></td>
-                                    <td scope="row"><?php if (isset($row['type'])) echo $row['type'] ?></td>
-                                    <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
+                                    <td scope="row"><?= $row['merchantID'] ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($row3['name'])) echo $row3['name'] ?></td>
                                     <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
-                                    <td scope="row"><?php if (isset($row['prev_amt'])) echo $row['prev_amt'] ?></td>
-                                    <td scope="row"><?php if (isset($row['final_amt'])) echo $row['final_amt'] ?></td>
-                                    <td scope="row"><?php if (isset($row['description'])) echo $row['description'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                    <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
                                             <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -126,7 +105,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                                                 </li>
                                                 <li>
                                                     <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
+                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['merchantID'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
                                                     <?php endif; ?>
                                                 </li>
                                             </ul>
@@ -134,24 +113,19 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                                     </td>
                                 </tr>
                         <?php }
+                               }
+                            }
                         } ?>
                     </tbody>
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Transaction ID</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">PIC</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col">Merchant ID</th>
                             <th scope="col">Date</th>
-                            <th scope="col">Bank</th>
-                            <th scope="col">Currency</th>
+                            <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Previous Amount Record</th>
-                            <th scope="col">Final Amount Record</th>
-                            <th scope="col">Description</th>
                             <th scope="col">Remark</th>
-                            <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
@@ -163,17 +137,12 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
 
 </body>
 <script>
-    //Initial Page And Action Value
-    var page = "<?= $pageTitle ?>";
-    var action = "<?php echo isset($act) ? $act : ' '; ?>";
-
-    checkCurrentPage(page, action);
     /**
-      oufei 20231014
-      common.fun.js
-      function(void)
-      to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-    */
+  oufei 20231014
+  common.fun.js
+  function(void)
+  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
     dropdownMenuDispFix();
 
     /**
@@ -182,7 +151,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('cash_on_hand_trans_table');
+    datatableAlignment('merchant_comm_table');
 </script>
 
 </html>

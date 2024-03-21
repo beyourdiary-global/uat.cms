@@ -37,7 +37,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
     <div class="page-load-cover">
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-11">
 
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
