@@ -38,8 +38,7 @@ if (!($dataID) && !($act)) {
     </script>';
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $customer_id = $_POST['customer_id'];
     $customer_name = $_POST['customer_name'];
     $customer_email = $_POST['customer_email'];
@@ -54,19 +53,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $duplicate_result = mysqli_query($connect, $duplicate_check_query);
     
     if (mysqli_num_rows($duplicate_result) > 0) {
-        echo "Error: Duplicate record found!";
+        echo "<script>alert('Error: Duplicate Customer ID found!');</script>";
     } else {
         $insert_query = "INSERT INTO customer_website_deals_transaction (cust_id, name, cust_email, cust_birthday, brand, series, ship_rec_name, ship_rec_add, ship_rec_contact) 
                          VALUES ('$customer_id', '$customer_name', '$customer_email', '$customer_birthday', '$brand', '$series', '$shipping_name', '$shipping_address', '$shipping_contact')";
     
         if (mysqli_query($connect, $insert_query)) {
-            echo "New record created successfully";
+            echo "<script>alert('New record created successfully');</script>";
         } else {
-            echo "Error: " . $insert_query . "<br>" . mysqli_error($connect);
+            echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
         }
     }
 }
-
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
@@ -866,7 +864,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <button type="button" onclick="toggleNewCustomerSection()">Create New Customer ID</button>
         </div>
         
-        <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        <form id="myForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
         <div id="new_customer_section" style="display: none;">
 
         <div class="row">
@@ -962,7 +960,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <input class="form-control" type="number" id="shipping_contact" name="shipping_contact">
     </div>
 </div>
-        <input type="submit" value="Submit">
+<input type="submit" name="submit" value="Submit">
     </form>
      
 </fieldset>
