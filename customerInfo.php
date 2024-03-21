@@ -554,6 +554,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     return false;
                 }
             });
+
     </script>
 
 </body>
