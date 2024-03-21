@@ -97,16 +97,10 @@ if (!$result) {
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                        <a class="btn btn-primary me-1" href="<?= $redirect_page . "?id=" . $row['id'] ?>"><i class="fas fa-eye"></i></a>
-                                        <?php endif; ?>
-                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                        <a class="btn btn-warning me-1" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>"><i class="fas fa-edit"></i></a>
-                                        <?php endif; ?>
-                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                        <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['date'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
-                                        <?php endif; ?>
-                                        </td>
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['date'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    </td>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $date = date("j M Y", strtotime($row['date'])) ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $day = date("l", strtotime($row['date'])) ?></td>
