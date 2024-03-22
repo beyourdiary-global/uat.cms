@@ -822,3 +822,34 @@ function monthNumberToString($monthNumber)
 		return false;
 	}
 }
+
+function renderViewEditButton($action, $redirect_page, $row, $pinAccess, $act_2 = null) {
+    switch ($action) {
+        case "View":
+            if (isActionAllowed("View", $pinAccess)) {
+                echo '<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '"><i class="fas fa-eye"></i></a>';
+            }
+            break;
+        case "Edit":
+            if (isActionAllowed("Edit", $pinAccess)) {
+                echo '<a class="btn btn-warning me-1" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '"><i class="fas fa-edit"></i></a>';
+            }
+            break;
+    }
+	
+}
+
+function renderDeleteButton($pinAccess, $rowId, $rowName, $rowRemark, $pageTitle, $redirectPage, $deleteRedirectPage) {
+    // Check if Delete action is allowed
+    if (isActionAllowed("Delete", $pinAccess)) {
+        // Generate JavaScript onclick function for confirmation dialog with specific parameters
+        $onclick = 'confirmationDialog(\'' . $rowId . '\',[\'' . $rowName . '\',\'' . $rowRemark . '\'],\'' . $pageTitle . '\',\'' . $redirectPage . '\',\'' . $deleteRedirectPage . '\',\'D\')';
+        
+        // Output Delete button
+        echo '<a class="btn btn-danger" onclick="' . $onclick . '"><i class="fas fa-trash-alt"></i></a>';
+    }
+}
+
+
+
+

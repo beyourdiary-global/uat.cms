@@ -12,6 +12,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/shopee_order_req.php';
+$deleteRedirectPage = $SITEURL . '/finance/shopee_order_req_table.php';
 $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 ?>
 
@@ -27,6 +28,17 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
         createSortingTable('shopee_order_req_table');
     });
 </script>
+
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 
 <body>
 
@@ -70,6 +82,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Shopee Account</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
@@ -89,7 +102,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             <th scope="col">Fees & Charges</th>
                             <th scope="col">Final Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,6 +134,13 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
+
+                                <td scope="row" class="btn-container">
+                                <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                <?php renderDeleteButton($pinAccess, $row['id'], $row['orderID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                </td>
+
                                 <td scope="row">
                                     <?= $acc['name'] ?? '' ?>
                                 </td>
@@ -179,35 +198,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                 <td scope="row">
                                     <?= $row['remark'] ?? '' ?>
                                 </td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                    id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>
-                                                <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                <?php endif; ?>
-                                            </li>
-                                            <li>
-                                                <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                    <a class="dropdown-item"
-                                                        onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $acc['name'] ?>','<?= $row['date'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/shopee_order_req_table.php','D')">Delete</a>
-                                                <?php endif; ?>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>
@@ -215,6 +205,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Shopee Account</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
@@ -234,7 +225,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             <th scope="col">Fees & Charges</th>
                             <th scope="col">Final Amount</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>

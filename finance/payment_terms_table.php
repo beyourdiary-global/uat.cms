@@ -13,7 +13,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/payment_terms.php';
-
+$deleteRedirectPage = $SITEURL . '/finance/payment_terms_table.php';
 $result = getData('*', '', '', $tblName, $finance_connect);
 ?>
 
@@ -31,6 +31,17 @@ $result = getData('*', '', '', $tblName, $finance_connect);
         createSortingTable('payment_terms_table');
     });
 </script>
+
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 
 <body>
     <div class="pre-load-center">
@@ -73,10 +84,10 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                             <tr>
                                 <th class="hideColumn" scope="col">ID</th>
                                 <th scope="col" width="60px">S/N</th>
+                                <th scope="col" id="action_col" width="100px">Action</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Remark</th>
-                                <th scope="col" id="action_col" width="100px">Action</th>
                             </tr>
                         </thead>
 
@@ -87,33 +98,14 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                                     <tr>
                                         <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                         <th scope="row"><?= $num++; ?></th>
+                                        <td scope="row" class="btn-container">
+                                        <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    </td>
                                         <td scope="row"><?= $row['name'] ?></td>
                                         <td scope="row"><?php if (isset($row['description'])) echo $row['description'] ?></td>
                                         <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                        <td scope="row">
-                                            <div class="dropdown" style="text-align:center">
-                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                    <li>
-                                                        <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                    <li>
-                                                        <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                            <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['name'] ?>','<?= $row['description'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/payment_terms_table.php','D')">Delete</a>
-                                                        <?php endif; ?>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
                                     </tr>
                             <?php
                                 }
@@ -124,11 +116,11 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                         <tfoot>
                             <tr>
                                 <th class="hideColumn" scope="col">ID</th>
-                                <th scope="col">S/N</th>
+                                <th scope="col" width="60px">S/N</th>
+                                <th scope="col" id="action_col" width="100px">Action</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Remark</th>
-                                <th scope="col" id="action_col">Action</th>
                             </tr>
                         </tfoot>
                     </table>
