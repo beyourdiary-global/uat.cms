@@ -119,7 +119,7 @@ $(document).ready(function() {
       
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
-    } else if (group === 'invoice' || group === 'currency' || group === 'agent'){
+    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'){
         
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
