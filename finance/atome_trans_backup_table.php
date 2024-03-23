@@ -284,8 +284,11 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                             <?php else: ?>
+                                <th class="text-center">
+                                <input type="checkbox" class="exportAll">
+                            </th>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>      
+                            <th scope="col" width="60px">S/N</th>   
                             <th id="group_header" scope="col">
                                 <?php 
                                     if (isset($_GET['group'])) {
@@ -309,6 +312,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
           
                           function generateTableRow($id, &$counters, $key, $topupAmt) {
                               echo '<tr onclick="window.location=\'stripe_trans_backup_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
+                              echo '<th class="text-center"><input type="checkbox" class="exportAll"></th>';
                               echo '<th class="hideColumn" scope="row">' . $id . '</th>';
                               echo '<th scope="row">' . $counters++ . '</th>';
                               echo '<td scope="row">' . $key . '</td>';
@@ -443,6 +447,9 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
                             <?php else: ?>
+                            <th class="text-center">
+                                <input type="checkbox" class="exportAll">
+                            </th>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>      
                             <th id="group_header" scope="col">

@@ -229,6 +229,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                 <table class="table table-striped" id="atome_trans_backup_table">
                     <thead>
                         <tr>
+                        <tr>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
