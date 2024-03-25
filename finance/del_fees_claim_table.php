@@ -73,8 +73,8 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <option value="yearly">Yearly</option>
                         </select>
                     </div>
-                    <div class="col-md-5 dateFilters">
-                        <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
+                    <div class="col-md-4 dateFilters">
+                        <label for="dateFilter" class="form-label">Filter by Claim Date:</label>
                         <div class="input-group date" id="datepicker"> 
                         <input type="text" class="form-control" placeholder="Select date" >
                             <div class="input-group-addon">
@@ -99,14 +99,16 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
                             <option value="courier" selected>Courier</option>
                             <option value="currency">Currency</option>
                         </select>
                     </div>
-                    
+                    <div class="col-md-2 d-flex align-items-center justify-content-center">
+                        <a id='resetButton' class="btn btn-sm btn-rounded btn-primary" > <i class="fa fa-refresh"> </i> Reset </a>
+                    </div>
         
                  
                 </div>
@@ -121,6 +123,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                         <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col">Claim Date</th>
                             <th scope="col">Courier</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Subtotal</th>
@@ -174,12 +177,13 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                                 $courier = isset($row3['name']) ? $row3['name'] : '';;
                                 $curr = isset($row2['unit']) ? $row2['unit'] : '';;
 
-                                $createdate = $row['create_date'];
+                                $createdate = $row['claim_date'];
                              }
                                 if ($groupOption == '') {
                                     echo '<tr>
                                     <th class="hideColumn" scope="row">' . $row['id'] . '</th>
                                     <td scope="row">' . $num++ . '</td>
+                                    <td scope="row">' . (isset($row['claim_date']) ? $row['claim_date'] : '') . '</td>
                                     <td scope="row">' . (isset($row3['name']) ? $row3['name'] : '') . '</td>
                                     <td scope="row">' . (isset($row2['unit']) ? $row2['unit'] : '') . '</td>
                                     <td scope="row">' . (isset($row['subtotal']) ? $row['subtotal'] : '') . '</td>
@@ -380,6 +384,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col">Claim Date</th>
                             <th scope="col">Courier</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Subtotal</th>

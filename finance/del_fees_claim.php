@@ -38,7 +38,7 @@ if (!($dataID) && !($act)) {
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
-
+    $dfc_date = postSpaceFilter("dfc_date");
     $dfc_courier = postSpaceFilter("dfc_courier_hidden");
     $dfc_curr = postSpaceFilter("dfc_curr_hidden");
     $dfc_subtotal = postSpaceFilter("dfc_subtotal");
@@ -55,7 +55,10 @@ if (post('actionBtn')) {
             if (!$dfc_courier) {
                 $courier_err = "Courier cannot be empty.";
                 break;
-            } else if (!$dfc_curr) {
+            }elseif (!$dfc_date) {
+                $date_err = "Please specify the date.";
+                break;
+            }else if (!$dfc_curr) {
                 $curr_err = "Currency cannot be empty.";
                 break;
             } else if (!(isset($dfc_subtotal) && $dfc_subtotal > 0.00)) {
@@ -71,6 +74,10 @@ if (post('actionBtn')) {
                     if ($dfc_courier) {
                         array_push($newvalarr, $dfc_courier);
                         array_push($datafield, 'courier');
+                    }
+                    if ($dfc_date) {
+                        array_push($newvalarr, $dfc_date);
+                        array_push($datafield, 'claim date');
                     }
                     if ($dfc_curr) {
                         array_push($newvalarr, $dfc_curr);
@@ -93,7 +100,7 @@ if (post('actionBtn')) {
                         array_push($datafield, 'remark');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(courier,currency,subtotal,tax,total,remark,create_by,create_date,create_time) VALUES ('$dfc_courier','$dfc_curr','$dfc_subtotal','$dfc_tax','$dfc_total','$dfc_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName . "(claim_date,courier,currency,subtotal,tax,total,remark,create_by,create_date,create_time) VALUES ('$dfc_date','$dfc_courier','$dfc_curr','$dfc_subtotal','$dfc_tax','$dfc_total','$dfc_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
                     $_SESSION['tempValConfirmBox'] = true;
@@ -112,6 +119,11 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['courier']);
                         array_push($chgvalarr, $dfc_courier);
                         array_push($datafield, 'courier');
+                    }
+                    if ($row['claim_date'] != $dfc_date) {
+                        array_push($oldvalarr, $row['claim_date']);
+                        array_push($chgvalarr, $dfc_date);
+                        array_push($datafield, 'claim date');
                     }
                     if ($row['currency'] != $dfc_curr) {
                         array_push($oldvalarr, $row['currency']);
@@ -145,7 +157,7 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
-                        $query = "UPDATE " . $tblName . " SET courier = '$dfc_courier',currency = '$dfc_curr', subtotal = '$dfc_subtotal', tax = '$dfc_tax', total = '$dfc_total',remark = '$dfc_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET courier = '$dfc_courier',claim_date = '$dfc_date',currency = '$dfc_curr', subtotal = '$dfc_subtotal', tax = '$dfc_tax', total = '$dfc_total',remark = '$dfc_remark', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($finance_connect, $query);
                     } else {
                         $act = 'NC';
@@ -309,7 +321,27 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     </div>
                                 <?php } ?>
                             </div>
-                            <div class="col-md-6 mb-3 autocomplete">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label form_lbl" id="dfc_date_label" for="dfc_date">Claim Date<span class="requireRed">*</span></label>
+                                <input class="form-control" type="date" name="dfc_date" id="dfc_date" value="<?php
+                                                                                                                if (isset($dataExisted) && isset($row['claim_date']) && !isset($dfc_date)) {
+                                                                                                                    echo $row['claim_date'];
+                                                                                                                } else if (isset($dfc_date)) {
+                                                                                                                    echo $dfc_date;
+                                                                                                                } else {
+                                                                                                                    echo date('Y-m-d');
+                                                                                                                }
+                                                                                                                ?>"
+                                    placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}"
+                                    <?php if ($act == '') echo 'disabled' ?>>
+                                <?php if (isset($date_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1"><?php echo $date_err; ?></span>
+                                </div>
+                                <?php } ?>
+
+                            </div>
+                            <div class="col-md-2 mb-3 autocomplete">
                                 <label class="form-label form_lbl" id="dfc_curr_lbl" for="dfc_curr">Currency<span
                                         class="requireRed">*</span></label>
                                 <?php

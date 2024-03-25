@@ -14,6 +14,58 @@ $(document).ready(function() {
         
         
 };
+
+$('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="end"], #datepicker4 input[name="end"]').change(function() {
+    var time =  $('#datepicker input').val();
+    var timeInterval = $('#timeInterval').val();
+    var startDate = $('#datepicker2 input[name="start"]').val();
+    var endDate = $('#datepicker2 input[name="end"]').val();
+    var startMonth = $('#datepicker3 input[name="start"]').val();
+    var endMonth = $('#datepicker3 input[name="end"]').val();
+    var startYear = $('#datepicker4 input[name="start"]').val();
+    var endYear = $('#datepicker4 input[name="end"]').val();
+   
+    var timeRange;
+    if (timeInterval === 'weekly') {
+    timeRange = startDate + 'to' + endDate;
+    } else if (timeInterval === 'monthly') {
+        timeRange = startMonth + 'to' + endMonth;
+    } else if (timeInterval === 'yearly') {
+        timeRange = startYear + 'to' + endYear;
+    } else if (timeInterval === 'daily') {
+        timeRange = time;
+    }
+
+    
+
+    var group = $('#group').val();
+
+
+    if (group === 'metaaccount' || group === 'courier' || group === 'shopee' || group === 'method' || group === 'brand' || group === 'package' || group === 'person' || group ==='merchant' || group === 'currencynperson') {
+      
+            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+        
+    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'){
+        
+            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+        
+    } else{
+        window.location.search = (timeRange ? '?timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
+    }
+
+
+
+    });
+
+$('#resetButton').click(function() {
+
+    $('#datepicker input, #datepicker2 input[name="start"], #datepicker2 input[name="end"], #datepicker3 input[name="start"], #datepicker3 input[name="end"], #datepicker4 input[name="start"], #datepicker4 input[name="end"]').val('');
+
+ 
+    $('#group').val('');
+    $('#timeInterval').val('');
+    $('#datepicker input').change();
+});
     function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -86,50 +138,9 @@ $(document).ready(function() {
    
 
     });
-
-  
    
-    $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="end"], #datepicker4 input[name="end"]').change(function() {
-    var time =  $('#datepicker input').val();
-    var timeInterval = $('#timeInterval').val();
-    var startDate = $('#datepicker2 input[name="start"]').val();
-    var endDate = $('#datepicker2 input[name="end"]').val();
-    var startMonth = $('#datepicker3 input[name="start"]').val();
-    var endMonth = $('#datepicker3 input[name="end"]').val();
-    var startYear = $('#datepicker4 input[name="start"]').val();
-    var endYear = $('#datepicker4 input[name="end"]').val();
-
-    var timeRange;
-    if (timeInterval === 'weekly') {
-    timeRange = startDate + 'to' + endDate;
-    } else if (timeInterval === 'monthly') {
-        timeRange = startMonth + 'to' + endMonth;
-    } else if (timeInterval === 'yearly') {
-        timeRange = startYear + 'to' + endYear;
-    } else if (timeInterval === 'daily') {
-        timeRange = time;
-    }
-
+   
     
-
-    var group = $('#group').val();
-
-
-    if (group === 'metaaccount' || group === 'courier' || group === 'shopee' || group === 'method' || group === 'brand' || group === 'package' || group === 'person' || group ==='merchant' || group === 'currencynperson') {
-      
-            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
-        
-    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'){
-        
-            window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
-        
-    } else{
-        window.location.search = (timeRange ? '?timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
-    }
-
-
-
-    });
     $('#datepicker').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd',
