@@ -1,33 +1,27 @@
 <?php
-$pageTitle = "Tag";
+$pageTitle = "Downline Top Up Record Summary";
+$isFinance = 1;
 
-include 'menuHeader.php';
-include 'checkCurrentPagePin.php';
+include '../menuHeader.php';
+include '../checkCurrentPagePin.php';
 
-$tblName = TAG;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/tag.php';
-$deleteRedirectPage = $SITEURL . '/tag_table.php';
+$redirect_page = $SITEURL . '/finance/downline_top_up_record.php';
+$deleteRedirectPage = $SITEURL . '/finance/downline_top_up_record_table.php';
+$result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
 
-$result = getData('*', '', '', $tblName, $connect);
-
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
 ?>
 
 <!DOCTYPE html>
 <html>
 
 <head>
-    <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
+<link rel="stylesheet" href="../css/main.css">
 </head>
 
 <script>
@@ -38,27 +32,14 @@ if (!$result) {
     });
 </script>
 
-<style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
-</style>
-
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>
     </div>
 
     <div class="page-load-cover">
-
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-
-            <div class="col-12 col-md-11">
+            <div class="col-12 col-md-8">
 
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
@@ -81,30 +62,44 @@ if (!$result) {
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Agent</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Total Amount</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
-                            if (isset($row['name'],$row['id']) && !empty($row['name'])) { ?>
-                                <tr>
+                            if (isset($_GET['ids'])) {
+                                $ids = explode(',', $_GET['ids']);
+                                foreach ($ids as $id) {
+                                $decodedId = urldecode($id);  
+                                if (isset($row['id']) && !empty($row['id']&& $row['id'] == $id)) {
+
+                                $agent = getData('name', "id='" . $row['agent'] . "'", '', AGENT, $finance_connect);
+                                $row3 = $agent->fetch_assoc();
+
+                                $brand = getData('name', "id='" . $row['brand'] . "'", 'LIMIT 1', BRAND, $connect);
+                                $row4 = $brand->fetch_assoc();
+
+                                $currResult = getData('unit', "id='" . $row['currency_unit'] . "'", '', CUR_UNIT, $connect);
+                            $currRow = $currResult->fetch_assoc();
+                        ?>
+                                <tr onclick="window.location='downline_top_up_record_table_detail.php?ids=<?= urlencode($row['id']) ?>';" style="cursor:pointer;">
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row" class="btn-container">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
-                                    </td>
-                                    <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
+                                    <td scope="row"><?= $num++ ?></td>
+                                    <td scope="row"><?php if (isset($row3['name'])) echo  $row3['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row4['name'])) echo  $row4['name'] ?></td>
+                                    <td scope="row"><?php if (isset($currRow['unit'])) echo $currRow['unit'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amount'])) echo  $row['amount'] ?></td>
                                 </tr>
                         <?php
                             }
+                        }
+                    }
                         }
                         ?>
                     </tbody>
@@ -112,10 +107,11 @@ if (!$result) {
                     <tfoot>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Remark</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Agent</th>
+                            <th scope="col">Brand</th>
+                            <th scope="col">Currency Unit</th>
+                            <th scope="col">Total Amount</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -134,7 +130,10 @@ if (!$result) {
         //to resize table with bootstrap 5 classes
         datatableAlignment('table');
         setButtonColor();
+
+        
     </script>
+
 </body>
 
 </html>

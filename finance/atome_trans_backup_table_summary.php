@@ -1,12 +1,12 @@
 <?php
 ob_start();
-$pageTitle = "Monthly Bank Transaction Backup Record";
+$pageTitle = "Atome Transaction Backup Record Summary";
 $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
-$img_path = '../' . img_server . 'finance/bank_trans_backup/';
+$img_path = '../' . img_server . 'finance/atome_trans_backup/';
 
 
 $tempDir = '../' . img_server . "temp/";
@@ -25,9 +25,9 @@ if (!empty($checkboxValues)) {
     setcookie('rowID', '', time() - 3600, '/');
     // Defining column names
     $excelData = array(
-        array('S/N', 'YEAR', 'MONTH', 'ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
+        array('S/N', 'TRANSACTION ID', 'ATOME ORDER ID', 'TRANSACTION DATE AND TIME', 'TRANSACTION OUTLET', 'E-COMMERCE PLATFORM ORDER ID','AMOUNT RECEIVABLE','ATTACHMENT', 'CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
     );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . BANK_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY year ASC, month ASC");
+    $query2 = $finance_connect->query("SELECT * FROM " . ATOME_TRANS_BACKUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY trans_id ASC, atome_id ASC, date ASC, trans_outlet ASC, platform_id ASC, amt_rec ASC");
 
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
@@ -35,27 +35,22 @@ if (!empty($checkboxValues)) {
             // Initialize an empty array to store the row data
             $lineData = array();
             $lineData[] = $excelRowNum;
-            $fullMonthName = monthNumberToString($row2['month']);
-
+        
             if (isset($row2['attachment']) && !empty($row2['attachment'])) {
                 $attachmentSourcePath = $img_path . $row2['attachment'];
                 if (file_exists($attachmentSourcePath)) {
-                    $yearFolder = $tempAttachDir . $row2['year'] . '/';
-                    $monthFolder = $yearFolder . $fullMonthName . '/';
-                    if (!file_exists($yearFolder)) {
-                        mkdir($yearFolder, 0777, true);
+                    $attachmentCreationDate = strtotime($row2['create_date']);
+                    $yearMonthFolder = $tempAttachDir . date('Y', $attachmentCreationDate) . '/' . date('m', $attachmentCreationDate) . '/';
+                    if (!file_exists($yearMonthFolder)) {
+                        mkdir($yearMonthFolder, 0777, true);
                     }
-                    if (!file_exists($monthFolder)) {
-                        mkdir($monthFolder, 0777, true);
-                    }
-                    $attachmentDestPath = $monthFolder . $row2['attachment'];
+                    $attachmentDestPath = $yearMonthFolder . $row2['attachment'];
                     copy($attachmentSourcePath, $attachmentDestPath);
                 }
             }
-            
 
             // Define the column names in the same order as in your database query
-            $columnNames = array('year', 'month', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
+            $columnNames = array('trans_id', 'atome_id', 'date', 'trans_outlet', 'platform_id', 'amt_rec', 'attachment', 'create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
 
             foreach ($columnNames as $columnName) {
                 // Check if the value is null, if so, replace it with an empty string
@@ -118,7 +113,7 @@ if (!empty($checkboxValues)) {
     }
 }
 
-function addDirToZip($dir, $zip, $basePath)
+function addDirToZip($dir, $zip, $basePath) 
 {
     $files = scandir($dir);
     foreach ($files as $file) {
@@ -161,11 +156,11 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$redirect_page = $SITEURL . '/finance/bank_trans_backup.php';
+$redirect_page = $SITEURL . '/finance/atome_trans_backup.php';
 
-$result = getData('*', '', '', BANK_TRANS_BACKUP, $finance_connect);
+$result = getData('*', '', '', ATOME_TRANS_BACKUP, $finance_connect);
 
-$img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
+$img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
 ?>
 
 <!DOCTYPE html>
@@ -177,9 +172,9 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
 
 <script>
     $(document).ready(() => {
-        let table = new DataTable("#bank_trans_backup_table", {
-            paging: $("#bank_trans_backup_table tbody tr").length > 10,
-            searching: $("#bank_trans_backup_table tbody tr").length > 10,
+        let table = new DataTable("#atome_trans_backup_table", {
+            paging: $("#atome_trans_backup_table tbody tr").length > 10,
+            searching: $("#atome_trans_backup_table tbody tr").length > 10,
             /* info: false, */
             order: [[2, "asc"]], // 0 = db id column; 1 = numbering column
             /* responsive: true, */
@@ -195,7 +190,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-11">
+        <div class="col-12 col-md-8">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -219,8 +214,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"><i
-                                        class="fa-solid fa-file-export"></i> Export</a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -232,33 +226,30 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
             } else {
                 ?>
 
-                <table class="table table-striped" id="bank_trans_backup_table">
+                <table class="table table-striped" id="atome_trans_backup_table">
                     <thead>
+                        <tr>
                         <tr>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
-
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Transaction Outlet</th>
+                            <th scope="col">Total Amount Receivable</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                            if (isset($row['id']) && !empty($row['id'])) {
-                                if (isset($row['month'])) {
-                                    $numericMonth = $row['month'];
-                                    $fullMonthName = date('F', mktime(0, 0, 0, $numericMonth, 1));
-                                } else {
-                                    $fullMonthName = '';
-                                }
+                              if (isset($_GET['ids'])) {
+                                $ids = explode(',', $_GET['ids']);
+                                foreach ($ids as $id) {
+                                $decodedId = urldecode($id);   
+                            if (isset($row['id']) && !empty($row['id'])&& $row['id'] == $id) {
+                               
                                 ?>
 
-                                <tr>
+                                <tr onclick="window.location='atome_trans_backup_table_detail.php?ids=<?= urlencode($row['id']) ?>';" style="cursor:pointer;">>
                                     <th class="hideColumn" scope="row">
                                         <?= $row['id'] ?>
                                     </th>
@@ -268,51 +259,12 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                     <th scope="row">
                                         <?= $num++; ?>
                                     </th>
-                                    <td scope="row">
-                                        <?php if (isset($row['year']))
-                                            echo $row['year'] ?>
-                                        </td>
-                                        <td scope="row">
-                                        <?= $fullMonthName ?>
-                                    </td>
-                                    <td scope="row">
-                                        <?php if (isset($row['attachment'])) { ?><a href="<?= $img_path . $row['attachment'] ?>"
-                                                target="_blank">
-                                                <?= $row['attachment'] ?>
-                                            </a>
-                                        <?php } ?>
-                                    </td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                        id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['year'] ?>','<?= $row['month'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    <td scope="row"><?php if (isset($row['trans_outlet'])) echo $row['trans_outlet'] ?></td>
+                                    <td scope="row"><?php if (isset($row['amt_rec'])) echo $row['amt_rec'] ?></td>
                                 </tr>
                             <?php }
+                                }
+                            }
                         } ?>
                     </tbody>
                     <tfoot>
@@ -322,10 +274,8 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col">Year</th>
-                            <th scope="col">Month</th>
-                            <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Transaction Outlet</th>
+                            <th scope="col">Total Amount Receivable</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -354,8 +304,9 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('bank_trans_backup_table');
-    <?php include '../js/bank_trans_backup_table.js' ?>
+    datatableAlignment('atome_trans_backup_table');
+    <?php include '../js/atome_trans_backup_table.js' ?>
+
 </script>
 
 </html>

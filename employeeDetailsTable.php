@@ -539,7 +539,7 @@ if (isset($_COOKIE['assignType'], $_COOKIE['employeeID'], $_COOKIE['leaveTypeSel
 
     <div class="page-load-cover">
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-11">
 
                 <!-- Employee Details Table Title -->
                 <div class="d-flex flex-column mb-3">

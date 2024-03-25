@@ -104,8 +104,6 @@ if (!empty($checkboxValues)) {
             ob_clean();
             readfile($zipFile);
             deleteDir($tempDir);
-            
-
         }
 
     } else {
@@ -225,15 +223,57 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                 echo '<div class="text-center"><h4>No Result!</h4></div>';
             } else {
                 ?>
+                <div class="row mb-3">
+                    <div class="col-md-3 dateFilters">
+                        <label for="timeInterval" class="form-label">Filter by:</label>
+                       <select class="form-select" id="timeInterval" >
 
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5 dateFilters">
+                        <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
+                        <div class="input-group date" id="datepicker"> 
+                        <input type="text" class="form-control" placeholder="Select date" >
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                        <div class="input-daterange input-group" id="datepicker2" style="display: none;">
+                            <input type="text" class="input form-control" name="start" placeholder="Start date"/>
+                                <span class="input-group-addon date-separator"> to </span>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
+                        </div>
+                        <div class="input-group input-daterange" id="datepicker3" style="display: none;">
+                            <input type="text" class="input form-control" name="start" placeholder="Start month"/>
+                                <span class="input-group-addon date-separator"> to </span>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
+                            
+                            </div>
+                        <div class="input-group input-daterange" id="datepicker4" style="display: none;">
+                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
+                                <span class="input-group-addon date-separator"> to </span>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Group by:</label>
+                        <select class="form-select" id="group">
+                            <option value="outlet" selected>Transaction Outlet</option>
+                        </select>
+                    </div>
                 <table class="table table-striped" id="atome_trans_backup_table">
                     <thead>
                         <tr>
+                        <?php if (!isset($_GET['group'])): ?>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
-
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
@@ -243,76 +283,160 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
+                            <?php else: ?>
+                                <th class="text-center">
+                                <input type="checkbox" class="exportAll">
+                            </th>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>   
+                            <th id="group_header" scope="col">
+                                <?php 
+                                    if (isset($_GET['group'])) {
+                                        if ($_GET['group'] == 'outlet') {
+                                            echo "Transaction Outlet";
+                                        }
+                                    }
+                                ?>
+                            </th>
+                            <th scope="col">Total Amount Receivable</th>
+                        <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()) {
+                        <?php 
+                          $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
+                          $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
+                          $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
+                          $groupedRows = [];
+                          $counters = 1;
+          
+                          function generateTableRow($id, &$counters, $key, $topupAmt) {
+                              echo '<tr onclick="window.location=\'stripe_trans_backup_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
+                              echo '<th class="text-center"><input type="checkbox" class="exportAll"></th>';
+                              echo '<th class="hideColumn" scope="row">' . $id . '</th>';
+                              echo '<th scope="row">' . $counters++ . '</th>';
+                              echo '<td scope="row">' . $key . '</td>';
+                              echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
+                              echo '</tr>';
+                          }
+                        
+                          $groupedRows = [];
+                        while ($row = $result->fetch_assoc()) {
                             if (isset($row['id']) && !empty($row['id'])) {
-                               
-                                ?>
+                                $outlet = $row['trans_outlet'];
+                            
+                                $createdate = $row['date'];
 
-                                <tr>
-                                    <th class="hideColumn" scope="row">
-                                        <?= $row['id'] ?>
-                                    </th>
-                                    <th class="text-center">
-                                        <input type="checkbox" class="export" value="<?= $row['id'] ?>">
-                                    </th>
-                                    <th scope="row">
-                                        <?= $num++; ?>
-                                    </th>
-                                    <td scope="row"><?php if (isset($row['trans_id'])) echo $row['trans_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row['atome_id'])) echo $row['atome_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['trans_outlet'])) echo $row['trans_outlet'] ?></td>
-                                    <td scope="row"><?php if (isset($row['platform_id'])) echo $row['platform_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row['amt_rec'])) echo $row['amt_rec'] ?></td>
-                                    <td scope="row">
-                                        <?php if (isset($row['attachment'])) { ?><a href="<?= $img_path . $row['attachment'] ?>"
-                                                target="_blank">
-                                                <?= $row['attachment'] ?>
-                                            </a>
-                                        <?php } ?>
-                                    </td>
+                                if($groupOption==''){
+                                    echo '<tr>
+                                    <th class="hideColumn" scope="row">' . $row['id'] . '</th>
+                                    <th class="text-center"><input type="checkbox" class="export" value="' . $row['id'] . '"></th>
+                                    <th scope="row">' . $num++ . '</th>
+                                    <td scope="row">' . (isset($row['trans_id']) ? $row['trans_id'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['atome_id']) ? $row['atome_id'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['date']) ? $row['date'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['trans_outlet']) ? $row['trans_outlet'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['platform_id']) ? $row['platform_id'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['amt_rec']) ? $row['amt_rec'] : '') . '</td>
+                                    <td scope="row">' . (isset($row['attachment']) ? '<a href="' . $img_path . $row['attachment'] . '" target="_blank">' . $row['attachment'] . '</a>' : '') . '</td>
                                     <td scope="row">
                                         <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                        id="action_menu"></i></button>
+                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['trans_id'] ?>','<?= $row['atome_id'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
+                                                <li>' . (isActionAllowed("View", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . "?id=" . $row['id'] . '">View</a>' : '') . '</li>
+                                                <li>' . (isActionAllowed("Edit", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 . '">Edit</a>' : '') . '</li>
+                                                <li>' . (isActionAllowed("Delete", $pinAccess) ? '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . '\',[\''. $row['trans_id'] . '\',\''. $row['atome_id'] . '\'],\'' . $pageTitle . '\',\'' . $redirect_page . '\',\'' . $SITEURL . '/cash_on_hand_trans_table.php\',\'D\')">Delete</a>' : '') . '</li>
                                             </ul>
                                         </div>
                                     </td>
-                                </tr>
-                            <?php }
-                        } ?>
+                                </tr>';
+                                
+                                }
+                                if ($groupOption && $groupOption3) {
+                                    if (($groupOption === 'outlet' ) && $groupOption4 === 'daily') {
+                                        if ($groupOption === 'outlet') {
+                                            $key = $outlet;
+                                        }
+                                
+                                        if ($groupOption3 === $createdate) {
+                                        if (!isset($groupedRows[$key])) {
+                                            $groupedRows[$key] = [
+                                                'ids' => [$row['id']],
+                                                'totalTopupAmount' => $row['amt_rec']
+                                            ];
+                                        } else {
+                                            $groupedRows[$key]['ids'][] = $row['id'];
+                                            $groupedRows[$key]['totalTopupAmount'] += $row['amt_rec'];
+                                        }
+                                    }
+                                    }
+                                    else if (($groupOption === 'outlet' ) && $groupOption4 !== 'daily') {
+                                        $dateRange = explode('to', $groupOption3);
+                                        if($groupOption4 == 'weekly'){
+                                            $startDate = strtotime(trim($dateRange[0]));
+                                            $endDate = strtotime(trim($dateRange[1]));
+                                        }else if ($groupOption4 == 'monthly'){
+                                            $startDate = strtotime(trim($dateRange[0]));
+                                            $endDate = strtotime('last day of ' . trim($dateRange[1]));
+                                        }else if ($groupOption4 == 'yearly'){
+                                            $startDate = strtotime('first day of January ' . trim($dateRange[0]));
+                                            $endDate = strtotime('last day of December ' . trim($dateRange[1]));
+                                        }
+        
+                                       
+                                        $createdTimestamp = strtotime($createdate);
+                                    
+                                        if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
+                                            if ($groupOption === 'outlet') {
+                                                $key = $outlet;
+                                            }
+                                    
+                                            if (!isset($groupedRows[$key])) {
+                                                $groupedRows[$key] = [
+                                                    'ids' => [$row['id']],
+                                                    'totalTopupAmount' => $row['amt_rec']
+                                                ];
+                                            } else {
+                                                $groupedRows[$key]['ids'][] = $row['id'];
+                                                $groupedRows[$key]['totalTopupAmount'] += $row['amt_rec'];
+                                            }
+                                        }
+                                    }
+                                }                    
+                                    
+                                }else if ($groupOption === 'outlet') {
+                                    generateTableRow($row['id'],$counters, $outlet, $row['amt_rec']);
+                                }else if ($groupOption === 'receivable') {
+                                    generateTableRow($row['id'], $counters, $amount, $row['amt_rec']);
+                                }
+                                }
+                                foreach ($groupedRows as $key => $groupedRow) {
+                                    $ids = implode(',', $groupedRow['ids']);
+                                    $url = $groupOption4 == 'daily' ? "atome_trans_backup_table_detail.php?ids=" . urlencode($ids) : "atome_trans_backup_table_summary.php?ids=" . urlencode($ids);
+                                    echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+                                    echo '<th class="hideColumn" scope="row">' . $ids . '</th>';
+                                    echo '<th class="text-center"><input type="checkbox" class="export" value="'  . $ids . '"></th>';
+                                    echo '<th scope="row">' . $counters++ . '</th>';
+                                    echo '<td scope="row">' . $key . '</td>';
+                                    echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
+                                    echo '</tr>';
+                                }
+                                
+                                ?>
+
+                                
+                            
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
+                    <tr>
+                        <?php if (!isset($_GET['group'])): ?>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
+                            <th class="hideColumn" scope="col">ID</th>
+
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
@@ -322,6 +446,23 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
                             <th scope="col" id="action_col">Action</th>
+                            <?php else: ?>
+                            <th class="text-center">
+                                <input type="checkbox" class="exportAll">
+                            </th>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>      
+                            <th id="group_header" scope="col">
+                                <?php 
+                                    if (isset($_GET['group'])) {
+                                        if ($_GET['group'] == 'outlet') {
+                                            echo "Transaction Outlet";
+                                        }
+                                    }
+                                ?>
+                            </th>
+                            <th scope="col">Total Amount Receivable</th>
+                        <?php endif; ?>
                         </tr>
                     </tfoot>
                 </table>
@@ -332,6 +473,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
 
 </body>
 <script>
+     <?php include "../js/fb_ads_topup_table.js" ?>
     //Initial Page And Action Value
     var page = "<?= $pageTitle ?>";
     var action = "<?php echo isset($act) ? $act : ' '; ?>";

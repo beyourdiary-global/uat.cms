@@ -39,8 +39,7 @@ if (!($dataID) && !($act)) {
 
 $pay_meth_list_result = getData('*', '', '', FIN_PAY_METH, $finance_connect);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $customer_id = $_POST['customer_id'];
     $customer_name = $_POST['customer_name'];
     $customer_email = $_POST['customer_email'];
@@ -54,18 +53,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $duplicate_result = mysqli_query($connect, $duplicate_check_query);
     
     if (mysqli_num_rows($duplicate_result) > 0) {
-        echo "Error: Duplicate record found!";
+        echo "<script>alert('Error: Duplicate record found!');</script>";
     } else {
         $insert_query = "INSERT INTO customer_lazada_deals_transaction (lcr_id, name, email, phone, ship_rec_name, ship_rec_add, ship_rec_contact, sales_pic) 
                          VALUES ('$customer_id', '$customer_name', '$customer_email', '$customer_phone', '$shipping_name', '$shipping_address', '$shipping_contact', '$sales_pic')";
     
         if (mysqli_query($connect, $insert_query)) {
-            echo "New record created successfully";
+            echo "<script>alert('New record created successfully');</script>";
         } else {
-            echo "Error: " . $insert_query . "<br>" . mysqli_error($connect);
+            echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
         }
     }
 }
+
 
 if (post('actionBtn')) {
     $action = post('actionBtn');
@@ -450,7 +450,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     if (isset($errorExist)) {
         $viewActMsg = USER_NAME . " fail to viewed the data [<b> ID = " . $dataID . "</b> ] from <b><i>$tblName Table</i></b>.";
     } else {
-        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . $row['name'] . "</b> from <b><i>$tblName Table</i></b>.";
+        $viewActMsg = USER_NAME . " viewed the data [<b> ID = " . $dataID . "</b> ] <b>" . "</b> from <b><i>$tblName Table</i></b>.";
     }
 
     $log = [
@@ -743,7 +743,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         <input class="form-control" type="text" id="sales_pic" name="sales_pic">
     </div>
     </div>
-        <input type="submit" value="Submit">
+    <input type="submit" name="submit" value="Submit">
     </div>
 
 </fieldset>
