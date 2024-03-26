@@ -262,7 +262,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="form-group mb-3">
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="cusFirstName">First Name </label>
+                                        <label class="form-label" for="cusFirstName">First Name <span
+                                        class="requireRed">*</span></label>
                                         <input class="form-control " type="text" name="cusFirstName" id="cusFirstName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" required <?php if ($act == '') echo 'readonly' ?>>
                                     </div>
 
@@ -278,7 +279,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 <div class="row">
 
                                     <div class="col-sm-3">
-                                        <label class="form-label" for="cusGender">Gender </label>
+                                        <label class="form-label" for="cusGender">Gender <span
+                                        class="requireRed">*</span></label>
                                         <select class="form-select" aria-label="Default select example" name="cusGender" id="cusGender" required <?php if ($act == '') echo 'disabled' ?>>
                                             <option value="" disabled selected>Select customer gender</option>
                                             <option value="Female" <?php echo isset($row['gender']) && $row['gender'] == 'Female' ? "selected" : ""; ?>>Female</option>
@@ -287,7 +289,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     </div>
 
                                     <div class="col-sm-5">
-                                        <label class="form-label" for="cusEmail">Email </label>
+                                        <label class="form-label" for="cusEmail">Email <span
+                                        class="requireRed">*</span></label>
                                         <input class="form-control " type="email" name="cusEmail" id="cusEmail" value="<?php if (isset($row['email'])) echo $row['email'] ?>" <?php if ($act == '') echo 'readonly' ?>>
                                         <span id="emailMsg"></span>
                                     </div>
@@ -304,7 +307,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 <div class="row">
 
                                     <div class="col-sm-3">
-                                        <label class="form-label" for="cusPhoneCode">Phone Code </label>
+                                        <label class="form-label" for="cusPhoneCode">Phone Code <span
+                                        class="requireRed">*</span></label>
                                         <select class="form-select" aria-label="Default select example" name="cusPhoneCode" id="cusPhoneCode" required <?php if ($act == '') echo 'disabled' ?>>
                                             <?php
                                             $resultPhoneCode = getData('*', '', '', 'countries', $connect);
@@ -325,7 +329,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                     </div>
 
                                     <div class="col-sm-9">
-                                        <label class="form-label" for="cusPhoneNum">Phone Number </label>
+                                        <label class="form-label" for="cusPhoneNum">Phone Number <span
+                                        class="requireRed">*</span></label>
                                         <input type="text" name="cusPhoneNum" id="cusPhoneNum" class="form-control" style="height: 40px;" required value="<?php if (isset($row['phone_number'])) echo $row['phone_number'] ?>" <?php if ($act == '') echo 'readonly' ?>>
                                     </div>
                                 </div>
@@ -511,6 +516,18 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         preloader(300, action);
 
         $(document).ready(function() {
+
+            function validateEmail() {
+            // get value of input email
+            var email = $("#cusEmail").val();
+            // use reular expression
+            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+            if (reg.test(email)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
             $("#cusEmail").on("input", function() {
                 if (!$("#cusEmail").val()) {
                     $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
