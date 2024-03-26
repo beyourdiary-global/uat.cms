@@ -511,6 +511,18 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         preloader(300, action);
 
         $(document).ready(function() {
+
+            function validateEmail() {
+            // get value of input email
+            var email = $("#cusEmail").val();
+            // use reular expression
+            var reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+            if (reg.test(email)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
             $("#cusEmail").on("input", function() {
                 if (!$("#cusEmail").val()) {
                     $("#emailMsg").html("<p style='color:red;margin-bottom:0'>Email is required!</p>");
