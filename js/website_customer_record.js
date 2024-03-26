@@ -150,16 +150,18 @@ $('.submitBtn').on('click', () => {
         cust_email_chk = 1;
     }
 
-    if ($('#wcr_cust_birthday').val() === '' || $('#wcr_cust_birthday').val() === null || $('#wcr_cust_birthday')
-        .val() === undefined) {
-        cust_birthday_chk = 0;
-        $("#wcr_cust_birthday").after(
-            '<span class="error-message wcr-cust-id-err">Customer Birthday is required!</span>');
-    } else {
-        $(".wcr-cust-birthday-err").remove();
-        cust_birthday_chk = 1;
-    }
+    var wcr_cust_birthday = $('#wcr_cust_birthday').val();
+    var today = new Date().toISOString().slice(0, 10);
 
+        if (wcr_cust_birthday === '' || wcr_cust_birthday === null || wcr_cust_birthday === today ||wcr_cust_birthday === undefined) {
+            cust_birthday_chk = 0;
+            $("#wcr_cust_birthday").after(
+                '<span class="error-message wcr-cust-id-err">Customer Birthday is required!</span>');
+        } else {
+            $(".wcr-cust-birthday-err").remove();
+            cust_birthday_chk = 1;
+        }
+        
     if (($('#wcr_pic_hidden').val() === ''  || $('#wcr_pic_hidden').val() == '0' || $('#wcr_pic_hidden').val() === null || $('#wcr_pic_hidden')
             .val() === undefined)) {
         pic_chk = 0;
