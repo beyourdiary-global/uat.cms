@@ -180,18 +180,18 @@ $('.submitBtn').on('click', () => {
         ctc_chk = 1;
     }
 
-    if (($('#fcb_pic_hidden').val() === ''  || $('#fcb_pic_hidden').val() == '0' || $('#fcb_pic_hidden').val() === null || $('#fcb_pic_hidden')
-            .val() === undefined)) {
-        pic_chk = 0;
+
+    if ($('#fcb_pic').val() === '' || $('#fcb_pic').val() === null || $('#fcb_pic').val() === undefined) {
+        acc_chk = 0;
         $("#fcb_pic").after(
             '<span class="error-message fcb-pic-err">Sales Person-In-Charge is required!</span>');
-    } else {
-        $(".fcb-pic-err").remove();
-        pic_chk = 1;
-    }
+        } else {
+            $(".fcb-pic-err").remove();
+            pic_chk = 1;
+        }
 
 
-    if (($('#fcb_country_hidden').val() == '' || $('#fcb_country_hidden').val() == '0' || $('#fcb_country_hidden').val() === null || $('#fcb_country_hidden')
+    if (($('#fcb_country').val() == '' || $('#fcb_country').val() == '0' || $('#fcb_country').val() === null || $('#fcb_country')
             .val() === undefined)) {
         country_chk = 0;
         $("#fcb_country").after(
@@ -201,7 +201,7 @@ $('.submitBtn').on('click', () => {
         country_chk = 1;
     }
 
-    if (($('#fcb_brand_hidden').val() == '' || $('#fcb_brand_hidden').val() == '0' || $('#fcb_brand_hidden').val() === null || $('#fcb_brand_hidden')
+    if (($('#fcb_brand').val() == '' || $('#fcb_brand').val() == '0' || $('#fcb_brand').val() === null || $('#fcb_brand')
             .val() === undefined)) {
         brand_chk = 0;
         $("#fcb_brand").after(
@@ -211,7 +211,7 @@ $('.submitBtn').on('click', () => {
         brand_chk = 1;
     }
 
-    if (($('#fcb_series_hidden').val() == '' || $('#fcb_series_hidden').val() == '0' || $('#fcb_series_hidden').val() === null || $('#fcb_series_hidden')
+    if (($('#fcb_series').val() == '' || $('#fcb_series').val() == '0' || $('#fcb_series').val() === null || $('#fcb_series')
             .val() === undefined)) {
         series_chk = 0;
         $("#fcb_series").after(
@@ -221,7 +221,7 @@ $('.submitBtn').on('click', () => {
         series_chk = 1;
     }
 
-    if (($('#fcb_fbpage_hidden').val() == '' || $('#fcb_fbpage_hidden').val() == '0' || $('#fcb_fbpage_hidden').val() === null || $('#fcb_fbpage_hidden')
+    if (($('#fcb_fbpage').val() == '' || $('#fcb_fbpage').val() == '0' || $('#fcb_fbpage').val() === null || $('#fcb_fbpage')
             .val() === undefined)) {
         fbpage_chk = 0;
         $("#fcb_fbpage").after(
@@ -231,7 +231,7 @@ $('.submitBtn').on('click', () => {
         fbpage_chk = 1;
     }
 
-    if (($('#fcb_channel_hidden').val() == '' || $('#fcb_channel_hidden').val() == '0' || $('#fcb_channel_hidden').val() === null || $('#fcb_channel_hidden')
+    if (($('#fcb_channel').val() == '' || $('#fcb_channel').val() == '0' || $('#fcb_channel').val() === null || $('#fcb_channel')
             .val() === undefined)) {
         channel_chk = 0;
         $("#fcb_channel").after(
