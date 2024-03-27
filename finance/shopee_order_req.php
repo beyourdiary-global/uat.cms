@@ -511,7 +511,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 echo 'disabled' ?>>
                                     <option value="0" disabled selected>Select Shopee Account</option>
                                     <?php
-                            $query = "SELECT * FROM " . SHOPEE_ACC . " ORDER BY `name` ASC ";
+                            $query = "SELECT * FROM " . SHOPEE_ACC . " WHERE `status` = 'A' ORDER BY `name` ASC";
                             $acc_result = $finance_connect->query($query);
                             if ($acc_result->num_rows >= 1) {
                                 $acc_result->data_seek(0);
