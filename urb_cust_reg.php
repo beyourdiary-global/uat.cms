@@ -10,7 +10,10 @@ $reg_tblName = URBAN_CUST_REG;
 
 $dataID = input('id');
 $act = input('act');
+
+
 $pageAction = getPageAction($act);
+
 $allowed_ext = array("png", "jpg", "jpeg", "svg", "pdf");
 
 
@@ -23,10 +26,21 @@ if (!file_exists($img_path)) {
     mkdir($img_path, 0777, true);
 }
 
-// to display data to input
-if ($dataID) { //edit/remove/view
+if ($dataID && $act== 'I') { //edit/remove/view
+    $rst = getData('*', "id='" . $dataID . "'", 'LIMIT 1', $tblName, $connect);
+ 
+    if ($rst != false && $rst->num_rows > 0) {
+        $dataExisted = 1;
+        $row = $rst->fetch_assoc();
+    } else {
+        // If $rst is false or no data found ($act==null)
+        $errorExist = 1;
+        $_SESSION['tempValConfirmBox'] = true;
+        $act = "F";
+    }
+}else if ($dataID) { //edit/remove/view
     $rst = getData('*', "name='" . $dataID . "'", 'LIMIT 1', $reg_tblName, $connect);
-
+ 
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
@@ -37,7 +51,6 @@ if ($dataID) { //edit/remove/view
         $act = "F";
     }
 }
-
 
 if (!($dataID) && !($act)) {
     echo '<script>
@@ -156,11 +169,13 @@ if (post('actionBtn')) {
                 try {
                     // take old value
                     $rst = getData('*', "name = '$dataID'", 'LIMIT 1', $reg_tblName, $connect);
+                    $rst2 = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $connect);
                     $row = $rst->fetch_assoc();
+                    $row2 = $rst->fetch_assoc();
 
                     // check value
-                    if ($row['name'] != $umr_name) {
-                        array_push($oldvalarr, $row['name']);
+                    if ($row2['name'] != $umr_name) {
+                        array_push($oldvalarr, $row2['name']);
                         array_push($chgvalarr, $umr_name);
                         array_push($datafield, 'name');
                     }
@@ -261,6 +276,7 @@ if (post('actionBtn')) {
                     <?= $initial_page ?>
                 </a> <i class="fa-solid fa-chevron-right fa-xs"></i>
                 <?php
+              
                 echo displayPageAction($act, $pageTitle);
                 ?>
             </p>
@@ -292,7 +308,7 @@ if (post('actionBtn')) {
                                         class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="umr_name" id="umr_name" value="<?php
                                 $name_rst = getData('*', "id='" . $dataID . "'", 'LIMIT 1', $tblName, $connect);
-
+                              
                                 if ($name_row = $name_rst->fetch_assoc()) {
                                     echo $name_row['name'];
                                 }
