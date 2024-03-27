@@ -94,9 +94,12 @@ if (!$result) {
                                 <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
                                     <?php renderDeleteButton($pinAccess, $row['id'], $row['commission'], $row['service'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    </div>
                                     </td>
                                     <td scope="row"><?php if (isset($row['commission'])) echo $row['commission'] ?></td>
                                     <td scope="row"><?php if (isset($row['service'])) echo $row['service'] ?></td>
