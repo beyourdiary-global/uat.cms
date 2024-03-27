@@ -335,14 +335,16 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Product Name</label>
+                                <label class="form-label form_lbl" id="prod_name_lbl" for="prod_name">Product Name<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="prod_name" id="prod_name" value="<?php echo (isset($row['name'])) ? $row['name'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6">
                             <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand</label>
+                                <label class="form-label form_lbl" id="prod_brand_lbl" for="prod_brand">Product Brand<span
+                                        class="requireRed">*</span></label>
                                 <?php
 
                                 unset($echoVal);
@@ -371,7 +373,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit</label>
+                                <label class="form-label form_lbl" id="prod_wgt_unit_lbl" for="prod_wgt_unit">Product Weight Unit<span
+                                        class="requireRed">*</span></label>
                                 <?php
 
                                 unset($echoVal);
@@ -395,7 +398,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight</label>
+                                <label class="form-label form_lbl" id="prod_wgt_lbl" for="prod_wgt">Product Weight<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="prod_wgt" id="prod_wgt" value="<?php echo (isset($row['weight'])) ? $row['weight'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                             </div>
                         </div>
@@ -404,7 +408,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit</label>
+                                <label class="form-label form_lbl" id="prod_cur_unit_lbl" for="prod_cur_unit">Product Currency Unit<span
+                                        class="requireRed">*</span></label>
                                 <?php
                                 unset($echoVal);
 
@@ -426,7 +431,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost</label>
+                                <label class="form-label form_lbl" id="prod_cost_lbl" for="prod_cost">Product Cost<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="number" name="prod_cost" min="0" step=".01" id="prod_cost" value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                             </div>
                         </div>
@@ -475,7 +481,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date</label>
+                                <label class="form-label form_lbl" id="prod_expire_date_lbl" for="prod_expire_date">Product Expire Date<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="date" name="prod_expire_date" id="prod_expire_date" value="<?php echo (isset($row['expire_date'])) ? $row['expire_date'] : ''; ?>" <?php if ($act == '') echo 'readonly' ?> required>
                             </div>
                         </div>

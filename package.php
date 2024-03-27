@@ -298,7 +298,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="col-12 col-md-4">
                             <div class="form-group mb-3">
                                 <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?>
-                                    Name</label>
+                                    Name<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="currentDataName" id="currentDataName"
                                     value="<?php if (isset($row['name'])) echo $row['name'] ?>"
                                     <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
@@ -311,7 +312,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         <div class="col-12 col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="price_lbl" for="price">Selling Price</label>
+                                <label class="form-label form_lbl" id="price_lbl" for="price">Selling Price<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="number" name="price" id="price"
                                     value="<?php echo (isset($row['price'])) ? $row['price'] : ''; ?>"
                                     <?php if ($act == '') echo 'readonly' ?> required>
@@ -324,7 +326,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="col-12 col-md-4">
                             <div class="form-group autocomplete mb-3">
                                 <label class="form-label form_lbl" id="cur_unit_lbl" for="cur_unit">Currency
-                                    Unit</label>
+                                    Unit<span
+                                        class="requireRed">*</span></label>
                                 <?php
                                 unset($echoVal);
 
@@ -351,7 +354,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="row">
                         <div class="col-12 col-md-4">
                             <div class="form-group autocomplete mb-3">
-                                <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand</label>
+                                <label class="form-label form_lbl" id="brand_lbl" for="brand">Brand<span
+                                        class="requireRed">*</span></label>
                                 <?php
                                 unset($echoVal);
 
@@ -377,7 +381,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                         <div class="col-12 col-md-4">
                             <div class="form-group mb-3">
-                                <label class="form-label form_lbl" id="cost_lbl" for="package_cost">Cost</label>
+                                <label class="form-label form_lbl" id="cost_lbl" for="package_cost">Cost<span
+                                        class="requireRed">*</span></label>
                                 <input class="form-control" type="number" required step="0.01" name="package_cost" id="package_cost"
                                     value="<?php echo (isset($row['cost'])) ? $row['cost'] : ''; ?>"
                                     <?php if ($act == '') echo 'readonly' ?>>
@@ -390,7 +395,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="col-12 col-md-4">
                             <div class="form-group autocomplete mb-3">
                                 <label class="form-label form_lbl" id="cost_curr_lbl" for="cost_curr">Cost Currency
-                                    Unit</label>
+                                    Unit<span
+                                        class="requireRed">*</span></label>
                                 <?php
                                 unset($echoVal);
 
