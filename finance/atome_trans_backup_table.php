@@ -153,7 +153,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-
+$deleteRedirectPage = $SITEURL . '/atome_trans_backup_table.php';
 $redirect_page = $SITEURL . '/finance/atome_trans_backup.php';
 
 $result = getData('*', '', '', ATOME_TRANS_BACKUP, $finance_connect);
@@ -275,6 +275,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
                             <th scope="col">Transaction Date and Time</th>
@@ -282,7 +283,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">E-commerce Platform Order ID</th>
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                           
                             <?php else: ?>
                                 <th class="text-center">
                                 <input type="checkbox" class="exportAll">
@@ -332,6 +333,15 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                     <th class="hideColumn" scope="row">' . $row['id'] . '</th>
                                     <th class="text-center"><input type="checkbox" class="export" value="' . $row['id'] . '"></th>
                                     <th scope="row">' . $num++ . '</th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                
+                                ?>
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['trans_id'], $row['atome_id'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                <?php echo'</div>
+                                </td>
                                     <td scope="row">' . (isset($row['trans_id']) ? $row['trans_id'] : '') . '</td>
                                     <td scope="row">' . (isset($row['atome_id']) ? $row['atome_id'] : '') . '</td>
                                     <td scope="row">' . (isset($row['date']) ? $row['date'] : '') . '</td>
@@ -339,18 +349,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                     <td scope="row">' . (isset($row['platform_id']) ? $row['platform_id'] : '') . '</td>
                                     <td scope="row">' . (isset($row['amt_rec']) ? $row['amt_rec'] : '') . '</td>
                                     <td scope="row">' . (isset($row['attachment']) ? '<a href="' . $img_path . $row['attachment'] . '" target="_blank">' . $row['attachment'] . '</a>' : '') . '</td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>' . (isActionAllowed("View", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . "?id=" . $row['id'] . '">View</a>' : '') . '</li>
-                                                <li>' . (isActionAllowed("Edit", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 . '">Edit</a>' : '') . '</li>
-                                                <li>' . (isActionAllowed("Delete", $pinAccess) ? '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . '\',[\''. $row['trans_id'] . '\',\''. $row['atome_id'] . '\'],\'' . $pageTitle . '\',\'' . $redirect_page . '\',\'' . $SITEURL . '/cash_on_hand_trans_table.php\',\'D\')">Delete</a>' : '') . '</li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                   
                                 </tr>';
                                 
                                 }
@@ -438,6 +437,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th class="hideColumn" scope="col">ID</th>
 
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
                             <th scope="col">Transaction Date and Time</th>
@@ -445,7 +445,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">E-commerce Platform Order ID</th>
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                            
                             <?php else: ?>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">

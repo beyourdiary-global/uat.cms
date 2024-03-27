@@ -158,7 +158,7 @@ $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
 $redirect_page = $SITEURL . '/finance/stripe_trans_backup.php';
-
+$deleteRedirectPage = $SITEURL . '/finance/stripe_trans_backup_table.php';
 $result = getData('*', '', '', STRIPE_TRANS_BACKUP, $finance_connect);
 
 $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
@@ -191,7 +191,7 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-11">
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
@@ -235,14 +235,14 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
-
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Stripe Payout ID</th>
                             <th scope="col">Date paid</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -266,7 +266,15 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                     <th scope="row">
                                         <?= $num++; ?>
                                     </th>
-
+                                    <td scope="row" class="btn-container">
+                                            <div class="d-flex align-items-center">' 
+                                           
+                                                <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                                <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                                <?php renderDeleteButton($pinAccess, $row['id'], $row['payout_id'], $row['date_paid'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                            </div>
+                                    </td>
+                                   
                                     <td scope="row"><?php if (isset($row['payout_id'])) echo $row['payout_id'] ?></td>
                                     
                                     <td scope="row"><?php if (isset($row['date_paid'])) echo $row['date_paid'] ?></td>
@@ -282,35 +290,7 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                             </a>
                                         <?php } ?>
                                     </td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                        id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['payout_id'] ?>','<?= $row['date_paid'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/js_trans_backup_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    
                                 </tr>
                             <?php }
                                 }
@@ -324,12 +304,12 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Stripe Payout ID</th>
                             <th scope="col">Date paid</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>

@@ -108,13 +108,14 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                             <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
+                           
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
@@ -170,44 +171,29 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                                     $brand = isset($row4['name']) ? $row4['name'] : '';
                                     $agent = isset($row3['name']) ? $row3['name'] : '';
                                     $curr = isset($currRow['unit']) ? $currRow['unit'] : '';
+                                    $agentName = isset($row3['name']) ? $row3['name'] : '';
+                                    $brandName = isset($row4['name']) ? $row4['name'] : '';
                                     $createdate = $row['create_date'];
                                     if ($groupOption == '') {
                                         echo '
                                     <tr>
                                     <th class="hideColumn" scope="row">' . $row['id'] . '</th>
-                                    <td scope="row">' . $num++ . '</td>
+                                    <td scope="row">' . $num++ . '</td> 
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">'
+                                    ?>
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'],$agentName, $brandName, $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    <?php echo'</div>
+                                    </td>
                                     <td scope="row">' . (isset($row3['name']) ? $row3['name'] : '') . '</td>
                                     <td scope="row">' . (isset($row4['name']) ? $row4['name'] : '') . '</td>
                                     <td scope="row">' . (isset($currRow['unit']) ? $currRow['unit'] : '') . '</td>
                                     <td scope="row">' . (isset($row['amount']) ? $row['amount'] : '') . '</td>
                                     <td scope="row">' . (isset($row['attachment']) ? $row['attachment'] : '') . '</td>
                                     <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>';
-                                        if (isActionAllowed('View', $pinAccess)) {
-                                            echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '">View</a>';
-                                        }
-                                        echo '</li>
-                                                <li>';
-                                        if (isActionAllowed('Edit', $pinAccess)) {
-                                            echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '">Edit</a>';
-                                        }
-                                        echo '</li>
-                                                <li>';
-                                        if (isActionAllowed('Delete', $pinAccess)) {
-                                            $agentName = isset($row3['name']) ? $row3['name'] : '';
-                                            $brandName = isset($row4['name']) ? $row4['name'] : '';
-                                            echo '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . "',['" . $agentName . "', '" . $brandName . "'],'" . $pageTitle . "','" . $redirect_page . "','" . $SITEURL . "/downline_top_up_record_table.php','D')\">Delete</a>";
-                                        }
-                                        echo '</li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                    
                                 </tr>';
                                     }
                                     if ($groupOption && $groupOption3) {
@@ -281,13 +267,14 @@ $result = getData('*', '', '', DW_TOP_UP_RECORD, $finance_connect);
                             <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
+                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col" style="width: 100px;">Action</th>
+                          
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
