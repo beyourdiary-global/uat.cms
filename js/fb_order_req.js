@@ -259,7 +259,8 @@ $('.submitBtn').on('click', () => {
         ctc_chk = 1;
     }
 
-    if (($('#for_pic_hidden').val() === ''  || $('#for_pic_hidden').val() == '0' || $('#for_pic_hidden').val() === null || $('#for_pic_hidden')
+
+    if (($('#for_pic').val() === ''  || $('#for_pic').val() == '0' || $('#for_pic').val() === null || $('#for_pic')
             .val() === undefined)) {
         pic_chk = 0;
         $("#for_pic").after(
@@ -270,7 +271,7 @@ $('.submitBtn').on('click', () => {
     }
 
 
-    if (($('#for_country_hidden').val() == '' || $('#for_country_hidden').val() == '0' || $('#for_country_hidden').val() === null || $('#for_country_hidden')
+    if (($('#for_country').val() == '' || $('#for_country').val() == '0' || $('#for_country').val() === null || $('#for_country')
             .val() === undefined)) {
         country_chk = 0;
         $("#for_country").after(
@@ -280,7 +281,7 @@ $('.submitBtn').on('click', () => {
         country_chk = 1;
     }
 
-    if (($('#for_brand_hidden').val() == '' || $('#for_brand_hidden').val() == '0' || $('#for_brand_hidden').val() === null || $('#for_brand_hidden')
+    if (($('#for_brand').val() == '' || $('#for_brand').val() == '0' || $('#for_brand').val() === null || $('#for_brand')
             .val() === undefined)) {
         brand_chk = 0;
         $("#for_brand").after(
@@ -290,7 +291,7 @@ $('.submitBtn').on('click', () => {
         brand_chk = 1;
     }
 
-    if (($('#for_series_hidden').val() == '' || $('#for_series_hidden').val() == '0' || $('#for_series_hidden').val() === null || $('#for_series_hidden')
+    if (($('#for_series').val() == '' || $('#for_series').val() == '0' || $('#for_series').val() === null || $('#for_series')
             .val() === undefined)) {
         series_chk = 0;
         $("#for_series").after(
@@ -300,7 +301,7 @@ $('.submitBtn').on('click', () => {
         series_chk = 1;
     }
 
-    if (($('#for_pkg_hidden').val() == '' || $('#for_pkg_hidden').val() == '0' || $('#for_pkg_hidden').val() === null || $('#for_pkg_hidden')
+    if (($('#for_pkg').val() == '' || $('#for_pkg').val() == '0' || $('#for_pkg').val() === null || $('#for_pkg')
             .val() === undefined)) {
         pkg_chk = 0;
         $("#for_pkg").after(
@@ -310,7 +311,7 @@ $('.submitBtn').on('click', () => {
         pkg_chk = 1;
     }
 
-    if (($('#for_fbpage_hidden').val() == '' || $('#for_fbpage_hidden').val() == '0' || $('#for_fbpage_hidden').val() === null || $('#for_fbpage_hidden')
+    if (($('#for_fbpage').val() == '' || $('#for_fbpage').val() == '0' || $('#for_fbpage').val() === null || $('#for_fbpage')
             .val() === undefined)) {
         fbpage_chk = 0;
         $("#for_fbpage").after(
@@ -320,7 +321,7 @@ $('.submitBtn').on('click', () => {
         fbpage_chk = 1;
     }
 
-    if (($('#for_channel_hidden').val() == '' || $('#for_channel_hidden').val() == '0' || $('#for_channel_hidden').val() === null || $('#for_channel_hidden')
+    if (($('#for_channel').val() == '' || $('#for_channel').val() == '0' || $('#for_channel').val() === null || $('#for_channel')
             .val() === undefined)) {
         channel_chk = 0;
         $("#for_channel").after(
@@ -340,7 +341,7 @@ $('.submitBtn').on('click', () => {
         price_chk = 1;
     }
 
-    if (($('#for_pay_meth_hidden').val() == '' || $('#for_pay_meth_hidden').val() == '0' || $('#for_pay_meth_hidden').val() === null || $('#for_pay_meth_hidden')
+    if (($('#for_pay_meth').val() == '' || $('#for_pay_meth').val() == '0' || $('#for_pay_meth').val() === null || $('#for_pay_meth')
             .val() === undefined)) {
         pay_chk = 0;
         $("#for_pay_meth").after(

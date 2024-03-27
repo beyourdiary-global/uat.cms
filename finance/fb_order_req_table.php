@@ -138,10 +138,13 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
-                                <div class="d-flex align-items-center">
-                                <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['commission'], $row['service'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    </div>
+                                    </td>
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-users"></i>
