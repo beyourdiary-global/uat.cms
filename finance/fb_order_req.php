@@ -785,20 +785,18 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                                 if (isset($echoVal)) {
                                     $channel_rst = getData('*', "id = '$echoVal'", '', CHANEL_SC_MD, $finance_connect);
-                                } else {
-                                    $channel_rst = getData('*', "name = 'Facebook'", '', CHANEL_SC_MD, $finance_connect);
+                                    if (!$channel_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $channel_row = $channel_rst->fetch_assoc();
                                 }
 
-                                if (!$channel_rst) {
-                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                }
-                                $channel_row = $channel_rst->fetch_assoc();
                                 ?>
                                 <input class="form-control" type="text" name="for_channel" id="for_channel" <?php if ($act == '')
-                                    echo 'disabled' ?> value="<?php echo $channel_row['name'] ?>">
+                                    echo 'disabled' ?> value="<?php echo (isset($row['channel'])) ? $row['channel'] : (isset($channel_row) ? $channel_row['name'] : ''); ?>">
                                 <input type="hidden" name="for_channel_hidden" id="for_channel_hidden"
-                                    value="<?php echo (isset($row['channel'])) ? $row['channel'] : $channel_row['id']; ?>">
+                                value="<?php echo (isset($row['channel'])) ? $row['channel'] : (isset($channel_row) ? $channel_row['id'] : ''); ?>">
 
 
 
