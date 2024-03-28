@@ -142,11 +142,8 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     <div class="d-flex align-items-center">' 
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['commission'], $row['service'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
-                                    </div>
-                                    </td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['contact'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-users"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -159,7 +156,8 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                             $reg_url = $reg_member_page . "?id=" . $row['id'] . '&act=' . $act_1;
                                         }
                                         ?>
-                                        
+                                    </div>
+                                    </td>
                                 <td scope="row">
                                     <?= $row['name'] ?? '' ?>
                                 </td>
