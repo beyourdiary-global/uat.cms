@@ -14,6 +14,7 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
+$deleteRedirectPage = $SITEURL . '/finance/del_fees_claim_table.php';
 $redirect_page = $SITEURL . '/finance/del_fees_claim.php';
 $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
 ?>
@@ -123,6 +124,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                         <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Claim Date</th>
                             <th scope="col">Courier</th>
                             <th scope="col">Currency</th>
@@ -130,7 +132,6 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <th scope="col">Tax</th>
                             <th scope="col">Total</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
@@ -183,6 +184,14 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                                     echo '<tr>
                                     <th class="hideColumn" scope="row">' . $row['id'] . '</th>
                                     <td scope="row">' . $num++ . '</td>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">'    
+                                    ?>
+                                        <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                        <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                        <?php renderDeleteButton($pinAccess, $row['id'],'', '', $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    <?php echo'</div>
+                                    </td>
                                     <td scope="row">' . (isset($row['claim_date']) ? $row['claim_date'] : '') . '</td>
                                     <td scope="row">' . (isset($row3['name']) ? $row3['name'] : '') . '</td>
                                     <td scope="row">' . (isset($row2['unit']) ? $row2['unit'] : '') . '</td>
@@ -190,31 +199,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                                     <td scope="row">' . (isset($row['tax']) ? $row['tax'] : '') . '</td>
                                     <td scope="row">' . (isset($row['total']) ? $row['total'] : '') . '</td>
                                     <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                    <li>';
-                                                    if (isActionAllowed("View", $pinAccess)) {
-                                                        echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '">View</a>';
-                                                    }
-                                                    echo '</li>
-                                                <li>';
-                                                    if (isActionAllowed("Edit", $pinAccess)) {
-                                                        echo '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '">Edit</a>';
-                                                    }
-                                                    echo '</li>
-                                                <li>';
-                                                    if (isActionAllowed("Delete", $pinAccess)) {
-                                                    echo '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . '\', \'\', \'' . $pageTitle . '\', \'' . $redirect_page . '\', \'' . $SITEURL . '/del_fees_claim_table.php\', \'D\')">Delete</a>';
-                                                    }
-                                                    echo '</li>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                   
                                 </tr>';
                                 
                                 }  
@@ -384,6 +369,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Claim Date</th>
                             <th scope="col">Courier</th>
                             <th scope="col">Currency</th>
@@ -391,7 +377,6 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
                             <th scope="col">Tax</th>
                             <th scope="col">Total</th>
                             <th scope="col">Remark</th>
-                            <th scope="col" id="action_col">Action</th>
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>

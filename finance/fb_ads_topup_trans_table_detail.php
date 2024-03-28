@@ -54,6 +54,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 <thead>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" id="action_col">Action</th>
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Meta Account</th>
                         <th scope="col">Transaction ID</th>
@@ -62,7 +63,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         <th scope="col">Top-up Amount</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -121,6 +122,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 <tfoot>
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" id="action_col">Action</th>
                         <th scope="col" width="60px">S/N</th>
                         <th scope="col">Meta Account</th>
                         <th scope="col">Transaction ID</th>
@@ -129,7 +131,7 @@ $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                         <th scope="col">Top-up Amount</th>
                         <th scope="col">Attachment</th>
                         <th scope="col">Remark</th>
-                        <th scope="col" id="action_col">Action</th>
+                       
                     </tr>
                 </tfoot>
             </table>

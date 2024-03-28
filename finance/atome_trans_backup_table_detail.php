@@ -155,7 +155,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-
+$deleteRedirectPage = $SITEURL . '/atome_trans_backup_table.php';
 $redirect_page = $SITEURL . '/finance/atome_trans_backup.php';
 
 $result = getData('*', '', '', ATOME_TRANS_BACKUP, $finance_connect);
@@ -233,7 +233,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th class="hideColumn" scope="col">ID</th>
-
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
@@ -242,7 +242,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">E-commerce Platform Order ID</th>
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                          
                         </tr>
                     </thead>
                     <tbody>
@@ -265,6 +265,15 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                     <th scope="row">
                                         <?= $num++; ?>
                                     </th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                
+                            
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['trans_id'], $row['atome_id'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                </div>
+                                </td>
                                     <td scope="row"><?php if (isset($row['trans_id'])) echo $row['trans_id'] ?></td>
                                     <td scope="row"><?php if (isset($row['atome_id'])) echo $row['atome_id'] ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
@@ -278,35 +287,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                             </a>
                                         <?php } ?>
                                     </td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu"
-                                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg"
-                                                        id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)): ?>
-                                                        <a class="dropdown-item"
-                                                            onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['trans_id'] ?>','<?= $row['atome_id'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/cash_on_hand_trans_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
+                                
                                 </tr>
                             <?php }
                                 }
@@ -320,6 +301,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Atome Order ID</th>
                             <th scope="col">Transaction Date and Time</th>
@@ -327,7 +309,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                             <th scope="col">E-commerce Platform Order ID</th>
                             <th scope="col">Amount Receivable</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                          
                         </tr>
                     </tfoot>
                 </table>

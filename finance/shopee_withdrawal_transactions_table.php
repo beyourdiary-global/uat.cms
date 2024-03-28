@@ -102,6 +102,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                         <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
                             <th scope="col">Currency Unit</th>
@@ -109,7 +110,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th> 
-                            <th scope="col" id="action_col">Action</th>
+                            
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
@@ -177,6 +178,14 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                 echo '<tr>
                                 <th class="hideColumn" scope="row">' . $row['id'] . '</th>
                                 <th scope="row">' . $num++ . '</th>
+                                <td scope="row" class="btn-container">
+                                <div class="d-flex align-items-center">' 
+                                ?>
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['swt_id'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                <?php echo'</div>
+                                </td>
                                 <td scope="row">' . (isset($row['date']) ? $row['date'] : '') . '</td>
                                 <td scope="row">' . (isset($row['swt_id']) ? $row['swt_id'] : '') . '</td>
                                 <td scope="row">' . (isset($row2['unit']) ? $row2['unit'] : '') . '</td>
@@ -184,18 +193,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                                 <td scope="row">' . (isset($usr['name']) ? $usr['name'] : '') . '</td>
                                 <td scope="row">' . (isset($row['attachment']) ? $row['attachment'] : '') . '</td>
                                 <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
-                                <td scope="row">
-                                    <div class="dropdown" style="text-align:center">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                            <li>' . (isActionAllowed("View", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '">View</a>' : '') . '</li>
-                                            <li>' . (isActionAllowed("Edit", $pinAccess) ? '<a class="dropdown-item" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '">Edit</a>' : '') . '</li>
-                                            <li>' . (isActionAllowed("Delete", $pinAccess) ? '<a class="dropdown-item" onclick="confirmationDialog(\'' . $row['id'] . '\',[\'' . $row['swt_id'] . '\',\'' . $row['remark'] . '\'],\'' . $pageTitle . '\',\'' . $redirect_page . '\',\'' . $deleteRedirectPage . '\',\'D\')">Delete</a>' : '') . '</li>
-                                        </ul>
-                                    </div>
-                                </td>
+                               
                             </tr>';
                         
                            }
@@ -304,6 +302,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                         <?php if (!isset($_GET['group'])): ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Withdrawal Date</th>
                             <th scope="col">Withdrawal ID</th>
                             <th scope="col">Currency Unit</th>
@@ -311,7 +310,7 @@ $result = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
                             <th scope="col">Person In Charge</th>
                             <th scope="col">Attachment</th>
                             <th scope="col">Remark</th> 
-                            <th scope="col" id="action_col">Action</th>
+                           
                             <?php else: ?>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
