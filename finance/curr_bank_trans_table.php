@@ -61,6 +61,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">Date</th>
@@ -71,7 +72,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                             <th scope="col">Final Amount Record</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -87,6 +88,13 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    </div>
+                                    </td>
                                     <td scope="row"><?= $row['transactionID'] ?></td>
                                     <td scope="row"><?php if (isset($row['type'])) echo $row['type'] ?></td>
                                     <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
@@ -97,30 +105,6 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                                     <td scope="row"><?php if (isset($row['final_amt'])) echo $row['final_amt'] ?></td>
                                     <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
                                     <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['transactionID'] ?>','<?= $row['remark'] ?>'],'<?= $pageTitle ?>','<?= $redirect_page ?>','<?= $SITEURL ?>/curr_bank_trans_table.php','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
                                 </tr>
                         <?php }
                         } ?>
@@ -129,6 +113,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">Date</th>
@@ -139,7 +124,7 @@ $result = getData('*', '', '', CURR_BANK_TRANS, $finance_connect);
                             <th scope="col">Final Amount Record</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
+                            
                         </tr>
                     </tfoot>
                 </table>
