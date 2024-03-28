@@ -65,6 +65,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">PIC</th>
@@ -77,7 +78,6 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                             <th scope="col">Description</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,6 +96,13 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    </div>
+                                    </td>
                                     <td scope="row"><?= $row['transactionID'] ?></td>
                                     <td scope="row"><?php if (isset($row['type'])) echo $row['type'] ?></td>
                                     <td scope="row"><?php if (isset($usr['name'])) echo $usr['name'] ?></td>
@@ -140,6 +147,7 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Transaction ID</th>
                             <th scope="col">Type</th>
                             <th scope="col">PIC</th>
@@ -152,7 +160,6 @@ $result = getData('*', '', '', CAONHD, $finance_connect);
                             <th scope="col">Description</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>

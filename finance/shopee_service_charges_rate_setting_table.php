@@ -67,11 +67,11 @@ if (!$result) {
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Commission Fees Rate (%)</th>
                             <th scope="col">Service Fee Rate (%)</th>
                             <th scope="col">Transaction Fee (%)</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
 
@@ -86,37 +86,17 @@ if (!$result) {
                                 <tr>
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
+                                    <td scope="row" class="btn-container">
+                                    <div class="d-flex align-items-center">' 
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $currencyUnit,$row['commission'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    </div>
+                                    </td>
                                     <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
                                     <td scope="row"><?php if (isset($row['commission'])) echo $row['commission'] ?></td>
                                     <td scope="row"><?php if (isset($row['service'])) echo $row['service'] ?></td>
                                     <td scope="row"><?php if (isset($row['transaction'])) echo $row['transaction'] ?></td>
-                                    <td scope="row">
-                                        <div class="dropdown" style="text-align:center">
-                                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="actionDropdownMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <button id="action_menu_btn"><i class="fas fa-ellipsis-vertical fa-lg" id="action_menu"></i></button>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="actionDropdownMenu">
-                                                <li>
-                                                    <?php if (isActionAllowed("View", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] ?>">View</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Edit", $pinAccess)) : ?>
-                                                        <a class="dropdown-item" href="<?= $redirect_page . "?id=" . $row['id'] . '&act=' . $act_2 ?>">Edit</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                                <li>
-                                                    <?php if (isActionAllowed("Delete", $pinAccess)) : ?>
-                                                        <?php 
-                                                        $currencyUnit = isset($row2['unit']) ? $row2['unit'] : ''; 
-                                                        ?>
-                                                        <a class="dropdown-item" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $currencyUnit ?>','<?= $row['commission'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')">Delete</a>
-                                                    <?php endif; ?>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
                                 </tr>
                         <?php }
                          }
@@ -126,11 +106,11 @@ if (!$result) {
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Currency Unit</th>
                             <th scope="col">Commission Fees Rate (%)</th>
                             <th scope="col">Service Fee Rate (%)</th>
                             <th scope="col">Transaction Fee (%)</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>
