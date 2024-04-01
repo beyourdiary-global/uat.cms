@@ -116,6 +116,7 @@ define('URBAN_CUST_REG', 'urbanism_customer_register_info');
 define('WEB_CUST_RCD', 'customer_website_deals_transaction');
 define('LAZADA_CUST_RCD', 'customer_lazada_deals_transaction');
 define('LAZADA_ORDER_REQ', 'lazada_order_request');
+define('OFFICIAL_PROCESS_ORDER','official_process_order');
 
 //finance
 define('MERCHANT', 'merchant');
@@ -160,6 +161,7 @@ define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
 define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
 define('CRED_INV_PROD', 'cred_inv_products');
 define('WEB_ORDER_REQ', 'website_order_request');
+
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
