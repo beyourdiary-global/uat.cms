@@ -492,7 +492,20 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <?php
                         echo displayPageAction($act, $pageTitle);
                         ?>
+                     
+                     <?php if ($act == 'E'): ?>
+                        <?php
+                        $status = $row['order_status'];
+                        if ($status == 'P') {
+                            $status = 'Processing';
+                        }
+                        ?>
+                        <span style="float: right;" id="order-status">Order Status: <?php echo $status; ?></span>
+                        
+                    <?php endif; ?>
+               
                     </h2>
+                  
                 </div>
 
                 <div id="err_msg" class="mb-3">

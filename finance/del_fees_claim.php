@@ -297,6 +297,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                                 if (isset($row['courier']))
                                     $echoVal = $row['courier'];
+                                var_dump($echoVal);
 
                                 if (isset($echoVal)) {
                                     $courier_rst = getData('name', "id = '$echoVal'", '', COURIER, $connect);
@@ -305,6 +306,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                     }
                                     $courier_row = $courier_rst->fetch_assoc();
+                             
                                 }
                                 ?>
                                 <input class="form-control" type="text" name="dfc_courier" id="dfc_courier" <?php if ($act == '')
