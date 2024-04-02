@@ -139,7 +139,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     <?= $num++; ?>
                                 </th>
                                 <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">' 
+                                    <div class="d-flex align-items-center">
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
                                     <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['contact'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
