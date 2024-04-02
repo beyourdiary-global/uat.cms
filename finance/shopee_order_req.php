@@ -791,9 +791,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             }
                             ?>
                             <input class="form-control" type="text" name="sor_pic" id="sor_pic" <?php if ($act == '')
-                                echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : USER_NAME ?>">
+                                echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
                             <input type="hidden" name="sor_pic_hidden" id="sor_pic_hidden"
-                                value="<?php echo (isset($row['pic'])) ? $row['pic'] : USER_ID; ?>">
+                                value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
 
 
                             <?php if (isset($pic_err)) { ?>
