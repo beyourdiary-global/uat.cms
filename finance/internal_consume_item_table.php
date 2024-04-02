@@ -177,7 +177,16 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
         createSortingTable('internal_consume_item_table');
     });
 </script>
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>

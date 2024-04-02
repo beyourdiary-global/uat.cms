@@ -1002,14 +1002,105 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         </div>
                     </div>
                 </div>
-
                 <div class="form-group mb-3">
                     <label class="form-label form_lbl" id="sor_remark_lbl" for="sor_remark">Remark</label>
                     <textarea class="form-control" name="sor_remark" id="sor_remark" rows="3" <?php if ($act == '')
                         echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark']))
                         echo $row['remark'] ?></textarea>
                     </div>
+                    <?php
+                if($row['order_status'] == 'SP'){
+                ?>
+                <div class="form-group mb-4">
+                    <h3>
+                        Tracking Details
+                    </h3>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label form_lbl" id="sor_courier_lbl" for="sor_courier">Courier</label>
+                            <?php
+                           
+                            if (isset($row['orderID']))
+                            $echoVal = $row['orderID'];
+                            $courier_rst2 = getData('courier_id', "order_id = '$echoVal'", '', OFFICIAL_PROCESS_ORDER, $connect);
 
+                            if (!$courier_rst2) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $courier_row2 = $courier_rst2->fetch_assoc();
+                            if ($courier_row2['courier_id'])
+                            $echoVal2 = $courier_row2['courier_id'];
+                       
+                            $courier_rst = getData('name', "id = '$echoVal2'", '', COURIER, $connect);
+                            $courier_row = $courier_rst->fetch_assoc();
+                      
+                            if (isset($courier_row['name'])) {
+                                $courier_name = $courier_row['name'];
+                            } else {
+                                $courier_name = '';
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="sor_courier" id="sor_courier" value="<?php echo !empty($echoVal2) ? $courier_name : ''; ?>" disabled ?>
+
+                            <?php if (isset($courier_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1">
+                                        <?php echo $courier_err; ?>
+                                    </span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label form_lbl" id="sor_track_lbl" for="sor_track">Tracking Number</label>
+                            
+                            <?php
+                             $tracking_rst = getData('tracking_id', "order_id = '$echoVal'", '', OFFICIAL_PROCESS_ORDER, $connect);
+                             if (!$tracking_rst) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $tracking_row = $tracking_rst->fetch_assoc();
+                            if (isset($tracking_row['tracking_id'])) {
+                                $tracking_id = $tracking_row['tracking_id'];
+                            } else {
+                                $tracking_id = '';
+                            }
+                             ?>
+                             <input class="form-control" type="text"  name="sor_track" id="sor_track" value="<?php echo !empty($echoVal) ? $tracking_id : ''; ?>" disabled ?>
+                            <?php if (isset($tracking_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1">
+                                        <?php echo $tracking_err; ?>
+                                    </span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <label>&nbsp;</label><br>
+                            <?php
+                   
+                            $tracking_rst2 = getData('tracking_link', "id = '$echoVal2'", '', COURIER, $connect);
+                            if (!$tracking_rst2) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $track_row = $tracking_rst2->fetch_assoc();
+                      
+                            if (isset($track_row['tracking_link'])) {
+                                $tracking_link = $track_row['tracking_link'];
+                                
+                            } else {
+                                $tracking_link = '';
+                            }
+                            ?>
+                            <a href="<?php echo $tracking_link; ?>" class="btn btn-primary">Track Order</a>
+                        </div>
+                    </div>
+                </div>
+                <?php } ?>
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php
                     switch ($act) {
@@ -1030,6 +1121,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <!-- </div> -->
 
     <?php
+    
     /*
         oufei 20231014
         common.fun.js
@@ -1043,6 +1135,15 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
+        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+            // Copy tracking number to clipboard
+            var trackingNumber = '<?php echo $tracking_id; ?>';
+            navigator.clipboard.writeText(trackingNumber);
+
+            // Redirect to tracking link
+            window.open('<?php echo $tracking_link; ?>', '_blank');
+        });
+
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
