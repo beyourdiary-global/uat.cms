@@ -227,7 +227,8 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                 echo '<div class="text-center"><h4>No Result!</h4></div>';
             } else {
                 ?>
- <div class="row mb-3">
+
+<div class="row mb-3">
                     <div class="col-md-3 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
                        <select class="form-select" id="timeInterval" >
@@ -238,8 +239,8 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                             <option value="yearly">Yearly</option>
                         </select>
                     </div>
-                    <div class="col-md-5 dateFilters">
-                        <label for="dateFilter" class="form-label">Filter by Payment Date:</label>
+                    <div class="col-md-4 dateFilters">
+                        <label for="dateFilter" class="form-label">Filter by Date:</label>
                         <div class="input-group date" id="datepicker"> 
                         <input type="text" class="form-control" placeholder="Select date" >
                             <div class="input-group-addon">
@@ -264,15 +265,15 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                             
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Group by:</label>
+                    <div class="col-md-3">
+                    <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
                             <option value="currency" selected>Currency</option>
                         </select>
                     </div>
-                    
-        
-                 
+                    <div class="col-md-2 d-flex align-items-center justify-content-center">
+                        <a id='resetButton' class="btn btn-sm btn-rounded btn-primary" > <i class="fa fa-refresh"> </i> Reset </a>
+                    </div>
                 </div>
                 <table class="table table-striped" id="stripe_trans_backup_table">
                 <thead>

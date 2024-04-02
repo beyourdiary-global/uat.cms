@@ -83,6 +83,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Shopee Account</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
@@ -139,6 +140,15 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                 <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
                                 <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
                                 <?php renderDeleteButton($pinAccess, $row['id'], $row['orderID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                </td>
+                                <td scope="row">
+                                <?php
+                                $status = $row['order_status'];
+                                if ($status == 'P') {
+                                    $status = 'Processing';
+                                }
+                                echo $status;
+                                ?>
                                 </td>
 
                                 <td scope="row">
@@ -206,6 +216,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Shopee Account</th>
                             <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
