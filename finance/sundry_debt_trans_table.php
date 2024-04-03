@@ -28,7 +28,16 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
         createSortingTable('sundry_debt_trans_table');
     });
 </script>
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -105,7 +114,7 @@ $result = getData('*', '', '', SD_TRANS, $finance_connect);
                                             <?= $num++; ?>
                                         </th>
                                         <td scope="row" class="btn-container">
-                                        <div class="d-flex align-items-center">' 
+                                        <div class="d-flex align-items-center">
                                         <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                         <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                         <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>

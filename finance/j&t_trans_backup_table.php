@@ -185,7 +185,16 @@ $img_path = SITEURL . img_server . 'finance/j&t_trans_backup/';
         })
     });
 </script>
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 <body>
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
@@ -256,7 +265,7 @@ $img_path = SITEURL . img_server . 'finance/j&t_trans_backup/';
                                         <?= $num++; ?>
                                     </th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">' 
+                                    <div class="d-flex align-items-center">
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                     <?php renderDeleteButton($pinAccess, $row['id'], $row['number'],$row['date'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>

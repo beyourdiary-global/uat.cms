@@ -31,7 +31,16 @@ $result = getData('*', '', '', INV_TRANS, $finance_connect);
         createSortingTable('inv_trans_table');
     });
 </script>
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -74,7 +83,6 @@ $result = getData('*', '', '', INV_TRANS, $finance_connect);
                             <th scope="col">Merchant</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,7 +98,7 @@ $result = getData('*', '', '', INV_TRANS, $finance_connect);
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">' 
+                                    <div class="d-flex align-items-center">
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                     <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
@@ -124,7 +132,6 @@ $result = getData('*', '', '', INV_TRANS, $finance_connect);
                             <th scope="col">Merchant</th>
                             <th scope="col">Remark</th>
                             <th scope="col">Attachment</th>
-                            <th scope="col" id="action_col">Action</th>
                         </tr>
                     </tfoot>
                 </table>

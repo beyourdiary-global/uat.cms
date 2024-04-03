@@ -190,7 +190,16 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
         })
     });
 </script>
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 <body>
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
@@ -235,10 +244,11 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                 <table class="table table-striped" id="bank_trans_backup_table">
                     <thead>
                         <tr>
+                        <th class="hideColumn" scope="col">ID</th>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
-                            <th class="hideColumn" scope="col">ID</th>
+                            
                             <th scope="col" width="60px">S/N</th>
                             <th scope="col" id="action_col">Action</th>
                             <th scope="col">Year</th>
@@ -268,10 +278,10 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         <?= $num++; ?>
                                     </th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">' 
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['year'], $row['month'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                    <div class="d-flex align-items-center">
+                                        <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                        <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                        <?php renderDeleteButton($pinAccess, $row['id'], $row['year'], $row['month'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
                                     </div>
                                     </td>
                                     <td scope="row">
