@@ -174,16 +174,7 @@ $result = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
         createSortingTable('shopee_ads_topup_trans_table');
     });
 </script>
-<style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
-</style>
+
 
 <body>
 

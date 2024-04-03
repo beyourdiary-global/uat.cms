@@ -179,16 +179,7 @@ $result = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
         createSortingTable('del_fees_claim_table');
     });
 </script>
-<style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
-</style>
+
 <body>
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">

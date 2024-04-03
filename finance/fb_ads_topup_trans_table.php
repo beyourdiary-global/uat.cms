@@ -35,6 +35,12 @@ if (!empty($checkboxValues)) {
             // Initialize an empty array to store the row data
             $lineData = array();
             $lineData[] = $excelRowNum;
+            $metaQuery = getData('*', "id='" . $row2['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+            $meta_acc = $metaQuery->fetch_assoc();
+            $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
+    
+            // Replace meta_acc ID with accName
+            $row2['meta_acc'] = $accName;
         
             if (isset($row2['attachment']) && !empty($row2['attachment'])) {
                 $attachmentSourcePath = $img_path . $row2['attachment'];
@@ -62,13 +68,15 @@ if (!empty($checkboxValues)) {
                         $name = $user['name'];
                     }
                     $lineData[] = $name;
+                    var_dump($lineData);
+
                 } elseif ($columnName === 'create_date') {
                     // Modify create_date value as needed
                     $lineData[] = isset($row2[$columnName]) ? $row2[$columnName] : '';
                 } else {
                     $lineData[] = isset($row2[$columnName]) ? $row2[$columnName] : '';
                 }
-            }
+            } 
             $excelData[] = $lineData;
             $excelRowNum++;
         }
@@ -169,16 +177,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
         createSortingTable('fb_ads_topup_trans_table');
     });
 </script>
-<style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
-</style>
+
 <body>
 
     <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
