@@ -89,7 +89,89 @@ function autofillMrcht() {
         }
     });
 }
+$('.submitBtn').on('click', () => {
+    $(".error-message").remove();
+    var cni_due_chk = 0;
+    var cni_curr_chk = 0;
+    var cni_name_chk = 0;
+    var cni_ctc_chk = 0;
+    var prod_desc_chk = 0;
+    var price_chk = 0;
+    var quantity_chk = 0;
 
+    if ($('#cni_due').val() === '' || $('#cni_due').val() === null || $('#cni_due')
+    .val() === undefined) {
+        cni_due_chk = 0;
+    $("#cni_due").after(
+        '<span class="error-message date_err">Due Date is required!</span>');
+    }  else {
+        $(".date_err").remove();
+        cni_due_chk = 1;
+    }
+
+    if ($('#cni_curr').val() === '' || $('#cni_curr').val() === null || $('#cni_curr')
+    .val() === undefined) {
+        cni_curr_chk = 0;
+    $("#cni_curr").after(
+        '<span class="error-message cni_curr">Currency is required!</span>');
+    }  else {
+        $(".curr_err").remove();
+        cni_curr_chk = 1;
+    }
+
+    if ($('#cni_name').val() === '' || $('#cni_name').val() === null || $('#cni_name')
+    .val() === undefined) {
+        cni_name_chk = 0;
+    $("#cni_name").after(
+        '<span class="error-message cni_name">Name is required!</span>');
+    }  else {
+        $(".curr_err").remove();
+        cni_name_chk = 1;
+    }
+
+    if ($('#cni_ctc').val() === '' || $('#cni_ctc').val() === null || $('#cni_ctc')
+    .val() === undefined) {
+        cni_ctc_chk = 0;
+    $("#cni_ctc").after(
+        '<span class="error-message cni_ctc">Contact Number is required!</span>');
+    }  else {
+        $(".ctc_err").remove();
+        cni_ctc_chk = 1;
+    }
+    $('.autocomplete input[type="text"]').each(function() {
+        var inputId = $(this).attr('id');
+        var num = inputId.split('_')[2]; // Extract the number from the input ID
+        var prodDesc = $('#prod_desc_' + num).val();
+        var price = $('#price_' + num).val();
+        var quantity = $('#quantity_' + num).val();
+        console.log(price);
+        
+        if (prodDesc === '' || prodDesc === null || prodDesc === undefined) {
+            $('#prod_desc_' + num).after('<span class="error-message prod_desc_err">Description is required!</span>');
+        } else {
+            $('.prod_desc_err').remove();
+        }
+    
+        if (price === '' || price === null || price === undefined) {
+            $('#price_' + num).after('<span class="error-message price_err">Price is required!</span>');
+        } else {
+            $('.price_err').remove();
+        }
+    
+        if (quantity === '' || quantity === null || quantity === undefined) {
+            $('#quantity_' + num).after('<span class="error-message quantity_err">Quantity is required!</span>');
+        } else {
+            $('.quantity_err').remove();
+        }
+    });
+    
+    if (quantity_chk == 1 && price_chk == 1 && prod_desc_chk == 1 && cni_ctc_chk == 1 && cni_curr_chk == 1 && cni_due_chk == 1 && cni_name_chk == 1 )
+        $(this).closest('fcbm').submit();
+    else
+        return false;
+    
+
+});
 
 function Add() {
     AddRow($("#prod_desc").val(), $("#price").val(), $("#quantity").val(), $("#amount").val());
