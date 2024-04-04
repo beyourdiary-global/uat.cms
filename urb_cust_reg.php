@@ -375,7 +375,7 @@ if (post('actionBtn')) {
                                 } else if (isset($umr_date)) {
                                     echo $umr_date;
                                 } else {
-                                    echo date('Y-m-d');
+                                    echo 'dd/mm/yyyy'; // Placeholder text
                                 }
                                 ?>" placeholder="YYYY-MM-DD" pattern="\d{4}-\d{2}-\d{2}" <?php if ($act == '')
                                     echo 'disabled' ?>>
