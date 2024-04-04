@@ -88,7 +88,7 @@ if (!$result) {
                                 <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row" class="btn-container">
-                                <div class="d-flex align-items-center">' 
+                                <div class="d-flex align-items-center">
                                 <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                 <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                 <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], '', $pageTitle, $redirect_page, $deleteRedirectPage) ?>

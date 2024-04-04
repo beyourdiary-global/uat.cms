@@ -248,7 +248,7 @@ $result = getData('*', '', '', ITL_CSM_ITEM, $finance_connect);
                                     <th class="text-center"><input type="checkbox" class="export" value="<?= $row['id'] ?>"></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                        <div class="d-flex align-items-center">' 
+                                        <div class="d-flex align-items-center"> 
                                             <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                             <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                             <?php renderDeleteButton($pinAccess, $row['id'],'', '', $pageTitle, $redirect_page, $deleteRedirectPage) ?>

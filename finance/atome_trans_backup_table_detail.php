@@ -266,7 +266,7 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
                                         <?= $num++; ?>
                                     </th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">' 
+                                    <div class="d-flex align-items-center">
                                 
                             
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
