@@ -66,7 +66,7 @@ if (!$result) {
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
                         <th scope="col">Currency Unit</th>
@@ -106,7 +106,7 @@ if (!$result) {
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
                         <th scope="col">Account Name</th>
                         <th scope="col">Country</th>
                         <th scope="col">Currency Unit</th>
