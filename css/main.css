@@ -684,11 +684,32 @@ input {
 }
 
 
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
+.btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    margin: 3px;
+}
+.btn-container {
+    white-space: nowrap;
+}
+
+.track-order-btn {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: rgb(0, 153, 122);
+    color:white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+   
+}
+.track-order-btn:hover {
+    background-color: rgb(0, 153, 122);
+    text-decoration: none;
+    color:white;
+}

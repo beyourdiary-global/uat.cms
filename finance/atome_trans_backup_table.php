@@ -7,7 +7,7 @@ include '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 $img_path = '../' . img_server . 'finance/atome_trans_backup/';
-
+$tblName = ATOME_TRANS_BACKUP;
 
 $tempDir = '../' . img_server . "temp/";
 $tempAttachDir = $tempDir . "attachment/";
@@ -71,12 +71,14 @@ if (!empty($checkboxValues)) {
             }
             $excelData[] = $lineData;
             $excelRowNum++;
+           
         }
         $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excelData);
         // $xlsx->downloadAs($fileName);
 
         $tempExcelFilePath = $tempDir . $fileName;
         if ($tempExcelFilePath) {
+            $_SESSION['expChk'] = '';
             $xlsx->saveAs($tempExcelFilePath);
             $zipFile = date('Ymd_His') . ".zip";
             $zip = new ZipArchive();
@@ -103,11 +105,25 @@ if (!empty($checkboxValues)) {
             ob_clean();
             readfile($zipFile);
             deleteDir($tempDir);
+            
         }
 
     } else {
+        $errorExist = 1;
         echo 'Failed to create temporary Excel file';
     }
+    $log = [
+        'log_act'      => 'Export',
+        'cdate'        => $cdate,
+        'ctime'        => $ctime,
+        'uid'          => USER_ID,
+        'cby'          => USER_ID,
+        'query_rec'    => $query2,
+        'query_table'  => $tblName,
+        'page'         => $pageTitle,
+        'connect'      => $connect,
+    ];
+    audit_log($log);
 }
 
 function addDirToZip($dir, $zip, $basePath) 
@@ -147,10 +163,13 @@ function deleteDir($dirPath) {
 }
 
 
+
+
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
+$_SESSION['expChk'] = '';
 $num = 1;   // numbering
 $deleteRedirectPage = $SITEURL . '/atome_trans_backup_table.php';
 $redirect_page = $SITEURL . '/finance/atome_trans_backup.php';

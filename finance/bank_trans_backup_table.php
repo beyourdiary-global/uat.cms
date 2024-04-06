@@ -7,7 +7,7 @@ include '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 $img_path = '../' . img_server . 'finance/bank_trans_backup/';
-
+$deleteRedirectPage = $SITEURL . 'finance/bank_trans_backup_table.php';
 
 $tempDir = '../' . img_server . "temp/";
 $tempAttachDir = $tempDir . "attachment/";
@@ -219,8 +219,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"><i
-                                        class="fa-solid fa-file-export"></i> Export</a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -241,7 +240,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                             </th>
                             
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Year</th>
                             <th scope="col">Month</th>
                             <th scope="col">Attachment</th>
@@ -269,11 +268,9 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                         <?= $num++; ?>
                                     </th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">
                                         <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                         <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                         <?php renderDeleteButton($pinAccess, $row['id'], $row['year'], $row['month'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
-                                    </div>
                                     </td>
                                     <td scope="row">
                                         <?php if (isset($row['year']))
@@ -300,7 +297,7 @@ $img_path = SITEURL . img_server . 'finance/bank_trans_backup/';
                                 <input type="checkbox" class="exportAll">
                             </th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col">Action</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
                             <th scope="col">Year</th>
                             <th scope="col">Month</th>
                             <th scope="col">Attachment</th>

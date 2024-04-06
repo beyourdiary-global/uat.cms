@@ -5,6 +5,12 @@ $('#for_attach').on('change', function() {
 //autocomplete
 $(document).ready(function() {
 
+    
+    document.getElementById('trackOrderBtn').addEventListener('click', function() {
+        // Copy tracking number to clipboard
+        var trackingNumber = this.getAttribute('data-tracking-id');
+        navigator.clipboard.writeText(trackingNumber);    
+    });
     if (!($("#for_pic").attr('disabled'))) {
         $("#for_pic").keyup(function() {
             var param = {
