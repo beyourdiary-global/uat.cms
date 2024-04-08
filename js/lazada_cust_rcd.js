@@ -134,7 +134,7 @@ $('.submitBtn').on('click', () => {
         phone_chk = 1;
     }
 
-    if (($('#lcr_pic_hidden').val() === ''  || $('#lcr_pic_hidden').val() == '0' || $('#lcr_pic_hidden').val() === null || $('#lcr_pic_hidden')
+    if (($('#lcr_pic').val() === ''  || $('#lcr_pic').val() == '0' || $('#lcr_pic').val() === null || $('#lcr_pic_hidden')
             .val() === undefined)) {
         pic_chk = 0;
         $("#lcr_pic").after(
