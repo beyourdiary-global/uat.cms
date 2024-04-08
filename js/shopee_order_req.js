@@ -1,6 +1,11 @@
 var price_curr_chk = 0;
 //autocomplete
 $(document).ready(function () {
+    document.getElementById('trackOrderBtn').addEventListener('click', function() {
+        // Copy tracking number to clipboard
+        var trackingNumber = this.getAttribute('data-tracking-id');
+        navigator.clipboard.writeText(trackingNumber);    
+    });
     //package
     if (!($("#sor_pkg").attr('disabled'))) {
         $("#sor_pkg").keyup(function () {

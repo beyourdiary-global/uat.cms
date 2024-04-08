@@ -9,7 +9,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-
+$deleteRedirectPage  = $SITEURL . '/finance/meta_ads_acc_table.php';
 $redirect_page = $SITEURL . '/finance/meta_ads_acc.php';
 $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
 ?>
@@ -55,7 +55,7 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Name</th>
                     </tr>
@@ -84,7 +84,7 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
                     <tr>
                     <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col">Action</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Name</th>
                     </tr>

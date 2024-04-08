@@ -977,6 +977,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                     </div>
                 </div>
                 <?php
+                if(isset($row['order_status'])){
                 if($row['order_status'] == 'SP'){
                 ?>
                 <div class="form-group mb-4">
@@ -1046,7 +1047,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="col-md-4 mb-4">
+                        <div class="col-md-4 mb-4 d-flex align-items-end">
                             <label>&nbsp;</label><br>
                             <?php
                    
@@ -1064,11 +1065,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 $tracking_link = '';
                             }
                             ?>
-                            <a href="<?php echo $tracking_link; ?>" class="btn btn-primary" id="trackOrderBtn">Track Order</a>
-                        </div>
+                            
+                            <a href="<?php echo $tracking_link; ?>" id="trackOrderBtn" class="track-order-btn" data-tracking-id="<?php echo $tracking_id; ?>" >Track Order</a>
+                            
                     </div>
                 </div>
-                <?php } ?>
+                <?php } }?>
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                     <?php
                     switch ($act) {
@@ -1102,16 +1104,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-
-        document.getElementById('trackOrderBtn').addEventListener('click', function() {
-            // Copy tracking number to clipboard
-            var trackingNumber = '<?php echo $tracking_id; ?>';
-            navigator.clipboard.writeText(trackingNumber);
-
-            // Redirect to tracking link
-            window.open('<?php echo $tracking_link; ?>', '_blank');
-        });
-  
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 
