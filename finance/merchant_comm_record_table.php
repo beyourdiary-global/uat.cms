@@ -156,10 +156,13 @@ $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
+$_SESSION['searchChk'] = '';
+unset($_SESSION['resetChk']);
 $num = 1;   // numbering
 $deleteRedirectPage = $SITEURL . '/finance/merchant_comm_record_table.php';
 $redirect_page = $SITEURL . '/finance/merchant_comm_record.php';
 $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
+$tblName = MRCHT_COMM;
 ?>
 
 
@@ -196,7 +199,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                     Transaction </a>
                             <?php endif; ?>
-                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
                         </div>
                     </div>
                 </div>
@@ -221,37 +224,38 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                     <div class="col-md-4 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Date:</label>
                         <div class="input-group date" id="datepicker"> 
-                        <input type="text" class="form-control" placeholder="Select date" >
+                        <input type="text" class="form-control" placeholder="Select date" autocomplete="off">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
                         <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start date" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End date" autocomplete="off"/>
                         </div>
                         <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start month" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End month" autocomplete="off"/>
                             
                             </div>
                         <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start year" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
                             
                         </div>
                     </div>
                     <div class="col-md-3">
                     <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
+                        <option value="" selected>Select a Group</option>
                             <option value="currency" selected>Currency</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <a id='resetButton' class="btn btn-sm btn-rounded btn-primary" > <i class="fa fa-refresh"> </i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=finance/merchant_comm_record_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
    
@@ -310,6 +314,8 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                           $groupedRows = [];
                         
                         while ($row = $result->fetch_assoc()) {
+                            $viewActMsg = '';
+                            $sql = '';
                             if (isset($row['merchantID'], $row['id']) && !empty($row['merchantID'])) {
                                 $currs = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                                 $row2 = $currs->fetch_assoc();
@@ -390,7 +396,44 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                         }
                         }
                         foreach ($groupedRows as $key => $groupedRow) {
-
+                            if (isset($key)) {
+                                if($groupOption4 == 'daily') {
+                                    if (!isset($groupedRow['displayed'])) {
+                                        $groupedRow['displayed'] = true;
+                                        $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $createdate. "</b> from <b><i>$tblName Table</i></b>.";
+                                        $idss = implode(', ', $groupedRow['ids']);
+                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                    } else {
+                                        $viewActMsg = '';
+                                        $sql = '';
+                                    }
+                                }else{
+                                    if (!isset($groupedRow['displayed'])) {
+                                        $groupedRow['displayed'] = true;
+                                        
+                                        $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
+                                        
+                                        $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
+                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                    
+                                    } else {
+                                        $viewActMsg = '';
+                                        $sql = '';
+                                    }
+                                }
+                                $log = [
+                                    'log_act' => 'search',
+                                    'cdate'   => $cdate,
+                                    'ctime'   => $ctime,
+                                    'uid'     => USER_ID,
+                                    'cby'     => USER_ID,
+                                    'query_rec'    => $sql,
+                                    'query_table'  => $tblName,
+                                    'act_msg' => $viewActMsg,
+                                    'page'    => $pageTitle,
+                                    'connect' => $connect,
+                                ];
+                                audit_log($log);
                             $ids = implode(',', $groupedRow['ids']);
                             $url = $groupOption4 == 'daily' ? "merchant_comm_record_table_detail.php?ids=" . urlencode($ids) : "merchant_comm_record_table_summary.php?ids=" . urlencode($ids);
                             echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
@@ -401,6 +444,7 @@ $result = getData('*', '', '', MRCHT_COMM, $finance_connect);
                             echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
                             echo '</tr>';
                         }
+                    }
                         ?>
                               
                         

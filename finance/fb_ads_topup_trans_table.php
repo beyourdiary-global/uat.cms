@@ -156,6 +156,8 @@ function deleteDir($dirPath) {
 }
 
 $pinAccess = checkCurrentPin($connect, $pageTitle);
+$_SESSION['searchChk'] = '';
+unset($_SESSION['resetChk']);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
@@ -164,7 +166,7 @@ $deleteRedirectPage = $SITEURL . '/fb_ads_topup_trans_table.php';
 $redirect_page = $SITEURL . '/finance/fb_ads_topup_trans.php';
 $result = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
-
+$tblName = FB_ADS_TOPUP;
 ?>
 <!DOCTYPE html>
 <html>
@@ -196,7 +198,8 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                             <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
                             <?php endif; ?>
-                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
+
                         </div>
                     </div>
                 </div>
@@ -216,39 +219,40 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     <div class="col-md-4 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Claim Date:</label>
                         <div class="input-group date" id="datepicker"> 
-                        <input type="text" class="form-control" placeholder="Select date" >
+                        <input type="text" class="form-control" placeholder="Select date" autocomplete="off">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
                         <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start date" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End date" autocomplete="off"/>
                         </div>
                         <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start month" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End month" autocomplete="off"/>
                             
                             </div>
                         <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start year" autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
                             
                         </div>
                     </div>
                     <div class="col-md-3">
                     <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
-                            <option value="metaaccount" selected>Meta Account</option>
+                        <option value="" selected>Select a Group</option>
+                            <option value="metaaccount" >Meta Account</option>
                             <option value="invoice">Invoice/Payment Date</option>
                         </select>
                     </div>
-                    <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <a id='resetButton' class="btn btn-sm btn-rounded btn-primary" > <i class="fa fa-refresh"> </i> Reset </a>
-                    </div>
+                    <div class="col-md-2 d-flex align-items-center justify-c ontent-center">
+                    <a id='resetButton' href="../reset.php?redirect=finance/fb_ads_topup_trans_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>            
+                </div>
         
                  
                 </div>
@@ -318,6 +322,8 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                 
                 $groupedRows = [];
                 while ($row = $result->fetch_assoc()) {
+                    $viewActMsg = '';
+                    $sql = '';
                     $metaQuery = getData('*', "id='" . $row['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
                     $meta_acc = $metaQuery->fetch_assoc();
                     $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
@@ -348,27 +354,19 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                     </tr>';
                     }
                     if ($groupOption && $groupOption3) {
-                        if ($groupOption === 'metaaccount' && $groupOption3 === $paymentDate) {
-                            if (!isset($groupedRows[$accName])) {
-                                $groupedRows[$accName] = [
-                                    'ids' => [$row['id']], 
-                                    'totalTopupAmount' => $row['topup_amt']
-                                ];
-                            } else {
-                                $groupedRows[$accName]['ids'][] = $row['id']; 
-                                $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
-                            }
-                        }else if ($groupOption === 'invoice' && $groupOption3 === $paymentDate) {
-                            if (!isset($groupedRows[$paymentDate])) {
-                                $groupedRows[$paymentDate] = [
+                        if (($groupOption === 'metaaccount' || $groupOption === 'invoice') && $groupOption3 === $paymentDate) {
+                            $key = $groupOption === 'metaaccount' ? $accName : $paymentDate;
+                            if (!isset($groupedRows[$key])) {
+                                $groupedRows[$key] = [
                                     'ids' => [$row['id']],
                                     'totalTopupAmount' => $row['topup_amt']
                                 ];
                             } else {
-                                $groupedRows[$paymentDate]['ids'][] = $row['id']; 
-                                $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
+                                $groupedRows[$key]['ids'][] = $row['id'];
+                                $groupedRows[$key]['totalTopupAmount'] += $row['topup_amt'];
                             }
-
+                           
+                          
                         }else if ($groupOption === 'invoice' && $groupOption4 === 'weekly') {
                             $dateRange = explode('to', $groupOption3);
                             $startDate = strtotime(trim($dateRange[0]));
@@ -387,6 +385,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
+                          
                         }else if ($groupOption === 'metaaccount' && $groupOption4 === 'weekly') {
                             $dateRange = explode('to', $groupOption3);
                             $startDate = strtotime(trim($dateRange[0]));
@@ -405,6 +404,9 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
+                          
+                            
+                          
                         }else if ($groupOption === 'invoice' && $groupOption4 === 'monthly') {
                             $dateRange = explode('to', $groupOption3);
                             $startDate = strtotime(trim($dateRange[0]));
@@ -425,6 +427,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$paymentDate]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
+                          
                         }else if ($groupOption === 'metaaccount' && $groupOption4 === 'monthly') {
                             $dateRange = explode('to', $groupOption3);
                             $startDate = strtotime(trim($dateRange[0]));
@@ -445,6 +448,8 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
+                            
+                          
                         }else if ($groupOption === 'invoice' && $groupOption4 === 'yearly') {
                             $dateRange = explode('to', $groupOption3);
                             $startDate = strtotime('first day of January ' . trim($dateRange[0]));
@@ -485,30 +490,74 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                     $groupedRows[$accName]['totalTopupAmount'] += $row['topup_amt'];
                                 }
                             }
-                        }                         
+                          
+                        } else {
+                            $viewActMsg = '';
+                            $sql = '';
+                        }                      
                         
                     }  else if ($groupOption === 'invoice') {
                         generateTableRow2($row['id'],$counters, $accName, $paymentDate,  $row['topup_amt']);
                     }else if ($groupOption === 'metaaccount') {
                         generateTableRow($row['id'], $counters, $accName, $paymentDate, $row['topup_amt']);
                     }
+                    
                 }
                 
               
                 foreach ($groupedRows as $key => $groupedRow) {
-
-                    $ids = implode(',', $groupedRow['ids']);
-                    $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=" . urlencode($ids) : "fb_ads_topup_trans_table_summary.php?ids=" . urlencode($ids);
-                    echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
-                    echo'<th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
-                    echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
-                    echo '<th scope="row">' . $counters++ . '</th>';
-                    echo '<td scope="row">' . $key . '</td>';
-                    echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
-                    echo '</tr>';
                    
-                }
-                    
+                    if (isset($key)) {
+                        if($groupOption4 == 'daily') {
+                            if (!isset($groupedRow['displayed'])) {
+                                $groupedRow['displayed'] = true;
+                                $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $paymentDate. "</b> from <b><i>$tblName Table</i></b>.";
+                                $idss = implode(', ', $groupedRow['ids']);
+                                $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                            } else {
+                                $viewActMsg = '';
+                                $sql = '';
+                            }
+                        }else{
+                            if (!isset($groupedRow['displayed'])) {
+                                $groupedRow['displayed'] = true;
+                                
+                                $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
+                                
+                                $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
+                                $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                               
+                            } else {
+                                $viewActMsg = '';
+                                $sql = '';
+                            }
+                        }
+                        $log = [
+                            'log_act' => 'search',
+                            'cdate'   => $cdate,
+                            'ctime'   => $ctime,
+                            'uid'     => USER_ID,
+                            'cby'     => USER_ID,
+                            'query_rec'    => $sql,
+                            'query_table'  => $tblName,
+                            'act_msg' => $viewActMsg,
+                            'page'    => $pageTitle,
+                            'connect' => $connect,
+                        ];
+                        audit_log($log);
+                
+                        $ids = is_array($groupedRow['ids']) ? implode(',', $groupedRow['ids']) : $groupedRow['ids'];
+
+                        $url = $groupOption4 == 'daily' ? "fb_ads_topup_trans_table_detail.php?ids=" . urlencode($ids) : "fb_ads_topup_trans_table_summary.php?ids=" . urlencode($ids);
+                        echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+                        echo'<th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
+                        echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
+                        echo '<th scope="row">' . $counters++ . '</th>';
+                        echo '<td scope="row">' . $key . '</td>';
+                        echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
+                        echo '</tr>';
+                    }
+                }    
                 ?>
 
 
@@ -552,7 +601,19 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
 
 
 
+
 <script>
+
+    $('#resetButton').click(function() {
+
+$('#datepicker input, #datepicker2 input[name="start"], #datepicker2 input[name="end"], #datepicker3 input[name="start"], #datepicker3 input[name="end"], #datepicker4 input[name="start"], #datepicker4 input[name="end"]').val('');
+
+
+$('#group').val('');
+$('#timeInterval').val('');
+$('#datepicker input').change();
+});
+
 
 <?php include "../js/fb_ads_topup_table.js" ?>
     

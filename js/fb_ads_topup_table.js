@@ -13,6 +13,30 @@ function showExportNotification() {
     alert('Export successful!');
 }
 
+function captureAndExport(tblName) {
+    var selectedIds = [];
+    document.querySelectorAll('input.export:checked').forEach(function(checkbox) {
+        selectedIds.push(checkbox.value);
+    });
+
+    // Pass the selected IDs for auditing
+    auditExport(selectedIds, tblName);
+
+    // Trigger export action
+    if (exportData()) {
+        showExportNotification();
+    }
+}
+
+function auditExport(ids, tblName) {
+    
+    // Use AJAX to send the selected IDs for auditing
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../export.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('ids=' + ids.join(',') + '&tblName=' + tblName);
+}
+
 $(document).ready(function ($) {
     $(document).on("change", ".exportAll", function (event) { //checkbox handling
         event.preventDefault();
@@ -69,6 +93,12 @@ $(document).ready(function ($) {
 });
 
 
+$('#resetButton').click(function() {
+    $('#datepicker input, #datepicker2 input[name="start"], #datepicker2 input[name="end"], #datepicker3 input[name="start"], #datepicker3 input[name="end"], #datepicker4 input[name="start"], #datepicker4 input[name="end"]').val('');
+    $('#group').val('');
+    $('#timeInterval').val('');
+    $('#datepicker input').change();
+});
 
 
 
@@ -124,7 +154,7 @@ $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="e
         
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
-    } else{
+    } else if(group != ''){
         window.location.search = (timeRange ? '?timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
     }
 
@@ -132,15 +162,7 @@ $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="e
 
     });
 
-$('#resetButton').click(function() {
 
-    $('#datepicker input, #datepicker2 input[name="start"], #datepicker2 input[name="end"], #datepicker3 input[name="start"], #datepicker3 input[name="end"], #datepicker4 input[name="start"], #datepicker4 input[name="end"]').val('');
-
- 
-    $('#group').val('');
-    $('#timeInterval').val('');
-    $('#datepicker input').change();
-});
     function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -203,7 +225,7 @@ $('#resetButton').click(function() {
           if(timeParam4){
             
               window.location.search = '?group=' + group + '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '');
-          }else{
+          }else if(group != ''){
               
               window.location.search = '?group=' + group ;
           }
