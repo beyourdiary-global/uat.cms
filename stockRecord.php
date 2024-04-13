@@ -3,9 +3,9 @@ include "./include/common.php";
 include "./include/connection.php";
 
 $barcode = input('barcode');
-$pkg_id = input('pkgid');
-$whse_id = input('whseid');
-
+$pkg_id =  input('pkg_id');
+$whse_id =  input('whse_id');
+$usr_id = $_SESSION['userid'];
 // checking
 $rst_stock = getData('*',"barcode = $barcode",'',STK_REC,$connect);
 
@@ -15,9 +15,9 @@ if (!$rst_stock) {
 }
 
 if($rst_stock && $rst_stock != 0)
-    $redirect = "stockIn.php?barcode=$barcode&pkg_id=$pkg_id&whse_id=$whse_id";
+    $redirect = "stockIn.php?barcode=$barcode&pkg_id=$pkg_id&whse_id=$whse_id&usr_id=$usr_id";
 else
-    $redirect = "stockOut.php?barcode=$barcode&pkg_id=$pkg_id&whse_id=$whse_id";
+    $redirect = "stockOut.php?barcode=$barcode&pkg_id=$pkg_id&whse_id=$whse_id&usr_id=$usr_id";
 
 if($redirect)
     echo("<script>location.href = '$redirect';</script>");

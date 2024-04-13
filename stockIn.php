@@ -3,11 +3,11 @@ $pageTitle = "Stock In";
 include 'menuHeader.php';
 
 $barcode = input('barcode');
-$prod_id = input('prdid');
-$whse_id = input('whseid');
+$prod_id = input('pkg_id');
+$whse_id = input('whse_id');
 $usr_id = input('usr_id');
 $redirect_page = 'dashboard.php';  // if no value get
-
+$clearLocalStorage = '<script>localStorage.clear();</script>';
 // Check if required parameters are missing and redirect if necessary
 if (!$barcode || !$prod_id || !$whse_id || !$usr_id) {
     echo "<script type='text/javascript'>alert('Invalid request for stock-in. Please provide valid data.'); window.location.href ='$SITEURL/dashboard.php';</script>";
@@ -21,7 +21,7 @@ $tblname = STK_REC;
 $barcode_input = "";
 $usr_btn = "";
 
-$rst_prod_info = getData('*', "id='$prod_id'", '', PRODUCT, $connect);
+$rst_prod_info = getData('*', "id='$prod_id'", '', PROD, $connect);
 $rst_whse_info = getData('name',"id='$whse_id'",'',WHSE,$connect);
 $rst_usr = getData('*',"status='A'",'',USR_USER,$connect);
 
@@ -37,9 +37,10 @@ $whse_name = $rst_whse_info ? $rst_whse_info->fetch_assoc()['name'] : '';
 // Get product info and generate barcode input fields
 $prod_info = $rst_prod_info ? $rst_prod_info->fetch_assoc() : null;
 $prod_name = $prod_info ? $prod_info['name'] : '';
-$prod_barcode_slot_required = $prod_info ? $prod_info['barcode_required'] === 'yes' : false;
-$prod_barcode_slot_total = $prod_info ? $prod_info['barcode_slot_total'] : 0;
-
+$prod_barcode_slot_required = $prod_info ? $prod_info['barcode_status'] === 'Yes' : false;
+$prod_barcode_slot_total = $prod_info ? $prod_info['barcode_slot'] : 0;
+$prod_brand = $prod_info ? $prod_info['brand'] : '';
+$prod_category = $prod_info ? $prod_info['parent_product'] : '';
 if ($prod_barcode_slot_required && $prod_barcode_slot_total >= 1) {
     for ($x = 1; $x <= $prod_barcode_slot_total; $x++) {
         $barcode_input .= "<input class=\"form-control mb-1\" id=\"barcode_input_$x\" name=\"barcode_input[]\" type=\"text\" placeholder=\"Barcode Slot $x\">";
@@ -51,7 +52,7 @@ while ($usr = $rst_usr->fetch_assoc()) {
     $usr_id = $usr['id'];
     $usr_name = $usr['name'];
 
-    $usr_btn .= "<button class=\"btn btn-rounded btn-primary mx-2 my-1\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">$usr_name</button>";
+    $usr_btn = "<button class=\"btn btn-rounded btn-primary mx-2 my-1 submitBtn\" style=\"color:#FFFFFF;\" name=\"usrBtn\" id=\"actionBtn\" value=\"$usr_id\">Submit</button>";
 }
 
 // Submission
@@ -61,18 +62,30 @@ if (post('usrBtn')) {
 
     if ($barcodeInputs != '') {
         $arrNum = sizeof($barcodeInputs);
-
+        $datafield = $newvalarr = array();
         if ($arrNum >= 1) {
-            $productInfo = $rst_prod_info->fetch_assoc();
-
-            if ($productInfo) {
-                $brandId = $productInfo['brand_id'];
-                $productId = $productInfo['id'];
-                $productCategoryId = $productInfo['product_category_id'];
-
+          
+            if ($prod_info) {
+                $brandId = $prod_info['brand'];
+                $productId = $prod_info['id'];
+                $productCategoryId = $prod_info['product_category'];
+                if (isset($prod_info['brand'])) {
+                    array_push($newvalarr, $prod_info['brand']);
+                    array_push($datafield, 'brand');
+                }
+                
+                if (isset($prod_info['id'])) {
+                    array_push($newvalarr, $prod_info['id']);
+                    array_push($datafield, 'product_id');
+                }
+                
+                if (isset($prod_info['product_category'])) {
+                    array_push($newvalarr, $prod_info['product_category']);
+                    array_push($datafield, 'product_category_id');
+                }
                 foreach ($barcodeInputs as $batchCode) {
                     $stockInDate = date("Y-m-d");
-                    $barcode = generateBarcode();
+                    $barcode = input('barcode');
                     $productBatchCode = $batchCode;
                     $productStatusId = 4;
                     $warehouseId = $whse_id;
@@ -87,11 +100,31 @@ if (post('usrBtn')) {
                     $result = mysqli_query($connect, $insertQuery);
 
                     if ($result) {
-                        $logMessage = "Stock In - Barcode: $barcode, Product ID: $productId, Warehouse ID: $warehouseId, User ID: $createBy";
-                        logAction($logMessage);
-                        showNotification('Stock In successful.');
+                        $logMessage = "$usr_name added a data <b>Stock In - [ Barcode: $barcode ], [ Product ID: $productId ], [ Warehouse ID: $warehouseId ], [ User ID: $createBy ] </b> under <i><b>$tblname</b></i>." ;
+                      
+
+                            $log = [
+                                'log_act'      => 'add',
+                                'act_msg'      => $logMessage,
+                                'cdate'        => $cdate,
+                                'ctime'        => $ctime,
+                                'uid'          => USER_ID,
+                                'cby'          => USER_ID,
+                                'query_rec'    => $insertQuery,
+                                'query_table'  => $tblname,
+                                'page'         => $pageTitle,
+                                'connect'      => $connect,
+                            ];
+                            $log['newval'] = implodeWithComma($newvalarr);
+                            audit_log($log);
+                        
+                       
+                        
+                        
+                        echo "<script>showNotification('Stock In successful.');</script>";
+                        $_SESSION['tempValConfirmBox'] = true;
                     } else {
-                        showNotification('Stock In failed. Please try again.');
+                        echo "<script>showNotification('Stock In failed. Please try again.');</script>";
                     }
                 }
             }
@@ -106,45 +139,7 @@ if (post('usrBtn')) {
 <head>
     <link rel="stylesheet" href="./css/main.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var barcode = '<?=$barcode?>';
-            var prod_id = '<?=$prod_id?>';
-            var whse_id = '<?=$whse_id?>';
-            var usr_id = '<?=$usr_id?>';
-
-            if (!barcode || !prod_id || !whse_id || !usr_id) {
-                alert('Invalid request for stock-in. Please provide valid data.');
-                window.location.href = '<?=$SITEURL?>/dashboard.php';
-            }
-
-            // Check barcode requirement 
-            var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
-            if (isBarcodeRequired) {
-                showNotification('Barcode is required for this product.');
-                <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
-                    $("#barcode_input_<?=$x?>").prop('readonly', false);
-                <?php endfor; ?>
-            }
-        });
-
-        // Notification
-        function showNotification(message) {
-            $("#notification").text(message).fadeIn().delay(3000).fadeOut();
-        }
-
-        // Form submission 
-        $('#submitBtn').on('click', function () {
-            var barcodeInputs = $('[name="barcode_input[]"]').toArray();
-            var isValid = true;
-
-            if (isValid) {
-                $('#stockForm').submit();
-            } else {
-                showNotification('Please fill in all required fields.');
-            }
-        });
-    </script>
+   
 </head>
 
 <body>
@@ -189,25 +184,62 @@ if (post('usrBtn')) {
                     <div class="col-12">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" for="expire_date">Product Expire Date</label>
-                            <input class="form-control" type="text" name="expire_date" id="expire_date">
+                            <input class="form-control" type="date" name="expire_date" id="expire_date">
                         </div>
                     </div>
                 </div>
-
+                <?php
+                if($barcode_input != ''){
+                ?>
                 <div class="row">
                     <div class="col-12">
                         <div class="form-group mb-3">
                             <label class="form-label form_lbl" for="barcode_input">Barcode Slot Input</label>
-                            <?= $barcode_input ?>
-                            <div id="barcode_slot_error" style="color: red;"></div>
+                            <?= $barcode_input ?>  
                         </div>
                     </div>
                 </div>
-
-                <button type="button" id="submitBtn">Submit</button>
+                <?php
+                }
+                ?>
+                <?= $usr_btn ?>
             </form>
         </div>
     </div>
 </body>
 
 </html>
+
+<?php
+ if (isset($_SESSION['tempValConfirmBox'])) {
+    unset($_SESSION['tempValConfirmBox']);
+    echo $clearLocalStorage;
+    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","I");</script>';
+}
+?>
+<script>
+     
+        $(document).ready(function () {
+            var barcode = '<?=$barcode?>';
+            var prod_id = '<?=$prod_id?>';
+            var whse_id = '<?=$whse_id?>';
+            var usr_id = '<?=$usr_id?>';
+
+            if (!barcode || !prod_id || !whse_id || !usr_id) {
+                alert('Invalid request for stock-in. Please provide valid data.');
+                window.location.href = '<?=$SITEURL?>/dashboard.php';
+            }
+
+            // Check barcode requirement 
+            var isBarcodeRequired = <?=$prod_barcode_slot_required ? 'true' : 'false'?>;
+            if (isBarcodeRequired) {
+                showNotification('Barcode is required for this product.');
+                <?php for ($x = 1; $x <= $prod_barcode_slot_total; $x++) : ?>
+                    $("#barcode_input_<?=$x?>").prop('readonly', false);
+                <?php endfor; ?>
+            }
+        });
+        <?php include "js/stock_in.js" ?>
+        // Notification
+      
+    </script>
