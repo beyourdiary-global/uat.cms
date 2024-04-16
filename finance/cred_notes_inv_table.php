@@ -131,7 +131,7 @@ if (post('pay_status_option')) {
                             <th scope="col">Invoice ID</th>
                             <th scope="col">Issued Date</th>
                             <th scope="col">Total</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Payment Status</th>
                             <th scope="col">Due Date</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>
@@ -165,54 +165,44 @@ if (post('pay_status_option')) {
                                 </td>
                                 <td scope="row">
                                     <div class="dropdown">
-                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
-                                            id="paymentStatusMenu" role="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
+                                        <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="paymentStatusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false" disabled>
                                             <button class="roundedSelectionBtn">
                                                 <span class="mdi mdi-record-circle-outline" style="<?php
-                                                if ($payment_status == 'Paid') {
-                                                    echo 'color:#008000;';
-                                                } else if ($payment_status == 'Cancelled') {
-                                                    echo 'color:#ff0000;';
-                                                } else {
-                                                    echo 'color:#F17FB5;';
-                                                } ?>"></span>
+                                                    if ($payment_status == 'Paid') {
+                                                        echo 'color:#008000;';
+                                                    } else if ($payment_status == 'Cancelled') {
+                                                        echo 'color:#ff0000;';
+                                                    } else {
+                                                        echo 'color:#F17FB5;';
+                                                    } ?>"></span>
                                                 <?php
-                                                switch ($payment_status) {
-                                                    case 'Paid':
-                                                        echo 'Paid';
-                                                        break;
-                                                    case 'Cancelled':
-                                                        echo 'Cancelled';
-                                                        break;
-                                                    default:
-                                                        echo 'Pending';
-                                                }
+                                                    switch ($payment_status) {
+                                                        case 'Paid':
+                                                            echo 'Paid';
+                                                            break;
+                                                        case 'Cancelled':
+                                                            echo 'Cancelled';
+                                                            break;
+                                                        default:
+                                                            echo 'Pending';
+                                                    }
                                                 ?>
                                             </button>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="payStatusMenu">
                                             <li>
-                                                <a class="dropdown-item" id="pendingOption" href=""
-                                                    onclick="updatepayStatus(<?= $row['id'] ?>,'Pending')"><span
-                                                        class="mdi mdi-record-circle-outline" style="color:#F17FB5"></span>
-                                                    Pending</a>
+                                                <a class="dropdown-item" id="pendingOption" href="#" onclick="return false;"><span class="mdi mdi-record-circle-outline" style="color:#F17FB5"></span> Pending</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" id="paidOption" href=""
-                                                    onclick="updatepayStatus(<?= $row['id'] ?>,'Paid')"><span
-                                                        class="mdi mdi-record-circle-outline" style="color:#008000"></span>
-                                                    Paid</a>
+                                                <a class="dropdown-item" id="paidOption" href="#" onclick="return false;"><span class="mdi mdi-record-circle-outline" style="color:#008000"></span> Paid</a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" id="cancelledOption" href=""
-                                                    onclick="updatepayStatus(<?= $row['id'] ?>,'Cancelled')"><span
-                                                        class="mdi mdi-record-circle-outline" style="color:#ff0000"></span>
-                                                    Cancelled</a>
+                                                <a class="dropdown-item" id="cancelledOption" href="#" onclick="return false;"><span class="mdi mdi-record-circle-outline" style="color:#ff0000"></span> Cancelled</a>
                                             </li>
                                         </ul>
                                     </div>
                                 </td>
+
                                 <td scope="row">
                                     <?= $row['due_date'] ?>
                                 </td>
@@ -251,7 +241,7 @@ if (post('pay_status_option')) {
                             <th scope="col">Invoice ID</th>
                             <th scope="col">Issued Date</th>
                             <th scope="col">Total</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Payment Status</th>
                             <th scope="col">Due Date</th>
                             <th scope="col" id="action_col" width="100px">Action</th>
                         </tr>

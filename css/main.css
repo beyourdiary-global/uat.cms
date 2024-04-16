@@ -713,3 +713,8 @@ input {
     text-decoration: none;
     color:white;
 }
+
+.autocomplete .searchResult{
+    max-height: 200px; /* Set the max height for the dropdown */
+    overflow-y: auto; /* Enable vertical scrolling */
+}

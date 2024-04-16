@@ -81,6 +81,7 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col">S/N</th>
                     <th scope="col" id="action_col">Action</th>
+                    <th scope="col">Order Status</th>
                     <th scope="col">Lazada Account</th>
                     <th scope="col">Currency Unit</th>
                     <th scope="col">Country</th>
@@ -147,6 +148,17 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                         <a class="btn btn-danger" onclick="confirmationDialog('<?= $row['id'] ?>',['<?= $row['curr_unit'] ?>','<?= $row['country'] ?>'],'<?php echo $pageTitle ?>','<?= $redirect_page ?>','<?= $deleteRedirectPage ?>','D')"><i class="fas fa-trash-alt"></i></a>
                         <?php endif; ?>
                         </td>
+                        <td>
+                        <?php
+                            $status = $row['order_status'];
+                            if ($status == 'P') {
+                                $status = 'Processing';
+                            }else  if ($status == 'SP') {
+                                $status = 'Shipped';
+                            }
+                            echo $status;
+                            ?>
+                        </td>
                         <td scope="row"><?= isset($lazada_acc['name']) ? $lazada_acc['name'] : ''  ?></td>
                         <td scope="row"><?= $row['curr_unit'] ?></td>
                         <td scope="row"><?= $row['country'] ?></td>
@@ -178,6 +190,7 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                     <th class="hideColumn" scope="col">ID</th>
                     <th scope="col">S/N</th>
                     <th scope="col" id="action_col">Action</th>
+                    <th scope="col">Order Status</th>
                     <th scope="col">Lazada Account</th>
                     <th scope="col">Currency Unit</th>
                     <th scope="col">Country</th>

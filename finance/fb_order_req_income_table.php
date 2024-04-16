@@ -294,7 +294,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=finance/merchant_comm_record_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=finance/fb_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
                 <table class="table table-striped" id="fb_order_req_table">
@@ -338,16 +338,6 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                          $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
                          $groupedRows = [];
                          $counters = 1;
-         
-                         function generateTableRow($id, &$counters, $key, $topupAmt) {
-                             echo '<tr onclick="window.location=\'fb_order_req_income_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
-                             echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $id . '"></th>';
-                             echo '<th class="hideColumn" scope="row">' . $id . '</th>';
-                             echo '<th scope="row">' . $counters++ . '</th>';
-                             echo '<td scope="row">' . $key . '</td>';
-                             echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
-                             echo '</tr>';
-                         }
                          $groupedRows = [];
                         while ($row = $result->fetch_assoc()) {
                             $viewActMsg = '';
@@ -385,33 +375,34 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 
                             $createdate = $row['create_date'];
                             if ($groupOption && $groupOption3) {
+                                switch ($groupOption) {
+                                    case 'person':
+                                        $key = $pic;
+                                        break;
+                                    case 'brand':
+                                        $key = $brand;
+                                        break;
+                                    case 'series':
+                                        $key = $series;
+                                        break;
+                                    case 'package':
+                                        $key = $package;
+                                        break;
+                                    case 'facebook':
+                                        $key = $fb_page;
+                                        break;
+                                    case 'channel':
+                                        $key = $channel;
+                                        break;
+                                    case 'method':
+                                        $key = $pay_meth;
+                                        break;
+                                    default:
+                                        $key = $brand;
+                                        break;
+                                }
                                   if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 === 'daily') {
-                                    switch ($groupOption) {
-                                        case 'person':
-                                            $key = $pic;
-                                            break;
-                                        case 'brand':
-                                            $key = $brand;
-                                            break;
-                                        case 'series':
-                                            $key = $series;
-                                            break;
-                                        case 'package':
-                                            $key = $package;
-                                            break;
-                                        case 'facebook':
-                                            $key = $fb_page;
-                                            break;
-                                        case 'channel':
-                                            $key = $channel;
-                                            break;
-                                        case 'method':
-                                            $key = $pay_meth;
-                                            break;
-                                        default:
-                                            $key = $brand;
-                                            break;
-                                    }
+                                  
                             
                                     if ($groupOption3 === $createdate) {
                                     if (!isset($groupedRows[$key])) {
@@ -442,32 +433,6 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     $createdTimestamp = strtotime($createdate);
                                 
                                     if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
-                                        switch ($groupOption) {
-                                            case 'person':
-                                                $key = $pic;
-                                                break;
-                                            case 'brand':
-                                                $key = $brand;
-                                                break;
-                                            case 'series':
-                                                $key = $series;
-                                                break;
-                                            case 'package':
-                                                $key = $package;
-                                                break;
-                                            case 'facebook':
-                                                $key = $fb_page;
-                                                break;
-                                            case 'channel':
-                                                $key = $channel;
-                                                break;
-                                            case 'method':
-                                                $key = $pay_meth;
-                                                break;
-                                            default:
-                                                $key = $brand;
-                                                break;
-                                        }
                                 
                                         if (!isset($groupedRows[$key])) {
                                             $groupedRows[$key] = [
@@ -480,43 +445,15 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         }
                                     }
                                 }
-                            }else if ($groupOption) {
-                                switch ($groupOption) {
-                                    case 'person':
-                                        $key = $pic;
-                                        break;
-                                    case 'brand':
-                                        $key = $brand;
-                                        break;
-                                    case 'series':
-                                        $key = $series;
-                                        break;
-                                    case 'package':
-                                        $key = $package;
-                                        break;
-                                    case 'facebook':
-                                        $key = $fb_page;
-                                        break;
-                                    case 'channel':
-                                        $key = $channel;
-                                        break;
-                                    case 'method':
-                                        $key = $pay_meth;
-                                        break;
-                                    default:
-                                        $key = $brand;
-                                        break;
-                                }
-                        
-                                generateTableRow($row['id'], $counters, $key, $row['price']);
-                            }                           
+                            }                      
                             }
                             foreach ($groupedRows as $key => $groupedRow) {
                                 if (isset($key)) {
                                     if($groupOption4 == 'daily') {
+                                        $nextDay = date('Y-m-d', strtotime($createdate . ' +1 day'));
                                         if (!isset($groupedRow['displayed'])) {
                                             $groupedRow['displayed'] = true;
-                                            $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $createdate. "</b> from <b><i>$tblName Table</i></b>.";
+                                            $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $nextDay. "</b> from <b><i>$tblName Table</i></b>.";
                                             $idss = implode(', ', $groupedRow['ids']);
                                             $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
                                         } else {

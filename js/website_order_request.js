@@ -39,11 +39,18 @@ window.onload = function() {
 
 //autocomplete
 $(document).ready(function() {
-    document.getElementById('trackOrderBtn').addEventListener('click', function() {
-        // Copy tracking number to clipboard
-        var trackingNumber = this.getAttribute('data-tracking-id');
-        navigator.clipboard.writeText(trackingNumber);    
-    });
+    function getParameterByName(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    var act = getParameterByName('act');
+    if (act != 'I'){
+        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+            // Copy tracking number to clipboard
+            var trackingNumber = this.getAttribute('data-tracking-id');
+            navigator.clipboard.writeText(trackingNumber);    
+        });
+    }
     //package
     if (!($("#wor_pkg").attr('disabled'))) {
         $("#wor_pkg").keyup(function() {
