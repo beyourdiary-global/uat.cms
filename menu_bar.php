@@ -217,6 +217,16 @@ $menuList = array(
                 ),
                 'pin' => array('48','66','77','51','67','62','78','49','68','89','87'),
             ),
+            array(
+                'Income',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Facebook Order Request', 'mdi storefront-outline', $SITEURL . '/finance/fb_order_req_income_table.php', '96'),
+                ),
+                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96'),
+            ),
         ),
         'pin' => array('48','66','77','51','67','62','78','49','68','89','87')
     ),
