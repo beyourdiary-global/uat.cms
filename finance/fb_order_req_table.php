@@ -74,6 +74,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Name</th>
                             <th scope="col">Facebook Link</th>
                             <th scope="col">Contact</th>
@@ -149,6 +150,17 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         ?>
                                     </div>
                                     </td>
+                                <td>
+                                    <?php
+                                        $status = $row['order_status'];
+                                        if ($status == 'P') {
+                                            $status = 'Processing';
+                                        }else  if ($status == 'SP') {
+                                            $status = 'Shipped';
+                                        }
+                                        echo $status;
+                                        ?>
+                                </td>
                                 <td scope="row">
                                     <?= $row['name'] ?? '' ?>
                                 </td>
@@ -208,6 +220,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Name</th>
                             <th scope="col">Facebook Link</th>
                             <th scope="col">Contact</th>

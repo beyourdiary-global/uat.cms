@@ -76,7 +76,7 @@ $menuList = array(
             array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
             array('Shopee SG Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/shopee_order_req_table.php', '86'),
             array('Website Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/website_order_request_table.php', '92'),
-            array('Lazda Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_table.php', '93'),
+            array('Lazada Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_table.php', '93'),
             array('Order Process List', 'mdi mdi-note-text-outline', $SITEURL . '/finance/order_process_list.php', '95'),
         ),
         'pin' => array('69','86','92','93','95')
@@ -224,11 +224,12 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Facebook Order Request', 'mdi storefront-outline', $SITEURL . '/finance/fb_order_req_income_table.php', '96'),
+                    array('Shopee SG Order Request', 'mdi storefront-outline', $SITEURL . '/finance/shopee_order_req_income_table.php', '97'),
                 ),
-                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96'),
+                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97'),
             ),
         ),
-        'pin' => array('48','66','77','51','67','62','78','49','68','89','87')
+        'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97')
     ),
     array(
         'Other',
