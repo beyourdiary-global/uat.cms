@@ -1,11 +1,10 @@
 <?php
 ob_start();
-$pageTitle = "Shopee SG Order Request";
+$pageTitle = "Website Order Request";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
-
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 $img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
@@ -27,36 +26,39 @@ if (!empty($checkboxValues)) {
     setcookie('rowID', '', time() - 3600, '/');
     // Defining column names
     $excelData = array(
-        array('S/N',
-        'SHOPEE ACCOUNT',
-    'CURRENCY',
-    'ORDER ID',
-    'DATE',
-    'TIME',
-    'PACKAGE',
-    'BARCODE SLOT',
-    'BRAND',
-    'BUYER',
-    'BUYER PAYMENT METHOD',
-    'PIC',
-    'PRICE',
-    'VOUCHER',
-    'SHIPPING FEE',
-    'SERVICE FEE',
-    'TRANSACTION FEE',
-    'AMS FEE',
-    'FEES',
-    'FINAL AMT',
-    'REMARK',
-    'CREATE BY',
-    'CREATE DATE',
-    'CREATE TIME',
-    'UPDATE BY',
-    'UPDATE DATE',
-    'UPDATE TIME',
-    'ORDER STATUS')
+        array(
+            'S/N',
+            'ORDER ID',
+            'BRAND',
+            'SERIES',
+            'PKG',
+            'BARCODE SLOT',
+            'COUNTRY',
+            'CURRENCY',
+            'PRICE',
+            'SHIPPING',
+            'DISCOUNT',
+            'TOTAL',
+            'PAYMENT METHOD',
+            'PERSON IN CHARGE',
+            'CUSTOMER ID',
+            'CUSTOMER NAME',
+            'CUSTOMER EMAIL',
+            'CUSTOMER BIRTHDAY',
+            'SHIPPING_NAME',
+            'SHIPPING_ADDRESS',
+            'SHIPPING_CONTACT',
+            'REMARK',
+            'CREATE BY',
+            'CREATE DATE',
+            'CREATE TIME',
+            'UPDATE BY',
+            'UPDATE DATE',
+            'UPDATE TIME',
+            'ORDER STATUS'
+        )
     );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . FB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, sales_pic ASC, brand ASC, series ASC, package ASC, price ASC");
+    $query2 = $finance_connect->query("SELECT * FROM " . WEB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, pic ASC, brand ASC, series ASC, pkg ASC, price ASC");
    
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
@@ -81,25 +83,26 @@ if (!empty($checkboxValues)) {
 
             // Define the column names in the same order as in your database query
             $columnNames = array(
-                'shopee_acc',
-                'currency',
-                'orderID',
-                'date',
-                'time',
-                'package',
-                'barcode_slot',
+                'order_id',
                 'brand',
-                'buyer',
-                'buyer_pay_meth',
-                'pic',
+                'series',
+                'pkg',
+                'barcode_slot',
+                'country',
+                'currency',
                 'price',
-                'voucher',
-                'act_shipping_fee',
-                'service_fee',
-                'trans_fee',
-                'ams_fee',
-                'fees',
-                'final_amt',
+                'shipping',
+                'discount',
+                'total',
+                'pay_method',
+                'pic',
+                'cust_id',
+                'cust_name',
+                'cust_email',
+                'cust_birthday',
+                'shipping_name',
+                'shipping_address',
+                'shipping_contact',
                 'remark',
                 'create_by',
                 'create_date',
@@ -214,11 +217,10 @@ $_SESSION['searchChk'] = '';
 unset($_SESSION['resetChk']);
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-$tblName = SHOPEE_SG_ORDER_REQ;
-
-$redirect_page = $SITEURL . '/finance/shopee_order_req.php';
-$deleteRedirectPage = $SITEURL . '/finance/shopee_order_req_table.php';
-$result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$tblName = WEB_ORDER_REQ;
+$redirect_page = $SITEURL . '/finance/website_order_request.php';
+$deleteRedirectPage = $SITEURL . '/finance/website_order_request_table.php';
+$result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -230,7 +232,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('shopee_order_req_table');
+        createSortingTable('website_order_request_table');
     });
 </script>
 
@@ -263,6 +265,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                         Request </a>
                                 <?php endif; ?>
                                 <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
+
                             </div>
                         <?php } ?>
                     </div>
@@ -274,68 +277,67 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
             } else {
                 ?>
 
-                <table class="table table-striped" id="shopee_order_req_table">
+                    <table class="table table-striped" id="website_order_request_table">
                     <thead>
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Order Status</th>
-                            <th scope="col">Shopee Account</th>
-                            <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Package</th>
                             <th scope="col">Brand</th>
-                            <th scope="col">Shopee Buyer Username</th>
-                            <th scope="col">Buyer Payment Method</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Product Price</th>
-                            <th scope="col">Voucher</th>
-                            <th scope="col">Actual Shipping Fee</th>
-                            <th scope="col">Service Fee (incl. GST)</th>
-                            <th scope="col">Transaction Fee (incl. GST)</th>
-                            <th scope="col">AMS Commission Fee</th>
-                            <th scope="col">Fees & Charges</th>
-                            <th scope="col">Final Amount</th>
+                            <th scope="col">Series</th>
+                            <th scope="col">Package</th>
+                            <th scope="col">Country</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Shipping</th>
+                            <th scope="col">Discount Price</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Person In Charges</th>
+                            <th scope="col">Customer ID</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Customer Email</th>
+                            <th scope="col">Customer Birthday</th>
+                            <th scope="col">Shipping Name</th>
+                            <th scope="col">Shipping Address</th>
+                            <th scope="col">Shipping Contact</th>
                             <th scope="col">Remark</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
-                        
-                        while ($row = $result->fetch_assoc()) {
-                            $q1 = getData('*', "id='" . $row['shopee_acc'] . "'", '', SHOPEE_ACC, $finance_connect);
-                            $acc = $q1->fetch_assoc();
-                            if (isset($_GET['ids'])) {
+                        <?php while ($row = $result->fetch_assoc()) {
+                             if (isset($_GET['ids'])) {
                           
-                            $ids = explode(',', $_GET['ids']);
-                            foreach ($ids as $id) {
-                            $decodedId = urldecode($id);
-                           
-                            if (isset( $row['id']) && $row['id'] == $id) {
-                            
-                            $q7 = getData('*', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
-                            $curr = $q7->fetch_assoc();
+                                $ids = explode(',', $_GET['ids']);
+                                foreach ($ids as $id) {
+                                $decodedId = urldecode($id);
+                               
+                                if (isset( $row['id']) && $row['id'] == $id) {
+                            $q1 = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                            $currency = $q1->fetch_assoc();
 
-                            $q2 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
-                            $pkg = $q2->fetch_assoc();
+                            $q2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
+                            $country = $q2->fetch_assoc();
 
-                            $q3 = getData('name', "id='" . $row['brand'] ."'", '', BRAND, $connect);
+                            $q3 = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                             $brand = $q3->fetch_assoc();
 
-                            $q4 = getData('buyer_username', "id='" . $row['buyer'] . "'", '', SHOPEE_CUST_INFO, $finance_connect);
-                            $buyer = $q4->fetch_assoc();
+                            $q4 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
+                            $series = $q4->fetch_assoc();
 
-                            $q6 = getData('*', "id='" . $row['buyer_pay_meth'] . "'", '', PAY_MTHD_SHOPEE, $finance_connect);
-                            $pay = $q6->fetch_assoc();
+                            $q5 = getData('name', "id='" . $row['pkg'] . "'", '', PKG, $connect);
+                            $package = $q5->fetch_assoc();
 
-                            $q5 = getData('name', "id='" . $row['pic'] . "'", '', USR_USER, $connect);
-                            $pic = $q5->fetch_assoc();
+                            $q6 = getData('cust_id', "id='" . $row['cust_id'] . "'", '', WEB_CUST_RCD, $connect);
+                            $cust_id = $q6->fetch_assoc();
+
+                            $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
+                            $pay = $q8->fetch_assoc();
                             ?>
 
                             <tr>
@@ -343,15 +345,14 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                     <?= $row['id'] ?>
                                 </th>
                                 <th class="text-center"><input type="checkbox" class="export" value="<?= $row['id'] ?>"></th>
-
                                 <th scope="row">
                                     <?= $num++; ?>
                                 </th>
-
+                                
                                 <td scope="row" class="btn-container">
                                 <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
                                 <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                <?php renderDeleteButton($pinAccess, $row['id'], $row['orderID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                <?php renderDeleteButton($pinAccess, $row['id'], $row['order_id'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
                                 </td>
                                 <td scope="row">
                                 <?php
@@ -364,60 +365,71 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                 echo $status;
                                 ?>
                                 </td>
+                                <td scope="row">
+                                    <?= $row['order_id'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $row['brand'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $row['series'] ?? '' ?>
+                                </td>
+                               
+                                <td scope="row">
+                                    <?= $package['name'] ?? '' ?>
+                                </td>
+                                <td scope="row">
+                                    <?= $country['nicename'] ?? '' ?>
+                                </td>
 
                                 <td scope="row">
-                                    <?= $acc['name'] ?? '' ?>
+                                    <?= $currency['unit'] ?? '' ?>
                                 </td>
+                              
                                 <td scope="row">
-                                    <?= $curr['unit'] ?? '' ?>
+                                    <?= $row['price'] ?? '' ?>
                                 </td>
+
                                 <td scope="row">
-                                    <?= $row['orderID'] ?? '' ?>
+                                    <?= $row['shipping'] ?? '' ?>
                                 </td>
+
                                 <td scope="row">
-                                    <?= $row['date'] ?? '' ?>
+                                    <?= $row['discount'] ?? '' ?>
                                 </td>
+
                                 <td scope="row">
-                                    <?= $row['time'] ?? '' ?>
+                                    <?= $row['total'] ?? '' ?>
                                 </td>
-                                <td scope="row">
-                                    <?= $pkg['name'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $brand['name'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $buyer['buyer_username'] ?? '' ?>
-                                </td>
+
                                 <td scope="row">
                                     <?= $pay['name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $pic['name'] ?? '' ?>
+                                    <?= $row['pic'] ?? '' ?>
+                                </td>
+
+                                <td scope="row">
+                                    <?= $cust_id['cust_id'] ?? '' ?>
+                                </td>
+
+                                <td scope="row">
+                                    <?= $row['cust_name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['price'] ?? '' ?>
+                                    <?= $row['cust_email'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['voucher'] ?? '' ?>
+                                    <?= $row['cust_birthday'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['act_shipping_fee'] ?? '' ?>
+                                    <?= $row['shipping_name'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['service_fee'] ?? '' ?>
+                                    <?= $row['shipping_address'] ?? '' ?>
                                 </td>
                                 <td scope="row">
-                                    <?= $row['trans_fee'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $row['ams_fee'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $row['fees'] ?? '' ?>
-                                </td>
-                                <td scope="row">
-                                    <?= $row['final_amt'] ?? '' ?>
+                                    <?= $row['shipping_contact'] ?? '' ?>
                                 </td>
                                 <td scope="row">
                                     <?= $row['remark'] ?? '' ?>
@@ -427,31 +439,32 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th class="text-center">
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th class="text-center">
                                 <input type="checkbox" class="exportAll">
                             </th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col" id="action_col">Action</th>
                             <th scope="col">Order Status</th>
-                            <th scope="col">Shopee Account</th>
-                            <th scope="col">Currency</th>
                             <th scope="col">Order ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Package</th>
                             <th scope="col">Brand</th>
-                            <th scope="col">Shopee Buyer Username</th>
-                            <th scope="col">Buyer Payment Method</th>
-                            <th scope="col">Person In Charge</th>
-                            <th scope="col">Product Price</th>
-                            <th scope="col">Voucher</th>
-                            <th scope="col">Actual Shipping Fee</th>
-                            <th scope="col">Service Fee (incl. GST)</th>
-                            <th scope="col">Transaction Fee (incl. GST)</th>
-                            <th scope="col">AMS Commission Fee</th>
-                            <th scope="col">Fees & Charges</th>
-                            <th scope="col">Final Amount</th>
+                            <th scope="col">Series</th>
+                            <th scope="col">Package</th>
+                            <th scope="col">Country</th>
+                            <th scope="col">Currency</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Shipping</th>
+                            <th scope="col">Discount Price</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Person In Charges</th>
+                            <th scope="col">Customer ID</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Customer Email</th>
+                            <th scope="col">Customer Birthday</th>
+                            <th scope="col">Shipping Name</th>
+                            <th scope="col">Shipping Address</th>
+                            <th scope="col">Shipping Contact</th>
                             <th scope="col">Remark</th>
                         </tr>
                     </tfoot>
@@ -463,8 +476,8 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 
 </body>
 <script>
-        
-$(document).ready(function ($) {
+
+    $(document).ready(function ($) {
     $(document).on("change", ".exportAll", function (event) { //checkbox handling
         event.preventDefault();
 
@@ -479,7 +492,7 @@ $(document).ready(function ($) {
         var checkboxValues = [];
 
         // Loop through all pages to collect checked checkboxes
-        $('#shopee_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+        $('#website_order_request_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
             var checkbox = $(this).find('.export:checked');
             if (checkbox.length > 0) {
                 checkbox.each(function () {
@@ -504,7 +517,7 @@ $(document).ready(function ($) {
                 selectAllCheckbox.checked = false;
             }
 
-            window.location.href = "shopee_order_req_income_table.php";
+            window.location.href = "website_order_request_income_table.php";
         } else {
             console.log('No checkboxes are checked.');
         }
@@ -512,12 +525,14 @@ $(document).ready(function ($) {
 
     function updateCheckboxesOnOtherPages(isChecked) {
         // Get all cells in the DataTable
-        var cells = $('#shopee_order_req_table').DataTable().cells().nodes();
+        var cells = $('#website_order_request_table').DataTable().cells().nodes();
 
         // Check/uncheck all checkboxes in the DataTable
         $(cells).find('.export').prop('checked', isChecked);
     }
 });
+
+<?php include "../js/order_req.js" ?>
     /**
   oufei 20231014
   common.fun.js
@@ -532,7 +547,7 @@ $(document).ready(function ($) {
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('shopee_order_req_table');
+    datatableAlignment('website_order_request_table');
 </script>
 
 </html>

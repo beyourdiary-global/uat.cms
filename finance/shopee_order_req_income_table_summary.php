@@ -398,7 +398,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                          $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
                          $groupedRows = [];
                          $counters = 1;
-                         $groupedRows = [];
+                     
                         while ($row = $result->fetch_assoc()) {
                             $viewActMsg = '';
                             $sql = '';
@@ -437,34 +437,33 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             $createdate = $row['date'];
                             
                             if ($groupOption && $groupOption3) {
-                                if (($groupOption === 'status' || $groupOption === 'shopee_acc' || $groupOption === 'currency' || $groupOption === 'package' || $groupOption === 'brand' || $groupOption === 'buyer' || $groupOption === 'person') && $groupOption4 === 'daily') {
-                                  switch ($groupOption) {
-                                      case 'person':
-                                          $key = $pic;
-                                          break;
-                                      case 'brand':
-                                          $key = $brand;
-                                          break;
-                                      case 'status':
-                                          $key = $status;
-                                          break;
-                                      case 'package':
-                                          $key = $pkg;
-                                          break;
-                                      case 'shopee_acc':
-                                          $key = $shopee;
-                                          break;
-                                      case 'currency':
-                                          $key = $curr;
-                                          break;
-                                      case 'buyer':
-                                          $key = $buyer;
-                                          break;
-                                      default:
-                                          $key = $brand;
-                                          break;
-                                  }
-                                  switch ($groupOption2) {
+                                switch ($groupOption) {
+                                    case 'person':
+                                        $key = $pic;
+                                        break;
+                                    case 'brand':
+                                        $key = $brand;
+                                        break;
+                                    case 'status':
+                                        $key = $status;
+                                        break;
+                                    case 'package':
+                                        $key = $pkg;
+                                        break;
+                                    case 'shopee_acc':
+                                        $key = $shopee;
+                                        break;
+                                    case 'currency':
+                                        $key = $curr;
+                                        break;
+                                    case 'buyer':
+                                        $key = $buyer;
+                                        break;
+                                    default:
+                                        $key = $brand;
+                                        break;
+                                }
+                                switch ($groupOption2) {
                                     case 'person':
                                         $key2 = $pic;
                                         break;
@@ -487,22 +486,42 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                         $key2 = $buyer;
                                         break;
                                     default:
-                                    $key2 = null;
+                                        $key2 = null;
                                         break;
                                 }
-                                  
-                          
-                                if ($groupOption3 === $createdate) {
-                                    $combinedKey = $key . '_' . $key2;
-                      
-                                    if (!isset($groupedRows[$combinedKey])) {
-                                        $groupedRows[$combinedKey] = [
-                                            'ids' => [$row['id']],
-                                            'totalTopupAmount' => $row['price']
-                                        ];
-                                    } else {
-                                        $groupedRows[$combinedKey]['ids'][] = $row['id'];
-                                        $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                if (($groupOption === 'status' || $groupOption === 'shopee_acc' || $groupOption === 'currency' || $groupOption === 'package' || $groupOption === 'brand' || $groupOption === 'buyer' || $groupOption === 'person') && $groupOption4 === 'daily') {
+                                    if ($groupOption3 === $createdate) {
+                                    if ((isset($_GET['ids']))&& $groupOption2 == '') {
+                                        $ids = explode(',', $_GET['ids']);
+                                        
+                                        foreach ($ids as $id) {
+                                            $decodedId = urldecode($id);
+                                            if (isset($acc['name'], $row['id']) && $row['id'] == $decodedId) {
+                                                $combinedKey = $key . '_' . $key2;
+                                
+                                                if (!isset($groupedRows[$combinedKey])) {
+                                                    $groupedRows[$combinedKey] = [
+                                                        'ids' => [$decodedId],
+                                                        'totalTopupAmount' => $row['price']
+                                                    ];
+                                                } else {
+                                                    $groupedRows[$combinedKey]['ids'][] = $decodedId;
+                                                    $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        $combinedKey = $key . '_' . $key2;
+                                
+                                        if (!isset($groupedRows[$combinedKey])) {
+                                            $groupedRows[$combinedKey] = [
+                                                'ids' => [$row['id']],
+                                                'totalTopupAmount' => $row['price']
+                                            ];
+                                        } else {
+                                            $groupedRows[$combinedKey]['ids'][] = $row['id'];
+                                            $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                        }
                                     }
                                 }
                               }
@@ -523,69 +542,38 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                   $createdTimestamp = strtotime($createdate);
                               
                                   if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
-                                    switch ($groupOption) {
-                                        case 'person':
-                                            $key = $pic;
-                                            break;
-                                        case 'brand':
-                                            $key = $brand;
-                                            break;
-                                        case 'status':
-                                            $key = $status;
-                                            break;
-                                        case 'package':
-                                            $key = $pkg;
-                                            break;
-                                        case 'shopee_acc':
-                                            $key = $shopee;
-                                            break;
-                                        case 'currency':
-                                            $key = $curr;
-                                            break;
-                                        case 'buyer':
-                                            $key = $buyer;
-                                            break;
-                                        default:
-                                            $key = $brand;
-                                            break;
+                                   
+                                    if ((isset($_GET['ids']))&& $groupOption2 == '') {
+                                        $ids = explode(',', $_GET['ids']);
+                                        
+                                    foreach ($ids as $id) {
+                                            $decodedId = urldecode($id);
+                                    if (isset($acc['name'], $row['id']) && $row['id'] == $decodedId) {
+                                        $combinedKey = $key . '_' . $key2;
+                          
+                                        if (!isset($groupedRows[$combinedKey])) {
+                                            $groupedRows[$combinedKey] = [
+                                                'ids' => [$decodedId],
+                                                'totalTopupAmount' => $row['price']
+                                            ];
+                                        } else {
+                                            $groupedRows[$combinedKey]['ids'][] = $decodedId;
+                                            $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                        }
                                     }
-                                    switch ($groupOption2) {
-                                        case 'person':
-                                            $key2 = $pic;
-                                            break;
-                                        case 'brand':
-                                            $key2 = $brand;
-                                            break;
-                                        case 'status':
-                                            $key2 = $status;
-                                            break;
-                                        case 'package':
-                                            $key2 = $pkg;
-                                            break;
-                                        case 'shopee_acc':
-                                            $key2 = $shopee;
-                                            break;
-                                        case 'currency':
-                                            $key2 = $curr;
-                                            break;
-                                        case 'buyer':
-                                            $key2 = $buyer;
-                                            break;
-                                        default:
-                                            $key2 = $brand;
-                                            break;
                                     }
-                              
-                                    $combinedKey = $key . '_' . $key2;
-                      
-                                    if (!isset($groupedRows[$combinedKey])) {
-                                        $groupedRows[$combinedKey] = [
-                                            'ids' => [$row['id']],
-                                            'totalTopupAmount' => $row['price']
-                                        ];
-                                    } else {
-                                        $groupedRows[$combinedKey]['ids'][] = $row['id'];
-                                        $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                    }else{
+                                        $combinedKey = $key . '_' . $key2;
+                                
+                                        if (!isset($groupedRows[$combinedKey])) {
+                                            $groupedRows[$combinedKey] = [
+                                                'ids' => [$row['id']],
+                                                'totalTopupAmount' => $row['price']
+                                            ];
+                                        } else {
+                                            $groupedRows[$combinedKey]['ids'][] = $row['id'];
+                                            $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                        }
                                     }
                                   }
                               }
@@ -593,64 +581,65 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                           }
                           foreach ($groupedRows as $combinedKey => $groupedRow) {
                             list($key, $key2) = explode('_', $combinedKey);
-                              if (isset($key)) {
-                                  if($groupOption4 == 'daily') {
-                                     
-                                      $nextDay = date('Y-m-d', strtotime($createdate . ' +1 day'));
-                                      if (!isset($groupedRow['displayed'])) {
-                                          $groupedRow['displayed'] = true;
-                                          $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $nextDay. "</b> from <b><i>$tblName Table</i></b>.";
-                                          $idss = implode(', ', $groupedRow['ids']);
-                                          $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
-                                      } else {
-                                          $viewActMsg = '';
-                                          $sql = '';
-                                      }
-                                  }else{
-                                      if (!isset($groupedRow['displayed'])) {
-                                          $groupedRow['displayed'] = true;
-                                          
-                                          $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
-                                          
-                                          $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
-                                          $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
-                                      
-                                      } else {
-                                          $viewActMsg = '';
-                                          $sql = '';
-                                      }
-                                  }
-                                  $log = [
-                                      'log_act' => 'search',
-                                      'cdate'   => $cdate,
-                                      'ctime'   => $ctime,
-                                      'uid'     => USER_ID,
-                                      'cby'     => USER_ID,
-                                      'query_rec'    => $sql,
-                                      'query_table'  => $tblName,
-                                      'act_msg' => $viewActMsg,
-                                      'page'    => $pageTitle,
-                                      'connect' => $connect,
-                                  ];
-                                  audit_log($log);
-                              $ids = implode(',', $groupedRow['ids']);
-                              $url = "shopee_order_req_income_table_detail.php?ids=" . urlencode($ids);
-                              
-                              echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
-                                echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
-                                echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
-                                echo '<th scope="row">' . $counters++ . '</th>';
-                                echo '<td scope="row">' . $key . '</td>';
-                                
-                                if($key2 != $key && $key2 != null){
-                                    echo '<td scope="row">' . $key2 . '</td>';
-                                }else if ($groupOption2 != null && $key2 == null) {
-                                    echo '<td scope="row"></td>';
+                            if (isset($key)) {
+                                if($groupOption4 == 'daily') {
+                                    $nextDay = date('Y-m-d', strtotime($createdate . ' +1 day'));
+                                    if (!isset($groupedRow['displayed'])) {
+                                        $groupedRow['displayed'] = true;
+                                        $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $nextDay. "</b> from <b><i>$tblName Table</i></b>.";
+                                        $idss = implode(', ', $groupedRow['ids']);
+                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                    } else {
+                                        $viewActMsg = '';
+                                        $sql = '';
+                                    }
+                                }else{
+                                    if (!isset($groupedRow['displayed'])) {
+                                        $groupedRow['displayed'] = true;
+                                        
+                                        $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
+                                        
+                                        $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
+                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                    
+                                    } else {
+                                        $viewActMsg = '';
+                                        $sql = '';
+                                    }
                                 }
-                             
-                                echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
-                                echo '</tr>';
-                            }  
+                                $log = [
+                                    'log_act' => 'search',
+                                    'cdate'   => $cdate,
+                                    'ctime'   => $ctime,
+                                    'uid'     => USER_ID,
+                                    'cby'     => USER_ID,
+                                    'query_rec'    => $sql,
+                                    'query_table'  => $tblName,
+                                    'act_msg' => $viewActMsg,
+                                    'page'    => $pageTitle,
+                                    'connect' => $connect,
+                                ];
+                                audit_log($log);
+                               
+                            $ids = implode(',', $groupedRow['ids']);
+                            
+                            $url = "shopee_order_req_income_table_detail.php?ids=" . urlencode($ids);
+                            
+                            echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+                            echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
+                            echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
+                            echo '<th scope="row">' . $counters++ . '</th>';
+                            echo '<td scope="row">' . $key . '</td>';
+                            
+                            if($key2 != $key && $key2 != null){
+                                echo '<td scope="row">' . $key2 . '</td>';
+                            }else if ($groupOption2 != null && $key2 == null) {
+                                echo '<td scope="row"></td>';
+                            }
+                         
+                            echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
+                            echo '</tr>';
+                        }  
                             ?>
 
                            
@@ -729,7 +718,63 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
         }
     });
 });
-    <?php include "../js/shopee_order_req_table.js" ?>
+
+$(document).ready(function ($) {
+    $(document).on("change", ".exportAll", function (event) { //checkbox handling
+        event.preventDefault();
+
+        var isChecked = $(this).prop("checked");
+        $(".export").prop("checked", isChecked);
+        $(".exportAll").prop("checked", isChecked);
+
+        updateCheckboxesOnOtherPages(isChecked);
+    });
+
+    $('a[name="exportBtn"]').on("click", function () {
+        var checkboxValues = [];
+
+        // Loop through all pages to collect checked checkboxes
+        $('#shopee_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+            var checkbox = $(this).find('.export:checked');
+            if (checkbox.length > 0) {
+                checkbox.each(function () {
+                    checkboxValues.push($(this).val());
+                });
+            }
+        });
+
+        if (checkboxValues.length > 0) {
+            console.log('Checked row IDs:', checkboxValues);
+            // Send checkboxValues to the server using AJAX
+            setCookie('rowID', checkboxValues.join(','), 1);
+
+            //uncheck checkboxes
+            var checkboxes = document.querySelectorAll('.export');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            var selectAllCheckbox = document.querySelector('.exportAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+
+            window.location.href = "shopee_order_req_income_table.php";
+        } else {
+            console.log('No checkboxes are checked.');
+        }
+    });
+
+    function updateCheckboxesOnOtherPages(isChecked) {
+        // Get all cells in the DataTable
+        var cells = $('#shopee_order_req_table').DataTable().cells().nodes();
+
+        // Check/uncheck all checkboxes in the DataTable
+        $(cells).find('.export').prop('checked', isChecked);
+    }
+});
+
+    <?php include "../js/order_req.js" ?>
     /**
   oufei 20231014
   common.fun.js

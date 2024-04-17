@@ -1,19 +1,15 @@
 <?php
 ob_start();
-$pageTitle = "Facebook Order Request";
-$isFinance = 1;
+$pageTitle = 'Lazada Order Request';
+include 'menuHeader.php';
+include 'checkCurrentPagePin.php';
 
-include_once '../menuHeader.php';
-include_once '../checkCurrentPagePin.php';
-
-
-require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
-$fileName = date('Y-m-d H:i:s') . "_list.xlsx";
+require_once 'header/PhpXlsxGenerator/PhpXlsxGenerator.php';
+$fileName = date('Y-m-d H:i:s') . '_list.xlsx';
 $img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
 
-
-$tempDir = '../' . img_server . "temp/";
-$tempAttachDir = $tempDir . "attachment/";
+$tempDir = '../' . img_server . 'temp/';
+$tempAttachDir = $tempDir . 'attachment/';
 if (!file_exists($tempDir)) {
     mkdir($tempDir, 0777, true);
 }
@@ -28,10 +24,43 @@ if (!empty($checkboxValues)) {
     setcookie('rowID', '', time() - 3600, '/');
     // Defining column names
     $excelData = array(
-        array('S/N', 'NAME','FACEBOOK LINK','CONTACT','SALES PERSON IN CHARGE', 'COUNTRY','BRAND','SERIES','PACKAGE','BARCODE SLOT','FACEBOOK PAGE','CHANNEL','PRICE','PAYMENT METHOD','SHIPPING RECEIVER NAME','SHIPPING RECEIVER ADDRESS','SHIPPING RECEIVER CONTACT','REMARK','CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME','ORDER STATUS')
-    );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . FB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, sales_pic ASC, brand ASC, series ASC, package ASC, price ASC");
-   
+        array(
+            'S/N',
+            'LAZADA ACCOUNT',
+            'CURRENCY UNIT',
+            'LAZADA COUNTRY',
+            'CUSTOMER ID',
+            'CUSTOMER NAME',
+            'CUSTOMER EMAIL',
+            'CUSTOMER PHONE',
+            'COUNTRY',
+            'ORDER NUMBER',
+            'SALES PERSON IN CHARGE',
+            'SHIPPING RECEIVER NAME',
+            'SHIPPING RECEIVER ADDRESS',
+            'SHIPPING RECEIVER CONTACT',
+            'BRAND',
+            'SERIES',
+            'PKG',
+            'BARCODE SLOT',
+            'ITEM PRICE CREDIT',
+            'COMMISION',
+            'OTHER DISCOUNT',
+            'PAYMENT FEE',
+            'FINAL INCOME',
+            'PAYMENT METH',
+            'REMARK',
+            'CREATE BY',
+            'CREATE DATE',
+            'CREATE TIME',
+            'UPDATE BY',
+            'UPDATE DATE',
+            'UPDATE TIME',
+            'ORDER_STATUS'
+        )
+    );  // Get the data from the database using the WHERE clause
+    $query2 = $finance_connect->query('SELECT * FROM ' . LAZADA_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, sales_pic ASC, brand ASC, series ASC, pkg ASC, final_income ASC");
+
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
         while ($row2 = $query2->fetch_assoc()) {
@@ -52,33 +81,39 @@ if (!empty($checkboxValues)) {
                 }
             }
 
-
             // Define the column names in the same order as in your database query
             $columnNames = array(
-                'name',
-                'fb_link',
-                'contact',
-                'sales_pic',
+                'lazada_acc',
+                'curr_unit',
+                'lzd_country',
+                'cust_id',
+                'cust_name',
+                'cust_email',
+                'cust_phone',
                 'country',
+                'oder_number',
+                'sales_pic',
+                'ship_rec_name',
+                'ship_rec_address',
+                'ship_rec_contact',
                 'brand',
                 'series',
-                'package',
+                'pkg',
                 'barcode_slot',
-                'fb_page',
-                'channel',
-                'price',
-                'pay_method',
-                'ship_rec_name',
-                'ship_rec_add',
-                'ship_rec_contact',
+                'item_price_credit',
+                'commision',
+                'other_discount',
+                'pay_fee',
+                'final_income',
+                'pay_meth',
                 'remark',
-                'attachment',
                 'create_by',
                 'create_date',
                 'create_time',
                 'update_by',
                 'update_date',
                 'update_time',
+                'status',
                 'order_status'
             );
 
@@ -109,12 +144,12 @@ if (!empty($checkboxValues)) {
 
         if ($tempExcelFilePath) {
             $xlsx->saveAs($tempExcelFilePath);
-            $zipFile = date('Ymd_His') . ".zip";
+            $zipFile = date('Ymd_His') . '.zip';
             $zip = new ZipArchive();
 
             $zip = new ZipArchive();
             if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-                die("Failed to create zip file");
+                die('Failed to create zip file');
             }
 
             // Add the Excel file to the root of the zip archive
@@ -127,17 +162,14 @@ if (!empty($checkboxValues)) {
             $zip->close();
 
             header('Content-Type: application/zip');
-            header('Content-Disposition: attachment; filename="' .$zipFile .'"');
+            header('Content-Disposition: attachment; filename="' . $zipFile . '"');
             header('Content-Length: ' . filesize($zipFile));
             header('Pragma: no-cache');
             header('Expires: 0');
             ob_clean();
             readfile($zipFile);
             deleteDir($tempDir);
-            
-
         }
-
     } else {
         echo 'Failed to create temporary Excel file';
     }
@@ -164,7 +196,8 @@ function addDirToZip($dir, $zip, $basePath)
     }
 }
 
-function deleteDir($dirPath) {
+function deleteDir($dirPath)
+{
     if (!is_dir($dirPath)) {
         return;
     }
@@ -185,11 +218,12 @@ $_SESSION['viewChk'] = '';
 $_SESSION['searchChk'] = '';
 unset($_SESSION['resetChk']);
 $_SESSION['delChk'] = '';
-$num = 1;   // numbering
-$tblName = FB_ORDER_REQ;
-$redirect_page = $SITEURL . '/finance/fb_order_req.php';
-$deleteRedirectPage = $SITEURL . '/finance/fb_order_req_income_table.php';
-$result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
+$num = 1;  // numbering
+$tblName = LAZADA_ORDER_REQ;
+
+$redirect_page = $SITEURL . '/lazada_order_req.php';
+$deleteRedirectPage = $SITEURL . '/lazada_order_req_table.php';
+$result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 ?>
 
 <!DOCTYPE html>
@@ -201,49 +235,58 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('fb_order_req_table');
+        createSortingTable('lazada_order_req');
     });
 </script>
 
-
+<style>
+    .btn {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 3px;
+    }
+    .btn-container {
+        white-space: nowrap;
+    }
+</style>
 
 <body>
 
-    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+<div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-        <div class="col-12 col-md-11">
+<div class="col-12 col-md-11">
 
-            <div class="d-flex flex-column mb-3">
-                <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
-                            class="fa-solid fa-chevron-right fa-xs"></i>
-                        <?php echo $pageTitle ?>
-                    </p>
-                </div>
+    <div class="d-flex flex-column mb-3">
+        <div class="row">
+            <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
+                    class="fa-solid fa-chevron-right fa-xs"></i>
+                <?php echo $pageTitle ?>
+            </p>
+        </div>
 
-                <div class="row">
-                    <div class="col-12 d-flex justify-content-between flex-wrap">
-                        <h2>
-                            <?php echo $pageTitle ?>
-                        </h2>
-                        <?php if ($result) { ?>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)): ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
-                                        href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                        Request </a>
-                                <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
-                            </div>
-                        <?php } ?>
+        <div class="row">
+            <div class="col-12 d-flex justify-content-between flex-wrap">
+                <h2>
+                    <?php echo $pageTitle ?>
+                </h2>
+                <?php if ($result) { ?>
+                    <div class="mt-auto mb-auto">
+                        <?php if (isActionAllowed('Add', $pinAccess)): ?>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
+                                href="<?= $redirect_page . '?act=' . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                Record </a>
+                        <?php endif; ?>
+                        <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
                     </div>
-                </div>
+                <?php } ?>
             </div>
-            <?php
-            if (!$result) {
-                echo '<div class="text-center"><h4>No Result!</h4></div>';
-            } else {
-                ?>
+        </div>
+    </div>
+    <?php
+        if (!$result) {
+            echo '<div class="text-center"><h4>No Result!</h4></div>';
+        } else {
+            ?>
                 <div class="row mb-3">
                     <div class="col-md-3 dateFilters">
                         <label for="timeInterval" class="form-label">Filter by:</label>
@@ -287,97 +330,92 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <option value="brand" selected>Brand</option>
                             <option value="series" >Series</option>
                             <option value="package" >Package</option>
-                            <option value="person" >Sales-Person-In-Charge</option>
-                            <option value="facebook" >Facebook Page</option>
-                            <option value="channel" >Channel</option>
+                            <option value="person" >Sales Person In Charge</option>
                             <option value="method" >Payment Method</option>
+                            <option value="currency" >Currency</option>
+                            <option value="country" >Country</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=finance/fb_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=/lazada_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
-                <table class="table table-striped" id="fb_order_req_table">
-                    <thead>
-                        <tr>
-                            
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th class="text-center">
-                                <input type="checkbox" class="exportAll">
-                            </th>
-                            <th scope="col">S/N</th>
-                            <th id="group_header" scope="col">
-                            <?php 
-                                    if (isset($_GET['group'])) {
-                                        if ($_GET['group'] == 'brand') {
-                                            echo "Brand";
-                                        }else if ($_GET['group'] == 'series') {
-                                            echo "Series";
-                                        }else if ($_GET['group'] == 'package') {
-                                            echo "Package";
-                                        }else if ($_GET['group'] == 'person') {
-                                            echo "Sales-Person-In-Charge";
-                                        }else if ($_GET['group'] == 'facebook') {
-                                            echo "Facebook Page";
-                                        }else if ($_GET['group'] == 'channel') {
-                                            echo "Channel";
-                                        }else if ($_GET['group'] == 'method') {
-                                            echo "Payment Method";
-                                        }
-                                    }
-                                ?>
-                            </th>
-                            <th scope="col">Total Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <?php 
-                         $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
-                         $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
-                         $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
-                         $groupedRows = [];
-                         $counters = 1;
-                         $groupedRows = [];
-                        while ($row = $result->fetch_assoc()) {
-                            $viewActMsg = '';
-                            $sql = '';
-                            $q1 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
-                            $pics = $q1->fetch_assoc();
-                            $pic = isset($pics['name']) ? $pics['name'] : '';
+        <table class="table table-striped" id="lazada_order_req">
+            <thead>
+                <tr>
+                    <th class="hideColumn" scope="col">ID</th>
+                    <th class="text-center">
+                        <input type="checkbox" class="exportAll">
+                    </th>
+                    <th scope="col">S/N</th>
+                    <th id="group_header" scope="col">
+                        <?php
+                        if (isset($_GET['group'])) {
+                            if ($_GET['group'] == 'brand') {
+                                echo "Brand";
+                            }else if ($_GET['group'] == 'series') {
+                                echo "Series";
+                            }else if ($_GET['group'] == 'package') {
+                                echo "Package";
+                            }else if ($_GET['group'] == 'person') {
+                                echo "Sales Person In Charge";
+                            }else if ($_GET['group'] == 'currency') {
+                                echo "Currency";
+                            }else if ($_GET['group'] == 'country') {
+                                echo "Country";
+                            }else if ($_GET['group'] == 'method') {
+                                echo "Payment Method";
+                            }
+                        }
+                        ?>
+                    </th>
+                    <th scope="col">Total Income</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                 $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
+                 $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
+                 $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
+                 $groupedRows = [];
+                 $counters = 1;
+                 $groupedRows = [];
+              
+                while ($row = $result->fetch_assoc()) {
+                    $viewActMsg = '';
+                    $sql = '';
+                    $q1 = getData('name', "id='" . $row['lazada_acc'] . "'", '', LAZADA_ACC, $finance_connect);
+                    $lazada_acc = $q1->fetch_assoc();
+                    $acc =  isset($lazada_acc['name']) ?$lazada_acc['name'] : '';
 
-                            $q2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                            $country = $q2->fetch_assoc();
+                    $q2 = getData('nicename', "id='" . $row['lzd_country'] . "'", '', COUNTRIES, $connect);
+                    $countrys = $q2->fetch_assoc();
+                    $country = isset($countrys['nicename']) ? $countrys['nicename'] : '';
 
-                            $q3 = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
-                            $brands = $q3->fetch_assoc();
-                            $brand = isset($brands['name']) ? $brands['name'] : '';
+                    $q3 = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
+                    $brands = $q3->fetch_assoc();
+                    $brand = isset($brands['name']) ? $brands['name'] : '';
 
-                            $q4 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
-                            $seriess = $q4->fetch_assoc();
-                            $series= isset($seriess['name']) ? $seriess['name'] : '';
+                    $q4 = getData('name', "id='" . $row['series'] . "'", '', BRD_SERIES, $connect);
+                    $seriess = $q4->fetch_assoc();
+                    $series= isset($seriess['name']) ? $seriess['name'] : '';
 
-                            $q5 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
-                            $packages = $q5->fetch_assoc();
-                            $package= isset($packages['name']) ? $packages['name'] : '';
-                            //fb page
-                            $q6 = getData('name', "id='" . $row['fb_page'] . "'", '', FB_PAGE_ACC, $finance_connect);
-                            $fb_pages = $q6->fetch_assoc();
-                            $fb_page = isset($fb_pages['name']) ? $fb_pages['name'] : '';
-                            //channel
-                            $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANEL_SC_MD, $finance_connect);
-                            $channels = $q7->fetch_assoc();
-                            $channel = isset($channels['name']) ? $channels['name'] : '';
+                    $q5 = getData('unit', "id='" . $row['curr_unit'] . "'", '', CUR_UNIT, $connect);
+                    $currency = $q5->fetch_assoc();
+                    $curr = isset($currency['unit']) ? $currency['unit'] : '';
 
-                            $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
-                            $pay_meths = $q8->fetch_assoc();
-                            $pay_meth = isset($pay_meths['name']) ? $pay_meths['name'] : '';
+                    $q7 = getData('name', "id='" . $row['pay_meth'] . "'", '', FIN_PAY_METH, $finance_connect);
+                    $pay_meths = $q7->fetch_assoc();
+                    $pay_meth = isset($pay_meths['name']) ? $pay_meths['name'] : '';
 
-                            $createdate = $row['create_date'];
+                    $q8 = getData('name', "id='" . $row['pkg'] . "'", '', PKG, $connect);
+                    $packages = $q8->fetch_assoc();
+                    $package= isset($packages['name']) ? $packages['name'] : '';
+                    $createdate = $row['create_date'];
                             if ($groupOption && $groupOption3) {
                                 switch ($groupOption) {
                                     case 'person':
-                                        $key = $pic;
+                                        $key =  $row['sales_pic'];
                                         break;
                                     case 'brand':
                                         $key = $brand;
@@ -388,11 +426,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     case 'package':
                                         $key = $package;
                                         break;
-                                    case 'facebook':
-                                        $key = $fb_page;
+                                    case 'country':
+                                        $key = $country;
                                         break;
-                                    case 'channel':
-                                        $key = $channel;
+                                    case 'currency':
+                                        $key = $curr;
                                         break;
                                     case 'method':
                                         $key = $pay_meth;
@@ -401,22 +439,22 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         $key = $brand;
                                         break;
                                 }
-                                  if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 === 'daily') {
+                                  if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'country' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4 === 'daily') {
                                   
                             
                                     if ($groupOption3 === $createdate) {
                                     if (!isset($groupedRows[$key])) {
                                         $groupedRows[$key] = [
                                             'ids' => [$row['id']],
-                                            'totalTopupAmount' => $row['price']
+                                            'totalTopupAmount' => $row['final_income']
                                         ];
                                     } else {
                                         $groupedRows[$key]['ids'][] = $row['id'];
-                                        $groupedRows[$key]['totalTopupAmount'] += $row['price'];
+                                        $groupedRows[$key]['totalTopupAmount'] += $row['final_income'];
                                     }
                                 }
                                 }
-                                else if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 !== 'daily') {
+                                else if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' ||$groupOption === 'country' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4 !== 'daily') {
                                     $dateRange = explode('to', $groupOption3);
                                     if($groupOption4 == 'weekly'){
                                         $startDate = strtotime(trim($dateRange[0]));
@@ -437,11 +475,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         if (!isset($groupedRows[$key])) {
                                             $groupedRows[$key] = [
                                                 'ids' => [$row['id']],
-                                                'totalTopupAmount' => $row['price']
+                                                'totalTopupAmount' => $row['final_income']
                                             ];
                                         } else {
                                             $groupedRows[$key]['ids'][] = $row['id'];
-                                            $groupedRows[$key]['totalTopupAmount'] += $row['price'];
+                                            $groupedRows[$key]['totalTopupAmount'] += $row['final_income'];
                                         }
                                     }
                                 }
@@ -488,7 +526,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     ];
                                     audit_log($log);
                                 $ids = implode(',', $groupedRow['ids']);
-                                $url = "fb_order_req_income_table_summary.php?ids=" . urlencode($ids);
+                                $url = "lazada_order_req_income_table_summary.php?ids=" . urlencode($ids);
                                 if (!empty($groupOption)) {
                                     $url .= "&group=" . urlencode($groupOption);
                                 }
@@ -508,52 +546,50 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                 echo '</tr>';
                             }  
                             ?>
+              
+                <?php } ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                    <th class="hideColumn" scope="col">ID</th>
+                    <th class="text-center">
+                        <input type="checkbox" class="exportAll">
+                    </th>
+                    <th scope="col">S/N</th>
+                    <th id="group_header" scope="col">
+                        <?php
+                        if (isset($_GET['group'])) {
+                            if ($_GET['group'] == 'brand') {
+                                echo "Brand";
+                            }else if ($_GET['group'] == 'series') {
+                                echo "Series";
+                            }else if ($_GET['group'] == 'package') {
+                                echo "Package";
+                            }else if ($_GET['group'] == 'person') {
+                                echo "Sales Person In Charge";
+                            }else if ($_GET['group'] == 'currency') {
+                                echo "Currency";
+                            }else if ($_GET['group'] == 'country') {
+                                echo "Country";
+                            }else if ($_GET['group'] == 'method') {
+                                echo "Payment Method";
+                            }
+                        }
+                        ?>
+                    </th>
+                    <th scope="col">Total Income</th>
+                </tr>
+            </tfoot>
+        </table>
+    <?php } ?>
+</div>
 
-                           
-                        <?php } ?>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                            
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th class="text-center">
-                                <input type="checkbox" class="exportAll">
-                            </th>
-                            <th scope="col">S/N</th>
-                            <th id="group_header" scope="col">
-                            <?php 
-                                    if (isset($_GET['group'])) {
-                                        if ($_GET['group'] == 'brand') {
-                                            echo "Brand";
-                                        }else if ($_GET['group'] == 'series') {
-                                            echo "Series";
-                                        }else if ($_GET['group'] == 'package') {
-                                            echo "Package";
-                                        }else if ($_GET['group'] == 'person') {
-                                            echo "Sales-Person-In-Charge";
-                                        }else if ($_GET['group'] == 'facebook') {
-                                            echo "Facebook Page";
-                                        }else if ($_GET['group'] == 'channel') {
-                                            echo "Channel";
-                                        }else if ($_GET['group'] == 'method') {
-                                            echo "Payment Method";
-                                        }
-                                    }
-                                ?>
-                            </th>
-                            <th scope="col">Total Price</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            <?php } ?>
-        </div>
 
-    </div>
+</div>
 
 </body>
 <script>
-
-$(document).ready(function ($) {
+    $(document).ready(function ($) {
     $(document).on("change", ".exportAll", function (event) { //checkbox handling
         event.preventDefault();
 
@@ -568,7 +604,7 @@ $(document).ready(function ($) {
         var checkboxValues = [];
 
         // Loop through all pages to collect checked checkboxes
-        $('#fb_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+        $('#website_order_request_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
             var checkbox = $(this).find('.export:checked');
             if (checkbox.length > 0) {
                 checkbox.each(function () {
@@ -593,7 +629,7 @@ $(document).ready(function ($) {
                 selectAllCheckbox.checked = false;
             }
 
-            window.location.href = "fb_order_req_income_table.php";
+            window.location.href = "website_order_request_income_table.php";
         } else {
             console.log('No checkboxes are checked.');
         }
@@ -601,29 +637,30 @@ $(document).ready(function ($) {
 
     function updateCheckboxesOnOtherPages(isChecked) {
         // Get all cells in the DataTable
-        var cells = $('#fb_order_req_table').DataTable().cells().nodes();
+        var cells = $('#website_order_request_table').DataTable().cells().nodes();
 
         // Check/uncheck all checkboxes in the DataTable
         $(cells).find('.export').prop('checked', isChecked);
     }
 });
 
-    /**
-  oufei 20231014
-  common.fun.js
-  function(void)
-  to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
-*/
-<?php include "../js/order_req.js" ?>
-    dropdownMenuDispFix();
+<?php include "js/order_req.js" ?>
 
-    /**
-      oufei 20231014
-      common.fun.js
-      function(id)
-      to resize table with bootstrap 5 classes
-    */
-    datatableAlignment('fb_order_req_table');
+/**
+oufei 20231014
+common.fun.js
+function(void)
+to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
+*/
+dropdownMenuDispFix();
+
+/**
+oufei 20231014
+common.fun.js
+function(id)
+to resize table with bootstrap 5 classes
+*/
+datatableAlignment('lazada_order_req');
 </script>
 
 </html>

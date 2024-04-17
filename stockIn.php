@@ -129,6 +129,71 @@ if (post('usrBtn')) {
                 }
             }
         }
+    }else{
+        if ($prod_info) {
+            $datafield = $newvalarr = array();
+            $brandId = $prod_info['brand'];
+            $productId = $prod_info['id'];
+            $productCategoryId = $prod_info['product_category'];
+            if (isset($prod_info['brand'])) {
+                array_push($newvalarr, $prod_info['brand']);
+                array_push($datafield, 'brand');
+            }
+            
+            if (isset($prod_info['id'])) {
+                array_push($newvalarr, $prod_info['id']);
+                array_push($datafield, 'product_id');
+            }
+            
+            if (isset($prod_info['product_category'])) {
+                array_push($newvalarr, $prod_info['product_category']);
+                array_push($datafield, 'product_category_id');
+            }
+          
+                $stockInDate = date("Y-m-d");
+                $barcode = input('barcode');
+                $productBatchCode = null;
+                $productStatusId = 4;
+                $warehouseId = $whse_id;
+                $stockInPersonInCharges = $usrBtn;
+                $remark = "Stock In";
+                $createDate = date("Y-m-d");
+                $createTime = date("H:i:s");
+                $createBy = $usrBtn;
+
+                $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
+
+                $result = mysqli_query($connect, $insertQuery);
+
+                if ($result) {
+                    $logMessage = "$usr_name added a data <b>Stock In - [ Barcode: $barcode ], [ Product ID: $productId ], [ Warehouse ID: $warehouseId ], [ User ID: $createBy ] </b> under <i><b>$tblname</b></i>." ;
+                  
+
+                        $log = [
+                            'log_act'      => 'add',
+                            'act_msg'      => $logMessage,
+                            'cdate'        => $cdate,
+                            'ctime'        => $ctime,
+                            'uid'          => USER_ID,
+                            'cby'          => USER_ID,
+                            'query_rec'    => $insertQuery,
+                            'query_table'  => $tblname,
+                            'page'         => $pageTitle,
+                            'connect'      => $connect,
+                        ];
+                        $log['newval'] = implodeWithComma($newvalarr);
+                        audit_log($log);
+                    
+                   
+                    
+                    
+                    echo "<script>showNotification('Stock In successful.');</script>";
+                    $_SESSION['tempValConfirmBox'] = true;
+                } else {
+                    echo "<script>showNotification('Stock In failed. Please try again.');</script>";
+                }
+            
+        }
     }
 }
 ?>
