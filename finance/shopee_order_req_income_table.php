@@ -56,7 +56,7 @@ if (!empty($checkboxValues)) {
     'UPDATE TIME',
     'ORDER STATUS')
     );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . FB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, sales_pic ASC, brand ASC, series ASC, package ASC, price ASC");
+    $query2 = $finance_connect->query("SELECT * FROM " . SHOPEE_SG_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY date ASC, package ASC, brand ASC, package ASC, price ASC");
    
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
@@ -313,7 +313,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                     <div class="col-md-3">
                     <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
-                         <option value="brand"selected>Brand</option>
+                         <option value="brand" selected>Brand</option>
                             <option value="status" >Order Status</option>
                             <option value="shopee_acc">Shopee Account</option>
                             <option value="currency">Currency</option>
@@ -366,16 +366,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                          $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
                          $groupedRows = [];
                          $counters = 1;
-         
-                         function generateTableRow($id, &$counters, $key, $topupAmt) {
-                             echo '<tr onclick="window.location=\'shopee_order_req_income_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
-                             echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $id . '"></th>';
-                             echo '<th class="hideColumn" scope="row">' . $id . '</th>';
-                             echo '<th scope="row">' . $counters++ . '</th>';
-                             echo '<td scope="row">' . $key . '</td>';
-                             echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
-                             echo '</tr>';
-                         }
                          $groupedRows = [];
                         while ($row = $result->fetch_assoc()) {
                             $viewActMsg = '';
@@ -510,36 +500,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                       }
                                   }
                               }
-                          }else if ($groupOption) {
-                            switch ($groupOption) {
-                                case 'person':
-                                    $key = $pic;
-                                    break;
-                                case 'brand':
-                                    $key = $brand;
-                                    break;
-                                case 'status':
-                                    $key = $status;
-                                    break;
-                                case 'package':
-                                    $key = $pkg;
-                                    break;
-                                case 'shopee_acc':
-                                    $key = $shopee;
-                                    break;
-                                case 'currency':
-                                    $key = $curr;
-                                    break;
-                                case 'buyer':
-                                    $key = $buyer;
-                                    break;
-                                default:
-                                    $key = $brand;
-                                    break;
-                            }
-                      
-                              generateTableRow($row['id'], $counters, $key, $row['price']);
-                          }                           
+                          }
                           }
                           foreach ($groupedRows as $key => $groupedRow) {
                               if (isset($key)) {
@@ -647,7 +608,62 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 
 </body>
 <script>
-    <?php include "../js/shopee_order_req_table.js" ?>
+$(document).ready(function ($) {
+    $(document).on("change", ".exportAll", function (event) { //checkbox handling
+        event.preventDefault();
+
+        var isChecked = $(this).prop("checked");
+        $(".export").prop("checked", isChecked);
+        $(".exportAll").prop("checked", isChecked);
+
+        updateCheckboxesOnOtherPages(isChecked);
+    });
+
+    $('a[name="exportBtn"]').on("click", function () {
+        var checkboxValues = [];
+
+        // Loop through all pages to collect checked checkboxes
+        $('#shopee_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+            var checkbox = $(this).find('.export:checked');
+            if (checkbox.length > 0) {
+                checkbox.each(function () {
+                    checkboxValues.push($(this).val());
+                });
+            }
+        });
+
+        if (checkboxValues.length > 0) {
+            console.log('Checked row IDs:', checkboxValues);
+            // Send checkboxValues to the server using AJAX
+            setCookie('rowID', checkboxValues.join(','), 1);
+
+            //uncheck checkboxes
+            var checkboxes = document.querySelectorAll('.export');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            var selectAllCheckbox = document.querySelector('.exportAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+
+            window.location.href = "shopee_order_req_income_table.php";
+        } else {
+            console.log('No checkboxes are checked.');
+        }
+    });
+
+    function updateCheckboxesOnOtherPages(isChecked) {
+        // Get all cells in the DataTable
+        var cells = $('#shopee_order_req_table').DataTable().cells().nodes();
+
+        // Check/uncheck all checkboxes in the DataTable
+        $(cells).find('.export').prop('checked', isChecked);
+    }
+});
+
+    <?php include "../js/order_req.js" ?>
     /**
   oufei 20231014
   common.fun.js

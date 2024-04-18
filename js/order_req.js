@@ -37,60 +37,6 @@ function auditExport(ids, tblName) {
     xhr.send('ids=' + ids.join(',') + '&tblName=' + tblName);
 }
 
-$(document).ready(function ($) {
-    $(document).on("change", ".exportAll", function (event) { //checkbox handling
-        event.preventDefault();
-
-        var isChecked = $(this).prop("checked");
-        $(".export").prop("checked", isChecked);
-        $(".exportAll").prop("checked", isChecked);
-
-        updateCheckboxesOnOtherPages(isChecked);
-    });
-
-    $('a[name="exportBtn"]').on("click", function () {
-        var checkboxValues = [];
-
-        // Loop through all pages to collect checked checkboxes
-        $('#fb_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
-            var checkbox = $(this).find('.export:checked');
-            if (checkbox.length > 0) {
-                checkbox.each(function () {
-                    checkboxValues.push($(this).val());
-                });
-            }
-        });
-
-        if (checkboxValues.length > 0) {
-            console.log('Checked row IDs:', checkboxValues);
-            // Send checkboxValues to the server using AJAX
-            setCookie('rowID', checkboxValues.join(','), 1);
-
-            //uncheck checkboxes
-            var checkboxes = document.querySelectorAll('.export');
-            checkboxes.forEach(function (checkbox) {
-                checkbox.checked = false;
-            });
-
-            var selectAllCheckbox = document.querySelector('.exportAll');
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = false;
-            }
-
-            window.location.href = "fb_order_req_income_table.php";
-        } else {
-            console.log('No checkboxes are checked.');
-        }
-    });
-
-    function updateCheckboxesOnOtherPages(isChecked) {
-        // Get all cells in the DataTable
-        var cells = $('#fb_order_req_table').DataTable().cells().nodes();
-
-        // Check/uncheck all checkboxes in the DataTable
-        $(cells).find('.export').prop('checked', isChecked);
-    }
-});
 
 
 $('#resetButton').click(function() {
@@ -133,7 +79,6 @@ $(document).ready(function() {
             if(document.getElementById("group").value == null){
                 document.getElementById("group").value == groupParam;
             }
-           console.log(groupParam);
         }else{
             document.getElementById("timeInterval").value = 'daily'; 
             document.getElementById("group").value = 'courier'; 

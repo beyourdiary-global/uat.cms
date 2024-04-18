@@ -307,7 +307,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=finance/fb_order_req_income_table_summary.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=finance/fb_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
                 <table class="table table-striped" id="fb_order_req_table">
@@ -379,6 +379,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                          $counters = 1;
                          $groupedRows = [];
                         while ($row = $result->fetch_assoc()) {
+                            
                             $viewActMsg = '';
                             $sql = '';
                             $q1 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
@@ -466,11 +467,31 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         $key2 = null;
                                         break;
                                 }    
-                                  if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 === 'daily') {
-                            
+                                if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 === 'daily') {
                                     if ($groupOption3 === $createdate) {
+                                    if ((isset($_GET['ids']))&& $groupOption2 == '') {
+                                        $ids = explode(',', $_GET['ids']);
+                                        foreach ($ids as $id) {
+                                            $decodedId = urldecode($id);
+                                            
+                                            if (isset($row['name'], $row['id']) && !empty($row['name']) && $row['id'] == $decodedId) {
+                                                $combinedKey = $key . '_' . $key2;
+                                
+                                                if (!isset($groupedRows[$combinedKey])) {
+                                                    $groupedRows[$combinedKey] = [
+                                                        'ids' => [$decodedId],
+                                                        'totalTopupAmount' => $row['price']
+                                                    ];
+                                                } else {
+                                                    $groupedRows[$combinedKey]['ids'][] = $decodedId;
+                                                    $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                                }
+                                            }
+                                        }
+                                    }else{
+                                        
                                         $combinedKey = $key . '_' . $key2;
-                          
+                                
                                         if (!isset($groupedRows[$combinedKey])) {
                                             $groupedRows[$combinedKey] = [
                                                 'ids' => [$row['id']],
@@ -481,7 +502,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                             $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
                                         }
                                     }
+                                    }
+                                                                          
+
                                 }
+                                
                                 else if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 !== 'daily') {
                                     $dateRange = explode('to', $groupOption3);
                                     if($groupOption4 == 'weekly'){
@@ -499,9 +524,28 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     $createdTimestamp = strtotime($createdate);
                                 
                                     if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
-                                        
+                                        if ((isset($_GET['ids']))&& $groupOption2 == '') {
+                                            $ids = explode(',', $_GET['ids']);
+                                         
+                                        foreach ($ids as $id) {
+                                                $decodedId = urldecode($id);
+                                        if (isset($row['name'], $row['id']) && !empty($row['name']) && $row['id'] == $decodedId) {
                                             $combinedKey = $key . '_' . $key2;
                               
+                                            if (!isset($groupedRows[$combinedKey])) {
+                                                $groupedRows[$combinedKey] = [
+                                                    'ids' => [$decodedId],
+                                                    'totalTopupAmount' => $row['price']
+                                                ];
+                                            } else {
+                                                $groupedRows[$combinedKey]['ids'][] = $decodedId;
+                                                $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
+                                            }
+                                        }
+                                        }
+                                        }else{
+                                            $combinedKey = $key . '_' . $key2;
+                                    
                                             if (!isset($groupedRows[$combinedKey])) {
                                                 $groupedRows[$combinedKey] = [
                                                     'ids' => [$row['id']],
@@ -511,10 +555,12 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                                 $groupedRows[$combinedKey]['ids'][] = $row['id'];
                                                 $groupedRows[$combinedKey]['totalTopupAmount'] += $row['price'];
                                             }
-                                    }
+                                        }
+                            }
                                 }
                             }                 
                             }
+                            
                             foreach ($groupedRows as $combinedKey => $groupedRow) {
                                 list($key, $key2) = explode('_', $combinedKey);
                                 if (isset($key)) {
@@ -556,6 +602,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         'connect' => $connect,
                                     ];
                                     audit_log($log);
+                                   
                                 $ids = implode(',', $groupedRow['ids']);
                                 $url = "fb_order_req_income_table_detail.php?ids=" . urlencode($ids);
                                 
@@ -577,7 +624,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             ?>
 
                            
-                        <?php } ?>
+                        <?php }?>
                     </tbody>
                     <tfoot>
                     <tr>
@@ -654,6 +701,60 @@ $(document).ready(function() {
     });
 });
 
+$(document).ready(function ($) {
+    $(document).on("change", ".exportAll", function (event) { //checkbox handling
+        event.preventDefault();
+
+        var isChecked = $(this).prop("checked");
+        $(".export").prop("checked", isChecked);
+        $(".exportAll").prop("checked", isChecked);
+
+        updateCheckboxesOnOtherPages(isChecked);
+    });
+
+    $('a[name="exportBtn"]').on("click", function () {
+        var checkboxValues = [];
+
+        // Loop through all pages to collect checked checkboxes
+        $('#fb_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+            var checkbox = $(this).find('.export:checked');
+            if (checkbox.length > 0) {
+                checkbox.each(function () {
+                    checkboxValues.push($(this).val());
+                });
+            }
+        });
+
+        if (checkboxValues.length > 0) {
+            console.log('Checked row IDs:', checkboxValues);
+            // Send checkboxValues to the server using AJAX
+            setCookie('rowID', checkboxValues.join(','), 1);
+
+            //uncheck checkboxes
+            var checkboxes = document.querySelectorAll('.export');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            var selectAllCheckbox = document.querySelector('.exportAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+
+            window.location.href = "fb_order_req_income_table.php";
+        } else {
+            console.log('No checkboxes are checked.');
+        }
+    });
+
+    function updateCheckboxesOnOtherPages(isChecked) {
+        // Get all cells in the DataTable
+        var cells = $('#fb_order_req_table').DataTable().cells().nodes();
+
+        // Check/uncheck all checkboxes in the DataTable
+        $(cells).find('.export').prop('checked', isChecked);
+    }
+});
     /**
   oufei 20231014
   common.fun.js

@@ -27,18 +27,7 @@ $('.submitBtn').on('click', () => {
     var date_chk = 0;
 
     
-    $('[id^="barcode_input_"]').each(function() {
-        var barcodeInputId = $(this).attr('id');
-        var barcodeInputValue = $(this).val();
-
-        if (barcodeInputValue === '' || barcodeInputValue === null || barcodeInputValue === undefined) {
-            expire_chk = 0;
-            $(this).after('<span class="error-message barcode_input_err">Barcode is required for this product!</span>');
-        } else {
-            $(".barcode_input_err").remove();
-            expire_chk = 1;
-        }
-    });
+   
 
     if ($('#expire_date').val() === '' || $('#expire_date').val() === null || $('#expire_date')
         .val() === undefined) {
@@ -49,7 +38,7 @@ $('.submitBtn').on('click', () => {
         $(".expire_date_err").remove();
         date_chk = 1;
     }
-    if (expire_chk == 1 && date_chk == 1)
+    if (date_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

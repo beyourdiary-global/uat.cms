@@ -1,12 +1,10 @@
 <?php
 ob_start();
-$pageTitle = "Facebook Order Request";
+$pageTitle = "Website Order Request";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
-
-
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 $img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
@@ -28,9 +26,39 @@ if (!empty($checkboxValues)) {
     setcookie('rowID', '', time() - 3600, '/');
     // Defining column names
     $excelData = array(
-        array('S/N', 'NAME','FACEBOOK LINK','CONTACT','SALES PERSON IN CHARGE', 'COUNTRY','BRAND','SERIES','PACKAGE','BARCODE SLOT','FACEBOOK PAGE','CHANNEL','PRICE','PAYMENT METHOD','SHIPPING RECEIVER NAME','SHIPPING RECEIVER ADDRESS','SHIPPING RECEIVER CONTACT','REMARK','CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME','ORDER STATUS')
+        array(
+            'S/N',
+            'ORDER ID',
+            'BRAND',
+            'SERIES',
+            'PKG',
+            'BARCODE SLOT',
+            'COUNTRY',
+            'CURRENCY',
+            'PRICE',
+            'SHIPPING',
+            'DISCOUNT',
+            'TOTAL',
+            'PAYMENT METHOD',
+            'PERSON IN CHARGE',
+            'CUSTOMER ID',
+            'CUSTOMER NAME',
+            'CUSTOMER EMAIL',
+            'CUSTOMER BIRTHDAY',
+            'SHIPPING_NAME',
+            'SHIPPING_ADDRESS',
+            'SHIPPING_CONTACT',
+            'REMARK',
+            'CREATE BY',
+            'CREATE DATE',
+            'CREATE TIME',
+            'UPDATE BY',
+            'UPDATE DATE',
+            'UPDATE TIME',
+            'ORDER STATUS'
+        )
     );    // Get the data from the database using the WHERE clause
-    $query2 = $finance_connect->query("SELECT * FROM " . FB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, sales_pic ASC, brand ASC, series ASC, package ASC, price ASC");
+    $query2 = $finance_connect->query("SELECT * FROM " . WEB_ORDER_REQ . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY create_date ASC, pic ASC, brand ASC, series ASC, pkg ASC, price ASC");
    
     $excelRowNum = 1;
     if ($query2->num_rows > 0) {
@@ -55,24 +83,27 @@ if (!empty($checkboxValues)) {
 
             // Define the column names in the same order as in your database query
             $columnNames = array(
-                'name',
-                'fb_link',
-                'contact',
-                'sales_pic',
-                'country',
+                'order_id',
                 'brand',
                 'series',
-                'package',
+                'pkg',
                 'barcode_slot',
-                'fb_page',
-                'channel',
+                'country',
+                'currency',
                 'price',
+                'shipping',
+                'discount',
+                'total',
                 'pay_method',
-                'ship_rec_name',
-                'ship_rec_add',
-                'ship_rec_contact',
+                'pic',
+                'cust_id',
+                'cust_name',
+                'cust_email',
+                'cust_birthday',
+                'shipping_name',
+                'shipping_address',
+                'shipping_contact',
                 'remark',
-                'attachment',
                 'create_by',
                 'create_date',
                 'create_time',
@@ -186,10 +217,10 @@ $_SESSION['searchChk'] = '';
 unset($_SESSION['resetChk']);
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-$tblName = FB_ORDER_REQ;
-$redirect_page = $SITEURL . '/finance/fb_order_req.php';
-$deleteRedirectPage = $SITEURL . '/finance/fb_order_req_income_table.php';
-$result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
+$tblName = WEB_ORDER_REQ;
+$redirect_page = $SITEURL . '/finance/website_order_request.php';
+$deleteRedirectPage = $SITEURL . '/finance/website_order_request_table.php';
+$result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
 ?>
 
 <!DOCTYPE html>
@@ -201,7 +232,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 
 <script>
     $(document).ready(() => {
-        createSortingTable('fb_order_req_table');
+        createSortingTable('website_order_request_table');
     });
 </script>
 
@@ -287,20 +318,19 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             <option value="brand" selected>Brand</option>
                             <option value="series" >Series</option>
                             <option value="package" >Package</option>
-                            <option value="person" >Sales-Person-In-Charge</option>
-                            <option value="facebook" >Facebook Page</option>
-                            <option value="channel" >Channel</option>
+                            <option value="person" >Person In Charge</option>
+                            <option value="currency" >Currency</option>
+                            <option value="country" >Country</option>
                             <option value="method" >Payment Method</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=finance/fb_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=finance/website_order_request_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
-                <table class="table table-striped" id="fb_order_req_table">
+                <table class="table table-striped" id="website_order_request_table">
                     <thead>
                         <tr>
-                            
                             <th class="hideColumn" scope="col">ID</th>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
@@ -316,11 +346,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         }else if ($_GET['group'] == 'package') {
                                             echo "Package";
                                         }else if ($_GET['group'] == 'person') {
-                                            echo "Sales-Person-In-Charge";
-                                        }else if ($_GET['group'] == 'facebook') {
-                                            echo "Facebook Page";
-                                        }else if ($_GET['group'] == 'channel') {
-                                            echo "Channel";
+                                            echo "Person In Charge";
+                                        }else if ($_GET['group'] == 'currency') {
+                                            echo "Currency";
+                                        }else if ($_GET['group'] == 'country') {
+                                            echo "Country";
                                         }else if ($_GET['group'] == 'method') {
                                             echo "Payment Method";
                                         }
@@ -331,23 +361,23 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                         </tr>
                     </thead>
                     <tbody>
-                        
                         <?php 
-                         $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
-                         $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
-                         $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
-                         $groupedRows = [];
-                         $counters = 1;
-                         $groupedRows = [];
+                        $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
+                        $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
+                        $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
+                        $groupedRows = [];
+                        $counters = 1;
+                        $groupedRows = [];
                         while ($row = $result->fetch_assoc()) {
                             $viewActMsg = '';
                             $sql = '';
-                            $q1 = getData('name', "id='" . $row['sales_pic'] . "'", '', USR_USER, $connect);
-                            $pics = $q1->fetch_assoc();
-                            $pic = isset($pics['name']) ? $pics['name'] : '';
+                            $q1 = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
+                            $currency = $q1->fetch_assoc();
+                            $curr = isset($currency['unit']) ? $currency['unit'] : '';
 
                             $q2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
-                            $country = $q2->fetch_assoc();
+                            $countrys = $q2->fetch_assoc();
+                            $country = isset($countrys['nicename']) ? $countrys['nicename'] : '';
 
                             $q3 = getData('name', "id='" . $row['brand'] . "'", '', BRAND, $connect);
                             $brands = $q3->fetch_assoc();
@@ -357,17 +387,12 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             $seriess = $q4->fetch_assoc();
                             $series= isset($seriess['name']) ? $seriess['name'] : '';
 
-                            $q5 = getData('name', "id='" . $row['package'] . "'", '', PKG, $connect);
+                            $q5 = getData('name', "id='" . $row['pkg'] . "'", '', PKG, $connect);
                             $packages = $q5->fetch_assoc();
                             $package= isset($packages['name']) ? $packages['name'] : '';
-                            //fb page
-                            $q6 = getData('name', "id='" . $row['fb_page'] . "'", '', FB_PAGE_ACC, $finance_connect);
-                            $fb_pages = $q6->fetch_assoc();
-                            $fb_page = isset($fb_pages['name']) ? $fb_pages['name'] : '';
-                            //channel
-                            $q7 = getData('name', "id='" . $row['channel'] . "'", '', CHANEL_SC_MD, $finance_connect);
-                            $channels = $q7->fetch_assoc();
-                            $channel = isset($channels['name']) ? $channels['name'] : '';
+
+                            $q6 = getData('cust_id', "id='" . $row['cust_id'] . "'", '', WEB_CUST_RCD, $connect);
+                            $cust_id = $q6->fetch_assoc();
 
                             $q8 = getData('name', "id='" . $row['pay_method'] . "'", '', FIN_PAY_METH, $finance_connect);
                             $pay_meths = $q8->fetch_assoc();
@@ -377,7 +402,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                             if ($groupOption && $groupOption3) {
                                 switch ($groupOption) {
                                     case 'person':
-                                        $key = $pic;
+                                        $key = $row['pic'];
                                         break;
                                     case 'brand':
                                         $key = $brand;
@@ -388,11 +413,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     case 'package':
                                         $key = $package;
                                         break;
-                                    case 'facebook':
-                                        $key = $fb_page;
+                                    case 'country':
+                                        $key = $country;
                                         break;
-                                    case 'channel':
-                                        $key = $channel;
+                                    case 'currency':
+                                        $key = $curr;
                                         break;
                                     case 'method':
                                         $key = $pay_meth;
@@ -401,7 +426,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         $key = $brand;
                                         break;
                                 }
-                                  if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 === 'daily') {
+                                  if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'country' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4 === 'daily') {
                                   
                             
                                     if ($groupOption3 === $createdate) {
@@ -416,7 +441,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     }
                                 }
                                 }
-                                else if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' || $groupOption === 'facebook' || $groupOption === 'channel' || $groupOption === 'method') && $groupOption4 !== 'daily') {
+                                else if (($groupOption === 'person' || $groupOption === 'brand' || $groupOption === 'series' || $groupOption === 'package' ||$groupOption === 'country' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4 !== 'daily') {
                                     $dateRange = explode('to', $groupOption3);
                                     if($groupOption4 == 'weekly'){
                                         $startDate = strtotime(trim($dateRange[0]));
@@ -488,7 +513,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                     ];
                                     audit_log($log);
                                 $ids = implode(',', $groupedRow['ids']);
-                                $url = "fb_order_req_income_table_summary.php?ids=" . urlencode($ids);
+                                $url = "website_order_request_income_table_summary.php?ids=" . urlencode($ids);
                                 if (!empty($groupOption)) {
                                     $url .= "&group=" . urlencode($groupOption);
                                 }
@@ -508,13 +533,10 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                 echo '</tr>';
                             }  
                             ?>
-
-                           
                         <?php } ?>
                     </tbody>
                     <tfoot>
                     <tr>
-                            
                             <th class="hideColumn" scope="col">ID</th>
                             <th class="text-center">
                                 <input type="checkbox" class="exportAll">
@@ -530,11 +552,11 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                         }else if ($_GET['group'] == 'package') {
                                             echo "Package";
                                         }else if ($_GET['group'] == 'person') {
-                                            echo "Sales-Person-In-Charge";
-                                        }else if ($_GET['group'] == 'facebook') {
-                                            echo "Facebook Page";
-                                        }else if ($_GET['group'] == 'channel') {
-                                            echo "Channel";
+                                            echo "Person In Charge";
+                                        }else if ($_GET['group'] == 'currency') {
+                                            echo "Currency";
+                                        }else if ($_GET['group'] == 'country') {
+                                            echo "Country";
                                         }else if ($_GET['group'] == 'method') {
                                             echo "Payment Method";
                                         }
@@ -552,8 +574,7 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 
 </body>
 <script>
-
-$(document).ready(function ($) {
+    $(document).ready(function ($) {
     $(document).on("change", ".exportAll", function (event) { //checkbox handling
         event.preventDefault();
 
@@ -568,7 +589,7 @@ $(document).ready(function ($) {
         var checkboxValues = [];
 
         // Loop through all pages to collect checked checkboxes
-        $('#fb_order_req_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+        $('#website_order_request_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
             var checkbox = $(this).find('.export:checked');
             if (checkbox.length > 0) {
                 checkbox.each(function () {
@@ -593,7 +614,7 @@ $(document).ready(function ($) {
                 selectAllCheckbox.checked = false;
             }
 
-            window.location.href = "fb_order_req_income_table.php";
+            window.location.href = "website_order_request_income_table.php";
         } else {
             console.log('No checkboxes are checked.');
         }
@@ -601,20 +622,20 @@ $(document).ready(function ($) {
 
     function updateCheckboxesOnOtherPages(isChecked) {
         // Get all cells in the DataTable
-        var cells = $('#fb_order_req_table').DataTable().cells().nodes();
+        var cells = $('#website_order_request_table').DataTable().cells().nodes();
 
         // Check/uncheck all checkboxes in the DataTable
         $(cells).find('.export').prop('checked', isChecked);
     }
 });
 
+<?php include "../js/order_req.js" ?>
     /**
   oufei 20231014
   common.fun.js
   function(void)
   to solve the issue of dropdown menu displaying inside the table when table class include table-responsive
 */
-<?php include "../js/order_req.js" ?>
     dropdownMenuDispFix();
 
     /**
@@ -623,7 +644,7 @@ $(document).ready(function ($) {
       function(id)
       to resize table with bootstrap 5 classes
     */
-    datatableAlignment('fb_order_req_table');
+    datatableAlignment('website_order_request_table');
 </script>
 
 </html>
