@@ -6,7 +6,7 @@ include 'checkCurrentPagePin.php';
 
 require_once 'header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . '_list.xlsx';
-$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
+$img_path = '../' . img_server . 'finance/lazada_order_req/';
 
 $tempDir = '../' . img_server . 'temp/';
 $tempAttachDir = $tempDir . 'attachment/';
@@ -450,17 +450,7 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 
 </body>
 <script>
-    $(document).ready(function() {
-    var groupOption = '<?php echo $groupOption; ?>'; // Get the group option value from PHP
-
-    // Loop through each option in the select dropdown
-    $('#group2 option').each(function() {
-        if ($(this).val() === groupOption) {
-            // Hide the option if its value matches groupOption
-            $(this).hide();
-        }
-    });
-});
+   
 
     $(document).ready(function ($) {
     $(document).on("change", ".exportAll", function (event) { //checkbox handling

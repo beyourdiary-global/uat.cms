@@ -8,7 +8,7 @@ include_once '../checkCurrentPagePin.php';
 
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
-$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
+$img_path = '../' . img_server . 'finance/shopee_order_req/';
 
 
 $tempDir = '../' . img_server . "temp/";
@@ -322,7 +322,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             <option value="person">Person In Charge</option>
                         </select>
                         <select class="form-select" id="group2">
-                        <option value="" selected>Select a Group</option>
+                        <option  selected>Select a Group</option>
                          <option value="brand">Brand</option>
                             <option value="status" >Order Status</option>
                             <option value="shopee_acc">Shopee Account</option>
@@ -496,7 +496,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                         
                                         foreach ($ids as $id) {
                                             $decodedId = urldecode($id);
-                                            if (isset($acc['name'], $row['id']) && $row['id'] == $decodedId) {
+                                            if (isset($row['id']) && $row['id'] == $decodedId) {
                                                 $combinedKey = $key . '_' . $key2;
                                 
                                                 if (!isset($groupedRows[$combinedKey])) {
@@ -582,6 +582,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                           foreach ($groupedRows as $combinedKey => $groupedRow) {
                             list($key, $key2) = explode('_', $combinedKey);
                             if (isset($key)) {
+                                
                                 if($groupOption4 == 'daily') {
                                     $nextDay = date('Y-m-d', strtotime($createdate . ' +1 day'));
                                     if (!isset($groupedRow['displayed'])) {

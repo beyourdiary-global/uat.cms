@@ -35,7 +35,19 @@ $(document).ready(function() {
             searchInput(param, '<?= $SITEURL ?>');
         });
     } 
+    if (!($("#lor_sales_pic").attr('disabled'))) {
+        $("#lor_sales_pic").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
 
+    }
      //Currency unit
      if (!($("#lor_curr_unit").attr('disabled'))) {
         $("#lor_curr_unit").keyup(function() {

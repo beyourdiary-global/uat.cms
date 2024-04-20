@@ -7,7 +7,7 @@ include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
-$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
+$img_path = '../' . img_server . 'finance/website_order_request/';
 
 
 $tempDir = '../' . img_server . "temp/";
@@ -311,13 +311,11 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                     </thead>
                     <tbody>
                         <?php while ($row = $result->fetch_assoc()) {
-                             if (isset($_GET['ids'])) {
-                          
-                                $ids = explode(',', $_GET['ids']);
-                                foreach ($ids as $id) {
-                                $decodedId = urldecode($id);
-                               
-                                if (isset( $row['id']) && $row['id'] == $id) {
+                            if (isset($_GET['ids'])) {             
+                            $ids = explode(',', $_GET['ids']);
+                            foreach ($ids as $id) {
+                            $decodedId = urldecode($id);
+                            if (isset( $row['id']) && $row['id'] == $id) {
                             $q1 = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                             $currency = $q1->fetch_assoc();
 

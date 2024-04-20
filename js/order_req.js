@@ -51,9 +51,11 @@ $('#resetButton').click(function() {
 
 $(document).ready(function() {
     var group = $('#group').val();
-
+    var group2 = $('#group2').val();
     var timeParam3 = getParameterByName('timeInterval');
     var groupParam = getParameterByName('group');
+    var ids = getParameterByName('ids');
+    var key = getParameterByName('key');
     var time =  $('#datepicker input').val();
     var timeInterval = $('#timeInterval').val();
     var timeRange;
@@ -61,16 +63,14 @@ $(document).ready(function() {
       
         $('#datepicker input').val(currentDate);
     window.onload = function() {
-        
-       
         var time =  $('#datepicker input').val();
         if(timeParam3 == null){
             document.getElementById("timeInterval").value = 'daily'; 
             timeParam3 = 'daily';
             if(document.getElementById("group").value == null){
                 document.getElementById("group").value == groupParam;
-            }
-          
+            } 
+
             document.getElementById("timeInterval").value = timeParam3; 
             timeRange = time;
           
@@ -83,7 +83,11 @@ $(document).ready(function() {
             document.getElementById("timeInterval").value = 'daily'; 
             document.getElementById("group").value = 'courier'; 
         }
-
+        if(document.getElementById("group2").value == null){
+            document.getElementById("group2").value == '';
+            group2 = ''
+            
+        }
         if (!window.location.search) {
             window.location.search = '?group=' + group + (time ? '&timeRange=' + time : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         }
@@ -113,19 +117,18 @@ $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="e
 
     
 
-    
-
+   
     if (group === 'metaaccount' || group === 'courier' || group === 'shopee' || group === 'method' || group === 'brand' ||group === 'series' || group === 'package' || group === 'person' || group ==='merchant' || group === 'currencynperson') {
       
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
-    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'||group === 'facebook' ||group === 'channel'){
+    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'||group === 'facebook' ||group === 'channel' ||group === 'platform'){
         
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
     } else if(group != ''){
         window.location.search = (timeRange ? '?timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
-    }
+    }else 
 
     var group2 = $('#group2').val();
 console.log(group);
@@ -214,6 +217,8 @@ console.log(group);
               
               window.location.search = '?group=' + group ;
           }
+        
+    
          
         
       
@@ -222,11 +227,22 @@ console.log(group);
     });
 
     $('#group2').change(function(){
-   
+        
         var group= $('#group').val();
+        group = groupParam;
         console.log(group);
         var group2 = $(this).val();
-        window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '');  
+        
+        if (timeParam3 != 'daily'){
+            window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '') +  (ids ? '&ids=' + ids : '')+  (key ? '&key=' + key : '');  
+        
+        }
+        else if (ids != '' && timeParam3 == 'daily'){
+            window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '') +  (ids ? '&ids=' + ids : '');  
+        
+        } else{
+            window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '');  
+        }
         });
    
    
