@@ -238,7 +238,7 @@ console.log(group);
         
         }
         else if (ids != '' && timeParam3 == 'daily'){
-            window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '') +  (ids ? '&ids=' + ids : '');  
+            window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '') +  (ids ? '&ids=' + ids : '')+  (key ? '&key=' + key : '');  
         
         } else{
             window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '');  

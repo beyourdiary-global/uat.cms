@@ -239,6 +239,7 @@ $menuList = array(
                 'expand' => array(
                     array('Sales Person Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/sales_person_report_table.php', '100'),
                     array('Payment Method Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/payment_method_report_table.php', '101'),
+                    array('Package Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/package_report_table.php', '101'),
                 ),
                 'pin' => array('100','101'),
             ),

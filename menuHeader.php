@@ -37,7 +37,7 @@
 
             <!-- Navbar brand -->
             <div class="d-flex align-items-center mx-2">
-                <a class="logo_section navbar-brand mx-4" href="#">
+                <a class="logo_section navbar-brand mx-4" href="/dashboard.php">
                     <img id="logo" src="
                     <?php
                     if ($dataExisted)

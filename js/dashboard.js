@@ -338,7 +338,7 @@ const myChart4 = new Chart(ctx4, {
         plugins: {
             title: {
                 display: true,
-                text: 'Total Order'
+                text: 'Total Shopee Order'
             },
           
         },
@@ -811,7 +811,6 @@ function populateUniqueCouriersTotalOrder(order, legend, convertedXValues,startD
             y: order[i]
         };
 
-        console.log(convertedXValues);
         if(selectedValue === 'daily'){
             if (!unique.has(legend_order)) {
                 unique.set(legend_order, [value]);
