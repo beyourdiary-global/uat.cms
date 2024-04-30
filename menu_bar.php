@@ -227,11 +227,23 @@ $menuList = array(
                     array('Shopee SG Order Request', 'mdi storefront-outline', $SITEURL . '/finance/shopee_order_req_income_table.php', '97'),
                     array('Website Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/website_order_request_income_table.php', '98'),
                     array('Lazada Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_income_table.php', '99'),
+                
                 ),
-                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97'),
+                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99'),
+            ),
+            array(
+                'Group by',
+                'mdi mdi-finance',
+                'javascript:void(0)',
+                'y',
+                'expand' => array(
+                    array('Sales Person Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/sales_person_report_table.php', '100'),
+                    array('Payment Method Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/payment_method_report_table.php', '101'),
+                ),
+                'pin' => array('100','101'),
             ),
         ),
-        'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97')
+        'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99','100','101')
     ),
     array(
         'Other',

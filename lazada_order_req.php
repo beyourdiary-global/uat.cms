@@ -803,7 +803,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3 autocomplete" >
             <label class="form-label form_lbl" id="lor_sales_pic_lbl" for="lor_sales_pic">Sales Person In Charge<span class="requireRed">*</span></label>
             <input class="form-control" type="text" name="lor_sales_pic" id="lor_sales_pic" value="<?php
             if (isset($dataExisted) && isset($row['sales_pic']) && !isset($lor_sales_pic)) {

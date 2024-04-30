@@ -6,7 +6,7 @@ include 'checkCurrentPagePin.php';
 
 require_once 'header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . '_list.xlsx';
-$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
+$img_path = '../' . img_server . 'finance/lazada_order_req/';
 
 $tempDir = '../' . img_server . 'temp/';
 $tempAttachDir = $tempDir . 'attachment/';
@@ -336,7 +336,7 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                             <option value="country" >Country</option>
                         </select>
                         <select class="form-select" id="group2">
-                        <option value="" selected>Select a Group</option>
+                        <option  selected>Select a Group</option>
                             <option value="brand" >Brand</option>
                             <option value="series" >Series</option>
                             <option value="package" >Package</option>

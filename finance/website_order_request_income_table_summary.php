@@ -7,7 +7,7 @@ include_once '../menuHeader.php';
 include_once '../checkCurrentPagePin.php';
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
-$img_path = '../' . img_server . 'finance/internal_consume_ticket_credit/';
+$img_path = '../' . img_server . 'finance/website_order_request/';
 
 
 $tempDir = '../' . img_server . "temp/";
@@ -325,7 +325,7 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                             <option value="method" >Payment Method</option>
                         </select>
                         <select class="form-select" id="group2">
-                        <option value="" selected>Select a Group</option>
+                        <option  selected>Select a Group</option>
                         <option value="brand">Brand</option>
                             <option value="series" >Series</option>
                             <option value="package" >Package</option>
