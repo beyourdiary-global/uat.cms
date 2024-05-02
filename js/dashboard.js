@@ -176,44 +176,47 @@ const datasets_total_sales = createDatasetsTotalOrder(uniqueCouriers_total_sales
 datasets_total_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        datasets: datasets_total_sales
-    },
-    options: {
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    parser: 'h:mm a', // Parse the time in 12-hour format with AM/PM
-                    unit: 'hour',
-                    displayFormats: {
-                        hour: 'h:mm a' // Display the time in 12-hour format with AM/PM
+const chartElement = document.getElementById('myChart');
+if (chartElement) {
+    const ctx = chartElement.getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: datasets_total_sales
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        parser: 'h:mm a', // Parse the time in 12-hour format with AM/PM
+                        unit: 'hour',
+                        displayFormats: {
+                            hour: 'h:mm a' // Display the time in 12-hour format with AM/PM
+                        }
+                    },
+                    ticks: {
+                        autoSkip: true, // Disable auto-skipping of ticks
+                        source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
                     }
                 },
-                ticks: {
-                    autoSkip: true, // Disable auto-skipping of ticks
-                    source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                y: {
+                    beginAtZero: true
                 }
             },
-            y: {
-                beginAtZero: true
-            }
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Total Sales (MYR)'
-            }
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Sales (MYR)'
+                }
+               
+            },
            
-        },
-       
+    
+        }
+    });
+}
 
-    }
-});
 const uniqueCouriers_total_order = populateUniqueCouriersTotalOrder(order, legend, convertedXValues, today, yesterdayLabel);
 const datasets_total_order = createDatasetsTotalOrder(uniqueCouriers_total_order, today, yesterdayLabel);
 

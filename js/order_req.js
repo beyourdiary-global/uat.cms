@@ -232,7 +232,8 @@ console.log(group);
         group = groupParam;
         console.log(group);
         var group2 = $(this).val();
-        
+        var group2value= $('#group2').val();
+        group2value = group2;
         if (timeParam3 != 'daily'){
             window.location.search = '?group=' + group +(group2 ? '&group2=' + group2 : '')+ '&timeRange=' + timeParam4 + (timeParam3 ? '&timeInterval=' + timeParam3 : '') +  (ids ? '&ids=' + ids : '')+  (key ? '&key=' + key : '');  
         
