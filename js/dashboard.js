@@ -176,45 +176,60 @@ const datasets_total_sales = createDatasetsTotalOrder(uniqueCouriers_total_sales
 datasets_total_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
+let myChart;
 const chartElement = document.getElementById('myChart');
 if (chartElement) {
-    const ctx = chartElement.getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: datasets_total_sales
+  const ctx = chartElement.getContext('2d');
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: datasets_total_sales
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            parser: 'h:mm a', // Parse the time in 12-hour format with AM/PM
+            unit: 'hour',
+            displayFormats: {
+              hour: 'h:mm a' // Display the time in 12-hour format with AM/PM
+            }
+          },
+          ticks: {
+            autoSkip: true, // Disable auto-skipping of ticks
+            source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+          },
+          title: {
+            display: true,
+            text: 'Time',
+          }
         },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        parser: 'h:mm a', // Parse the time in 12-hour format with AM/PM
-                        unit: 'hour',
-                        displayFormats: {
-                            hour: 'h:mm a' // Display the time in 12-hour format with AM/PM
-                        }
-                    },
-                    ticks: {
-                        autoSkip: true, // Disable auto-skipping of ticks
-                        source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
-                    }
-                },
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Total Sales (MYR)'
-                }
-               
-            },
-           
-    
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Sales',
+          }
         }
-    });
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            title: function() {
+              return ''; // Return an empty string to remove the tooltip title
+            }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Total Sales (MYR)'
+        }
+      }
+    }
+  });
 }
 
 const uniqueCouriers_total_order = populateUniqueCouriersTotalOrder(order, legend, convertedXValues, today, yesterdayLabel);
@@ -223,9 +238,11 @@ const datasets_total_order = createDatasetsTotalOrder(uniqueCouriers_total_order
 datasets_total_order.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx2 = document.getElementById('myChart2').getContext('2d');
-const myChart2 = new Chart(ctx2, {
+let myChart2;
+const chartElement2 = document.getElementById('myChart2');
+if (chartElement2) {
+const ctx2 = document.getContext('2d');
+myChart2 = new Chart(ctx2, {
     type: 'line',
     data: {
         datasets: datasets_total_order
@@ -244,14 +261,29 @@ const myChart2 = new Chart(ctx2, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Order'
@@ -260,16 +292,18 @@ const myChart2 = new Chart(ctx2, {
         },
     }
 });
-
+}
 const uniqueCouriers_shp_sales = populateUniqueCouriersTotalOrder(yValues_shopee, legend_shp, convertedXValues_shopee, today, yesterdayLabel);
 const datasets_shp_sales = createDatasetsTotalOrder(uniqueCouriers_shp_sales, today, yesterdayLabel);
 
 datasets_shp_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx3 = document.getElementById('myChart3').getContext('2d');
-const myChart3 = new Chart(ctx3, {
+let myChart3;
+const chartElement3 = document.getElementById('myChart3');
+if (chartElement3) {
+const ctx3 = document.getContext('2d');
+myChart3 = new Chart(ctx3, {
     type: 'line',
     data: {
         datasets: datasets_shp_sales
@@ -288,14 +322,29 @@ const myChart3 = new Chart(ctx3, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Shopee Sales (MYR)'
@@ -304,15 +353,18 @@ const myChart3 = new Chart(ctx3, {
         },
     }
 });
+}
 const uniqueCouriers_shp_order = populateUniqueCouriersTotalOrder(order_shopee, legend_shp, convertedXValues_shopee, today, yesterdayLabel);
 const datasets_shp_order = createDatasetsTotalOrder(uniqueCouriers_shp_order, today, yesterdayLabel);
 
 datasets_shp_order.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx4 = document.getElementById('myChart4').getContext('2d');
-const myChart4 = new Chart(ctx4, {
+let myChart4;
+const chartElement4 = document.getElementById('myChart4');
+if (chartElement4) {
+const ctx4 = document.getContext('2d');
+myChart4 = new Chart(ctx4, {
     type: 'line',
     data: {
         datasets: datasets_shp_order
@@ -331,14 +383,29 @@ const myChart4 = new Chart(ctx4, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Shopee Order'
@@ -347,15 +414,18 @@ const myChart4 = new Chart(ctx4, {
         },
     }
 });
+}
 const uniqueCouriers_web_sales = populateUniqueCouriersTotalOrder(yValues_web, legend_web, convertedXValues_web, today, yesterdayLabel);
 const datasets_web_sales = createDatasetsTotalOrder(uniqueCouriers_web_sales, today, yesterdayLabel);
 
 datasets_web_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx5 = document.getElementById('myChart5').getContext('2d');
-const myChart5 = new Chart(ctx5, {
+let myChart5;
+const chartElement5 = document.getElementById('myChart5');
+if (chartElement5) {
+const ctx5 = document.getContext('2d');
+myChart5 = new Chart(ctx5, {
     type: 'line',
     data: {
         datasets: datasets_web_sales
@@ -374,14 +444,29 @@ const myChart5 = new Chart(ctx5, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Web Sales (MYR)'
@@ -390,6 +475,7 @@ const myChart5 = new Chart(ctx5, {
         },
     }
 });
+}
 const uniqueCouriers_web_order = populateUniqueCouriersTotalOrder(order_web, legend_web, convertedXValues_web, today, yesterdayLabel);
     const datasets_web_order = createDatasetsTotalOrder(uniqueCouriers_web_order, today, yesterdayLabel);
 
@@ -397,8 +483,11 @@ datasets_web_order.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
 
-const ctx6 = document.getElementById('myChart6').getContext('2d');
-const myChart6 = new Chart(ctx6, {
+let myChart6;
+const chartElement6 = document.getElementById('myChart6');
+if (chartElement6) {
+const ctx6 = document.getContext('2d');
+myChart6 = new Chart(ctx6, {
     type: 'line',
     data: {
         datasets: datasets_web_order
@@ -417,14 +506,29 @@ const myChart6 = new Chart(ctx6, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Web Order'
@@ -433,7 +537,7 @@ const myChart6 = new Chart(ctx6, {
         },
     }
 });
-
+}
 const uniqueCouriers_fb_sales = populateUniqueCouriersTotalOrder(yValues_fb, legend_fb, convertedXValues_fb, today, yesterdayLabel);
 const datasets_fb_sales = createDatasetsTotalOrder(uniqueCouriers_fb_sales, today, yesterdayLabel);
 
@@ -441,8 +545,11 @@ datasets_fb_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
 
-const ctx7 = document.getElementById('myChart7').getContext('2d');
-const myChart7 = new Chart(ctx7, {
+let myChart7;
+const chartElement7 = document.getElementById('myChart7');
+if (chartElement7) {
+const ctx7 = document.getContext('2d');
+myChart7 = new Chart(ctx7, {
     type: 'line',
     data: {
         datasets: datasets_fb_sales
@@ -461,14 +568,29 @@ const myChart7 = new Chart(ctx7, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Facebook Sales (MYR)'
@@ -477,15 +599,18 @@ const myChart7 = new Chart(ctx7, {
         },
     }
 });
+}
 const uniqueCouriers_fb_order = populateUniqueCouriersTotalOrder(order_fb, legend_fb, convertedXValues_fb, today, yesterdayLabel);
 const datasets_fb_order = createDatasetsTotalOrder(uniqueCouriers_fb_order, today, yesterdayLabel);
 
 datasets_fb_order.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx8 = document.getElementById('myChart8').getContext('2d');
-const myChart8 = new Chart(ctx8, {
+let myChart8;
+const chartElement8 = document.getElementById('myChart8');
+if (chartElement8) {
+const ctx8 = document.getContext('2d');
+myChart8 = new Chart(ctx8, {
     type: 'line',
     data: {
         datasets: datasets_fb_order
@@ -504,14 +629,29 @@ const myChart8 = new Chart(ctx8, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Facebook Order'
@@ -520,6 +660,7 @@ const myChart8 = new Chart(ctx8, {
         },
     }
 });
+}
 const uniqueCouriers_lzd_sales = populateUniqueCouriersTotalOrder(yValues_lzd, legend_lzd, convertedXValues_lzd, today, yesterdayLabel);
 const datasets_lzd_sales = createDatasetsTotalOrder(uniqueCouriers_lzd_sales, today, yesterdayLabel);
 
@@ -527,9 +668,11 @@ const datasets_lzd_sales = createDatasetsTotalOrder(uniqueCouriers_lzd_sales, to
 datasets_lzd_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx9 = document.getElementById('myChart9').getContext('2d');
-const myChart9 = new Chart(ctx9, {
+let myChart9;
+const chartElement9 = document.getElementById('myChart9');
+if (chartElement9) {
+const ctx9 = document.getContext('2d');
+myChart9 = new Chart(ctx9, {
     type: 'line',
     data: {
         datasets: datasets_lzd_sales
@@ -548,14 +691,29 @@ const myChart9 = new Chart(ctx9, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Lazada Sales (MYR)'
@@ -564,15 +722,18 @@ const myChart9 = new Chart(ctx9, {
         },
     }
 });
+}
 const uniqueCouriers_lzd_order = populateUniqueCouriersTotalOrder(order_lzd, legend_lzd, convertedXValues_lzd, today, yesterdayLabel);
 const datasets_lzd_order = createDatasetsTotalOrder(uniqueCouriers_lzd_order, today, yesterdayLabel);
 
 datasets_lzd_order.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
-
-const ctx10 = document.getElementById('myChart10').getContext('2d');
-const myChart10 = new Chart(ctx10, {
+let myChart10;
+const chartElement10 = document.getElementById('myChart10');
+if (chartElement10) {
+const ctx10 = document.getContext('2d');
+myChart10 = new Chart(ctx10, {
     type: 'line',
     data: {
         datasets: datasets_lzd_order
@@ -591,14 +752,29 @@ const myChart10 = new Chart(ctx10, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Total Lazada Order'
@@ -607,6 +783,7 @@ const myChart10 = new Chart(ctx10, {
         },
     }
 });
+}
 const uniqueCouriers_fb_ads_sales = populateUniqueCouriersTotalOrder2(yValues_fb_ads, legend_fb_ads,accName_fb_ads,convertedXValues_fb_ads);
 const datasets_fb_ads_sales = createDatasetsTotalOrder2(uniqueCouriers_fb_ads_sales, today, yesterdayLabel);
 
@@ -614,8 +791,11 @@ datasets_fb_ads_sales.forEach(dataset => {
     dataset.data.sort((a, b) => a.x - b.x);
 });
 
-const ctx11 = document.getElementById('myChart11').getContext('2d');
-const myChart11 = new Chart(ctx11, {
+let myChart11;
+const chartElement11 = document.getElementById('myChart11');
+if (chartElement11) {
+const ctx11 = document.getContext('2d');
+myChart11 = new Chart(ctx11, {
     type: 'line',
     data: {
         datasets: datasets_fb_ads_sales
@@ -634,31 +814,48 @@ const myChart11 = new Chart(ctx11, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
 
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Order',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
-                text: 'Total Lazada Order'
+                text: 'Facebook Ads Transaction Performance'
             },
           
         },
     }
 });
+}
 
 
 const uniqueCouriers_del_sales = populateUniqueCouriersTotalOrder2(yValues_del, legend_del,courier_name_del, convertedXValues_del);
 const datasets_del = createDatasetsTotalOrder2(uniqueCouriers_del_sales, today, yesterdayLabel);
 
-
-// Create the chart with the sorted and unique data
-const ctx12 = document.getElementById('myChart12').getContext('2d');
-const myChart12 = new Chart(ctx12, {
+let myChart12;
+const chartElement12 = document.getElementById('myChart12');
+if (chartElement12) {
+const ctx12 = document.getContext('2d');
+myChart12 = new Chart(ctx12, {
     type: 'line',
     data: {
         datasets: datasets_del
@@ -677,31 +874,44 @@ const myChart12 = new Chart(ctx12, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Fees',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Courier Total Delivery Fees'
-            },
-            subtitle: {
-                display: true,
-                text: 'Sales performance over time'
             }
         }
     }
 });
-
+}
 
 const uniqueCouriers_shp_ads = populateUniqueCouriersTotalOrder2(yValues_shp_ads, legend_shp_ads,shopeeAccNames,convertedXValues_shp_ads);
 const datasets_shp = createDatasetsTotalOrder2(uniqueCouriers_shp_ads, today, yesterdayLabel);
-
-const ctx13 = document.getElementById('myChart13').getContext('2d');
-const myChart13 = new Chart(ctx13, {
+let myChart13;
+const chartElement13 = document.getElementById('myChart13');
+if (chartElement13) {
+const ctx13 = document.getContext('2d');
+myChart13 = new Chart(ctx13, {
     type: 'line',
     data: {
         datasets: datasets_shp
@@ -720,31 +930,44 @@ const myChart13 = new Chart(ctx13, {
                 ticks: {
                     autoSkip: true, // Disable auto-skipping of ticks
                     source: ['12:00 AM', '6:00 AM', '12:00 PM', '6:00 PM'] // Use these specific times as tick values
+                },
+                title: {
+                    display: true,
+                    text: 'Time',
                 }
             },
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Shopee Ads Performance'
-            },
-            subtitle: {
-                display: true,
-                text: 'Sales performance over time'
             }
         }
     }
 });
+}
 
 const uniqueCouriers_shp_with = populateUniqueCouriersTotalOrder(yValues_shp_with, legend_with, convertedXValues_shp_with, today, yesterdayLabel);
 const datasets_shp_with = createDatasetsTotalOrder(uniqueCouriers_shp_with, today, yesterdayLabel);
-
-
-const ctx14 = document.getElementById('myChart14').getContext('2d');
-const myChart14 = new Chart(ctx14, {
+let myChart14;
+const chartElement14 = document.getElementById('myChart14');
+if (chartElement14) {
+const ctx14 = document.getContext('2d');
+myChart14 = new Chart(ctx14, {
     type: 'line',
     data: {
         datasets: datasets_shp_with
@@ -761,24 +984,36 @@ const myChart14 = new Chart(ctx14, {
                         hour: 'h:mm a' // Display the time in 12-hour format with AM/PM
                     }
                 },
+                title: {
+                    display: true,
+                    text: 'Time',
+                }
 
             },
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Sales',
+                }
             }
         },
         plugins: {
+            tooltip: {
+                callbacks: {
+                  title: function() {
+                    return ''; // Return an empty string to remove the tooltip title
+                  }
+                }
+              },
             title: {
                 display: true,
                 text: 'Shopee Withdrawl Performance'
-            },
-            subtitle: {
-                display: true,
-                text: 'Sales performance over time'
             }
         }
     }
 });
+}
 
 function getDaysCount(startDate, endDate) {
     const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
@@ -789,10 +1024,10 @@ function getDaysCount(startDate, endDate) {
     }// Calculate number of days between startDate and endDate
    
  
-  function update(chart,datasets) {
-    chart.data.datasets = datasets;
-    chart.update(); // Update the chart
-}
+    function update(chart, datasets) {
+        chart.data.datasets = datasets;
+        chart.update(); // Update the chart
+    }
 
 function populateUniqueCouriersTotalOrder(order, legend, convertedXValues,startDate,endDate) {
     const unique = new Map();
@@ -846,6 +1081,7 @@ function populateUniqueCouriersTotalOrder(order, legend, convertedXValues,startD
     });
     return unique;
 }
+
 // Create a map to store unique courier names and their corresponding data
 
 function createDatasetsTotalOrder(unique, startDate, endDate) {
@@ -1047,7 +1283,7 @@ function updateChart() {
         endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() - 1);
         endDate = endDate.toISOString().slice(0, 10);
-        console.log(endDate);
+      
     } else if (selectedValue === 'weekly') {
         startDate = new Date($('#datepicker2 input[name="start"]').val()).toISOString().slice(0, 10);
         endDate = new Date($('#datepicker2 input[name="end"]').val()).toISOString().slice(0, 10);
@@ -1075,62 +1311,76 @@ function updateChart() {
         endDate = endDate.toISOString().slice(0, 10);
     
     }
-
-    const uniqueCouriers_total_sales = populateUniqueCouriersTotalOrder(yValues, legend, convertedXValues,startDate,endDate);
-    const datasets_total_sales = createDatasetsTotalOrder(uniqueCouriers_total_sales, startDate, endDate);
-    update(myChart,datasets_total_sales)
+    if (chartElement) {
+        const uniqueCouriers_total_sales = populateUniqueCouriersTotalOrder(yValues, legend, convertedXValues, startDate, endDate);
+        const datasets_total_sales = createDatasetsTotalOrder(uniqueCouriers_total_sales, startDate, endDate);
+        update(myChart, datasets_total_sales);
+    }
+    if (chartElement2) {
     const uniqueCouriers_total_order = populateUniqueCouriersTotalOrder(order, legend, convertedXValues,startDate,endDate);
     const datasets_total_order = createDatasetsTotalOrder(uniqueCouriers_total_order, startDate, endDate);
     update(myChart2,datasets_total_order)
-
-
+    }
+    if (chartElement3) {
     const uniqueCouriers_shp_sales = populateUniqueCouriersTotalOrder(yValues_shopee, legend_shp, convertedXValues_shopee,startDate,endDate);
     const datasets_shp_sales = createDatasetsTotalOrder(uniqueCouriers_shp_sales, startDate, endDate);
     update(myChart3,datasets_shp_sales)
-
+    }
+    if (chartElement4) {
     const uniqueCouriers_shp_order = populateUniqueCouriersTotalOrder(order_shopee, legend_shp, convertedXValues_shopee,startDate,endDate);
     const datasets_shp_order = createDatasetsTotalOrder(uniqueCouriers_shp_order, startDate, endDate);
     update(myChart4,datasets_shp_order)
-
+    }
+    if (chartElement5) {
     const uniqueCouriers_web_sales = populateUniqueCouriersTotalOrder(yValues_web, legend_web, convertedXValues_web,startDate,endDate);
     const datasets_web_sales = createDatasetsTotalOrder(uniqueCouriers_web_sales, startDate, endDate);
     update(myChart5,datasets_web_sales)
-
+    }
+    if (chartElement6) {
     const uniqueCouriers_web_order = populateUniqueCouriersTotalOrder(order_web, legend_web, convertedXValues_web,startDate,endDate);
     const datasets_web_order = createDatasetsTotalOrder(uniqueCouriers_web_order, startDate, endDate);
     update(myChart6,datasets_web_order)
-
+    }
+    if (chartElement7) {
     const uniqueCouriers_fb_sales = populateUniqueCouriersTotalOrder(yValues_fb, legend_fb, convertedXValues_fb,startDate,endDate);
     const datasets_fb_sales = createDatasetsTotalOrder(uniqueCouriers_fb_sales, startDate, endDate);
     update(myChart7,datasets_fb_sales)
-
+    }
+    if (chartElement8) {
     const uniqueCouriers_fb_order = populateUniqueCouriersTotalOrder(order_fb, legend_fb, convertedXValues_fb,startDate,endDate);
     const datasets_fb_order = createDatasetsTotalOrder(uniqueCouriers_fb_order, startDate, endDate);
     update(myChart8,datasets_fb_order)
-
+    }
+    if (chartElement9) {
     const uniqueCouriers_lzd_sales = populateUniqueCouriersTotalOrder(yValues_lzd, legend_lzd, convertedXValues_lzd,startDate,endDate);
     const datasets_lzd_sales = createDatasetsTotalOrder(uniqueCouriers_lzd_sales, startDate, endDate);
     update(myChart9,datasets_lzd_sales)
-
+    }
+    if (chartElement10) {
     const uniqueCouriers_lzd_order = populateUniqueCouriersTotalOrder(order_lzd, legend_lzd, convertedXValues_lzd,startDate,endDate);
     const datasets_lzd_order = createDatasetsTotalOrder(uniqueCouriers_lzd_order, startDate, endDate);
     update(myChart10,datasets_lzd_order)
-
+    }
+    if (chartElement11) {
     const uniqueCouriers_fb_ads_sales = populateUniqueCouriersTotalOrder2(yValues_fb_ads, legend_fb_ads, accName_fb_ads,convertedXValues_fb_ads);
     const datasets_fb_ads_sales = createDatasetsTotalOrder2(uniqueCouriers_fb_ads_sales, startDate, endDate);
     update(myChart11,datasets_fb_ads_sales)
-
+    }
+    if (chartElement12) {
     const uniqueCouriers_del_sales = populateUniqueCouriersTotalOrder2(yValues_del, legend_del,courier_name_del, convertedXValues_del);
     const datasets_del = createDatasetsTotalOrder2(uniqueCouriers_del_sales, startDate, endDate);
     update(myChart12,datasets_del)
-
+    }
+    if (chartElement13) {
     const uniqueCouriers_shp_ads = populateUniqueCouriersTotalOrder2(yValues_shp_ads, legend_shp_ads,shopeeAccNames,convertedXValues_shp_ads);
     const datasets_shp = createDatasetsTotalOrder2(uniqueCouriers_shp_ads, startDate, endDate);
     update(myChart13,datasets_shp)
-
+    }
+    if (chartElement14) {
     const uniqueCouriers_shp_with = populateUniqueCouriersTotalOrder(yValues_shp_with, legend_with, convertedXValues_shp_with,startDate,endDate);
     const datasets_shp_with = createDatasetsTotalOrder(uniqueCouriers_shp_with, startDate, endDate);
     update(myChart14,datasets_shp_with)
+    }
 }
  function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
