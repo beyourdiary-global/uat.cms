@@ -85,6 +85,31 @@ function checkCurrentPin($connect, $currentPage)
         return $result;
     }
 }
+function checkPin($connect, $currentPage)
+{
+
+    $result = getData('*', "name = '$currentPage'", '', PIN_GRP, $connect);
+
+    if ($result && $result->num_rows > 0) {
+        $resultPin = $result->fetch_assoc();
+        $currentPin = $resultPin['id'];
+
+        $resultPinArray = explode(',', $resultPin['pins']);//$resultPin['pins'] --> returns correct pins (use this to filter user group pins) 
+        $pinArray = getUserPinGroup($connect); //get user pin group array (all allowed actions)
+        $userPinArray = getValuesByPinAssocIndex($pinArray, $currentPin);
+        $filteredResultArray = array_intersect($userPinArray, $resultPinArray); 
+
+        $actionMapping = getPin($connect); //get all pins
+        
+        $result = array_map(function ($permission) use ($actionMapping) {
+            return $actionMapping[$permission];
+        }, $filteredResultArray);
+        
+        return $result;
+    }
+    
+    return [];
+}
 
 function isActionAllowed($action, $allowedActions)
 {

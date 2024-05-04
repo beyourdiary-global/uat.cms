@@ -239,8 +239,10 @@ $menuList = array(
                 'expand' => array(
                     array('Sales Person Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/sales_person_report_table.php', '100'),
                     array('Payment Method Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/payment_method_report_table.php', '101'),
+                    array('Package Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/package_report_table.php', '102'),
+                    array('Brand Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/brand_report_table.php', '103'),
                 ),
-                'pin' => array('100','101'),
+                'pin' => array('100','101','102','103'),
             ),
         ),
         'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99','100','101')
@@ -392,6 +394,16 @@ $menuList = array(
             ),
         ),
         'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','70','72','74','75','76','77','78','79','80','82','84','85','86','87','88','89','91','92','93','94')
+    ),
+    array(
+        'Warehouse',
+        'mdi mdi-package-variant',
+        'javascript:void(0)',
+        'y',
+        'expand' => array(
+            array('Stock List', 'mdi mdi-package-variant', $SITEURL . '/stock_list_table.php', '104'),
+        ),
+        'pin' => array('104')
     ),
     array(
         'Audit Log',

@@ -251,19 +251,31 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                     if ((isset($_GET['ids']))) {
                                         $ids = explode(',', $_GET['ids']);
 
-                                        foreach ($ids as $id) {
-                                            $decodedId = urldecode($id);
-                                            if (isset($row['id']) && $row['id'] == $decodedId) {
+                                        if ($key == $urlkey) {
+                                            if ($groupOption2 == null) {
                                                 $combinedKey = $key . '_' . $key2;
-
-                                                if (!isset($groupedRows[$combinedKey])) {
-                                                    $groupedRows[$combinedKey] = [
-                                                        'ids' => [$decodedId],
+                                                if (!isset($groupedRows[$key])) {
+                                                    $groupedRows[$key] = [
+                                                        'ids' => [$row['id']],
                                                         'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
                                                         'channel' => $channelname
                                                     ];
                                                 } else {
-                                                    $groupedRows[$combinedKey]['ids'][] = $decodedId;
+                                                    $groupedRows[$key]['ids'][] = $row['id'];
+                                                    $groupedRows[$key]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
+                                                    $groupedRows[$key]['channel'] = $channelname;
+                                                }
+                                            } else if ($groupOption2 != '') {
+                                                $combinedKey = $key . '_' . $key2;
+
+                                                if (!isset($groupedRows[$combinedKey])) {
+                                                    $groupedRows[$combinedKey] = [
+                                                        'ids' => [$row['id']],
+                                                        'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
+                                                        'channel' => $channelname
+                                                    ];
+                                                } else {
+                                                    $groupedRows[$combinedKey]['ids'][] = $row['id'];
                                                     $groupedRows[$combinedKey]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
                                                     $groupedRows[$combinedKey]['channel'] = $channelname;
                                                 }

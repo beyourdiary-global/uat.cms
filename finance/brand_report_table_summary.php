@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Payment Method Report";
+$pageTitle = "Brand Report";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
@@ -10,7 +10,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-$deleteRedirectPage = $SITEURL . 'finance/payment_method_report_table.php';
+$deleteRedirectPage = $SITEURL . 'finance/brand_report_table.php';
 $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 $result2 = getData('*', '', '', FB_ORDER_REQ,$finance_connect
 );
@@ -107,21 +107,21 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                     </div>
                     <div class="col-md-3">
                     <label class="form-label">Group by:</label>
-                        <select class="form-select" id="group"  style="display: none;">
-                            <option value="method"selected>Payment Method</option>
+                        <select class="form-select" id="group" style="display: none;">
+                            <option value="brand"selected>Brand</option>
                             <option value="platform" >Platform</option>
                         </select>
                         <select class="form-select" id="group2">
                             <option  value=""selected>Select a Group</option>
-                            <option value="method">Payment Method</option>
+                            <option value="brand">Brand</option>
                             <option value="platform" >Platform</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=/finance/payment_method_report_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=/finance/brand_report_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
-        <table class="table table-striped" id="payment_method_report_table">
+        <table class="table table-striped" id="package_report_table">
             <thead>
                 <tr>
                     <th class="hideColumn" scope="col">ID</th>
@@ -129,8 +129,8 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                     <th id="group_header" scope="col">
                         <?php
                         if (isset($_GET['group'])) {
-                            if ($_GET['group'] == 'method') {
-                                echo "Payment Method";
+                            if ($_GET['group'] == 'brand') {
+                                echo "Brand";
                             }else if ($_GET['group'] == 'platform') {
                                 echo "Platform";
                             }
@@ -140,8 +140,8 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                     <?php
                        if (isset($_GET['group2']) && $_GET['group2'] != '') {
                         echo '<th id="group_header" scope="col">';
-                        if ($_GET['group2'] == 'method') {
-                            echo "Payment Method";
+                        if ($_GET['group2'] == 'brand') {
+                            echo "Brand";
                         }else if ($_GET['group2'] == 'platform') {
                             echo "Platform";
                         } echo '</th>';
@@ -152,11 +152,11 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
             </thead>
            
             <tbody>
-                <?php 
-                if(isset($_GET['key'])){
-                    $urlkey = $_GET['key'];
-                }
-                   $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
+                <?php
+                    if(isset($_GET['key'])){
+                        $urlkey = $_GET['key'];
+                    }
+                   $groupOption = isset($_GET['group']) ? $_GET['group'] : '';
                    $groupOption2 = isset($_GET['group2']) ? $_GET['group2'] : ''; 
                    $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
                    $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
@@ -212,17 +212,13 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                             }
 
                             $channelname = $channel;
-
-                            if(isset($row['pay_meth'] )){
-                                $q7 = getData('name', "id='" . $row['pay_meth'] . "'", '', FIN_PAY_METH, $finance_connect);
-                                $pay_meths = $q7->fetch_assoc();
-                                $pay_meth = isset($pay_meths['name']) ? $pay_meths['name'] : '';
-                            }else if (isset($row['buyer_pay_meth'] )){
-                                
-                                $q6 = getData('name', "id='" . $row['buyer_pay_meth'] . "'", '', PAY_MTHD_SHOPEE, $finance_connect);
-                                $pays = $q6->fetch_assoc();
-                                $pay_meth = isset($pays['name']) ? $pays['name'] : '';
-                            }
+                            
+                            if (isset($row['brand'])) {
+                                $brand = isset($row['brand']) ? $row['brand'] : '';
+                                $q1 = getData('name', "id='" . $brand . "'", '', BRAND, $connect);
+                                $brd_fetch = $q1->fetch_assoc();
+                                $brd_name = isset($brd_fetch['name']) ? $brd_fetch['name'] : '';
+                            } 
                             
                             if (isset($row['create_date']) || isset($row['date'] )) {
                                 $createdate = isset($row['date']) ? $row['date'] : $row['create_date'];
@@ -230,19 +226,19 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
 
                             if ($groupOption && $groupOption3) {
                                 switch ($groupOption) {
-                                    case 'method':
-                                        $key =  $pay_meth;
+                                    case 'brand':
+                                        $key =  $brd_name;
                                         break;
                                     case 'platform':
                                         $key = $channelname;
                                         break;
                                     default:
-                                        $key = $pay_meth;
+                                        $key = $brd_name;
                                         break;
                                 }
                                 switch ($groupOption2) {
-                                    case 'method':
-                                        $key2 =  $pay_meth;
+                                    case 'brand':
+                                        $key2 =  $brd_name;
                                         break;
                                     case 'platform':
                                         $key2 = $channelname;
@@ -251,8 +247,9 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                                         $key2 = null;
                                         break;
                                 }
-                                  if (($groupOption === 'method' || $groupOption === 'platform') && $groupOption4 === 'daily') {
+                                  if (($groupOption === 'brand' || $groupOption === 'platform') && $groupOption4 === 'daily') {
                                   
+                            
                                     if ($groupOption3 === $createdate) {
                                         if ((isset($_GET['ids']))) {
                                             $ids = explode(',', $_GET['ids']); 
@@ -294,9 +291,8 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                                                 }
                                               }
                                     }
-                                    
                                 }
-                                else if (($groupOption === 'method' || $groupOption === 'platform' ) && $groupOption4 !== 'daily') {
+                                else if (($groupOption === 'brand' || $groupOption === 'platform' ) && $groupOption4 !== 'daily') {
                                     $dateRange = explode('to', $groupOption3);
                                     if($groupOption4 == 'weekly'){
                                         $startDate = strtotime(trim($dateRange[0]));
@@ -313,57 +309,70 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                                     $createdTimestamp = strtotime($createdate);
                                 
                                     if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
-                                   
-                                   if ((isset($_GET['ids']))) {
-                                    $ids = explode(',', $_GET['ids']); 
                                 
-                                        if ( $key == $urlkey) {
-                                            
-                                          if($groupOption2 == null){
-                                            $combinedKey = $key . '_' . $key2;
-                                            if (!isset($groupedRows[$key])) {
-                                                $groupedRows[$key] = [
-                                                    'ids' => [$row['id']],
-                                                    'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
-                                                    'channel' => $channelname
-                                                ];
-                                            } else {
-                                                $groupedRows[$key]['ids'][] = $row['id'];
-                                                $groupedRows[$key]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
-                                                $groupedRows[$key]['channel'] = $channelname;
-                                            }
-                                            }
-                                            else if($groupOption2 != ''){
-                                             
-                                                $combinedKey = $key . '_' . $key2;
-                                              
-                                                if (!isset($groupedRows[$combinedKey])) {
-                                                    $groupedRows[$combinedKey] = [
-                                                        'ids' => [$row['id']],
-                                                        'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
-                                                        'channel' => $channelname
-                                                    ];
-                                                } else {
-                                                    $groupedRows[$combinedKey]['ids'][] = $row['id'];
-                                                    $groupedRows[$combinedKey]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
-                                                    $groupedRows[$combinedKey]['channel'] = $channelname;
-                                                }
-
-                                        }
+                                        if ((isset($_GET['ids']))) {
+                                            $ids = explode(',', $_GET['ids']); 
                                         
-                                        }
-                                      }
+                                                if ( $key == $urlkey) {
+                                                    
+                                                  if($groupOption2 == null){
+                                                    $combinedKey = $key . '_' . $key2;
+                                                    if (!isset($groupedRows[$key])) {
+                                                        $groupedRows[$key] = [
+                                                            'ids' => [$row['id']],
+                                                            'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
+                                                            'channel' => $channelname
+                                                        ];
+                                                    } else {
+                                                        $groupedRows[$key]['ids'][] = $row['id'];
+                                                        $groupedRows[$key]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
+                                                        $groupedRows[$key]['channel'] = $channelname;
+                                                    }
+                                                    }
+                                                    else if($groupOption2 != ''){
+                                                     
+                                                        $combinedKey = $key . '_' . $key2;
+                                                      
+                                                        if (!isset($groupedRows[$combinedKey])) {
+                                                            $groupedRows[$combinedKey] = [
+                                                                'ids' => [$row['id']],
+                                                                'totalTopupAmount' => isset($row['price']) ? $row['price'] : $row['final_income'],
+                                                                'channel' => $channelname
+                                                            ];
+                                                        } else {
+                                                            $groupedRows[$combinedKey]['ids'][] = $row['id'];
+                                                            $groupedRows[$combinedKey]['totalTopupAmount'] += isset($row['price']) ? $row['price'] : $row['final_income'];
+                                                            $groupedRows[$combinedKey]['channel'] = $channelname;
+                                                        }
+        
+                                                }
+                                                
+                                                }
+                                              }
+                                    }
                                 }
-                            }
                             }                      
                             }}
                             foreach ($groupedRows as $combinedKey => $groupedRow) {
-                               
                                 if($key2 != ''){
                                     list($key, $key2) = explode('_', $combinedKey);
                                 }
-                                
                                 if (isset($key)) {
+                                    $ids = implode(',', $groupedRow['ids']);
+                             
+                                    if ($groupedRow['channel'] == 'Shopee'){
+                                     
+                                        $tblName = SHOPEE_SG_ORDER_REQ;
+                                    }else if  ($groupedRow['channel'] == 'Facebook'){
+                                       
+                                        $tblName = FB_ORDER_REQ;
+                                    }else if  ($groupedRow['channel'] == 'Web'){
+                                        
+                                        $tblName = WEB_ORDER_REQ;
+                                    }else if  ($groupedRow['channel'] == 'Lazada'){
+                                      
+                                        $tblName = LAZADA_ORDER_REQ;
+                                    }
                                     if($groupOption4 == 'daily') {
                                         $nextDay = date('Y-m-d', strtotime($createdate . ' +1 day'));
                                         if (!isset($groupedRow['displayed'])) {
@@ -389,8 +398,6 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                                             $sql = '';
                                         }
                                     }
-                                    $ids = implode(',', $groupedRow['ids']);
-                          
                                     if ($groupedRow['channel'] == 'Shopee'){
                                         $url = "shopee_order_req_income_table_detail.php?ids=" . urlencode($ids);
                                         $tblName = SHOPEE_SG_ORDER_REQ;
@@ -417,12 +424,23 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                                         'connect' => $connect,
                                     ];
                                     audit_log($log);
-                                    if($key2 != $key && $key2 != null){
-                                        echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
-                                    }else if ($groupOption2 != null && $key2 == null) {
-                                        echo '<tr>';
-                                    }
-                               
+                                $ids = implode(',', $groupedRow['ids']);
+                                if($key2 != $key && $key2 != null){
+                                    echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
+                                }else if ($groupOption2 != null && $key2 == null) {
+                                    echo '<tr>';
+                                }
+                                if (!empty($groupOption)) {
+                                    $url .= "&group=" . urlencode($groupOption) ."&group2=";
+                                }
+                                if (!empty($groupOption3)) {
+                                    $url .= "&timeRange=" . urlencode($groupOption3);
+                                }
+                                if (!empty($groupOption4)) {
+                                    $url .= "&timeInterval=" . urlencode($groupOption4);
+                                }
+                              
+                                echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
                                 echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
                                 echo '<th scope="row">' . $counters++ . '</th>';
                                 if(isset($_GET['key'])){
@@ -455,8 +473,8 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                     <th id="group_header" scope="col">
                         <?php
                         if (isset($_GET['group'])) {
-                            if ($_GET['group'] == 'method') {
-                                echo "Payment Method";
+                            if ($_GET['group'] == 'brand') {
+                                echo "Brand";
                             }else if ($_GET['group'] == 'platform') {
                                 echo "Platform";
                             }
@@ -466,8 +484,8 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
                     <?php
                        if (isset($_GET['group2']) && $_GET['group2'] != '') {
                         echo '<th id="group_header" scope="col">';
-                        if ($_GET['group2'] == 'method') {
-                            echo "Payment Method";
+                        if ($_GET['group2'] == 'brand') {
+                            echo "Brand";
                         }else if ($_GET['group2'] == 'platform') {
                             echo "Platform";
                         } echo '</th>';
@@ -485,7 +503,7 @@ $result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ ,$finance_connect);
 
 </body>
 <script>
-    $(document).ready(function() {
+  $(document).ready(function() {
     var groupOption = '<?php echo $groupOption; ?>'; // Get the group option value from PHP
 
     // Loop through each option in the select dropdown
