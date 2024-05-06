@@ -442,7 +442,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="col-12 col-md-6">
         <div class="form-group mb-3">
         <label class="form-label form_lbl" id="atb_amt_rec_lbl" for="atb_amt_rec">Amount Receivable<span class="requireRed">*</span></label>
-        <?php var_dump($atb_amt_rec); ?>
             <input class="form-control" type="number" step='0.01' name="atb_amt_rec" id="atb_amt_rec" value="<?php
                 if (isset($dataExisted) && isset($row['amt_rec']) && !isset($atb_amt_rec)) {
                     echo $row['amt_rec'];

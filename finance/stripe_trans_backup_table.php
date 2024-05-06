@@ -154,6 +154,8 @@ function deleteDir($dirPath) {
 $pinAccess = checkCurrentPin($connect, $pageTitle);
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
+$_SESSION['searchChk'] = '';
+unset($_SESSION['resetChk']);
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
@@ -161,7 +163,7 @@ $deleteRedirectPage = $SITEURL . '/finance/stripe_trans_backup_table.php';
 $redirect_page = $SITEURL . '/finance/stripe_trans_backup.php';
 
 $result = getData('*', '', '', STRIPE_TRANS_BACKUP, $finance_connect);
-
+$tblName = STRIPE_TRANS_BACKUP;
 $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
 ?>
 
@@ -216,7 +218,7 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                         href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                         Transaction </a>
                                 <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -242,37 +244,38 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                     <div class="col-md-4 dateFilters">
                         <label for="dateFilter" class="form-label">Filter by Date:</label>
                         <div class="input-group date" id="datepicker"> 
-                        <input type="text" class="form-control" placeholder="Select date" >
+                        <input type="text" class="form-control" placeholder="Select date"  autocomplete="off">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
                         <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start date"  autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End date"  autocomplete="off"/>
                         </div>
                         <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start month"  autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End month"  autocomplete="off"/>
                             
                             </div>
                         <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year"/>
+                            <input type="text" class="input form-control" name="start" placeholder="Start year"  autocomplete="off"/>
                                 <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year"/>
+                            <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
                             
                         </div>
                     </div>
                     <div class="col-md-3">
                     <label class="form-label">Group by:</label>
                         <select class="form-select" id="group">
-                            <option value="currency" selected>Currency</option>
+                        <option value="" selected>Select a Group</option>
+                            <option value="currency" >Currency</option>
                         </select>
                     </div>
                     <div class="col-md-2 d-flex align-items-center justify-content-center">
-                        <a id='resetButton' class="btn btn-sm btn-rounded btn-primary" > <i class="fa fa-refresh"> </i> Reset </a>
+                    <a id='resetButton' href="../reset.php?redirect=finance/stripe_trans_backup_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
                     </div>
                 </div>
                 <table class="table table-striped" id="stripe_trans_backup_table">
@@ -326,6 +329,8 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                          $groupedRows = [];
                         
                         while ($row = $result->fetch_assoc()) {
+                            $viewActMsg = '';
+                            $sql = '';
                             if (isset($row['id']) && !empty($row['id'])) {
                                 $currs = getData('unit', "id='" . $row['curr_unit'] . "'", '', CUR_UNIT, $connect);
                                 $row2 = $currs->fetch_assoc();
@@ -410,7 +415,44 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                 }
                                 }
                                 foreach ($groupedRows as $key => $groupedRow) {
-                    
+                                    if (isset($key)) {
+                                        if($groupOption4 == 'daily') {
+                                            if (!isset($groupedRow['displayed'])) {
+                                                $groupedRow['displayed'] = true;
+                                                $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $createdate. "</b> from <b><i>$tblName Table</i></b>.";
+                                                $idss = implode(', ', $groupedRow['ids']);
+                                                $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                            } else {
+                                                $viewActMsg = '';
+                                                $sql = '';
+                                            }
+                                        }else{
+                                            if (!isset($groupedRow['displayed'])) {
+                                                $groupedRow['displayed'] = true;
+                                                
+                                                $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
+                                                
+                                                $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
+                                                $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
+                                            
+                                            } else {
+                                                $viewActMsg = '';
+                                                $sql = '';
+                                            }
+                                        }
+                                        $log = [
+                                            'log_act' => 'search',
+                                            'cdate'   => $cdate,
+                                            'ctime'   => $ctime,
+                                            'uid'     => USER_ID,
+                                            'cby'     => USER_ID,
+                                            'query_rec'    => $sql,
+                                            'query_table'  => $tblName,
+                                            'act_msg' => $viewActMsg,
+                                            'page'    => $pageTitle,
+                                            'connect' => $connect,
+                                        ];
+                                        audit_log($log);
                                     $ids = implode(',', $groupedRow['ids']);
                                     $url = $groupOption4 == 'daily' ? "stripe_trans_backup_table_detail.php?ids=" . urlencode($ids) : "stripe_trans_backup_table_summary.php?ids=" . urlencode($ids);
                                     echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
@@ -420,6 +462,7 @@ $img_path = SITEURL . img_server . 'finance/stripe_trans_backup/';
                                     echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
                                     echo '</tr>';
                                 }   
+                            }
                                 ?>
                     </tbody>
                     <tfoot>

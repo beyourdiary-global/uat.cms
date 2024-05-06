@@ -330,31 +330,31 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-12 col-md-6 mb-3">
-                                <label class="form-label" id="password" for="password">Password</label>
-                                <div id="row-password-input">
-                                    <div class="d-flex justify-content-end">
-                                        <i class="fa fa-eye-slash hide_icon" id="showPassword"></i>
-                                    </div>
-                                        <input class="form-control" type="password" name="password" id="password" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                                    <div id="err_msg">
-                                        <span class="mt-n1" id="errorSpan"><?php if (isset($err5)) echo $err5; ?></span>
-                                    </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <label class="form-label" id="passwordlbl" for="password">Password</label>
+                            <div id="row-password-input">
+                                <div class="d-flex justify-content-end">
+                                    <i class="fa fa-eye-slash hide_icon" id="showPassword" onclick="togglePassword('password')"></i>
+                                </div>
+                                <input class="form-control" type="password" name="password" id="password" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err5)) echo $err5; ?></span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-12 col-md-6">
-                                <label class="form-label" id="confirmpassword_lbl" for="password">Confirm Password</label>
-                                <div id="row-password-input">
-                                    <div class="d-flex justify-content-end">
-                                        <i class="fa fa-eye-slash hide_icon" id="showConfirmPassword"></i>
-                                    </div>
-                                        <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                                    <div id="err_msg">
-                                        <span class="mt-n1" id="errorSpan"><?php if (isset($err6)) echo $err6; ?></span>
-                                    </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label" id="confirmpassword_lbl" for="password">Confirm Password</label>
+                            <div id="row-password-input">
+                                <div class="d-flex justify-content-end">
+                                    <i class="fa fa-eye-slash hide_icon" id="showConfirmPassword" onclick="togglePassword('confirmPassword')"></i>
+                                </div>
+                                <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" value="<?php if (isset($row['password'])) echo $row['password'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
+                                <div id="err_msg">
+                                    <span class="mt-n1" id="errorSpan"><?php if (isset($err6)) echo $err6; ?></span>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
@@ -367,28 +367,20 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
-        $(document).ready(() => {
-            $("#showPassword").on('click', () => {
-                togglePasswordVisibility("#password", "#showPassword");
-            });
-
-            $("#showConfirmPassword").on('click', () => {
-                togglePasswordVisibility("#confirmPassword", "#showConfirmPassword");
-            });
-        });
-
-        function togglePasswordVisibility(passwordField, icon) {
-            var passwordFieldType = $(passwordField).attr('type');
-            if (passwordFieldType == 'password') {
-                $(passwordField).attr('type', 'text');
-                $(icon).removeClass("fa-eye-slash").addClass("fa-eye");
-            } else if (passwordFieldType == 'text') {
-                $(passwordField).attr('type', 'password');
-                $(icon).removeClass("fa-eye").addClass("fa-eye-slash");
-            }
+    function togglePassword(inputId) {
+        var input = document.getElementById(inputId);
+        var icon = document.getElementById('show' + inputId.charAt(0).toUpperCase() + inputId.slice(1));
+        if (input.getAttribute('type') === 'password') {
+            input.setAttribute('type', 'text');
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         }
-
-
+    }
+    
 
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";

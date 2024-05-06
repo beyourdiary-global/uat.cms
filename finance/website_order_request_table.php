@@ -29,16 +29,7 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
     });
 </script>
 
-<style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
-</style>
+
 
 <body>
 
@@ -83,6 +74,7 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Order ID</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Series</th>
@@ -143,7 +135,17 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                                 <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
                                 <?php renderDeleteButton($pinAccess, $row['id'], $row['order_id'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
                                 </td>
-
+                                <td scope="row">
+                                <?php
+                                $status = $row['order_status'];
+                                if ($status == 'P') {
+                                    $status = 'Processing';
+                                }else  if ($status == 'SP') {
+                                    $status = 'Shipped';
+                                }
+                                echo $status;
+                                ?>
+                                </td>
                                 <td scope="row">
                                     <?= $row['order_id'] ?? '' ?>
                                 </td>
@@ -221,6 +223,7 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                         <th class="hideColumn" scope="col">ID</th>
                             <th scope="col">S/N</th>
                             <th scope="col" id="action_col">Action</th>
+                            <th scope="col">Order Status</th>
                             <th scope="col">Order ID</th>
                             <th scope="col">Brand</th>
                             <th scope="col">Series</th>

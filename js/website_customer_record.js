@@ -162,7 +162,7 @@ $('.submitBtn').on('click', () => {
             cust_birthday_chk = 1;
         }
         
-    if (($('#wcr_pic_hidden').val() === ''  || $('#wcr_pic_hidden').val() == '0' || $('#wcr_pic_hidden').val() === null || $('#wcr_pic_hidden')
+    if (($('#wcr_pic').val() === ''  || $('#wcr_pic').val() == '0' || $('#wcr_pic').val() === null || $('#wcr_pic_hidden')
             .val() === undefined)) {
         pic_chk = 0;
         $("#wcr_pic").after(

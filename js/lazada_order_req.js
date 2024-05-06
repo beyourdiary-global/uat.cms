@@ -10,7 +10,18 @@ function toggleNewCustomerSection() {
 
 //autocomplete
 $(document).ready(function() {
-
+    function getParameterByName(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    var act = getParameterByName('act');
+    if (act != 'I'){
+        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+            // Copy tracking number to clipboard
+            var trackingNumber = this.getAttribute('data-tracking-id');
+            navigator.clipboard.writeText(trackingNumber);    
+        });
+    }
      //lazada_acc
      if (!($("#lor_lazada_acc").attr('disabled'))) {
         $("#lor_lazada_acc").keyup(function () {
@@ -24,7 +35,19 @@ $(document).ready(function() {
             searchInput(param, '<?= $SITEURL ?>');
         });
     } 
+    if (!($("#lor_sales_pic").attr('disabled'))) {
+        $("#lor_sales_pic").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
 
+    }
      //Currency unit
      if (!($("#lor_curr_unit").attr('disabled'))) {
         $("#lor_curr_unit").keyup(function() {

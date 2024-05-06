@@ -297,7 +297,6 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                                 if (isset($row['courier']))
                                     $echoVal = $row['courier'];
-                                var_dump($echoVal);
 
                                 if (isset($echoVal)) {
                                     $courier_rst = getData('name', "id = '$echoVal'", '', COURIER, $connect);

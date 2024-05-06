@@ -39,7 +39,18 @@ window.onload = function() {
 
 //autocomplete
 $(document).ready(function() {
-
+    function getParameterByName(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    var act = getParameterByName('act');
+    if (act != 'I'){
+        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+            // Copy tracking number to clipboard
+            var trackingNumber = this.getAttribute('data-tracking-id');
+            navigator.clipboard.writeText(trackingNumber);    
+        });
+    }
     //package
     if (!($("#wor_pkg").attr('disabled'))) {
         $("#wor_pkg").keyup(function() {
@@ -54,7 +65,19 @@ $(document).ready(function() {
         });
 
     }
+    if (!($("#wor_pic").attr('disabled'))) {
+        $("#wor_pic").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
 
+    }
     //country
     if (!($("#wor_country").attr('disabled'))) {
         $("#wor_country").keyup(function() {
@@ -102,6 +125,33 @@ $(document).ready(function() {
     //series
     if (!($("#series").attr('disabled'))) {
         $("#series").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRD_SERIES ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+    if (!($("#wor_brand").attr('disabled'))) {
+        $("#wor_brand").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRAND ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+
+    }
+    //series
+    if (!($("#wor_series").attr('disabled'))) {
+        $("#wor_series").keyup(function() {
             var param = {
                 search: $(this).val(),
                 searchType: 'name', // column of the table

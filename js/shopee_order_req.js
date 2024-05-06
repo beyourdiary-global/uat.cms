@@ -1,6 +1,18 @@
 var price_curr_chk = 0;
 //autocomplete
 $(document).ready(function () {
+    function getParameterByName(name) {
+        var urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    var act = getParameterByName('act');
+    if (act != 'I'){
+        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+            // Copy tracking number to clipboard
+            var trackingNumber = this.getAttribute('data-tracking-id');
+            navigator.clipboard.writeText(trackingNumber);    
+        });
+    }
     //package
     if (!($("#sor_pkg").attr('disabled'))) {
         $("#sor_pkg").keyup(function () {

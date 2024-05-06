@@ -803,7 +803,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
             <?php } ?>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6 mb-3 autocomplete" >
             <label class="form-label form_lbl" id="lor_sales_pic_lbl" for="lor_sales_pic">Sales Person In Charge<span class="requireRed">*</span></label>
             <input class="form-control" type="text" name="lor_sales_pic" id="lor_sales_pic" value="<?php
             if (isset($dataExisted) && isset($row['sales_pic']) && !isset($lor_sales_pic)) {
@@ -1101,13 +1101,108 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
 </div>
         </fieldset>
-                        <div class="form-group mb-3">
-                            <label class="form-label form_lbl" id="lor_remark_lbl" for="lor_remark">Remark</label>
-                            <textarea class="form-control" name="lor_remark" id="lor_remark" rows="3" <?php if ($act == '')
-                                echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark']))
-                                echo $row['remark'] ?></textarea>
-                            </div>
+                <div class="form-group mb-3">
+                    <label class="form-label form_lbl" id="lor_remark_lbl" for="lor_remark">Remark</label>
+                    <textarea class="form-control" name="lor_remark" id="lor_remark" rows="3" <?php if ($act == '')
+                         echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark']))
+                        echo $row['remark'] ?></textarea>
+                </div>
+                <?php
+                if(isset($row['order_status'])){
+                if($row['order_status'] == 'SP'){
+                ?>
+                <div class="form-group mb-4">
+                    <h3>
+                        Tracking Details
+                    </h3>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label form_lbl" id="sor_courier_lbl" for="sor_courier">Courier</label>
+                            <?php
+                           
+                            if (isset($row['oder_number']))
+                            $echoVal = $row['oder_number'];
+                            $courier_rst2 = getData('courier_id', "order_id = '$echoVal'", '', OFFICIAL_PROCESS_ORDER, $connect);
 
+                            if (!$courier_rst2) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $courier_row2 = $courier_rst2->fetch_assoc();
+                            if ($courier_row2['courier_id'])
+                            $echoVal2 = $courier_row2['courier_id'];
+                       
+                            $courier_rst = getData('name', "id = '$echoVal2'", '', COURIER, $connect);
+                            $courier_row = $courier_rst->fetch_assoc();
+                      
+                            if (isset($courier_row['name'])) {
+                                $courier_name = $courier_row['name'];
+                            } else {
+                                $courier_name = '';
+                            }
+                            ?>
+                            <input class="form-control" type="text" name="sor_courier" id="sor_courier" value="<?php echo !empty($echoVal2) ? $courier_name : ''; ?>" disabled ?>
+
+                            <?php if (isset($courier_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1">
+                                        <?php echo $courier_err; ?>
+                                    </span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label form_lbl" id="sor_track_lbl" for="sor_track">Tracking Number</label>
+                            
+                            <?php
+                             $tracking_rst = getData('tracking_id', "order_id = '$echoVal'", '', OFFICIAL_PROCESS_ORDER, $connect);
+                             if (!$tracking_rst) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $tracking_row = $tracking_rst->fetch_assoc();
+                            if (isset($tracking_row['tracking_id'])) {
+                                $tracking_id = $tracking_row['tracking_id'];
+                            } else {
+                                $tracking_id = '';
+                            }
+                             ?>
+                             <input class="form-control" type="text"  name="sor_track" id="sor_track" value="<?php echo !empty($echoVal) ? $tracking_id : ''; ?>" disabled ?>
+                            <?php if (isset($tracking_err)) { ?>
+                                <div id="err_msg">
+                                    <span class="mt-n1">
+                                        <?php echo $tracking_err; ?>
+                                    </span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <div class="col-md-4 mb-4 d-flex align-items-end">
+                            <label>&nbsp;</label><br>
+                            <?php
+                   
+                            $tracking_rst2 = getData('tracking_link', "id = '$echoVal2'", '', COURIER, $connect);
+                            if (!$tracking_rst2) {
+                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                            }
+                            $track_row = $tracking_rst2->fetch_assoc();
+                      
+                            if (isset($track_row['tracking_link'])) {
+                                $tracking_link = $track_row['tracking_link'];
+                                
+                            } else {
+                                $tracking_link = '';
+                            }
+                            ?>
+                            
+                            <a href="<?php echo $tracking_link; ?>" id="trackOrderBtn" class="track-order-btn" data-tracking-id="<?php echo $tracking_id; ?>" >Track Order</a>
+                            
+                        </div>
+                    </div>
+                </div>
+                <?php }} ?>
                             <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                                 <?php
                             switch ($act) {
@@ -1141,6 +1236,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
+       
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";
 

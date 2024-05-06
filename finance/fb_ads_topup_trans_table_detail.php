@@ -35,7 +35,9 @@ if (!empty($checkboxValues)) {
             // Initialize an empty array to store the row data
             $lineData = array();
             $lineData[] = $excelRowNum;
-        
+            $metaQuery = getData('*', "id='" . $row2['meta_acc'] . "'", '', META_ADS_ACC, $finance_connect);
+            $meta_acc = $metaQuery->fetch_assoc();
+            $accName = isset($meta_acc['accName']) ? $meta_acc['accName'] : '';
             if (isset($row2['attachment']) && !empty($row2['attachment'])) {
                 $attachmentSourcePath = $img_path . $row2['attachment'];
                 if (file_exists($attachmentSourcePath)) {
@@ -235,7 +237,7 @@ $result2 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
                                 <th class="text-center"><input type="checkbox" class="export" value="<?= $row['id'] ?>"></th>
                                 <th scope="row"><?= $num++; ?></th>
                                 <td scope="row" class="btn-container">
-                                <div class="d-flex align-items-center">' 
+                                <div class="d-flex align-items-center">
                                     <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                                     <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                                     <?php renderDeleteButton($pinAccess, $row['id'], $row['meta_acc'], $row['transactionID'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>

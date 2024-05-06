@@ -478,8 +478,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         $defaultUser = $user_row['name'];
     }
     ?>
-    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
-    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
+    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="">
+    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="">
     <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
             <span class="mt-n1">

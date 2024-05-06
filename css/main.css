@@ -236,7 +236,7 @@ input {
     }
 
     .nav-link {
-        padding: 16px 10px 16px 10px;
+        padding: 16px 8px 16px 10px;
         /* padding: 16px 15px 16px 16px; */
         text-transform: none;
         display: flex;
@@ -681,4 +681,40 @@ input {
 
 .fa-cog-hover:hover {
         cursor: pointer;
+}
+
+
+.btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    margin: 3px;
+}
+.btn-container {
+    white-space: nowrap;
+}
+
+.track-order-btn {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: rgb(0, 153, 122);
+    color:white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+   
+}
+.track-order-btn:hover {
+    background-color: rgb(0, 153, 122);
+    text-decoration: none;
+    color:white;
+}
+
+.autocomplete .searchResult{
+    max-height: 200px; /* Set the max height for the dropdown */
+    overflow-y: auto; /* Enable vertical scrolling */
 }

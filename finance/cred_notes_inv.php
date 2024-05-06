@@ -432,7 +432,11 @@ if ($redirectToCreateInvoicePage == 1) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
     <link rel="stylesheet" href="./css/package.css">
 </head>
-
+<style>
+span.input-group-text{
+    border:none;
+}
+</style>
 <body style="background-color: rgb(240, 241, 247);">
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -494,7 +498,8 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             echo $inv_id;
                                                         } else {
                                                             echo $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
-                                                        } ?>" name="invID" id="invID" />
+                                                        } ?>" name="invID" id="invID" <?php if ($act == '')
+                                                        echo 'disabled' ?>/>
                                                     </div>
                                                 </dd>
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
@@ -716,26 +721,41 @@ if ($redirectToCreateInvoicePage == 1) {
                                                                     <td>
                                                                         <?= $num ?>
                                                                     </td>
-                                                                    <td class="autocomplete"><input type="text"
+                                                                    <td class="autocomplete err"><input type="text"
                                                                             name="prod_desc[]" id="prod_desc_<?= $num ?>"
                                                                             value="<?= $pdesc ?>" onkeyup="prodInfo(this)"
                                                                             <?= $readonly ?>><input type="hidden"
                                                                             name="prod_val[]" id="prod_val_<?= $num ?>"
                                                                             value="<?= $pid ?>">
-                                                                        <div id="err_msg">
-                                                                            <span class="mt-n1">
-                                                                                <?php if (isset($err4))
-                                                                                    echo $err4; ?>
-                                                                            </span>
-                                                                        </div>
+                                                                            <?php if (isset($prod_desc_err)) { ?>
+                                                                                <div id="err_msg">
+                                                                                    <span class="mt-n1">
+                                                                                        <?php echo $prod_desc_err; ?>
+                                                                                    </span>
+                                                                                </div>
+                                                                            <?php } ?>
                                                                     </td>
-                                                                    <td><input class="readonlyInput" type="text" name="price[]"
+                                                                    <td class="err"><input class="readonlyInput" type="text" name="price[]"
                                                                             id="price_<?= $num ?>" value="<?= $pp ?>"
                                                                             onchange="calculateAmount(<?= $num ?>)">
+                                                                            <?php if (isset($price_err)) { ?>
+                                                                                <div id="err_msg">
+                                                                                    <span class="mt-n1">
+                                                                                        <?php echo $price_err; ?>
+                                                                                    </span>
+                                                                                </div>
+                                                                            <?php } ?>
                                                                     </td>
-                                                                    <td><input class="readonlyInput" type="text"
+                                                                    <td class="err"><input class="readonlyInput" type="text"
                                                                             name="quantity[]" id="quantity_<?= $num ?>"
                                                                             value="<?= $pqty ?>" onchange="calculateAmount(<?= $num ?>)">
+                                                                            <?php if (isset($quantity_err)) { ?>
+                                                                                <div id="err_msg">
+                                                                                    <span class="mt-n1">
+                                                                                        <?php echo $quantity_err; ?>
+                                                                                    </span>
+                                                                                </div>
+                                                                            <?php } ?>
                                                                     </td>
                                                                     <td><input class="readonlyInput" type="text" name="amount[]"
                                                                             id="amount_<?= $num ?>" value="<?= $pamt ?>">
@@ -962,7 +982,7 @@ if ($redirectToCreateInvoicePage == 1) {
                                             name="actionBtn" id="actionBtn" onclick="createInvoice();"
                                             value="<?= $actionValue ?>">Create Invoice</button>
                                         <?php if ($act == 'I' || $act == 'E') { ?>
-                                            <button class="btn btn-primary d-grid w-100 mb-2 submitBtn" name="actionBtn"
+                                            <button class="btn btn-primary d-grid w-100 mb-2 submitBtn " name="actionBtn"
                                                 id="actionBtn" value="<?= $actionValue ?>">Save As Draft</button>
                                         <?php } ?>
                                         <button class="btn btn-primary d-grid w-100 mb-2 cancel" name="actionBtn"
