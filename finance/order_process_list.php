@@ -152,7 +152,10 @@ if ($acc_result) {
                                 default:
                                 $channel = ''; 
                                     break;
-                            }
+                            } 
+                            $channel_rst = getData('*', "name = '$channel'", '', CHANEL_SC_MD, $finance_connect);
+                            $channel_row = $channel_rst->fetch_assoc();
+                            $channelid = $channel_row['id'];
                             $cust = null;
 
                             if (isset($row['order_id'])) {
