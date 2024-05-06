@@ -111,7 +111,7 @@ if (post('actionBtn')) {
 
             $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-            if (isDuplicateRecord("default_currency_unit", $dflt_cur_unit[0], $tblName, $connect, $dataID) && isDuplicateRecord("exchange_currency_rate", $exchg_cur_rate, $tblName, $connect, $dataID) && isDuplicateRecord("exchange_currency_unit", $exchg_cur_unit[0], $tblName, $connect, $dataID)) {
+            if (isDuplicateRecord("default_currency_unit", $dflt_cur_unit[0], $tblName, $connect, $dataID)&& isDuplicateRecord("exchange_currency_unit", $exchg_cur_unit[0], $tblName, $connect, $dataID)) {
                 $err = "Duplicate record found for " . $pageTitle . " name.";
                 break;
             }
@@ -267,6 +267,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="dflt_cur_unit">Default Currency Unit</label>
                         <select class="form-select" id="dflt_cur_unit" name="dflt_cur_unit" <?php if ($act == '') echo 'disabled' ?>>
+                        <div id="err_msg">
+                            <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                        </div>
                             <?php
                             if ($cur_list_result->num_rows >= 1) {
                                 $cur_list_result->data_seek(0);
@@ -295,6 +298,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" id="dflt_cur_unit_lbl" for="exchg_cur_unit">Exchange Currency Unit</label>
                         <select class="form-select" id="exchg_cur_unit" name="exchg_cur_unit" <?php if ($act == '') echo 'disabled' ?>>
+                        <div id="err_msg">
+                            <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
+                        </div>
                             <?php
                             if ($cur_list_result->num_rows >= 1) {
                                 $cur_list_result->data_seek(0);
