@@ -499,13 +499,13 @@ span.input-group-text{
                                                         } else {
                                                             echo $proj_row['invoice_prefix_credit'] . $proj_row['invoice_next_number_credit'];
                                                         } ?>" name="invID" id="invID" <?php if ($act == '')
-                                                        echo 'disabled' ?>/>
+                                                        echo 'disabled' ?> readonly/>
                                                     </div>
                                                 </dd>
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
+                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2" id='cni_due_div'>
                                                     <input type="text" class="form-control w-px-150 date-picker"
                                                         name="cni_date" id="cni_date" placeholder="YYYY-MM-DD" value="<?php
                                                         if (isset($dataExisted) && isset($row['date']) && !isset($cni_date)) {
@@ -528,7 +528,8 @@ span.input-group-text{
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Due Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
+                                                <dd class="col-sm-6 justify-content-md-end pe-0 ps-sm-2">
+                                                
                                                     <input type="text" class="form-control w-px-150 date-picker"
                                                         name="cni_due" id="cni_due" placeholder="YYYY-MM-DD" value="<?php
                                                         if (isset($dataExisted) && isset($row['due_date']) && !isset($cni_due)) {
@@ -546,6 +547,7 @@ span.input-group-text{
                                                         </div>
                                                     <?php } ?>
                                                 </dd>
+                                                   
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Currency:</span>
                                                 </dt>
