@@ -241,8 +241,10 @@ if ($acc_result) {
                               
                               
                                  echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
-                                 echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_2 . '" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
-                                 echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>'
+
+                                 echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                               
+                                 echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>';
                                  ?>
                              
                                 </td>
@@ -288,6 +290,9 @@ if ($acc_result) {
 
 </body>
 <script>
+
+    
+
 function updateOrderStatus(id, newStatus, tableName) {
     $.ajax({
         url: 'order_process_list.php',
