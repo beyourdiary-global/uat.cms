@@ -11,7 +11,7 @@ if(isset($_SESSION['userid']))
 
     if (!$result) {
         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-        echo "<script>location.href ='$SITEURL/index.php';</script>";
+        echo '<script>location.href = "' . $SITEURL . '/index.php";</script>';
     }
 
     $row = $result->fetch_assoc();
@@ -33,6 +33,6 @@ if(isset($_SESSION['userid']))
     session_destroy();
 
     // redirect
-    echo ("<script>location.href = 'index.php';</script>");
+    echo '<script>location.href = "' . $SITEURL . '/index.php";</script>';
 }
 ?>

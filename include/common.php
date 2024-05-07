@@ -424,7 +424,7 @@ function getCountry($param, $connect)
 
 function getCountryTelCode($param, $connect)
 {
-	$result = getData('*', 'code = "' . $param . '"', '', 'countries', $connect);
+	$result = getData('*', 'code = "' . $param . '"', '', COUNTRIES, $connect);
 
 	if ($result) {
 		$row = $result->fetch_assoc();
