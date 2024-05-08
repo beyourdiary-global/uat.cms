@@ -258,11 +258,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <label class="form-label form_lbl" id="usi_order_id_lbl" for="usi_order_id">Order ID<span
                                         class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="usi_order_id" id="usi_order_id" <?php if ($act == '')
+
                                     echo 'disabled' ?> value="<?php echo isset($orderID) ? $orderID : ''; ?>">
                                 <input type="hidden" name="usi_order_id_hidden" id="usi_order_id_hidden"
                                 value="<?php echo isset($orderID) ? $orderID : ''; ?>">
-
-
 
                                 <?php if (isset($order_err)) { ?>
                                     <div id="err_msg">
