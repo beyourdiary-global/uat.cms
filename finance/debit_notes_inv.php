@@ -528,7 +528,7 @@ span.input-group-text{
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Due Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
+                                                <dd class="col-sm-6 justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
                                                         name="dni_due" id="dni_due" placeholder="YYYY-MM-DD" value="<?php
                                                         if (isset($dataExisted) && isset($row['due_date']) && !isset($dni_due)) {
