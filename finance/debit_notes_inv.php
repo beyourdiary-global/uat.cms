@@ -432,7 +432,11 @@ if ($redirectToCreateInvoicePage == 1) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
     <link rel="stylesheet" href="./css/package.css">
 </head>
-
+<style>
+span.input-group-text{
+    border:none;
+}
+</style>
 <body style="background-color: rgb(240, 241, 247);">
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -494,7 +498,8 @@ if ($redirectToCreateInvoicePage == 1) {
                                                             echo $inv_id;
                                                         } else {
                                                             echo $proj_row['invoice_prefix_debit'] . $proj_row['invoice_next_number_debit'];
-                                                        } ?>" name="invID" id="invID" />
+                                                        } ?>" name="invID" id="invID" <?php if ($act == '')
+                                                        echo 'disabled' ?>readonly/>
                                                     </div>
                                                 </dd>
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">

@@ -12,7 +12,7 @@
 
     if (!$rst) {
         echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-        echo "<script>location.href ='$SITEURL/index.php';</script>";
+        echo '<script>location.href = "' . $SITEURL . '/index.php";</script>';
     } else {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();

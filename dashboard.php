@@ -226,24 +226,18 @@ canvas {
             <?php if (isActionAllowed("View", $pinAccess1)) : ?>
             <h2>Total Sales (MYR)</h2>
             <div class="chart-container">
-            <canvas id="myChart" style="max-width:100%;"></canvas>
+            <canvas id="myChart"  height="325" style="max-width:100%;"></canvas>
             </div>
-            <?php else: ?>
-            <div class="chart-container">
-            <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-            </div>
+           
             <?php endif; ?>
         </div>
         <div class="col-md-6">
             <?php if (isActionAllowed("View", $pinAccess2)) : ?>
             <h2>Total Order</h2>
             <div class="chart-container">
-            <canvas id="myChart2" style="max-width:100%"></canvas>
+            <canvas id="myChart2" height="325" style="max-width:100%"></canvas>
             </div>
-            <?php else: ?>
-            <div class="chart-container">
-            <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-            </div>
+           
             <?php endif; ?>
         </div>
     </div>
@@ -252,24 +246,18 @@ canvas {
             <?php if (isActionAllowed("View", $pinAccess3)) : ?>
             <h2>Total Shopee Sales (MYR)</h2>
             <div class="chart-container">
-            <canvas id="myChart3" style="max-width:100%"></canvas>
+            <canvas id="myChart3" height="325" style="max-width:100%"></canvas>
             </div>
-            <?php else: ?>
-            <div class="chart-container">
-            <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-            </div>
+           
             <?php endif; ?>
         </div>
         <div class="col-md-6">
             <?php if (isActionAllowed("View", $pinAccess4)) : ?>
             <h2>Total Shopee Order</h2>
             <div class="chart-container">
-            <canvas id="myChart4" style="max-width:100%"></canvas>
+            <canvas id="myChart4" height="325" style="max-width:100%"></canvas>
             </div>
-            <?php else: ?>
-            <div class="chart-container">
-            <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-            </div>
+           
             <?php endif; ?>
         </div>
     </div>
@@ -278,11 +266,7 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess5)) : ?>
                 <h2>Total Web Sales</h2>
                 <div class="chart-container">
-                <canvas id="myChart5" style="max-width:100%"></canvas>
-                </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
+                <canvas id="myChart5" height="325" style="max-width:100%"></canvas>
                 </div>
                 <?php endif; ?>
         </div>
@@ -290,12 +274,9 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess6)) : ?>
                 <h2>Total Web Order</h2>
                 <div class="chart-container">
-                <canvas id="myChart6" style="max-width:100%"></canvas>
+                <canvas id="myChart6" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
     </div>
@@ -304,24 +285,18 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess7)) : ?>
                 <h2>Total Facebook Sales (MYR)</h2>
                 <div class="chart-container">
-                <canvas id="myChart7" style="max-width:100%"></canvas>
+                <canvas id="myChart7" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
         <div class="col-md-6">
                 <?php if (isActionAllowed("View", $pinAccess8)) : ?>
                 <h2>Total Facebook Order</h2>
                 <div class="chart-container">
-                <canvas id="myChart8" style="max-width:100%"></canvas>
+                <canvas id="myChart8" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
     </div>
@@ -330,24 +305,18 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess9)) : ?>
                 <h2>Total Lazada Sales (MYR)</h2>
                 <div class="chart-container">
-                <canvas id="myChart9" style="max-width:100%"></canvas>
+                <canvas id="myChart9" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
         <div class="col-md-6">
                 <?php if (isActionAllowed("View", $pinAccess10)) : ?>
                 <h2>Total Lazada Order</h2>
                 <div class="chart-container">
-                <canvas id="myChart10" style="max-width:100%"></canvas>
+                <canvas id="myChart10" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
     </div>
@@ -356,24 +325,18 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess11)) : ?>
                 <h2>Total Facebook Ads Transaction Sales</h2>
                 <div class="chart-container">
-                <canvas id="myChart11" style="max-width:100%"></canvas>
+                <canvas id="myChart11" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
         <div class="col-md-6">
                 <?php if (isActionAllowed("View", $pinAccess12)) : ?>
                 <h2>Total Delivery Sales</h2>
                 <div class="chart-container">
-                <canvas id="myChart12" style="max-width:100%"></canvas>
+                <canvas id="myChart12" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
     </div>
@@ -382,12 +345,9 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess13)) : ?>
                 <h2>Total Shopee Ads Transaction Sales</h2>
                 <div class="chart-container">
-                <canvas id="myChart13" style="max-width:100%"></canvas>
+                <canvas id="myChart13" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
             </div>
         </div>
@@ -395,12 +355,9 @@ canvas {
                 <?php if (isActionAllowed("View", $pinAccess14)) : ?>
                 <h2>Total Shopee Withdrawal Amount</h2>
                 <div class="chart-container">
-                <canvas id="myChart14" style="max-width:100%"></canvas>
+                <canvas id="myChart14" height="325" style="max-width:100%"></canvas>
                 </div>
-                <?php else: ?>
-                <div class="chart-container">
-                <span style="align-items: center;display: flex;justify-content: center;max-width:100%;">Insufficient Permission to view this chart</span>
-                </div>
+                
                 <?php endif; ?>
         </div>
     </div>

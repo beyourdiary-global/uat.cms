@@ -12,7 +12,7 @@ $result =  getData('*', "id = '1'", '', $tblName, $connect);
 
 if (!$result) {
     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/index.php';</script>";
+    echo '<script>location.href = "' . $SITEURL . '/index.php";</script>';
 }
 
 $row = $result->fetch_assoc();
