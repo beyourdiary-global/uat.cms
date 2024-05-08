@@ -498,8 +498,8 @@ span.input-group-text{
                                                             echo $inv_id;
                                                         } else {
                                                             echo $proj_row['invoice_prefix_debit'] . $proj_row['invoice_next_number_debit'];
-                                                        } ?>" name="invID" id="invID" <?php if ($act == '')
-                                                        echo 'disabled' ?>readonly/>
+                                                        } ?>" name="invID" id="invID" <?= $act == '' ? 'disabled' : 'readonly' ?>
+                                                        />
                                                     </div>
                                                 </dd>
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
