@@ -16,6 +16,7 @@ $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 
 
 $dataID = input('id');
+$orderID = input('orderid');
 $act = input('act');
 $pageAction = getPageAction($act);
 $clearLocalStorage = '<script>localStorage.clear();</script>';
@@ -257,9 +258,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <label class="form-label form_lbl" id="usi_order_id_lbl" for="usi_order_id">Order ID<span
                                         class="requireRed">*</span></label>
                                 <input class="form-control" type="text" name="usi_order_id" id="usi_order_id" <?php if ($act == '')
-                                    echo 'disabled' ?> value="<?php echo isset($dataID) ? $dataID : ''; ?>">
+                                    echo 'disabled' ?> value="<?php echo isset($orderID) ? $orderID : ''; ?>">
                                 <input type="hidden" name="usi_order_id_hidden" id="usi_order_id_hidden"
-                                value="<?php echo isset($dataID) ? $dataID : ''; ?>">
+                                value="<?php echo isset($orderID) ? $orderID : ''; ?>">
 
 
 

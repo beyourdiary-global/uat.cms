@@ -153,11 +153,16 @@ $('.submitBtn').on('click', () => {
     var wcr_cust_birthday = $('#wcr_cust_birthday').val();
     var today = new Date().toISOString().slice(0, 10);
 
-        if (wcr_cust_birthday === '' || wcr_cust_birthday === null || wcr_cust_birthday === today ||wcr_cust_birthday === undefined) {
+        if (wcr_cust_birthday === '' || wcr_cust_birthday === null ||wcr_cust_birthday === undefined) {
             cust_birthday_chk = 0;
             $("#wcr_cust_birthday").after(
                 '<span class="error-message wcr-cust-id-err">Customer Birthday is required!</span>');
-        } else {
+        }else if( wcr_cust_birthday > today) {
+            cust_birthday_chk = 0;
+            $("#wcr_cust_birthday").after(
+                '<span class="error-message wcr-cust-id-err">Customer Birthday is not in the future!</span>');
+        }
+        else {
             $(".wcr-cust-birthday-err").remove();
             cust_birthday_chk = 1;
         }

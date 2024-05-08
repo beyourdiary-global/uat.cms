@@ -136,7 +136,6 @@ if ($acc_result) {
 
                             $channel = '';
                             $pic = '';
-                          
                             switch ($resultSetKey) {
                                 case 'result':
                                     $channel = 'Shopee'; 
@@ -153,12 +152,10 @@ if ($acc_result) {
                                 default:
                                 $channel = ''; 
                                     break;
-                            }
-
+                            } 
                             $channel_rst = getData('*', "name = '$channel'", '', CHANEL_SC_MD, $finance_connect);
                             $channel_row = $channel_rst->fetch_assoc();
                             $channelid = $channel_row['id'];
-
                             $cust = null;
 
                             if (isset($row['order_id'])) {
@@ -248,9 +245,9 @@ if ($acc_result) {
                               
                                  echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
 
-                                 echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $orderId . '&act=' . $act_1 .'&channel=' . $channelid .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
-
-                                 echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>'
+                                 echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                               
+                                 echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>';
                                  ?>
                              
                                 </td>
@@ -297,26 +294,38 @@ if ($acc_result) {
 </body>
 <script>
 
-    
-
 function updateOrderStatus(id, newStatus, tableName) {
-    $.ajax({
-        url: 'order_process_list.php',
-        type: 'POST',
-        data: { id: id, order_status: newStatus, table_name: tableName },
-        success: function(response) {
-            if (response.success) {
-                $('#order_status_' + id).text(newStatus);
-                // You can add more logic here, like showing a success message
-            } else {
-                // Handle the case where the update failed
-            }
-        },
-        error: function() {
-            // Handle the AJAX error
-        }
-    });
+    // Create a form element
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'order_process_list.php'; // Specify the URL of the PHP script
+
+    // Create input fields for id, order_status, and table_name
+    var idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.name = 'id';
+    idInput.value = id;
+
+    var statusInput = document.createElement('input');
+    statusInput.type = 'hidden';
+    statusInput.name = 'order_status';
+    statusInput.value = newStatus;
+
+    var tableInput = document.createElement('input');
+    tableInput.type = 'hidden';
+    tableInput.name = 'table_name';
+    tableInput.value = tableName;
+
+    // Append input fields to the form
+    form.appendChild(idInput);
+    form.appendChild(statusInput);
+    form.appendChild(tableInput);
+
+    // Append the form to the document body and submit it
+    document.body.appendChild(form);
+    form.submit();
 }
+
     /**
   oufei 20231014
   common.fun.js
