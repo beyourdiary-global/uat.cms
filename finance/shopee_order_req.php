@@ -495,10 +495,14 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                      
                      <?php if ($act == 'E'): ?>
                         <?php
-                        $status = $row['order_status'];
-                        if ($status == 'P') {
-                            $status = 'Processing';
-                        }
+                         $status = $row['order_status'];
+                         if ($status == 'P') {
+                             $status = 'Processing';
+                         }else  if ($status == 'SP') {
+                             $status = 'Shipped';
+                         }else  if ($status == 'WP') {
+                             $status = 'Waiting Packing';
+                         }
                         ?>
                         <span style="float: right;" id="order-status">Order Status: <?php echo $status; ?></span>
                         

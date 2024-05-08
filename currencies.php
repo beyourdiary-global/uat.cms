@@ -290,9 +290,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     <div class="form-group mb-3">
                         <label class="form-label form_lbl" id="exchg_cur_rate_lbl" for="exchg_cur_rate">Exchange Currency Rate</label>
                         <input class="form-control" type="number" step="any" name="exchg_cur_rate" id="exchg_cur_rate" value="<?php if (isset($row['exchange_currency_unit'])) echo $row['exchange_currency_rate'] ?>" <?php if ($act == '') echo 'readonly' ?>>
-                        <div id="err_msg">
-                            <span class="mt-n1"><?php if (isset($err)) echo $err; ?></span>
-                        </div>
+                       
                     </div>
 
                     <div class="form-group mb-3">

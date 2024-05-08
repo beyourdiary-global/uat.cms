@@ -241,7 +241,7 @@ datasets_total_order.forEach(dataset => {
 let myChart2;
 const chartElement2 = document.getElementById('myChart2');
 if (chartElement2) {
-const ctx2 = document.getContext('2d');
+const ctx2 = chartElement2.getContext('2d');
 myChart2 = new Chart(ctx2, {
     type: 'line',
     data: {
@@ -302,7 +302,7 @@ datasets_shp_sales.forEach(dataset => {
 let myChart3;
 const chartElement3 = document.getElementById('myChart3');
 if (chartElement3) {
-const ctx3 = document.getContext('2d');
+const ctx3 = chartElement3.getContext('2d');
 myChart3 = new Chart(ctx3, {
     type: 'line',
     data: {
@@ -363,7 +363,7 @@ datasets_shp_order.forEach(dataset => {
 let myChart4;
 const chartElement4 = document.getElementById('myChart4');
 if (chartElement4) {
-const ctx4 = document.getContext('2d');
+const ctx4 = chartElement4.getContext('2d');
 myChart4 = new Chart(ctx4, {
     type: 'line',
     data: {
@@ -424,7 +424,7 @@ datasets_web_sales.forEach(dataset => {
 let myChart5;
 const chartElement5 = document.getElementById('myChart5');
 if (chartElement5) {
-const ctx5 = document.getContext('2d');
+const ctx5 = chartElement5.getContext('2d');
 myChart5 = new Chart(ctx5, {
     type: 'line',
     data: {
@@ -486,7 +486,7 @@ datasets_web_order.forEach(dataset => {
 let myChart6;
 const chartElement6 = document.getElementById('myChart6');
 if (chartElement6) {
-const ctx6 = document.getContext('2d');
+const ctx6 = chartElement6.getContext('2d');
 myChart6 = new Chart(ctx6, {
     type: 'line',
     data: {
@@ -548,7 +548,7 @@ datasets_fb_sales.forEach(dataset => {
 let myChart7;
 const chartElement7 = document.getElementById('myChart7');
 if (chartElement7) {
-const ctx7 = document.getContext('2d');
+const ctx7 = chartElement7.getContext('2d');
 myChart7 = new Chart(ctx7, {
     type: 'line',
     data: {
@@ -609,7 +609,7 @@ datasets_fb_order.forEach(dataset => {
 let myChart8;
 const chartElement8 = document.getElementById('myChart8');
 if (chartElement8) {
-const ctx8 = document.getContext('2d');
+const ctx8 = chartElement8.getContext('2d');
 myChart8 = new Chart(ctx8, {
     type: 'line',
     data: {
@@ -671,7 +671,7 @@ datasets_lzd_sales.forEach(dataset => {
 let myChart9;
 const chartElement9 = document.getElementById('myChart9');
 if (chartElement9) {
-const ctx9 = document.getContext('2d');
+const ctx9 = chartElement9.getContext('2d');
 myChart9 = new Chart(ctx9, {
     type: 'line',
     data: {
@@ -732,7 +732,7 @@ datasets_lzd_order.forEach(dataset => {
 let myChart10;
 const chartElement10 = document.getElementById('myChart10');
 if (chartElement10) {
-const ctx10 = document.getContext('2d');
+const ctx10 = chartElement10.getContext('2d');
 myChart10 = new Chart(ctx10, {
     type: 'line',
     data: {
@@ -794,7 +794,7 @@ datasets_fb_ads_sales.forEach(dataset => {
 let myChart11;
 const chartElement11 = document.getElementById('myChart11');
 if (chartElement11) {
-const ctx11 = document.getContext('2d');
+const ctx11 = chartElement11.getContext('2d');
 myChart11 = new Chart(ctx11, {
     type: 'line',
     data: {
@@ -854,7 +854,7 @@ const datasets_del = createDatasetsTotalOrder2(uniqueCouriers_del_sales, today, 
 let myChart12;
 const chartElement12 = document.getElementById('myChart12');
 if (chartElement12) {
-const ctx12 = document.getContext('2d');
+const ctx12 = chartElement12.getContext('2d');
 myChart12 = new Chart(ctx12, {
     type: 'line',
     data: {
@@ -910,7 +910,7 @@ const datasets_shp = createDatasetsTotalOrder2(uniqueCouriers_shp_ads, today, ye
 let myChart13;
 const chartElement13 = document.getElementById('myChart13');
 if (chartElement13) {
-const ctx13 = document.getContext('2d');
+const ctx13 = chartElement13.getContext('2d');
 myChart13 = new Chart(ctx13, {
     type: 'line',
     data: {
@@ -966,7 +966,7 @@ const datasets_shp_with = createDatasetsTotalOrder(uniqueCouriers_shp_with, toda
 let myChart14;
 const chartElement14 = document.getElementById('myChart14');
 if (chartElement14) {
-const ctx14 = document.getContext('2d');
+const ctx14 = chartElement14.getContext('2d');
 myChart14 = new Chart(ctx14, {
     type: 'line',
     data: {

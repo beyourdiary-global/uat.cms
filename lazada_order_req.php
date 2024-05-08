@@ -108,10 +108,7 @@ if (post('actionBtn')) {
             } else if ($action == 'addRequest') {
                 try {
                     //check values
-                    if ($lor_lazada_acc) {
-                        array_push($newvalarr, $lor_lazada_acc);
-                        array_push($datafield, 'lazada_acc');
-                    }
+             
 
                     if ($lor_curr_unit) {
                         array_push($newvalarr, $lor_curr_unit);
@@ -233,11 +230,7 @@ if (post('actionBtn')) {
                     $row = $rst->fetch_assoc();
 
                     // check value
-                    if ($row['lazada_acc'] != $lor_lazada_acc) {
-                        array_push($oldvalarr, $row['lazada_acc']);
-                        array_push($chgvalarr, $lor_lazada_acc);
-                        array_push($datafield, 'lazada_acc');
-                    }
+                  
 
                     if ($row['curr_unit'] != $lor_curr_unit) {
                         array_push($oldvalarr, $row['curr_unit']);
@@ -531,8 +524,10 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         }
         ?>
-        <input class="form-control" type="text" name="lor_lazada_acc" id="lor_lazada_acc" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $lazada_acc_row['name'] : ''  ?>">
-        <input type="hidden" name="lor_lazada_acc_hidden" id="lor_lazada_acc_hidden" value="<?php echo (isset($row['lazada_acc'])) ? $row['lazada_acc'] : ''; ?>">
+        
+        <input class="form-control" type="text" name="lor_lazada_acc" id="lor_lazada_acc" <?php if ($act == '') echo 'disabled' ?> value="">
+<input type="hidden" name="lor_lazada_acc_hidden" id="lor_lazada_acc_hidden" value="<?php echo (isset($row['lazada_acc'])) ? $row['lazada_acc'] : ''; ?>">
+
 
         <?php if (isset($lazada_acc_err)) { ?>
             <div id="err_msg">

@@ -359,6 +359,8 @@ $result = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
                                     $status = 'Processing';
                                 }else  if ($status == 'SP') {
                                     $status = 'Shipped';
+                                }else  if ($status == 'WP') {
+                                    $status = 'Waiting Packing';
                                 }
                                 echo $status;
                                 ?>

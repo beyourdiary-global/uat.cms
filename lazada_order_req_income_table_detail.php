@@ -377,6 +377,8 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                                 $status = 'Processing';
                             }else  if ($status == 'SP') {
                                 $status = 'Shipped';
+                            }else  if ($status == 'WP') {
+                                $status = 'Waiting Packing';
                             }
                             echo $status;
                             ?>

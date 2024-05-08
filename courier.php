@@ -42,6 +42,7 @@ if (post('actionBtn')) {
     $courier_name = postSpaceFilter("courier_name");
     $courier_country = postSpaceFilter("courier_country_hidden");
     $courier_tax = postSpaceFilter("courier_tax");
+    $courier_tracking_link = postSpaceFilter("courier_tracking_link");
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
@@ -61,7 +62,11 @@ if (post('actionBtn')) {
             } else if (!$courier_tax && $courier_tax < 1) {
                 $tax_err = "Please specify the Courier tax.";
                 break;
-            } else if ($courier_id && $courier_name && $courier_country && isDuplicateRecord("id", $courier_id, $tblName,  $connect, $dataID) && isDuplicateRecord("name", $courier_name, $tblName,  $connect, $dataID) && isDuplicateRecord("country", $courier_country, $tblName,  $connect, $dataID)) {
+            }else if (!$courier_tracking_link) {
+                    $tracking_link_err = "Please specify the Courier Tracking Link.";
+                    break;
+            }
+            else if ($courier_id && $courier_name && $courier_country && isDuplicateRecord("id", $courier_id, $tblName,  $connect, $dataID) && isDuplicateRecord("name", $courier_name, $tblName,  $connect, $dataID) && isDuplicateRecord("country", $courier_country, $tblName,  $connect, $dataID)) {
                 $id_err = "Duplicate record found for " . $pageTitle . " ID, Name and Country.";
                 break;
             } else if ($action == 'addCourier') {
@@ -87,7 +92,12 @@ if (post('actionBtn')) {
                         array_push($datafield, 'taxable');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(id,name,country,taxable,create_by,create_date,create_time) VALUES ('$courier_id','$courier_name','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime())";
+                    if ($courier_tracking_link) {
+                        array_push($newvalarr, $courier_tracking_link);
+                        array_push($datafield, 'tracking link');
+                    }
+
+                    $query = "INSERT INTO " . $tblName  . "(id,name,tracking_link,country,taxable,create_by,create_date,create_time) VALUES ('$courier_id','$courier_name','$courier_tracking_link','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
                     generateDBData(COURIER, $connect);
@@ -113,6 +123,12 @@ if (post('actionBtn')) {
                         array_push($oldvalarr, $row['name']);
                         array_push($chgvalarr, $courier_name);
                         array_push($datafield, 'name');
+                    }
+
+                    if ($row['tracking_link'] != $courier_tracking_link) {
+                        array_push($oldvalarr, $row['tracking_link']);
+                        array_push($chgvalarr, $courier_tracking_link);
+                        array_push($datafield, 'tracking link');
                     }
 
                     if ($row['country'] != $courier_country) {
@@ -299,6 +315,29 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php if (isset($name_err)) { ?>
                             <div id="err_msg">
                                 <span class="mt-n1"><?php echo $name_err; ?></span>
+                            </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="form-label form_lbl" id="courier_tracking_link_lbl" for="courier_tracking_link">Courier
+                                Tracking Link<span class="requireRed">*</span></label>
+                            <input class="form-control" type="text" name="courier_tracking_link" id="courier_tracking_link" value="<?php
+                                                                                                            if (isset($dataExisted) && isset($row['tracking_link']) && !isset($courier_tracking_link)) {
+                                                                                                                echo $row['name'];
+                                                                                                            } else if (isset($dataExisted) && isset($row['tracking_link']) && isset($courier_tracking_link)) {
+                                                                                                                echo $courier_tracking_link;
+                                                                                                            } else {
+                                                                                                                echo '';
+                                                                                                            } ?>"
+                                <?php if ($act == '') echo 'disabled' ?>>
+                            <?php if (isset($tracking_link_err)) { ?>
+                            <div id="err_msg">
+                                <span class="mt-n1"><?php echo $tracking_link_err; ?></span>
                             </div>
                             <?php } ?>
                         </div>
