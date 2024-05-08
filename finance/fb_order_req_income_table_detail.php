@@ -339,12 +339,14 @@ $result = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
                                 </td>
                                 <td>
                                     <?php
-                                    $status = $row['order_status'];
-                                    if ($status == 'P') {
-                                        $status = 'Processing';
-                                    }else  if ($status == 'SP') {
-                                        $status = 'Shipped';
-                                    }
+                                     $status = $row['order_status'];
+                                     if ($status == 'P') {
+                                         $status = 'Processing';
+                                     }else  if ($status == 'SP') {
+                                         $status = 'Shipped';
+                                     }else  if ($status == 'WP') {
+                                         $status = 'Waiting Packing';
+                                     }
                                     echo $status;
                                     ?>
                                 </td>

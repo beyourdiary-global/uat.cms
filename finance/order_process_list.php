@@ -26,22 +26,21 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
     $newStatus = $_POST['order_status'];
     $tableName = $_POST['table_name'];
 
-$query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
-$acc_result = $finance_connect->query($query);
-if ($tableName == 'LAZADA_ORDER_REQ') {
-    $acc_result = $connect->query($query);
-} else {
+    $query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
     $acc_result = $finance_connect->query($query);
-}
-if ($acc_result) {
-    $response = array('success' => true);
-} else {
-    $response = array('success' => false, 'error' => $connect->error);
-}
+    if ($tableName == 'LAZADA_ORDER_REQ') {
+        $acc_result = $connect->query($query);
+    } else {
+        $acc_result = $finance_connect->query($query);
+    }
+    if ($acc_result) {
+        $response = array('success' => true);
+    } else {
+        $response = array('success' => false, 'error' => $connect->error);
+    }
 } else {
     $response = array('success' => false, 'error' => 'Missing id, order_status, or table_name in POST request');
 }
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -296,35 +295,39 @@ if ($acc_result) {
 <script>
 
 function updateOrderStatus(id, newStatus, tableName) {
-    // Create a form element
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'order_process_list.php'; // Specify the URL of the PHP script
+    // Create an AJAX request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'order_process_list.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-    // Create input fields for id, order_status, and table_name
-    var idInput = document.createElement('input');
-    idInput.type = 'hidden';
-    idInput.name = 'id';
-    idInput.value = id;
+    // Define the callback function for the AJAX request
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // Handle the successful response from the server
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    // Order status updated successfully
+                    console.log('Order status updated successfully');
+                    // Optionally, you can refresh the page or update the UI
+                } else {
+                    // Error occurred while updating the order status
+                    console.error('Error updating order status: ' + response.error);
+                    // Display an error message to the user
+                }
+            } else {
+                // Error occurred with the AJAX request
+                console.error('AJAX request failed with status: ' + xhr.status);
+                // Display an error message to the user
+            }
+        }
+    };
 
-    var statusInput = document.createElement('input');
-    statusInput.type = 'hidden';
-    statusInput.name = 'order_status';
-    statusInput.value = newStatus;
-
-    var tableInput = document.createElement('input');
-    tableInput.type = 'hidden';
-    tableInput.name = 'table_name';
-    tableInput.value = tableName;
-
-    // Append input fields to the form
-    form.appendChild(idInput);
-    form.appendChild(statusInput);
-    form.appendChild(tableInput);
-
-    // Append the form to the document body and submit it
-    document.body.appendChild(form);
-    form.submit();
+    // Send the AJAX request with the id, order_status, and table_name as parameters
+    var params = 'id=' + encodeURIComponent(id) +
+                 '&order_status=' + encodeURIComponent(newStatus) +
+                 '&table_name=' + encodeURIComponent(tableName);
+    xhr.send(params);
 }
 
     /**

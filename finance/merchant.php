@@ -280,7 +280,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 <?php echo $pageActionTitle ?>
             </p>
         </div>
-
+<style>
+    .required-dot {
+  color: red;
+}
+</style>
         <div id="formContainer" class="container d-flex justify-content-center">
             <div class="col-8 col-md-6 formWidthAdjust">
                 <form id="form" method="post" novalidate>
@@ -294,13 +298,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                         <div class="row">
                             <div class="col-md-6 mb-3">
 
-                                <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                                <?php if (isset($name_err)) { ?>
-                                    <div id="err_msg">
-                                        <span class="mt-n1"><?php echo $name_err; ?></span>
-                                    </div>
-                                <?php } ?>
+                                <label class="form-label form_lbl" for="currentDataName"><?php echo $pageTitle ?> Name<span class="required-dot">*</span></label>
+                                <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> autocomplete="off">
+                          
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label form_lbl" id="mrcht_business_no_lbl" for="mrcht_business_no"><?php echo $pageTitle ?> Business No</label>
@@ -331,7 +331,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                                                                                                     } ?>" <?php if ($act == '') echo 'readonly' ?>>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email"><?php echo $pageTitle ?> Email</label>
+                            <label class="form-label form_lbl" id="mrcht_email_lbl" for="mrcht_email"><?php echo $pageTitle ?> Email<span class="required-dot">*</span></label>
                                 <input class="form-control" type="text" name="mrcht_email" id="mrcht_email" value="<?php
                                                                                                                     if (isset($dataExisted) && isset($row['email']) && !isset($mrcht_email)) {
                                                                                                                         echo $row['email'];
@@ -340,7 +340,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                                                                                     } else {
                                                                                                                         echo '';
                                                                                                                     }
-                                                                                                                    ?>" <?php if ($act == '') echo 'readonly' ?>>
+                                                                                                                    ?>" <?php if ($act == '') echo 'readonly'  ?>>
                                 <?php if (isset($email_err)) { ?>
                                     <div id="err_msg">
                                         <span class="mt-n1"><?php echo $email_err; ?></span>
@@ -364,8 +364,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mb-3">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge</label>
+                            <div class="col-md-6 mb-3 autocomplete">
+                                <label class="form-label form_lbl" id="mrcht_pic_lbl" for="mrcht_pic">Person In Charge<span class="required-dot">*</span></label>
                                 <input class="form-control" type="text" name="mrcht_pic" id="mrcht_pic" value="<?php
                                                                                                                 if (isset($dataExisted) && isset($row['person_in_charges']) && !isset($mrcht_pic)) {
                                                                                                                     echo $row['person_in_charges'];
@@ -397,7 +397,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
+                        <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
                         <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
                     </div>
                 </form>
@@ -406,6 +406,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     </div>
 
     <script>
+        <?php
+        include "../js/merchant.js"
+            ?>
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ''; ?>";
@@ -415,45 +418,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         setAutofocus(action);
         preloader(300, action);
 
-        $("#merchant_name").on("input", function() {
-            $(".mrcht-name-err").remove();
-        });
-
-        $("#mrcht_email").on("input", function() {
-            $(".mrcht-email-err").remove();
-        });
-
-        $('.submitBtn').on('click', () => {
-            $(".error-message").remove();
-            //event.preventDefault();
-            var name_chk = 0;
-            var email_chk = 0;
-
-            if (($('#merchant_name').val() === '' || $('#merchant_name').val() === null || $('#merchant_name')
-                    .val() === undefined)) {
-                name_chk = 0;
-                $("#merchant_name").after(
-                    '<span class="error-message mrcht-name-err">Merchant name is required!</span>');
-            } else {
-                $(".error-message").remove();
-                name_chk = 1;
-            }
-
-            if (!($('#mrcht_email').val() === '' || $('#mrcht_email').val() === null || $('#mrcht_email').val() ===
-                    undefined) && !(isEmail($('#mrcht_email').val()))) {
-                email_chk = 0;
-                $("#mrcht_email").after('<span class="error-message mrcht-email-err">Wrong email format!</span>');
-            } else {
-                email_chk = 1;
-                $(".mrcht-email-err").remove();
-            }
-
-            if (name_chk == 1 && email_chk == 1)
-                $(this).closest('form').submit();
-            else
-                return false;
-
-        })
+       
     </script>
 
 </body>
