@@ -53,11 +53,7 @@ $("#makeOrderForm").on("submit", function () {
         $("#sender_email").css("border-color", "");
     }
 
-    if (!$("#receiver_email").val()) {
-        $("#emailMsg2").html("<p style='color:red'>Please enter receiver email</p>");
-        $("#receiver_email").css("border-color", "red");
-        errorExist = true;
-    } else if (!validateEmail('#receiver_email')) {
+    if (!validateEmail('#receiver_email')) {
         $("#emailMsg2").html("<p style='color:red'>Invalid email format</p>");
         $("#receiver_email").css("border-color", "red");
         errorExist = true;
@@ -70,13 +66,16 @@ $("#makeOrderForm").on("submit", function () {
         $("#telMsg1").html("<p style='color:red'>Please enter sender phone number</p>");
         $("#sender_tel").css("border-color", "red");
         errorExist = true;
-    } else if (!validatePhoneNum('#sender_tel', '#sender_country')) {
-        $("#telMsg1").html("<p style='color:red'>Invalid phone number</p>");
-        $("#sender_tel").css("border-color", "red");
-        errorExist = true;
     } else {
-        $("#telMsg1").html("");
-        $("#sender_tel").css("border-color", "");
+        var phoneNum = $("#sender_tel").val().replace(/^0+/, ''); // Remove leading zeros
+        if (!validatePhoneNum('#sender_tel', '#sender_country', phoneNum)) {
+            $("#telMsg1").html("<p style='color:red'>Invalid phone number</p>");
+            $("#sender_tel").css("border-color", "red");
+            errorExist = true;
+        } else {
+            $("#telMsg1").html("");
+            $("#sender_tel").css("border-color", "");
+        }
     }
 
     if (!validatePhoneNum('#sender_alt_tel', '#sender_country')) {
@@ -98,13 +97,16 @@ $("#makeOrderForm").on("submit", function () {
         $("#telMsg3").html("<p style='color:red'>Please enter receiver phone number</p>");
         $("#receiver_tel").css("border-color", "red");
         errorExist = true;
-    } else if (!validatePhoneNum('#receiver_tel', '#receiver_country')) {
-        $("#telMsg3").html("<p style='color:red'>Invalid phone number</p>");
-        $("#receiver_tel").css("border-color", "red");
-        errorExist = true;
     } else {
-        $("#telMsg3").html("");
-        $("#receiver_tel").css("border-color", "");
+        var phoneNum = $("#receiver_tel").val().replace(/^0+/, ''); // Remove leading zeros
+        if (!validatePhoneNum('#receiver_tel', '#receiver_country', phoneNum)) {
+            $("#telMsg3").html("<p style='color:red'>Invalid phone number</p>");
+            $("#receiver_tel").css("border-color", "red");
+            errorExist = true;
+        } else {
+            $("#telMsg3").html("");
+            $("#receiver_tel").css("border-color", "");
+        }
     }
 
     if (!validatePhoneNum('#receiver_alt_tel', '#receiver_country')) {

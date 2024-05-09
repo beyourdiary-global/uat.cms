@@ -787,9 +787,9 @@ span.input-group-text{
                                                                     </div>
                                                                 </td>
                                                                 <td><input type="number" name="price[]" id="price_1"
-                                                                        value=""></td>
+                                                                        value="" oninput="calculateAmount(1)"></td>
                                                                 <td><input type="number" name="quantity[]" id="quantity_1"
-                                                                        value="">
+                                                                        value="" oninput="calculateAmount(1)">
                                                                 </td>
                                                                 <td><input class="readonlyInput" type="text" name="amount[]"
                                                                         id="amount_1" value=""></td>
