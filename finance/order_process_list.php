@@ -26,21 +26,22 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
     $newStatus = $_POST['order_status'];
     $tableName = $_POST['table_name'];
 
-    $query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
+$query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
+$acc_result = $finance_connect->query($query);
+if ($tableName == 'LAZADA_ORDER_REQ') {
+    $acc_result = $connect->query($query);
+} else {
     $acc_result = $finance_connect->query($query);
-    if ($tableName == 'LAZADA_ORDER_REQ') {
-        $acc_result = $connect->query($query);
-    } else {
-        $acc_result = $finance_connect->query($query);
-    }
-    if ($acc_result) {
-        $response = array('success' => true);
-    } else {
-        $response = array('success' => false, 'error' => $connect->error);
-    }
+}
+if ($acc_result) {
+    $response = array('success' => true);
+} else {
+    $response = array('success' => false, 'error' => $connect->error);
+}
 } else {
     $response = array('success' => false, 'error' => 'Missing id, order_status, or table_name in POST request');
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -151,7 +152,7 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
                                 default:
                                 $channel = ''; 
                                     break;
-                            } 
+                            }
                             $channel_rst = getData('*', "name = '$channel'", '', CHANEL_SC_MD, $finance_connect);
                             $channel_row = $channel_rst->fetch_assoc();
                             $channelid = $channel_row['id'];
@@ -242,14 +243,11 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
                                 }
                               
                               
-                                 echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
-
-                                 echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                                echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
                                
-                                 echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>';
+                                echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
 
-                                 ?>
-                             
+                                echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>';?>
                                 </td>
                                 <td scope="row">
                                     <?= $orderId ?>
@@ -293,43 +291,24 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
 
 </body>
 <script>
-
 function updateOrderStatus(id, newStatus, tableName) {
-    // Create an AJAX request
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'order_process_list.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    // Define the callback function for the AJAX request
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                // Handle the successful response from the server
-                var response = JSON.parse(xhr.responseText);
-                if (response.success) {
-                    // Order status updated successfully
-                    console.log('Order status updated successfully');
-                    // Optionally, you can refresh the page or update the UI
-                } else {
-                    // Error occurred while updating the order status
-                    console.error('Error updating order status: ' + response.error);
-                    // Display an error message to the user
-                }
+    $.ajax({
+        url: 'order_process_list.php',
+        type: 'POST',
+        data: { id: id, order_status: newStatus, table_name: tableName },
+        success: function(response) {
+            if (response.success) {
+                $('#order_status_' + id).text(newStatus);
+                // You can add more logic here, like showing a success message
             } else {
-                // Error occurred with the AJAX request
-                console.error('AJAX request failed with status: ' + xhr.status);
-                // Display an error message to the user
+                // Handle the case where the update failed
             }
+        },
+        error: function() {
+            // Handle the AJAX error
         }
-    };
-
-    // Send the AJAX request with the id, order_status, and table_name as parameters
-    var params = 'id=' + encodeURIComponent(id) +
-                 '&order_status=' + encodeURIComponent(newStatus) +
-                 '&table_name=' + encodeURIComponent(tableName);
-    xhr.send(params);
+    });
 }
-
     /**
   oufei 20231014
   common.fun.js
