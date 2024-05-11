@@ -27,10 +27,20 @@ if($searchText != '')
     }
 }
 
-if(sizeof($rstArr) == 0)
-{
-    $rstArr[0]['desc'] = '<i>No result</i>';
-    $rstArr[0]['val'] = "emptyValue";
+if($searchType == 'buyer_username'){
+    if(sizeof($rstArr) == 0)
+    {
+        $rstArr[0]['desc'] = '<a href="shopee_cust_info.php?act=I">Add a New Shopee Buyer</a>';
+        $rstArr[0]['val'] = "emptyValue";
+    }
+    
+}else{
+    if(sizeof($rstArr) == 0)
+    {
+        $rstArr[0]['desc'] = '<i>No result</i>';
+        $rstArr[0]['val'] = "emptyValue";
+    }
+
 }
 
 echo json_encode($rstArr);

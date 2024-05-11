@@ -248,6 +248,8 @@ myChart2 = new Chart(ctx2, {
         datasets: datasets_total_order
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -309,6 +311,8 @@ myChart3 = new Chart(ctx3, {
         datasets: datasets_shp_sales
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -370,6 +374,8 @@ myChart4 = new Chart(ctx4, {
         datasets: datasets_shp_order
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -431,6 +437,8 @@ myChart5 = new Chart(ctx5, {
         datasets: datasets_web_sales
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -493,6 +501,8 @@ myChart6 = new Chart(ctx6, {
         datasets: datasets_web_order
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -555,6 +565,8 @@ myChart7 = new Chart(ctx7, {
         datasets: datasets_fb_sales
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -616,6 +628,8 @@ myChart8 = new Chart(ctx8, {
         datasets: datasets_fb_order
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -678,6 +692,8 @@ myChart9 = new Chart(ctx9, {
         datasets: datasets_lzd_sales
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -739,6 +755,8 @@ myChart10 = new Chart(ctx10, {
         datasets: datasets_lzd_order
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -801,6 +819,8 @@ myChart11 = new Chart(ctx11, {
         datasets: datasets_fb_ads_sales
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -861,6 +881,8 @@ myChart12 = new Chart(ctx12, {
         datasets: datasets_del
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -917,6 +939,8 @@ myChart13 = new Chart(ctx13, {
         datasets: datasets_shp
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 type: 'time',
@@ -973,6 +997,8 @@ myChart14 = new Chart(ctx14, {
         datasets: datasets_shp_with
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
                 beginAtZero: true,

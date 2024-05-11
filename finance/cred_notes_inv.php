@@ -17,6 +17,7 @@ $redirect_page = $SITEURL . '/finance/cred_notes_inv_table.php';
 $create_page = $SITEURL . '/finance/cred_inv_create.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
+$user_id = USER_ID;
 
 //Check a current page pin is exist or not
 $pageAction = getPageAction($act);
@@ -144,7 +145,7 @@ if (post('actionBtn')) {
                     // Row doesn't exist, insert a new row
                     $queryInsert = "INSERT INTO " . CRED_INV_PROD . " 
                                     (invoice_row, description, price, quantity, amount, create_by, create_date, create_time) 
-                                    VALUES ('$inv_id', '$description', '$price', '$quantity', '$amount', '" . USER_ID . "', curdate(), curtime())";
+                                    VALUES ('$inv_id', '$description', '$price', '$quantity', '$amount', '$user_id', curdate(), curtime())";
                     $insert_prod = mysqli_query($finance_connect, $queryInsert);
 
                     // Get the ID of the inserted product
@@ -652,14 +653,15 @@ span.input-group-text{
                                                     <?php } ?>
                                                 </div>
                                                 <div class="col-12">
+                                                <label class="form-label form_lbl" for="cni_ctc" hidden>Phone Number<span class="required-dot">*</span></label>
                                                     <input class="form-control" type="text" placeholder="Phone Number"
-                                                        name="cni_ctc" id="cni_ctc" value="<?php
+                                                        name="cni_ctc" id="cni_ctc"  value="<?php
                                                         if (isset($dataExisted) && isset($row['bill_contact']) && !isset($cni_ctc)) {
                                                             echo $row['bill_contact'];
                                                         } else if (isset($dataExisted) && isset($row['bill_contact']) && isset($cni_ctc)) {
                                                             echo $cni_ctc;
                                                         } ?>" <?php if ($act == '')
-                                                             echo 'disabled' ?>>
+                                                             echo 'disabled' ?> required>
                                                     <?php if (isset($ctc_err)) { ?>
                                                         <div id="err_msg">
                                                             <span class="mt-n1">
@@ -722,11 +724,16 @@ span.input-group-text{
                                                                     <td>
                                                                         <?= $num ?>
                                                                     </td>
-                                                                    <td class="autocomplete err"><input type="text"
+                                                                    <td class="autocomplete err">
+                                                                    cell.html('<label class="form-label form_lbl" for="prod_desc_' + numbering + '" hidden>Description<span class="required-dot">*</span></label>' +
+          '<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)" required>' +
+          '<input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
+
+                                                                    <input type="text"
                                                                             name="prod_desc[]" id="prod_desc_<?= $num ?>"
                                                                             value="<?= $pdesc ?>" onkeyup="prodInfo(this)"
-                                                                            <?= $readonly ?>><input type="hidden"
-                                                                            name="prod_val[]" id="prod_val_<?= $num ?>"
+                                                                            <?= $readonly ?> ><input type="hidden"
+                                                                            name="prod_val" id="prod_val"
                                                                             value="<?= $pid ?>">
                                                                             <?php if (isset($prod_desc_err)) { ?>
                                                                                 <div id="err_msg">
@@ -736,9 +743,11 @@ span.input-group-text{
                                                                                 </div>
                                                                             <?php } ?>
                                                                     </td>
-                                                                    <td class="err"><input class="readonlyInput" type="text" name="price[]"
+                                                                    <td class="err">
+                                                                    <label class="form-label form_lbl" for="price_<?= $num ?>" hidden>Price<span class="required-dot">*</span></label>    
+                                                                    <input class="readonlyInput" type="text" name="price[]"
                                                                             id="price_<?= $num ?>" value="<?= $pp ?>"
-                                                                            onchange="calculateAmount(<?= $num ?>)">
+                                                                            onchange="calculateAmount(<?= $num ?>)" required>
                                                                             <?php if (isset($price_err)) { ?>
                                                                                 <div id="err_msg">
                                                                                     <span class="mt-n1">
@@ -747,9 +756,11 @@ span.input-group-text{
                                                                                 </div>
                                                                             <?php } ?>
                                                                     </td>
-                                                                    <td class="err"><input class="readonlyInput" type="text"
+                                                                    <td class="err">
+                                                                    <label class="form-label form_lbl" for="quantity_<?= $num ?>" hidden>Quantity<span class="required-dot">*</span></label>        
+                                                                    <input class="readonlyInput" type="text"
                                                                             name="quantity[]" id="quantity_<?= $num ?>"
-                                                                            value="<?= $pqty ?>" onchange="calculateAmount(<?= $num ?>)">
+                                                                            value="<?= $pqty ?>" onchange="calculateAmount(<?= $num ?>)" required>
                                                                             <?php if (isset($quantity_err)) { ?>
                                                                                 <div id="err_msg">
                                                                                     <span class="mt-n1">
@@ -790,10 +801,12 @@ span.input-group-text{
                                                             ?>
                                                             <tr>
                                                                 <td>1</td>
-                                                                <td class="autocomplete"><input type="text"
-                                                                        name="prod_desc[]" id="prod_desc_1" value=""
-                                                                        onkeyup="prodInfo(this)"><input type="hidden"
-                                                                        name="prod_val[]" id="prod_val_1" value=""
+                                                                <td class="autocomplete">
+                                                                <label class="form-label form_lbl" for="prod_desc_1" hidden>Description<span class="required-dot">*</span></label>    
+                                                                <input type="text"
+                                                                        name="prod_desc" id="prod_desc_1" value=""
+                                                                        onkeyup="prodInfo(this)" required><input type="hidden"
+                                                                        name="prod_val" id="prod_val" value=""
                                                                         oninput="prodInfoAutoFill(this)">
                                                                     <div id="err_msg">
                                                                         <span class="mt-n1">
@@ -802,13 +815,17 @@ span.input-group-text{
                                                                         </span>
                                                                     </div>
                                                                 </td>
-                                                                <td><input type="number" name="price[]" id="price_1"
-                                                                        value=""></td>
-                                                                <td><input type="number" name="quantity[]" id="quantity_1"
-                                                                        value="">
+                                                                <td>
+                                                                    <label class="form-label form_lbl" for="price_1" hidden>Price<span class="required-dot">*</span></label>    
+                                                                    <input type="number" name="price" id="price_1" value="" required oninput="calculateAmount(1)">
                                                                 </td>
-                                                                <td><input class="readonlyInput" type="text" name="amount[]"
-                                                                        id="amount_1" value=""></td>
+                                                                <td>
+                                                                    <label class="form-label form_lbl" for="quantity_1" hidden>Quantity<span class="required-dot">*</span></label>    
+                                                                    <input type="number" name="quantity" id="quantity_1" value="" required oninput="calculateAmount(1)">
+                                                                </td>
+                                                                <td>
+                                                                    <input class="readonlyInput" type="text" name="amount[]" id="amount_1" value="">
+                                                                </td>
 
                                                                 <td><button class="mt-1" id="action_menu_btn" type="button"
                                                                         onclick="Add()"><i

@@ -89,7 +89,64 @@ function autofillMrcht() {
         }
     });
 }
+$('.submitBtn').on('click', () => {
+    $(".error-message").remove();
+    var dni_due_chk = 0;
+    var dni_curr_chk = 0;
+    var dni_name_chk = 0;
+    var dni_ctc_chk = 0;
+    var prod_desc_chk = 0;
+    var price_chk = 0;
+    var quantity_chk = 0;
 
+    if ($('#dni_due').val() === '' || $('#dni_due').val() === null || $('#dni_due')
+    .val() === undefined) {
+        dni_due_chk = 0;
+    $("#dni_due").after(
+        '<span class="error-message date_err">Due Date is required!</span>');
+    }  else {
+        $(".date_err").remove();
+        dni_due_chk = 1;
+    }
+
+    if ($('#dni_curr').val() === '' || $('#dni_curr').val() === null || $('#dni_curr')
+    .val() === undefined) {
+        dni_curr_chk = 0;
+    $("#dni_curr").after(
+        '<span class="error-message dni_curr">Currency is required!</span>');
+    }  else {
+        $(".dni_curr").remove();
+        dni_curr_chk = 1;
+    }
+
+    if ($('#dni_name').val() === '' || $('#dni_name').val() === null || $('#dni_name')
+    .val() === undefined) {
+        dni_name_chk = 0;
+    $("#dni_name").after(
+        '<span class="error-message dni_name_err">Name is required!</span>');
+    }  else {
+        $(".dni_name_err").remove();
+        dni_name_chk = 1;
+    }
+
+    if ($('#dni_ctc').val() === '' || $('#dni_ctc').val() === null || $('#dni_ctc')
+    .val() === undefined) {
+        dni_ctc_chk = 0;
+    $("#dni_ctc").after(
+        '<span class="error-message ctc_err">Contact Number is required!</span>');
+    }  else {
+        $(".ctc_err").remove();
+        dni_ctc_chk = 1;
+    }
+
+    
+    if ( cni_ctc_chk == 1 && cni_curr_chk == 1 && cni_due_chk == 1 && cni_name_chk == 1 )
+        $(this).closest('fcbm').submit();
+    else
+        return false;
+    
+
+});
 
 function Add() {
     AddRow($("#prod_desc").val(), $("#price").val(), $("#quantity").val(), $("#amount").val());
@@ -109,14 +166,19 @@ function AddRow() {
     var cell = $(row.insertCell(-1));
     cell.html(numbering);
     var cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
+    cell.html('<label class="form-label form_lbl" for="prod_desc_' + numbering + '" hidden>Description<span class="required-dot">*</span></label>' +
+    '<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)" required  >' +
+    '<input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
     cell.addClass('autocomplete');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="price[]" id="price_' + numbering + '" value="">');
+    cell.html('<label class="form-label form_lbl" for="price_' + numbering + '" hidden>Price<span class="required-dot">*</span></label>' +
+    '<input type="text" name="price[]" id="price_' + numbering + '" value="" required  oninput="calculateAmount(' + numbering + ')">');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="quantity[]" id="quatity_' + numbering + '" value="">');
+    cell.html('<label class="form-label form_lbl" for="quantity_' + numbering + '" hidden>Quantity<span class="required-dot">*</span></label>' +
+    '<input type="text" name="quantity[]" id="quantity_' + numbering + '" value="" required oninput="calculateAmount(' + numbering + ')">');
     cell = $(row.insertCell(-1));
     cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="">');
+
 
     //Add Button cell.
     cell = $(row.insertCell(-1));
@@ -180,4 +242,66 @@ function calculateAmount(rowNum) {
     var amount = price * quantity;
     amountInput.value = amount.toFixed(2);
     calculateSubtotal();
+}
+
+function prodInfo(element) {
+    var id = $(element).attr('id').split('_');
+    id = id[(id.length) - 1];
+
+    if (!($(element).attr('readonly'))) {
+        var param = {
+            search: $(element).val(),
+            searchType: 'name',
+            page: 'package',
+            elementID: $(element).attr('id'),
+            hiddenElementID: 'prod_val_' + id,
+            dbTable: '<?= PROD ?>'
+        }
+        searchInput(param, '<?= $SITEURL ?>');
+
+        if ($(element).val() == '') {
+            $('#prod_val_' + id).val('');
+            $('#wgt_' + id).val('');
+            $('#wgt_unit_' + id).val('');
+            $('#wgt_unit_val_' + id).val('');
+            $('#barcode_status_' + id).val('');
+            $('#barcode_slot_' + id).val('');
+        }
+    }
+}
+function prodInfoAutoFill(element) {
+    var id = $(element).attr('id').split('_');
+    id = id[(id.length) - 1];
+    var prodArr = [];
+    var wgtArr = [];
+    var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
+
+    var retrieveProdInfo = async () => {
+        prodArr = await retrieveJSONData($(element).attr('value'), 'id', '<?= PROD ?>');
+    }
+
+    var setProdInfo = async () => {
+        $('#wgt_' + id).val(prodArr[0]['weight']);
+        $('#wgt_unit_val_' + id).val(prodArr[0]['weight_unit']);
+        $('#barcode_status_' + id).val(prodArr[0]['barcode_status']);
+        $('#barcode_slot_' + id).val(prodArr[0]['barcode_slot']);
+    }
+
+    var retrieveWgtUnit = async () => {
+        wgtArr = await retrieveJSONData($('#wgt_unit_val_' + id).attr('value'), 'id', '<?= WGT_UNIT ?>');
+    }
+
+    var setWgtUnit = async () => {
+        $('#wgt_unit_' + id).val(wgtArr[0]['unit']);
+    }
+
+    var allFunc = async () => {
+        await retrieveProdInfo();
+        await setProdInfo();
+        await retrieveWgtUnit();
+        await setWgtUnit();
+        await setBarcodeSlotTotal(rowCount);
+    }
+
+    allFunc();
 }

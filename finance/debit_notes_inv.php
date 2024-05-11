@@ -498,8 +498,8 @@ span.input-group-text{
                                                             echo $inv_id;
                                                         } else {
                                                             echo $proj_row['invoice_prefix_debit'] . $proj_row['invoice_next_number_debit'];
-                                                        } ?>" name="invID" id="invID" <?php if ($act == '')
-                                                        echo 'disabled' ?>readonly/>
+                                                        } ?>" name="invID" id="invID" <?= $act == '' ? 'disabled' : 'readonly' ?>
+                                                        />
                                                     </div>
                                                 </dd>
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
@@ -528,7 +528,7 @@ span.input-group-text{
                                                 <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                                                     <span class="fw-normal">Due Date:</span>
                                                 </dt>
-                                                <dd class="col-sm-6 d-flex justify-content-md-end pe-0 ps-sm-2">
+                                                <dd class="col-sm-6 justify-content-md-end pe-0 ps-sm-2">
                                                     <input type="text" class="form-control w-px-150 date-picker"
                                                         name="dni_due" id="dni_due" placeholder="YYYY-MM-DD" value="<?php
                                                         if (isset($dataExisted) && isset($row['due_date']) && !isset($dni_due)) {
@@ -787,9 +787,9 @@ span.input-group-text{
                                                                     </div>
                                                                 </td>
                                                                 <td><input type="number" name="price[]" id="price_1"
-                                                                        value=""></td>
+                                                                        value="" oninput="calculateAmount(1)"></td>
                                                                 <td><input type="number" name="quantity[]" id="quantity_1"
-                                                                        value="">
+                                                                        value="" oninput="calculateAmount(1)">
                                                                 </td>
                                                                 <td><input class="readonlyInput" type="text" name="amount[]"
                                                                         id="amount_1" value=""></td>

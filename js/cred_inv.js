@@ -55,6 +55,21 @@ $(document).ready(function () {
             searchInput(param, '<?= $SITEURL ?>');
         });
     }
+
+    if (!($("#prod_desc").attr('disabled'))) {
+        $("#prod_desc").keyup(function () {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
+
+    
     $("#cni_name").change(autofillMrcht);
 
     $('#payment-terms').change(function () {
@@ -129,43 +144,9 @@ $('.submitBtn').on('click', () => {
         cni_name_chk = 1;
     }
 
-    if ($('#cni_ctc').val() === '' || $('#cni_ctc').val() === null || $('#cni_ctc')
-    .val() === undefined) {
-        cni_ctc_chk = 0;
-    $("#cni_ctc").after(
-        '<span class="error-message cni_ctc">Contact Number is required!</span>');
-    }  else {
-        $(".ctc_err").remove();
-        cni_ctc_chk = 1;
-    }
-    $('.autocomplete input[type="text"]').each(function() {
-        var inputId = $(this).attr('id');
-        var num = inputId.split('_')[2]; // Extract the number from the input ID
-        var prodDesc = $('#prod_desc_' + num).val();
-        var price = $('#price_' + num).val();
-        var quantity = $('#quantity_' + num).val();
-        console.log(price);
-        
-        if (prodDesc === '' || prodDesc === null || prodDesc === undefined) {
-            $('#prod_desc_' + num).after('<span class="error-message prod_desc_err">Description is required!</span>');
-        } else {
-            $('.prod_desc_err').remove();
-        }
+  
     
-        if (price === '' || price === null || price === undefined) {
-            $('#price_' + num).after('<span class="error-message price_err">Price is required!</span>');
-        } else {
-            $('.price_err').remove();
-        }
-    
-        if (quantity === '' || quantity === null || quantity === undefined) {
-            $('#quantity_' + num).after('<span class="error-message quantity_err">Quantity is required!</span>');
-        } else {
-            $('.quantity_err').remove();
-        }
-    });
-    
-    if (quantity_chk == 1 && price_chk == 1 && prod_desc_chk == 1 && cni_ctc_chk == 1 && cni_curr_chk == 1 && cni_due_chk == 1 && cni_name_chk == 1 )
+    if ( cni_curr_chk == 1 && cni_due_chk == 1 && cni_name_chk == 1 )
         $(this).closest('fcbm').submit();
     else
         return false;
@@ -191,12 +172,16 @@ function AddRow() {
     var cell = $(row.insertCell(-1));
     cell.html(numbering);
     var cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)"><input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
+    cell.html('<label class="form-label form_lbl" for="prod_desc_' + numbering + '" hidden>Description<span class="required-dot">*</span></label>' +
+    '<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)" required  >' +
+    '<input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
     cell.addClass('autocomplete');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="price[]" id="price_' + numbering + '" value="">');
+    cell.html('<label class="form-label form_lbl" for="price_' + numbering + '" hidden>Price<span class="required-dot">*</span></label>' +
+    '<input type="text" name="price[]" id="price_' + numbering + '" value="" required  oninput="calculateAmount(' + numbering + ')">');
     cell = $(row.insertCell(-1));
-    cell.html('<input type="text" name="quantity[]" id="quatity_' + numbering + '" value="">');
+    cell.html('<label class="form-label form_lbl" for="quantity_' + numbering + '" hidden>Quantity<span class="required-dot">*</span></label>' +
+    '<input type="text" name="quantity[]" id="quantity_' + numbering + '" value="" required oninput="calculateAmount(' + numbering + ')">');
     cell = $(row.insertCell(-1));
     cell.html('<input  class="readonlyInput" type="text" name="amount[]" id="amount_' + numbering + '" value="">');
 
@@ -221,31 +206,67 @@ function Remove(button) {
 }
 
 // product autofill
-// function prodInfo(element) {
-//     var id = $(element).attr('id').split('_');
-//     id = id[(id.length) - 1];
+function prodInfo(element) {
+    var id = $(element).attr('id').split('_');
+    id = id[(id.length) - 1];
 
-//     if (!($(element).attr('readonly'))) {
-//         var param = {
-//             search: $(element).val(),
-//             searchType: 'name',
-//             page: 'package',
-//             elementID: $(element).attr('id'),
-//             hiddenElementID: 'prod_val_' + id,
-//             dbTable: '<?= PROD ?>'
-//         }
-//         searchInput(param, '<?= $SITEURL ?>');
+    if (!($(element).attr('readonly'))) {
+        var param = {
+            search: $(element).val(),
+            searchType: 'name',
+            page: 'package',
+            elementID: $(element).attr('id'),
+            hiddenElementID: 'prod_val_' + id,
+            dbTable: '<?= PROD ?>'
+        }
+        searchInput(param, '<?= $SITEURL ?>');
 
-//         if ($(element).val() == '') {
-//             $('#prod_val_' + id).val('');
-//             $('#wgt_' + id).val('');
-//             $('#wgt_unit_' + id).val('');
-//             $('#wgt_unit_val_' + id).val('');
-//             $('#barcode_status_' + id).val('');
-//             $('#barcode_slot_' + id).val('');
-//         }
-//     }
-// }
+        if ($(element).val() == '') {
+            $('#prod_val_' + id).val('');
+            $('#wgt_' + id).val('');
+            $('#wgt_unit_' + id).val('');
+            $('#wgt_unit_val_' + id).val('');
+            $('#barcode_status_' + id).val('');
+            $('#barcode_slot_' + id).val('');
+        }
+    }
+}
+function prodInfoAutoFill(element) {
+    var id = $(element).attr('id').split('_');
+    id = id[(id.length) - 1];
+    var prodArr = [];
+    var wgtArr = [];
+    var rowCount = parseInt($("#productList TBODY TR:last TD").eq(0).html());
+
+    var retrieveProdInfo = async () => {
+        prodArr = await retrieveJSONData($(element).attr('value'), 'id', '<?= PROD ?>');
+    }
+
+    var setProdInfo = async () => {
+        $('#wgt_' + id).val(prodArr[0]['weight']);
+        $('#wgt_unit_val_' + id).val(prodArr[0]['weight_unit']);
+        $('#barcode_status_' + id).val(prodArr[0]['barcode_status']);
+        $('#barcode_slot_' + id).val(prodArr[0]['barcode_slot']);
+    }
+
+    var retrieveWgtUnit = async () => {
+        wgtArr = await retrieveJSONData($('#wgt_unit_val_' + id).attr('value'), 'id', '<?= WGT_UNIT ?>');
+    }
+
+    var setWgtUnit = async () => {
+        $('#wgt_unit_' + id).val(wgtArr[0]['unit']);
+    }
+
+    var allFunc = async () => {
+        await retrieveProdInfo();
+        await setProdInfo();
+        await retrieveWgtUnit();
+        await setWgtUnit();
+        await setBarcodeSlotTotal(rowCount);
+    }
+
+    allFunc();
+}
 
 
 
