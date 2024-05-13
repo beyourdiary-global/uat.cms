@@ -725,10 +725,6 @@ span.input-group-text{
                                                                         <?= $num ?>
                                                                     </td>
                                                                     <td class="autocomplete err">
-                                                                    cell.html('<label class="form-label form_lbl" for="prod_desc_' + numbering + '" hidden>Description<span class="required-dot">*</span></label>' +
-          '<input type="text" name="prod_desc[]" id="prod_desc_' + numbering + '" value="" onkeyup="prodInfo(this)" required>' +
-          '<input type="hidden" name="prod_val[]" id="prod_val_' + numbering + '" value="" oninput="prodInfoAutoFill(this)">');
-
                                                                     <input type="text"
                                                                             name="prod_desc[]" id="prod_desc_<?= $num ?>"
                                                                             value="<?= $pdesc ?>" onkeyup="prodInfo(this)"
@@ -746,7 +742,7 @@ span.input-group-text{
                                                                     <td class="err">
                                                                     <label class="form-label form_lbl" for="price_<?= $num ?>" hidden>Price<span class="required-dot">*</span></label>    
                                                                     <input class="readonlyInput" type="text" name="price[]"
-                                                                            id="price_<?= $num ?>" value="<?= $pp ?>"
+                                                                            id="price_<?= $num ?>" value="<?= $pp ?>" <?= $readonly ?>
                                                                             onchange="calculateAmount(<?= $num ?>)" required>
                                                                             <?php if (isset($price_err)) { ?>
                                                                                 <div id="err_msg">
@@ -759,7 +755,7 @@ span.input-group-text{
                                                                     <td class="err">
                                                                     <label class="form-label form_lbl" for="quantity_<?= $num ?>" hidden>Quantity<span class="required-dot">*</span></label>        
                                                                     <input class="readonlyInput" type="text"
-                                                                            name="quantity[]" id="quantity_<?= $num ?>"
+                                                                            name="quantity[]" id="quantity_<?= $num ?>" <?= $readonly ?>
                                                                             value="<?= $pqty ?>" onchange="calculateAmount(<?= $num ?>)" required>
                                                                             <?php if (isset($quantity_err)) { ?>
                                                                                 <div id="err_msg">
