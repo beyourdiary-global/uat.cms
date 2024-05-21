@@ -94,6 +94,7 @@ define('PROD', 'product');
 define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
+define('STK_OUT', 'stock_out');
 define('L_TYPE', 'leave_type');
 define('CUR_SEGMENTATION','customer_segmentation');
 define('RACE','race');

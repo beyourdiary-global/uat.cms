@@ -1253,7 +1253,98 @@ function searchInput(param, siteURL) {
   }
 
 }
+function searchInput2(param, siteURL) {
+  var elementID = param["elementID"];
+  var hiddenElementID = param["hiddenElementID"];
+  var search = param["search"];
+  var type = param["searchTypes"]; 
+  var pkg = param['pkgID'];
+  var usr = param['usrID'];
+  var whse = param['whseID'];
 
+
+  if (param["addSelection"]) {
+    var addSelection = param["addSelection"];
+  }
+
+  if (search != "") {
+    
+    $.ajax({
+      url: siteURL + "/getSearch2.php",
+      type: "post",
+      data: {
+        searchText: search,
+        searchType: type,
+        tblname: 'orderid',
+        pkg:pkg,
+        usr:usr,
+        whse:whse,
+      },
+      dataType: "json",
+      success: (result) => {
+
+        // create div
+        if (
+          !(
+            ($("#searchResult_" + elementID).length &&
+              $("#clear_" + elementID).length) > 0
+          )
+        )
+          $("#" + elementID).after(
+            '<ul class="searchResult" id="searchResult_' +
+            elementID +
+            '"></ul>',
+            '<div id="clear_' + elementID + '" class="clear"></div>'
+          );
+
+        // set width same as input
+        setWidth(elementID, "searchResult_" + elementID);
+
+        var dataArr = [];
+
+        // loop result
+        var len = result.length;
+        $("#searchResult_" + elementID).empty();
+        for (var i = 0; i < len; i++) {
+          if (result[i]["desc"] != undefined) {
+            var desc = result[i]["desc"];
+            var value = result[i]["val"];
+            $("#searchResult_" + elementID).append(
+              "<li value='" + value + "'>" + desc + "</li>"
+            );
+          } else {
+            var id = result[i]["id"];
+            var name = result[i][type];
+            $("#searchResult_" + elementID).append(
+              "<li value='" + id + "'>" + name + "</li>"
+            );
+            dataArr[id] = result[i];
+          }
+        }
+
+        if (addSelection) {
+          $("#searchResult_" + elementID).append(
+            "<li value='" + addSelection + "'>" + addSelection + "</li>"
+          );
+        }
+
+        // binding click event to li
+        $("#searchResult_" + elementID + " li").bind("click", function () {
+          setText(this, "#" + elementID, "#" + hiddenElementID);
+          $("#" + elementID).change();
+          $("#searchResult_" + elementID).empty();
+          $("#searchResult_" + elementID).remove();
+          $("#clear_" + elementID).remove();
+        });
+      },
+    });
+  } else {
+    $("#searchResult_" + elementID).empty();
+    $("#searchResult_" + elementID).remove();
+    $("#clear_" + elementID).remove();
+  }
+
+}
 function retrieveDBData(param, siteURL, callback) {
   var search = param["search"];
   var type = param["searchType"];

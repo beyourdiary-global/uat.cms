@@ -122,20 +122,13 @@ if (!$result) {
                             $prod_stat_fetch = $q3->fetch_assoc();
                             $prod_stat = isset($prod_stat_fetch['name']) ? $prod_stat_fetch['name'] : '';
 
-                            $product_status = isset($row['product_status_id']) ? $row['product_status_id'] : '';
-                            $q3 = getData('name', "id='" . $product_status . "'", '', PROD_STATUS, $connect);
-                            $prod_stat_fetch = $q3->fetch_assoc();
-                            $prod_stat = isset($prod_stat_fetch['name']) ? $prod_stat_fetch['name'] : '';
 
                             $product_category = isset($row['product_category_id']) ? $row['product_category_id'] : '';
                             $q4 = getData('name', "id='" . $product_status . "'", '', PROD_CATEGORY, $connect);
                             $prod_cat_fetch = $q4->fetch_assoc();
                             $prod_cat = isset($prod_cat_fetch['name']) ? $prod_cat_fetch['name'] : '';
 
-                            $product_category = isset($row['product_category_id']) ? $row['product_category_id'] : '';
-                            $q5 = getData('name', "id='" . $product_status . "'", '', PROD_CATEGORY, $connect);
-                            $prod_cat_fetch = $q5->fetch_assoc();
-                            $prod_cat = isset($prod_cat_fetch['name']) ? $prod_cat_fetch['name'] : '';
+                          
 
                             $platform_id = isset($row['platform_id']) ? $row['platform_id'] : '';
                             $q6 = getData('name', "id='" . $platform_id . "'", '', PLTF, $connect);
@@ -186,8 +179,7 @@ if (!$result) {
                                     <td scope="row"><?php if (isset($row['update_date'])) echo $row['update_date'] ?></td>
                                     <td scope="row"><?php if (isset($row['update_time'])) echo $row['update_time'] ?></td>
                                     <td scope="row"><?php if (isset($row['update_by'])) echo $row['update_by'] ?></td>
-                                    <td scope="row"><?php if (isset($row['status'])) echo $row['status'] ?></td>
-
+                                    <td scope="row"><?php if (isset($row['status'])) echo strtoupper($row['status']) === 'A' ? 'Active' : $row['status']; ?></td>
                                 </tr>
                         <?php
                             }
