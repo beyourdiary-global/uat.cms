@@ -81,7 +81,7 @@ function checkCurrentPin($connect, $currentPage)
             echo 'window.location.href = "dashboard.php";';
             echo '</script>';
         }
-        
+      
         return $result;
     }
 }

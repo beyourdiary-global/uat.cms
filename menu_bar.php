@@ -241,8 +241,9 @@ $menuList = array(
                     array('Payment Method Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/payment_method_report_table.php', '101'),
                     array('Package Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/package_report_table.php', '102'),
                     array('Brand Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/brand_report_table.php', '103'),
+                    array('Stock Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/stock_report.php', '105'),
                 ),
-                'pin' => array('100','101','102','103'),
+                'pin' => array('100','101','102','103','105'),
             ),
         ),
         'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99','100','101')

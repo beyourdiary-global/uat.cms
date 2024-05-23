@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Stock List";
+$pageTitle = "Stock Report";
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
@@ -65,7 +65,7 @@ if (!$result) {
 
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
-                            <h2><?php echo $pageTitle ?></h2>
+                            <h2><?php echo $pageTitle ?> Detail</h2>
                             <div class="mt-auto mb-auto">
                             </div>
                         </div>
@@ -107,6 +107,11 @@ if (!$result) {
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
+                            if (isset($_GET['ids'])) {
+                                $ids = explode(',', $_GET['ids']);
+                               foreach ($ids as $id) {
+                                $decodedId = urldecode($id);
+                               if (isset($row['id']) && !empty($row['id']&& $row['id'] == $id)) {
                             $brand = isset($row['brand_id']) ? $row['brand_id'] : '';
                             $q1 = getData('name', "id='" . $brand . "'", '', BRAND, $connect);
                             $brd_fetch = $q1->fetch_assoc();
@@ -193,6 +198,9 @@ if (!$result) {
                         <?php
                             }
                         }
+                    }
+                }
+            }
                         ?>
                     </tbody>
 

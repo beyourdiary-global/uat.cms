@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Stock List";
+$pageTitle = "Stock Report";
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
@@ -65,48 +65,46 @@ if (!$result) {
 
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
-                            <h2><?php echo $pageTitle ?></h2>
+                            <h2><?php echo $pageTitle ?> Summary</h2>
                             <div class="mt-auto mb-auto">
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <table class="table table-striped" id="table">
+            
+                <table class="table table-striped" id="stock_report_table">
                     <thead>
                     <tr>
+                  
+                        
                         <th class="hideColumn" scope="col">ID</th>
-                        <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col" width="100px">Action</th>
+                        <th class="text-center">
+                            <input type="checkbox" class="exportAll">
+                        </th>
+                        <th scope="col" width="60px">S/N</th>                       
+                        <th scope="col">Stock Type</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Product</th>
-                        <th scope="col">Stock In Date</th>
-                        <th scope="col">Stock Out Date</th>
-                        <th scope="col">Transfer Date</th>
-                        <th scope="col">Barcode</th>
-                        <th scope="col">Product Batch Code</th>
-                        <th scope="col">Product Status ID</th>
-                        <th scope="col">Product Category ID</th>
-                        <th scope="col">Platform ID</th>
-                        <th scope="col">Warehouse ID</th>
+                        <th scope="col">Product Category</th>
+                        <th scope="col">Platform</th>
+                        <th scope="col">Warehouse</th>
                         <th scope="col">Stock In Person in Charges</th>
                         <th scope="col">Stock Out Person in Charges</th>
-                        <th scope="col">Stock Out Customer Purchase ID</th>
-                        <th scope="col">Remark</th>
-                        <th scope="col">Create Date</th>
-                        <th scope="col">Create Time</th>
-                        <th scope="col">Create By</th>
-                        <th scope="col">Update Date</th>
-                        <th scope="col">Update Time</th>
-                        <th scope="col">Update By</th>
-                        <th scope="col">Status</th>
+                       
                     </tr>
 
                     </thead>
 
                     <tbody>
                         <?php
+                        $count = 0;
                         while ($row = $result->fetch_assoc()) {
+                            if (isset($_GET['ids'])) {
+                                $ids = explode(',', $_GET['ids']);
+                                foreach ($ids as $id) {
+                                    $decodedId = urldecode($id);
+                           if (isset($row['id']) && !empty($row['id']&& $row['id'] == $id)) {
+                            $count++;
                             $brand = isset($row['brand_id']) ? $row['brand_id'] : '';
                             $q1 = getData('name', "id='" . $brand . "'", '', BRAND, $connect);
                             $brd_fetch = $q1->fetch_assoc();
@@ -128,8 +126,6 @@ if (!$result) {
                             $prod_cat_fetch = $q4->fetch_assoc();
                             $prod_cat = isset($prod_cat_fetch['name']) ? $prod_cat_fetch['name'] : '';
 
-                          
-
                             $platform_id = isset($row['platform_id']) ? $row['platform_id'] : '';
                             $q6 = getData('name', "id='" . $platform_id . "'", '', PLTF, $connect);
                             $plat_id_fetch = $q6->fetch_assoc();
@@ -149,7 +145,7 @@ if (!$result) {
                             $q9 = getData('name', "id='" . $stockOutUsr . "'", '', USR_USER, $connect);
                             $stockOutUsr_fetch = $q9->fetch_assoc();
                             $stockOutUsr_name = isset($stockOutUsr_fetch['name']) ? $stockOutUsr_fetch['name'] : '';
-
+                            $stockType = empty($stockOutUsr_fetch) ? 'Stock In' : 'Stock Out';
                             $created = isset($row['create_by']) ? $row['create_by'] : '';
                             $q10 = getData('name', "id='" . $created . "'", '', USR_USER, $connect);
                             $updated = isset($row['update_by']) ? $row['update_by'] : '';
@@ -158,72 +154,51 @@ if (!$result) {
                             $updated_fetch = $q11->fetch_assoc();
                             $updated_name = isset($updated_fetch['name']) ? $updated_fetch['name'] : '';
                             $created_name = isset($created_fetch['name']) ? $created_fetch['name'] : '';
-                            if (isset( $row['id'])) { ?>
-                                <tr>
-                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row" class="btn-container">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $brd_name, $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
-                                    </td>
-                                    <td scope="row"><?php if (isset($brd_name)) echo $brd_name ?></td>
-                                    <td scope="row"><?php if (isset($prod_name)) echo $prod_name ?></td>
-                                    <td scope="row"><?php if (isset($row['stock_in_date'])) echo $row['stock_in_date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['stock_out_date'])) echo $row['stock_out_date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['transfer_date'])) echo $row['transfer_date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['barcode'])) echo $row['barcode'] ?></td>
-                                    <td scope="row"><?php if (isset($row['product_batch_code'])) echo $row['product_batch_code'] ?></td>
-                                    <td scope="row"><?php if (isset($prod_stat)) echo $prod_stat ?></td>
-                                    <td scope="row"><?php if (isset($prod_cat)) echo $prod_cat ?></td>
-                                    <td scope="row"><?php if (isset($plat_name)) echo $plat_name ?></td>
-                                    <td scope="row"><?php if (isset($ware_name)) echo $ware_name ?></td>
-                                    <td scope="row"><?php if (isset($stockInUsr_name)) echo $stockInUsr_name ?></td>
-                                    <td scope="row"><?php if (isset($stockOutUsr_name)) echo $stockOutUsr_name ?></td>
-                                    <td scope="row"><?php if (isset($row['stock_out_customer_purchase_id'])) echo $row['stock_out_customer_purchase_id'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                    <td scope="row"><?php if (isset($row['create_date'])) echo $row['create_date'] ?></td>
-                                    <td scope="row"><?php if (isset($row['create_time'])) echo $row['create_time'] ?></td>
-                                    <td scope="row"><?php if (isset($created_name)) echo $created_name ?></td>
-                                    <td scope="row"><?php echo isset($row['update_date']) ? $row['update_date'] : '-'; ?></td>
-                                    <td scope="row"><?php echo isset($row['update_time']) ? $row['update_time'] : ''; ?></td>
-                                    <td scope="row"><?php echo isset($updated_name) ? $updated_name : '-'; ?></td>
-                                    <td scope="row"><?php if (isset($row['status'])) echo strtoupper($row['status']) === 'A' ? 'Active' : $row['status']; ?></td>
-                                </tr>
-                        <?php
-                            }
+
+                            $createdate = $row['create_date'];
+                            ?>
+                            <tr onclick="window.location='stock_report_detail.php?ids=<?= urlencode($row['id']) ?>';" style="cursor:pointer;">
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th class="text-center"><input type="checkbox" class="export" value="<?= $row['id'] ?>"></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row"><?php if (isset($stockOutUsr_name)) { echo 'Stock Out'; } else { echo 'Stock In'; } ?></td>
+                                <td scope="row"><?php if (isset($brd_name)) echo $brd_name ?></td>
+                                <td scope="row"><?php if (isset($prod_name)) echo $prod_name ?></td>
+                                <td scope="row"><?php if (isset($prod_cat)) echo $prod_cat ?></td>
+                                <td scope="row"><?php if (isset($plat_name)) echo $plat_name ?></td>
+                                <td scope="row"><?php if (isset($ware_name)) echo $ware_name ?></td>
+                                <td scope="row"><?php if (isset($stockInUsr_name)) echo $stockInUsr_name ?></td>
+                                <td scope="row"><?php if (isset($stockOutUsr_name)) { echo $stockOutUsr_name; } else { echo '-'; } ?></td>
+
+                            </tr>
+                    <?php
+                           }
                         }
+                            
+                    }
+                        }
+                        
+                        
                         ?>
                     </tbody>
 
                     <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                            <th scope="col">Brand ID</th>
-                            <th scope="col">Product ID</th>
-                            <th scope="col">Stock In Date</th>
-                            <th scope="col">Stock Out Date</th>
-                            <th scope="col">Transfer Date</th>
-                            <th scope="col">Barcode</th>
-                            <th scope="col">Product Batch Code</th>
-                            <th scope="col">Product Status ID</th>
-                            <th scope="col">Product Category ID</th>
-                            <th scope="col">Platform ID</th>
-                            <th scope="col">Warehouse ID</th>
-                            <th scope="col">Stock In Person in Charges</th>
-                            <th scope="col">Stock Out Person in Charges</th>
-                            <th scope="col">Stock Out Customer Purchase ID</th>
-                            <th scope="col">Remark</th>
-                            <th scope="col">Create Date</th>
-                            <th scope="col">Create Time</th>
-                            <th scope="col">Create By</th>
-                            <th scope="col">Update Date</th>
-                            <th scope="col">Update Time</th>
-                            <th scope="col">Update By</th>
-                            <th scope="col">Status</th>
-                        </tr>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th class="text-center">
+                            <input type="checkbox" class="exportAll">
+                        </th>
+                        <th scope="col" width="60px">S/N</th>                       
+                        <th scope="col">Stock Type</th>
+                        <th scope="col">Brand</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Product Category</th>
+                        <th scope="col">Platform</th>
+                        <th scope="col">Warehouse</th>
+                        <th scope="col">Stock In Person in Charges</th>
+                        <th scope="col">Stock Out Person in Charges</th>
+                       
+                    </tr>
                     </tfoot>
                 </table>
             </div>
@@ -231,6 +206,62 @@ if (!$result) {
     </div>
 
     <script>
+    $(document).ready(function ($) {
+    $(document).on("change", ".exportAll", function (event) { //checkbox handling
+        event.preventDefault();
+
+        var isChecked = $(this).prop("checked");
+        $(".export").prop("checked", isChecked);
+        $(".exportAll").prop("checked", isChecked);
+
+        updateCheckboxesOnOtherPages(isChecked);
+    });
+
+    $('a[name="exportBtn"]').on("click", function () {
+        var checkboxValues = [];
+
+        // Loop through all pages to collect checked checkboxes
+        $('#stock_report').DataTable().$('tr', { "filter": "applied" }).each(function () {
+            var checkbox = $(this).find('.export:checked');
+            if (checkbox.length > 0) {
+                checkbox.each(function () {
+                    checkboxValues.push($(this).val());
+                });
+            }
+        });
+
+        if (checkboxValues.length > 0) {
+            console.log('Checked row IDs:', checkboxValues);
+            // Send checkboxValues to the server using AJAX
+            setCookie('rowID', checkboxValues.join(','), 1);
+
+            //uncheck checkboxes
+            var checkboxes = document.querySelectorAll('.export');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            var selectAllCheckbox = document.querySelector('.exportAll');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+            }
+
+            window.location.href = "stock_report.php";
+        } else {
+            console.log('No checkboxes are checked.');
+        }
+    });
+
+    function updateCheckboxesOnOtherPages(isChecked) {
+        // Get all cells in the DataTable
+        var cells = $('#stock_report').DataTable().cells().nodes();
+
+        // Check/uncheck all checkboxes in the DataTable
+        $(cells).find('.export').prop('checked', isChecked);
+    }
+});
+
+    <?php include "js/fb_ads_topup_table.js" ?>
         //Initial Page And Action Value
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";
