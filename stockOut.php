@@ -107,7 +107,7 @@ while ($usr = $rst_usr->fetch_assoc()) {
 if (post('usrBtn')) {
     $usrBtn = post('usrBtn');
     $barcodeInputs = post('barcode_input');
-   
+    $orderid = post('order_id');
     if ($barcodeInputs != '') {
         $arrNum = sizeof($barcodeInputs);
 
@@ -133,6 +133,7 @@ if (post('usrBtn')) {
                     array_push($datafield, 'product_category_id');
                 }
                 foreach ($barcodeInputs as $batchCode) {
+                 
                     $stockInDate = date("Y-m-d");
                     $barcode = input('barcode');
                     $productBatchCode = $batchCode;
@@ -151,12 +152,13 @@ if (post('usrBtn')) {
                     SET 
                         stock_out_date = '$stockOutDate', 
                         stock_out_person_in_charges = '$stockOutPersonInCharges', 
-                        stock_out_customer_purchase_id = '$stockOutCustomerPurchaseId' 
+                        stock_out_customer_purchase_id = '$orderid' 
                     WHERE 
                         brand_id = '$brandId' AND 
                         product_id = '$productId' AND 
                         barcode = '$barcode'";
-                    $insertQuery2 = "INSERT INTO $tblname2 (brand_id, product_id, product_category, stock_out_date, stock_out_person_in_charges, stock_out_customer_purchase_id, remark, create_date, create_time, create_by) VALUES ('$brandId', '$productId','1','$stockInDate', '$stockInPersonInCharges','1', '$remark', '$createDate', '$createTime', '$createBy')";
+                        var_dump($insertQuery);
+                    $insertQuery2 = "INSERT INTO $tblname2 (brand_id, product_id, product_category, stock_out_date, stock_out_person_in_charges, stock_out_customer_purchase_id, remark, create_date, create_time, create_by) VALUES ('$brandId', '$productId','$productCategoryId','$stockInDate', '$stockInPersonInCharges','$orderid', '$remark', '$createDate', '$createTime', '$createBy')";
                 
                     $result = mysqli_query($connect, $insertQuery);
                     $result2 = mysqli_query($connect, $insertQuery2);
@@ -210,8 +212,9 @@ if (post('usrBtn')) {
                 array_push($newvalarr, $prod_info['product_category']);
                 array_push($datafield, 'product_category_id');
             }
-          
+                
                 $stockInDate = date("Y-m-d");
+                $order_id = input('order_id');
                 $barcode = input('barcode');
                 $productBatchCode = null;
                 $productStatusId = 4;
@@ -229,12 +232,13 @@ if (post('usrBtn')) {
                 SET 
                     stock_out_date = '$stockOutDate', 
                     stock_out_person_in_charges = '$stockOutPersonInCharges', 
-                    stock_out_customer_purchase_id = '$stockOutCustomerPurchaseId' 
+                    stock_out_customer_purchase_id = '$orderid' 
                 WHERE 
                     brand_id = '$brandId' AND 
                     product_id = '$productId' AND 
-                    barcode = '$barcode'";
-                $insertQuery2 = "INSERT INTO $tblname2 (brand_id, product_id, product_category, stock_out_date, stock_out_person_in_charges, stock_out_customer_purchase_id, remark, create_date, create_time, create_by) VALUES ('$brandId', '$productId', '$stockInDate', '$stockInPersonInCharges','1', '$remark', '$createDate', '$createTime', '$createBy')";
+                    barcode = '$order_id'";
+                var_dump($insertQuery);
+                $insertQuery2 = "INSERT INTO $tblname2 (brand_id, product_id, product_category, stock_out_date, stock_out_person_in_charges, stock_out_customer_purchase_id, remark, create_date, create_time, create_by) VALUES ('$brandId', '$productId', '$stockInDate', '$stockInPersonInCharges','$orderid', '$remark', '$createDate', '$createTime', '$createBy')";
                 $result = mysqli_query($connect, $insertQuery);
                 $result2 = mysqli_query($connect, $insertQuery2);
                 if ($result) {

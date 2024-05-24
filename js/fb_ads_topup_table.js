@@ -150,7 +150,7 @@ $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="e
       
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
-    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet'){
+    } else if (group === 'invoice' || group === 'currency' || group === 'agent' || group === 'outlet' ||  group === 'stock_type' || group === 'product' || group === 'whse' || group === 'pdtcategory' || group === 'platform' || group === 'stockinpic' || group === 'stockoutpic'){
         
             window.location.search = '?group=' + group + (timeRange ? '&timeRange=' + timeRange : '') + (timeInterval ? '&timeInterval=' + timeInterval : '');
         
