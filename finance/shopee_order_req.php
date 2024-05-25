@@ -786,6 +786,39 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
                     </div>
+                <div class="col-md-4 mb-3">
+                    <button type="button" onclick="toggleNewBuyer()">Create New Customer ID</button>
+                </div>
+                <form id="myForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <div id="new_customer_section" style="display: none;">
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label form_lbl" for="scr_username">Shopee Buyer Username<span class="requireRed">*</span></label>
+                        <input class="form-control" type="text" id="scr_username" name="scr_username">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label form_lbl" for="scr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
+                        <input class="form-control" type="text" id="scr_pic" name="scr_pic">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label form_lbl" for="scr_country">Country<span class="requireRed">*</span></label>
+                        <input class="form-control" type="number" id="scr_country" name="scr_country">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label form_lbl" for="scr_brand">Brand<span class="requireRed">*</span></label>
+                        <input class="form-control" type="text" id="scr_brand" name="scr_brand">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label form_lbl" for="scr_series">Series<span class="requireRed">*</span></label>
+                        <input class="form-control" type="text" id="scr_series" name="scr_series">
+                    </div>
+                </div>
+                <input type="submit" name="submit" value="Submit">
+                    </form>
                 </div>
                 <div class="form-group">
                     <div class="row">

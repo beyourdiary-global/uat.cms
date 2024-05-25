@@ -1,3 +1,12 @@
+function toggleNewBuyer() {
+    var newCustomerSection = document.getElementById("new_customer_section");
+    if (newCustomerSection.style.display === "none") {
+        newCustomerSection.style.display = "block";
+    } else {
+        newCustomerSection.style.display = "none";
+    }
+}
+
 var price_curr_chk = 0;
 //autocomplete
 $(document).ready(function () {

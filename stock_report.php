@@ -196,8 +196,6 @@ if (!$result) {
                             $prod_cat_fetch = $q4->fetch_assoc();
                             $prod_cat = isset($prod_cat_fetch['name']) ? $prod_cat_fetch['name'] : '';
 
-                          
-
                             $platform_id = isset($row['platform_id']) ? $row['platform_id'] : '';
                             $q6 = getData('name', "id='" . $platform_id . "'", '', PLTF, $connect);
                             $plat_id_fetch = $q6->fetch_assoc();
@@ -216,7 +214,7 @@ if (!$result) {
                             $stockOutUsr = isset($row['stock_out_person_in_charges']) ? $row['stock_out_person_in_charges'] : '';
                             $q9 = getData('name', "id='" . $stockOutUsr . "'", '', USR_USER, $connect);
                             $stockOutUsr_fetch = $q9->fetch_assoc();
-                            $stockOutUsr_name = isset($stockOutUsr_fetch['name']) ? $stockOutUsr_fetch['name'] : '';
+                            $stockOutUsr_name = isset($stockOutUsr_fetch['name']) ? $stockOutUsr_fetch['name'] : '-';
                             $stockType = empty($stockOutUsr_fetch) ? 'Stock In' : 'Stock Out';
                             $created = isset($row['create_by']) ? $row['create_by'] : '';
                             $q10 = getData('name', "id='" . $created . "'", '', USR_USER, $connect);
