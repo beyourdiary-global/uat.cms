@@ -35,15 +35,21 @@ $pinAccess14 = checkPin($connect, $chart14);
 $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 $result2 = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 $result3 = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
-$result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
-$result5 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect);
-$result6 = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
-$result7 = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect);
+$result4 = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect); 
+$result5 = getData('*', '', '', FB_ADS_TOPUP, $finance_connect); //this
+$result6 = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect); //this
+$result7 = getData('*', '', '', DEL_FEES_CLAIM, $finance_connect); //this
 $result8 = getData('*', '', '', SHOPEE_WDL_TRANS, $finance_connect);
 $result9 = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 $result10 = getData('*', '', '', FB_ORDER_REQ, $finance_connect);
 $result11 = getData('*', '', '', WEB_ORDER_REQ, $finance_connect);
 $result12 = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);   
+$result13 = getData('date,amount', '', '', INTERNAL_CONSUME, $finance_connect);   
+$result14 = getData('date,cost', '', '', ITL_CSM_ITEM, $finance_connect);
+$result15 = getData('create_date,amount', '', '', STK_CDT_TOPUP_RCD, $finance_connect);
+$result16 = getData('payment_date, topup_amt', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
+$result17 = getData('payment_date, topup_amt', '', '', FB_ADS_TOPUP, $finance_connect);
+$result7 = getData('create_date,total', '', '', DEL_FEES_CLAIM, $finance_connect); //this
 function compareTime($a, $b) {
     return strtotime($a) - strtotime($b);
 }

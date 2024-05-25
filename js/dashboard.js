@@ -1417,7 +1417,23 @@ $('#datepicker input, #datepicker2 input[name="end"], #datepicker3 input[name="e
   updateChart()
          
 });
+function calculateTotal() {
+    var subtotalInput = document.getElementById("cni_sub");
+    var discountInput = document.getElementById("cni_disc");
+    var taxInput = document.getElementById("cni_tax");
+    var totalSpan = document.getElementById("cni_total");
 
+    var subtotal = parseFloat(subtotalInput.value) || 0;
+    var discount = parseFloat(discountInput.value) || 0;
+    var tax = parseFloat(taxInput.value) || 0;
+
+    var total = subtotal + discount + tax;
+
+    totalSpan.textContent = total.toFixed(2);
+
+    var totalInput = document.getElementById("cni_total_input");
+    totalInput.value = total.toFixed(2);
+}
 // Call updateChart() to load current date data when the page is loaded
 
 });

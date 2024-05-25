@@ -66,10 +66,9 @@ if (post('actionBtn')) {
 
     $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
 
-    $fields = array('currency_unit','commission', 'service', 'transaction'); // Define fields to check for duplicates
-    $values = array($curr,$commission,$service, $transaction); // Values of the fields
 
-    if (isDuplicateRecordWithConditions($fields, $values, $tblName, $finance_connect, $dataID)) {
+
+            if (isDuplicateRecord('currency_unit', $curr, $tblName, $finance_connect, $dataID)) {
                 $curr_err = "Duplicate record found for currency unit,commission fees rate, servise fee rate and transaction fee.";
                 break;}
             

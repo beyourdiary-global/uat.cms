@@ -30,7 +30,7 @@ if($searchText != '')
 if($searchType == 'buyer_username'){
     if(sizeof($rstArr) == 0)
     {
-        $rstArr[0]['desc'] = '<a href="shopee_cust_info.php?act=I">Add a New Shopee Buyer</a>';
+        $rstArr[0]['desc'] = '<button type="button" onclick="toggleNewBuyer()">Create New Customer ID</button>';
         $rstArr[0]['val'] = "emptyValue";
     }
     

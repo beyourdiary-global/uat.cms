@@ -140,7 +140,7 @@ $('.submitBtn').on('click', () => {
     }
 
     
-    if ( cni_ctc_chk == 1 && cni_curr_chk == 1 && cni_due_chk == 1 && cni_name_chk == 1 )
+    if ( dni_due_chk == 1 && dni_curr_chk == 1 && dni_name_chk == 1 && dni_ctc_chk == 1 )
         $(this).closest('fcbm').submit();
     else
         return false;

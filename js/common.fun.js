@@ -1191,7 +1191,6 @@ function searchInput(param, siteURL) {
       dataType: "json",
       success: (result) => {
         console.log(result);
-        // create div
         if (
           !(
             ($("#searchResult_" + elementID).length &&
