@@ -38,7 +38,32 @@ if (!($dataID) && !($act)) {
     window.location.href = "' . $redirect_page . '"; // Redirect to previous page
     </script>';
 }
-
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $scr_username = $_POST['scr_username']; 
+    $scr_pic = $_POST['scr_pic'];
+    $scr_country = $_POST['scr_country'];
+    $scr_brand = $_POST['scr_brand'];
+    $scr_series = $_POST['scr_series'];
+    
+    $duplicate_check_query = "SELECT * FROM shopee_customer_info WHERE buyer_username = '$scr_username'";
+    $duplicate_result = mysqli_query($finance_connect, $duplicate_check_query);
+    if( $scr_username != ''){
+       
+    if (mysqli_num_rows($duplicate_result) > 0) {
+        echo "<script>alert('Error: Duplicate Customer ID found!');</script>";
+    } else {
+        $insert_query = "INSERT INTO shopee_customer_info (buyer_username, pic, country, brand, series) 
+                         VALUES ('$scr_username', '$scr_pic', '$scr_country', '$scr_brand', '$scr_series')";
+    
+        if (mysqli_query($finance_connect, $insert_query)) {
+            echo "<script>alert('New record created successfully');</script>";
+            generateDBData(SHOPEE_CUST_INFO, $finance_connect);
+        } else {
+            echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
+        }
+    }
+    }
+}
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
@@ -786,6 +811,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <?php } ?>
                         </div>
                     </div>
+                <?php if ($act != ''){ ?>
                 <div class="col-md-4 mb-3">
                     <button type="button" onclick="toggleNewBuyer()">Create New Customer ID</button>
                 </div>
@@ -793,26 +819,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div id="new_customer_section" style="display: none;">
 
                 <div class="row">
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_username">Shopee Buyer Username<span class="requireRed">*</span></label>
                         <input class="form-control" type="text" id="scr_username" name="scr_username">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
                         <input class="form-control" type="text" id="scr_pic" name="scr_pic">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_country">Country<span class="requireRed">*</span></label>
-                        <input class="form-control" type="number" id="scr_country" name="scr_country">
+                        <input class="form-control" type="text" id="scr_country" name="scr_country">
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_brand">Brand<span class="requireRed">*</span></label>
                         <input class="form-control" type="text" id="scr_brand" name="scr_brand">
                     </div>
 
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_series">Series<span class="requireRed">*</span></label>
                         <input class="form-control" type="text" id="scr_series" name="scr_series">
                     </div>
@@ -820,6 +846,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <input type="submit" name="submit" value="Submit">
                     </form>
                 </div>
+                <?php }?>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6 mb-3 autocomplete">

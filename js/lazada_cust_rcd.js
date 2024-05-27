@@ -16,6 +16,7 @@ $(document).ready(function() {
     }
     //country
     if (!($("#lcr_country").attr('disabled'))) {
+       
         $("#lcr_country").keyup(function() {
             var param = {
                 search: $(this).val(),
@@ -23,11 +24,13 @@ $(document).ready(function() {
                 elementID: $(this).attr('id'), // id of the input
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input fcb storing the value
                 dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+                
             }
             searchInput(param, '<?= $SITEURL ?>');
         });
 
     }
+    
     //brand
     if (!($("#lcr_brand").attr('disabled'))) {
         $("#lcr_brand").keyup(function() {
@@ -79,7 +82,11 @@ $("#lcr_rec_add").on("input", function() {
     $(".lcr-rec-add-err").remove();
 });
 
-
+function isValidEmail(email) {
+    // Simple regex for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     var lcr_id_chk = 0;
@@ -113,13 +120,17 @@ $('.submitBtn').on('click', () => {
         $(".lcr-name-err").remove();
         name_chk = 1;
     }
-
+    const emailField = $('#lcr_email');
+    const emailValue = emailField.val();
      if ($('#lcr_email').val() === '' || $('#lcr_email').val() === null || $('#lcr_email')
         .val() === undefined) {
         email_chk = 0;
         $("#lcr_email").after(
             '<span class="error-message lcr-email-err">Customer Email is required!</span>');
-    } else {
+    } else if (!isValidEmail(emailValue)) {
+        email_chk = 0;
+        $("#lcr_email").after('<span class="error-message wcr-cust-email-err">Invalid email format!</span>');
+    }else {
         $(".lcr-email-err").remove();
         email_chk = 1;
     }
@@ -134,7 +145,7 @@ $('.submitBtn').on('click', () => {
         phone_chk = 1;
     }
 
-    if (($('#lcr_pic').val() === ''  || $('#lcr_pic').val() == '0' || $('#lcr_pic').val() === null || $('#lcr_pic_hidden')
+    if (($('#lcr_pic_hidden').val() === ''  || $('#lcr_pic_hidden').val() == '0' || $('#lcr_pic_hidden').val() === null || $('#lcr_pic_hidden')
             .val() === undefined)) {
         pic_chk = 0;
         $("#lcr_pic").after(
@@ -206,7 +217,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (lcr_id_chk == 1 && name_chk == 1 && email_chk == 1 && phone_chk == 1 && pic_chk == 1 && country_chk == 1 && brand_chk == 1 && series_chk == 1 && rec_name_chk == 1 && rec_add_chk == 1 && rec_ctc_chk == 1)
-        $(this).closest('fcbm').submit();
+        $(this).closest('form').submit();
     else
         return false;
 

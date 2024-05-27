@@ -94,7 +94,11 @@ $("#wcr_rec_add").on("input", function() {
     $(".wcr-rec-add-err").remove();
 });
 
-
+function isValidEmail(email) {
+    // Simple regex for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     var cust_id_chk = 0;
@@ -139,12 +143,16 @@ $('.submitBtn').on('click', () => {
         $(".wcr-contact-err").remove();
         ctc_chk = 1;
     }
-
+    const emailField = $('#wcr_cust_email');
+    const emailValue = emailField.val();
     if ($('#wcr_cust_email').val() === '' || $('#wcr_cust_email').val() === null || $('#wcr_cust_email')
         .val() === undefined) {
         cust_email_chk = 0;
         $("#wcr_cust_email").after(
             '<span class="error-message wcr-cust-email-err">Customer Email is required!</span>');
+    }else if (!isValidEmail(emailValue)) {
+        cust_email_chk = 0;
+        $("#wcr_cust_email").after('<span class="error-message wcr-cust-email-err">Invalid email format!</span>');
     } else {
         $(".wcr-cust-email-err").remove();
         cust_email_chk = 1;
@@ -153,21 +161,17 @@ $('.submitBtn').on('click', () => {
     var wcr_cust_birthday = $('#wcr_cust_birthday').val();
     var today = new Date().toISOString().slice(0, 10);
 
-        if (wcr_cust_birthday === '' || wcr_cust_birthday === null ||wcr_cust_birthday === undefined) {
+        if (wcr_cust_birthday === '' || wcr_cust_birthday === null || wcr_cust_birthday === today ||wcr_cust_birthday === undefined) {
             cust_birthday_chk = 0;
             $("#wcr_cust_birthday").after(
                 '<span class="error-message wcr-cust-id-err">Customer Birthday is required!</span>');
-        }else if( wcr_cust_birthday > today) {
-            cust_birthday_chk = 0;
-            $("#wcr_cust_birthday").after(
-                '<span class="error-message wcr-cust-id-err">Customer Birthday is not in the future!</span>');
-        }
-        else {
+        } else {
             $(".wcr-cust-birthday-err").remove();
             cust_birthday_chk = 1;
         }
-        
-    if (($('#wcr_pic').val() === ''  || $('#wcr_pic').val() == '0' || $('#wcr_pic').val() === null || $('#wcr_pic_hidden')
+
+
+    if (($('#wcr_pic_hidden').val() === ''  || $('#wcr_pic_hidden').val() == '0' || $('#wcr_pic_hidden').val() === null || $('#wcr_pic_hidden')
             .val() === undefined)) {
         pic_chk = 0;
         $("#wcr_pic").after(
@@ -239,7 +243,7 @@ $('.submitBtn').on('click', () => {
     }
 
     if (cust_id_chk == 1 && name_chk == 1 && ctc_chk == 1 && cust_email_chk == 1 && cust_birthday_chk == 1 && pic_chk == 1 && country_chk == 1 && brand_chk == 1 && series_chk == 1 && rec_name_chk == 1 && rec_add_chk == 1 && rec_ctc_chk == 1)
-        $(this).closest('fcbm').submit();
+        $(this).closest('form').submit();
     else
         return false;
 

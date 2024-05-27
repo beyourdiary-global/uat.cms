@@ -61,11 +61,7 @@ if (post('actionBtn')) {
         case 'addRecord':
         case 'updRecord':
 
-            if ($lcr_email && !isEmail($lcr_email)) {
-                $email_err = "Wrong email format!";
-                $error = 1;
-                break;
-            }
+        
 
             if (!$lcr_id) {
                 $lcr_id_err = "Customer ID cannot be empty.";
@@ -478,8 +474,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         $defaultUser = $user_row['name'];
     }
     ?>
-    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="">
-    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="">
+    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
     <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
             <span class="mt-n1">
@@ -489,7 +485,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <?php } ?>
 </div>
 
-        <div class="col-md-3 mb-3 autocomplete">
+        <div class="col-md-3 mb-3 autocomplete country-autocomplete">
             <label class="form-label form_lbl" id="lcr_country_lbl" for="lcr_country">Country<span class="requireRed">*</span></label>
             <?php
             unset($echoVal);

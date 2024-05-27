@@ -214,10 +214,13 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $lor_remark);
                         array_push($datafield, 'remark');
                     }
-
+                    $tblName2 = LAZADA_CUST_RCD;
                     $query = "INSERT INTO " . $tblName . "(lazada_acc,curr_unit,lzd_country,cust_id,cust_name,cust_email,cust_phone,country,oder_number,sales_pic,ship_rec_name,ship_rec_address,ship_rec_contact,brand,series,pkg,item_price_credit,commision,other_discount,pay_fee,final_income,pay_meth,remark,create_by,create_date,create_time) VALUES ('$lor_lazada_acc','$lor_curr_unit','$lor_lzd_country','$lor_cust_id','$lor_cust_name','$lor_cust_email','$lor_cust_phone','$lor_country','$lor_oder_number','$lor_sales_pic','$lor_ship_rec_name','$lor_ship_rec_address','$lor_ship_rec_contact','$lor_brand','$lor_series','$lor_pkg','$lor_item_price_credit','$lor_commision','$lor_other_discount','$lor_pay_fee','$lor_final_income','$lor_pay_meth','$lor_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query2 = "INSERT INTO " . $tblName2 . "(lcr_id,name,email,phone,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$lor_cust_id','$lor_cust_name','$lor_cust_email','$lor_cust_phone','$lor_sales_pic','$lor_country','$lor_brand','$lor_series','$lor_ship_rec_name','$lor_ship_rec_address','$lor_ship_rec_contact','$lor_remark','" . USER_ID . "',curdate(),curtime())";
+                    
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
+                    $returnData2 = mysqli_query($connect, $query2);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -526,7 +529,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         ?>
         
         <input class="form-control" type="text" name="lor_lazada_acc" id="lor_lazada_acc" <?php if ($act == '') echo 'disabled' ?> value="">
-<input type="hidden" name="lor_lazada_acc_hidden" id="lor_lazada_acc_hidden" value="<?php echo (isset($row['lazada_acc'])) ? $row['lazada_acc'] : ''; ?>">
+        <input type="hidden" name="lor_lazada_acc_hidden" id="lor_lazada_acc_hidden" value="<?php echo (isset($row['lazada_acc'])) ? $row['lazada_acc'] : ''; ?>">
 
 
         <?php if (isset($lazada_acc_err)) { ?>
@@ -688,7 +691,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             <?php } ?>
         </div>
-
+        <?php if ($act != ''){ ?>
         <div class="col-md-4 mb-3">
         <button type="button" onclick="toggleNewCustomerSection()">Create New Customer ID</button>
         </div>
@@ -740,7 +743,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     </div>
     <input type="submit" name="submit" value="Submit">
     </div>
-
+    <?php } ?>
 </fieldset>
 
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">

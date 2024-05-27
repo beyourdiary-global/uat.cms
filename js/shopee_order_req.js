@@ -22,6 +22,57 @@ $(document).ready(function () {
             navigator.clipboard.writeText(trackingNumber);    
         });
     }
+
+    if (!($("#scr_pic").attr('disabled'))) { 
+        $("#scr_pic").keyup(function() { 
+            var param = { 
+                search: $(this).val(), 
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');  console.log(searchInput);
+        });
+        
+       
+    }
+    if (!($("#scr_country").attr('disabled'))) {
+        $("#scr_country").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'nicename', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
+    if (!($("#scr_brand").attr('disabled'))) {
+        $("#scr_brand").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRAND ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
+    if (!($("#scr_series").attr('disabled'))) {
+        $("#scr_series").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRD_SERIES ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
     //package
     if (!($("#sor_pkg").attr('disabled'))) {
         $("#sor_pkg").keyup(function () {

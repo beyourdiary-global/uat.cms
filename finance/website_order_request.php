@@ -15,7 +15,7 @@ $pageAction = getPageAction($act);
 $redirect_page = $SITEURL . '/finance/website_order_request_table.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-
+generateDBData(WEB_CUST_RCD, $connect);
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $customer_name = $_POST['customer_name'];
     $customer_email = $_POST['customer_email'];
     $customer_birthday = $_POST['customer_birthday'];
-    $brand = $_POST['brand_hidden'];
+    $brand = $_POST['brand'];
     $series = $_POST['series_hidden'];
     $shipping_name = $_POST['shipping_name'];
     $shipping_address = $_POST['shipping_address'];
@@ -262,10 +262,12 @@ if (post('actionBtn')) {
                         array_push($newvalarr, $wor_remark);
                         array_push($datafield, 'remark');
                     }
-
+                    $tblName2 = WEB_CUST_RCD;
                     $query = "INSERT INTO " . $tblName . " (order_id,brand,series,pkg,country,currency,price,shipping,discount,total,pay_method,pic,cust_id,cust_name,cust_email,cust_birthday,shipping_name,shipping_address,shipping_contact,remark,create_by,create_date,create_time) VALUES ('$wor_order_id','$wor_brand','$wor_series','$wor_pkg','$wor_country','$wor_currency','$wor_price','$wor_shipping','$wor_discount','$wor_total','$wor_pay','$wor_pic','$wor_cust_id','$wor_cust_name','$wor_cust_email','$wor_cust_birthday','$wor_shipping_name','$wor_shipping_address','$wor_shipping_contact','$wor_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
+                    $query2 = "INSERT INTO " . $tblName2 . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wor_cust_id','$wor_cust_name','$wor_shipping_contact','$wor_cust_email','$wor_cust_birthday','$wor_pic','$wor_country','$wor_brand','$wor_series','$wor_shipping_name','$wor_shipping_address','$wor_shipping_contact','$wor_remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
+                    $returnData2 = mysqli_query($connect, $query2);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -859,7 +861,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 </div>
             </div>
         </div>
-
+        <?php if ($act != ''){ ?>
         <div class="col-md-4 mb-3">
         <button type="button" onclick="toggleNewCustomerSection()">Create New Customer ID</button>
         </div>
@@ -963,7 +965,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 </div>
 <input type="submit" name="submit" value="Submit">
     </form>
-     
+     <?php }?>
 </fieldset>
 
 <fieldset class="border p-2 mb-3" style="border-radius: 3px;">
