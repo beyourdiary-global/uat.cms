@@ -133,7 +133,7 @@ if ($acc_result) {
                      // Process data from all result sets using four while loops grouped together
                      foreach ($resultSets as $resultSetKey => $resultSet) {
                         while ($row = $resultSet->fetch_assoc()) {
-
+                            if($row['order_status'] != 'SP'){
                             $channel = '';
                             $pic = '';
                             switch ($resultSetKey) {
@@ -208,6 +208,7 @@ if ($acc_result) {
                             ?>
 
                             <tr>
+                                
                                 <th class="hideColumn" scope="row">
                                     <?= $row['id'] ?>
                                 </th>
@@ -268,7 +269,7 @@ if ($acc_result) {
                                     <?= $pkg['name'] ?? '' ?>
                                 </td>
                             </tr>
-                        <?php }} ?>
+                        <?php }}} ?>
                     </tbody>
                     <tfoot>
                     <tr>

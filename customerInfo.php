@@ -386,25 +386,33 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                             <div class="form-group mb-3">
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 autocomplete">
                                         <label class="form-label" for="country">Country/Region</label>
-                                        <select class="form-select" aria-label="Default select example" name="country" id="country" <?php if ($act == '') echo 'disabled' ?>>
-                                            <?php
-                                            $resultCountry = getData('*', '', '', 'countries', $connect);
+                                        <?php
+                                            unset($echoVal);
 
-                                            if (!$resultCountry) {
-                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                            }
+                                            if (isset($row['country']))
+                                                $echoVal = $row['country'];
 
-                                            echo "<option disabled selected>Select Country</option>";
-
-                                            while ($rowCountry = $resultCountry->fetch_assoc()) {
-                                                $selected = isset($row['shipping_country_region']) && $rowCountry['id'] == $row['shipping_country_region'] ? "selected" : "";
-                                                echo "<option value='{$rowCountry['id']}' $selected>{$rowCountry['name']}</option>";
+                                            if (isset($echoVal)) {
+                                                $country_rst = getData('name', "id = '$echoVal'", '', COUNTRIES, $connect);
+                                                if (!$country_rst) {
+                                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                }
+                                                $country_row = $country_rst->fetch_assoc();
                                             }
                                             ?>
-                                        </select>
+
+                                            <input class="form-control" type="text" name="country" id="country" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $country_row['nicename'] : ''  ?>">
+
+                                            <input type="hidden" name="country_hidden" id="country_hidden" value="<?php echo (isset($row['shipping_country_region'])) ? $row['shipping_country_region'] : ''; ?>">
+
+                                            <?php if (isset($country_err)) { ?>
+                                                <div id="err_msg">
+                                                    <span class="mt-n1"><?php echo $country_err; ?></span>
+                                                </div>
+                                            <?php } ?>
                                     </div>
 
                                     <div class="col-sm-3">
@@ -472,25 +480,38 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         </select>
                                     </div>
 
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4 autocomplete">
                                         <label class="form-label" for="personIncharges">Person in charges </label>
-                                        <select class="form-select" aria-label="Default select example" name="personIncharges" id="personIncharges" required <?php if ($act == '') echo 'disabled' ?>>
+                                       
                                             <?php
-                                            $resultUser = getData('*', '', '', USR_USER, $connect);
+                                            unset($echoVal);
 
-                                            if (!$resultUser) {
+                                            if (isset($row['person_in_charges']))
+                                                $echoVal = $row['person_in_charges'];
+            
+                                            if (isset($echoVal)) {
+                                           $pic_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+
+                                            if (!$pic_rst) {
                                                 echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
                                                 echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                             }
-
-                                            echo "<option value='' disabled selected>Select person in charges</option>";
-
-                                            while ($rowUser = $resultUser->fetch_assoc()) {
-                                                $selected = isset($row['person_in_charges']) && $rowUser['id'] == $row['person_in_charges'] ? "selected" : "";
-                                                echo "<option value='{$rowUser['id']}' $selected>{$rowUser['name']}</option>";
+                                            $pic_row = $pic_rst->fetch_assoc();
                                             }
                                             ?>
-                                        </select>
+                                        <input class="form-control" type="text" name="personIncharges" id="personIncharges" <?php if ($act == '')
+                                            echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $pic_row['name'] : '' ?>">
+
+                                        <input type="hidden" name="personIncharges_hidden" id="personIncharges_hidden"
+                                            value="<?php echo (isset($row['person_in_charges'])) ? $row['person_in_charges'] : ''; ?>">
+
+                                        <?php if (isset($pic_err)) { ?>
+                                            <div id="err_msg">
+                                                <span class="mt-n1">
+                                                    <?php echo $pic_err; ?>
+                                                </span>
+                                            </div>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
@@ -516,7 +537,32 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         preloader(300, action);
 
         $(document).ready(function() {
-
+            if (!($("#personIncharges").attr('disabled'))) { 
+                $("#personIncharges").keyup(function() { 
+                    var param = { 
+                        search: $(this).val(), 
+                        searchType: 'name', // column of the table
+                        elementID: $(this).attr('id'), // id of the input
+                        hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                        dbTable: '<?= USR_USER ?>', // json filename (generated when login)
+                    }
+                    searchInput(param, '<?= $SITEURL ?>');  console.log(searchInput);
+                });
+                
+            
+            }
+            if (!($("#country").attr('disabled'))) {
+                $("#country").keyup(function() {
+                    var param = {
+                        search: $(this).val(),
+                        searchType: 'nicename', // column of the table
+                        elementID: $(this).attr('id'), // id of the input
+                        hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                        dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+                    }
+                    searchInput(param, '<?= $SITEURL ?>');
+                });
+            }
             function validateEmail() {
             // get value of input email
             var email = $("#cusEmail").val();

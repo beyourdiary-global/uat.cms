@@ -27,21 +27,14 @@ if($searchText != '')
     }
 }
 
-if($searchType == 'buyer_username'){
-    if(sizeof($rstArr) == 0)
-    {
-        $rstArr[0]['desc'] = '<button type="button" onclick="toggleNewBuyer()">Create New Customer ID</button>';
-        $rstArr[0]['val'] = "emptyValue";
-    }
-    
-}else{
+
     if(sizeof($rstArr) == 0)
     {
         $rstArr[0]['desc'] = '<i>No result</i>';
         $rstArr[0]['val'] = "emptyValue";
     }
 
-}
+
 
 echo json_encode($rstArr);
 ?>
