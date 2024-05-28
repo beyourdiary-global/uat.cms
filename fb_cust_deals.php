@@ -400,13 +400,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="fcb_name_lbl" for="fcb_name">Name<span
                                         class="requireRed">*</span></label>
-                                <input class="form-control" type="text" name="fcb_name" id="fcb_name" value="<?php
-                                if (isset($dataExisted) && isset($row['name']) && !isset($fcb_name)) {
-                                    echo $row['name'];
-                                } else if (isset($fcb_name)) {
-                                    echo $fcb_name;
-                                }
-                                ?>" <?php if ($act == '')
+                                <?php 
+                                unset($echoVal);
+                                if (isset($row['name']))
+                                    $echoVal = $row['name'];
+                                ?>
+                                <input class="form-control" type="text" name="fcb_name" id="fcb_name" value="<?php echo !empty($echoVal) ? $row['name'] : '' ?>" <?php if ($act == '')
                                     echo 'disabled' ?>>
                                 <?php if (isset($name_err)) { ?>
                                     <div id="err_msg">
@@ -419,13 +418,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             <div class="col-md-4 mb-3">
                                 <label class="form-label form_lbl" id="fcb_link_lbl" for="fcb_link">Facebook Link<span
                                         class="requireRed">*</span></label>
-                                <input class="form-control" type="text" name="fcb_link" id="fcb_link" value="<?php
-                                if (isset($dataExisted) && isset($row['fb_link']) && !isset($fcb_link)) {
-                                    echo $row['fb_link'];
-                                } else if (isset($fcb_link)) {
-                                    echo $fcb_link;
-                                }
-                                ?>" <?php if ($act == '')
+                                <?php 
+                                unset($echoVal);
+                                if (isset($row['fb_link']))
+                                    $echoVal = $row['fb_link'];
+                                ?>
+                                <input class="form-control" type="text" name="fcb_link" id="fcb_link" value="<?php echo !empty($echoVal) ? $row['fb_link'] : '' ?>" <?php if ($act == '')
                                     echo 'disabled' ?>>
                                 <?php if (isset($link_err)) { ?>
                                     <div id="err_msg">
@@ -674,15 +672,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="fcb_rec_name_lbl"
                                             for="fcb_rec_name">Receiver
                                             Name<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="fcb_rec_name" id="fcb_rec_name"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_name']) && !isset($fcb_rec_name)) {
-                                                echo $row['ship_rec_name'];
-                                            } else if (isset($fcb_rec_name)) {
-                                                echo $fcb_rec_name;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                            unset($echoVal);
+                                            if (isset($row['ship_rec_name']))
+                                            $echoVal = $row['ship_rec_name'];
+                                            ?>
+                                            <input class="form-control" type="text" name="fcb_rec_name" id="fcb_rec_name" value="<?php echo !empty($echoVal) ? $row['ship_rec_name'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
                                         <?php if (isset($rec_name_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">
@@ -695,15 +690,14 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="fcb_rec_ctc_lbl"
                                             for="fcb_rec_ctc">Receiver
                                             Contact<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="number" name="fcb_rec_ctc" id="fcb_rec_ctc"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_contact']) && !isset($fcb_rec_ctc)) {
-                                                echo $row['ship_rec_contact'];
-                                            } else if (isset($fcb_rec_ctc)) {
-                                                echo $fcb_rec_ctc;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                        unset($echoVal);
+
+                                        if (isset($row['ship_rec_contact']))
+                                            $echoVal = $row['ship_rec_contact'];
+                                        ?>
+                                        <input class="form-control" type="number" name="fcb_rec_ctc" id="fcb_rec_ctc" value="<?php echo !empty($echoVal) ? $row['ship_rec_contact'] : '' ?>" <?php if ($act == '')
+                                            echo 'disabled' ?>>
                                         <?php if (isset($rec_ctc_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">
@@ -716,15 +710,14 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="fcb_rec_add_lbl"
                                             for="fcb_rec_add">Receiver
                                             Address<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="fcb_rec_add" id="fcb_rec_add"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_add']) && !isset($fcb_rec_add)) {
-                                                echo $row['ship_rec_add'];
-                                            } else if (isset($fcb_rec_add)) {
-                                                echo $fcb_rec_add;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                        unset($echoVal);
+
+                                        if (isset($row['ship_rec_add']))
+                                            $echoVal = $row['ship_rec_add'];
+                                        ?>
+                                        <input class="form-control" type="text" name="fcb_rec_add" id="fcb_rec_add" value="<?php echo !empty($echoVal) ? $row['ship_rec_add'] : '' ?>" <?php if ($act == '')
+                                            echo 'disabled' ?>>
                                         <?php if (isset($rec_add_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">

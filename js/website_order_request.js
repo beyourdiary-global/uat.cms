@@ -39,6 +39,8 @@ window.onload = function() {
 
 //autocomplete
 $(document).ready(function() {
+    $("#wor_cust_id").change(autofill);
+
     function getParameterByName(name) {
         var urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
@@ -269,7 +271,28 @@ $("#wor_shipping_contact").on("input", function() {
     $(".wor-shipping-contact-err").remove();
 });
 
+function autofill() {
+    var paramCustomer = {
+        search: $("#wor_cust_id").val(),
+        searchCol: 'cust_id',
+        searchType: '*',
+        dbTable: '<?= WEB_CUST_RCD ?>',
+        isFin: 0,
+    };
 
+    retrieveDBData(paramCustomer, '<?= $SITEURL ?>', function (result) {
+        if (result && result.length > 0) {
+            $("#wor_cust_name").val(result[0]['name']);
+            $("#wor_cust_email").val(result[0]['cust_email']);
+            $("#wor_cust_birthday").val(result[0]['cust_birthday']);
+        }
+    });
+}
+function isValidEmail(email) {
+    // Simple regex for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     var order_id_chk = 0;
@@ -377,7 +400,7 @@ $('.submitBtn').on('click', () => {
         shipping_chk = 1;
     }
 
-    if (($('#wor_discount').val() == '' || $('#wor_discount').val() == '0' || $('#wor_discount').val() === null || $('#wor_discount')
+    if (($('#wor_discount').val() == '' || $('#wor_discount').val() === null || $('#wor_discount')
             .val() === undefined)) {
         discount_chk = 0;
         $("#wor_discount").after(
@@ -506,13 +529,17 @@ $('.submitBtn').on('click', () => {
         $(".wor-cust-name-err").remove();
         cust_name_chk = 1;
     }
-
+    const emailField = $('#wor_cust_email');
+    const emailValue = emailField.val();
     if (($('#wor_cust_email').val() == '' || $('#wor_cust_email').val() == '0' || $('#wor_cust_email').val() === null || $('#wor_cust_email')
             .val() === undefined)) {
         cust_email_chk = 0;
         $("#wor_cust_email").after(
             '<span class="error-message wor-cust-email-err">Customer Email is required!</span>');
-    } else {
+    }else if (!isValidEmail(emailValue)) {
+        cust_email_chk = 0;
+        $("#wor_cust_email").after('<span class="error-message wor-cust-email-err">Invalid email format!</span>');
+    }else {
         $(".wor-cust-email-err").remove();
         cust_email_chk = 1;
     }

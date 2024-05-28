@@ -328,7 +328,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 Tracking Link<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_tracking_link" id="courier_tracking_link" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['tracking_link']) && !isset($courier_tracking_link)) {
-                                                                                                                echo $row['name'];
+                                                                                                                echo $row['tracking_link'];
                                                                                                             } else if (isset($dataExisted) && isset($row['tracking_link']) && isset($courier_tracking_link)) {
                                                                                                                 echo $courier_tracking_link;
                                                                                                             } else {

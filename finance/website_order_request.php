@@ -60,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     
         if (mysqli_query($connect, $insert_query)) {
             echo "<script>alert('New record created successfully');</script>";
+            generateDBData(WEB_CUST_RCD, $connect);
         } else {
             echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
         }
@@ -102,11 +103,6 @@ if (post('actionBtn')) {
         case 'addRecord':
         case 'updRecord':
 
-            if ($wor_cust_email && !isEmail($wor_cust_email)) {
-                $cust_email_err = "Wrong email format!";
-                $error = 1;
-                break;
-            }
 
             if (!$wor_order_id) {
                 $order_id_err = "Order ID cannot be empty.";
@@ -265,9 +261,10 @@ if (post('actionBtn')) {
                     $tblName2 = WEB_CUST_RCD;
                     $query = "INSERT INTO " . $tblName . " (order_id,brand,series,pkg,country,currency,price,shipping,discount,total,pay_method,pic,cust_id,cust_name,cust_email,cust_birthday,shipping_name,shipping_address,shipping_contact,remark,create_by,create_date,create_time) VALUES ('$wor_order_id','$wor_brand','$wor_series','$wor_pkg','$wor_country','$wor_currency','$wor_price','$wor_shipping','$wor_discount','$wor_total','$wor_pay','$wor_pic','$wor_cust_id','$wor_cust_name','$wor_cust_email','$wor_cust_birthday','$wor_shipping_name','$wor_shipping_address','$wor_shipping_contact','$wor_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
-                    $query2 = "INSERT INTO " . $tblName2 . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wor_cust_id','$wor_cust_name','$wor_shipping_contact','$wor_cust_email','$wor_cust_birthday','$wor_pic','$wor_country','$wor_brand','$wor_series','$wor_shipping_name','$wor_shipping_address','$wor_shipping_contact','$wor_remark','" . USER_ID . "',curdate(),curtime())";
+                    $query2 = "INSERT INTO " . $tblName2 . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wor_cust_id','$wor_name','$wor_ctc','$wor_cust_email','$wor_cust_birthday','$wor_pic','$wor_country','$wor_brand','$wor_series','$wor_shipping_name','$wor_shipping_address','$wor_shipping_contact','$wor_remark','" . USER_ID . "',curdate(),curtime())";
                     $returnData = mysqli_query($finance_connect, $query);
                     $returnData2 = mysqli_query($connect, $query2);
+                    generateDBData(WEB_CUST_RCD, $connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();

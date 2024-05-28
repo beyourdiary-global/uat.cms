@@ -127,6 +127,7 @@ $(document).ready(function () {
     }
 
     $("#sor_acc").change(getAccountCurrency);
+    $("#sor_user").change(autofill);
     $("#sor_pkg").change(getPkgBrand);
     $("#sor_acc, #sor_pkg").change(calculatePrice);
     $("#sor_serv, #sor_trans, #sor_ams").on('keyup', calculateFinalAmount);
@@ -164,6 +165,55 @@ function getAccountCurrency() {
             });
         } else {
             console.error('Error retrieving Shopee Account data');
+        }
+    });
+}
+function autofill() {
+    var paramMrcht = {
+        search: $("#sor_user").val(),
+        searchCol: 'buyer_username',
+        searchType: '*',
+        dbTable: '<?= SHOPEE_CUST_INFO ?>',
+        isFin: 1,
+    };
+
+    retrieveDBData(paramMrcht, '<?= $SITEURL ?>', function (result) {
+        if (result && result.length > 0) {
+            var pic = result[0]['pic'];
+            var pkg_brand = result[0]['brand'];
+
+            console.log('brand', pkg_brand);
+
+            $("#sor_pic_hidden").val(pic);
+            $("#sor_brand_hidden").val(pkg_brand);
+
+            var paramName = {
+                search: pic,
+                searchCol: 'id',
+                searchType: '*',
+                dbTable: '<?= USR_USER ?>',
+                isFin: 0,
+            };
+
+            var paramBrand = {
+                search: pkg_brand,
+                searchCol: 'id',
+                searchType: '*',
+                dbTable: '<?= BRAND ?>',
+                isFin: 0,
+            };
+
+            retrieveDBData(paramBrand, '<?= $SITEURL ?>', function (result) {
+                if (result && result.length > 0) {
+                    $("#sor_brand").val(result[0]['name']);
+                }
+            });
+
+            retrieveDBData(paramName, '<?= $SITEURL ?>', function (result) {
+                if (result && result.length > 0) {
+                    $("#sor_pic").val(result[0]['name']);
+                }
+            });
         }
     });
 }
