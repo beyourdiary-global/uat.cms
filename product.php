@@ -164,13 +164,13 @@ if (post('actionBtn')) {
                         array_push($datafield, 'parent_product');
                     }
 
-                    $query = "INSERT INTO " . $tblName . "(name,brand,weight,weight_unit,cost,currency_unit,barcode_status,barcode_slot,prod_category,expire_date,parent_product,create_by,create_date,create_time) VALUES ('$prod_name','$prod_brand','$prod_wgt','$prod_wgt_unit','$prod_cost','$prod_cur_unit','$prod_barcode_status','$prod_barcode_slot','$prod_category,'$prod_expire_date','$parent_prod','" . USER_ID . "',curdate(),curtime())";
-
-
+                    $query = "INSERT INTO " . $tblName . "(name, brand, weight, weight_unit, cost, currency_unit, barcode_status, barcode_slot, product_category, expire_date, parent_product, create_by, create_date, create_time) VALUES ('$prod_name', '$prod_brand', '$prod_wgt', '$prod_wgt_unit', '$prod_cost', '$prod_cur_unit', '$prod_barcode_status', '$prod_barcode_slot', '$prod_category', '$prod_expire_date', '$parent_prod', '" . USER_ID . "', curdate(), curtime())";
                     $returnData = mysqli_query($connect, $query);
+                    generateDBData(PROD, $connect);
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
+                    var_dump($errorMsg);
                     $act = "F";
                 }
             } else {

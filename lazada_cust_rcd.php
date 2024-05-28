@@ -389,13 +389,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="lcr_id_lbl" for="lcr_id">Customer ID<span class="requireRed">*</span></label>
-            <input class="form-control" type="text" name="lcr_id" id="lcr_id" value="<?php
-                if (isset($dataExisted) && isset($row['lcr_id']) && !isset($lcr_id)) {
-                    echo $row['lcr_id'];
-                } else if (isset($lcr_id)) {
-                    echo $lcr_id;
-                }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php 
+            unset($echoVal);
+            if (isset($row['lcr_id']))
+            $echoVal = $row['lcr_id'];
+            ?>
+            <input class="form-control" type="text" name="lcr_id" id="lcr_id" value="<?php echo !empty($echoVal) ? $row['lcr_id'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
             <?php if (isset($lcr_id_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1"><?php echo $lcr_id_err; ?></span>
@@ -405,13 +404,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="lcr_name_lbl" for="lcr_name">Name<span class="requireRed">*</span></label>
-            <input class="form-control" type="text" name="lcr_name" id="lcr_name" value="<?php
-                if (isset($dataExisted) && isset($row['name']) && !isset($lcr_name)) {
-                    echo $row['name'];
-                } else if (isset($lcr_name)) {
-                    echo $lcr_name;
-                }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php 
+            unset($echoVal);
+            if (isset($row['lcr_name']))
+            $echoVal = $row['lcr_name'];
+            ?>
+            <input class="form-control" type="text" name="lcr_name" id="lcr_name" value="<?php echo !empty($echoVal) ? $row['lcr_name'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
             <?php if (isset($name_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1"><?php echo $name_err; ?></span>
@@ -443,13 +441,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <div class="col-md-6 mb-3">
             <label class="form-label form_lbl" id="lcr_phone_lbl" for="lcr_phone">Customer Phone<span class="requireRed">*</span></label>
-            <input class="form-control" type="number" name="lcr_phone" id="lcr_phone" value="<?php
-                if (isset($dataExisted) && isset($row['phone']) && !isset($lcr_phone)) {
-                    echo $row['phone'];
-                } else if (isset($lcr_phone)) {
-                    echo $lcr_phone;
-                }
-                ?>" <?php if ($act == '') echo 'disabled' ?>>
+            <?php 
+            unset($echoVal);
+            if (isset($row['phone']))
+            $echoVal = $row['phone'];
+            ?>
+            <input class="form-control" type="text" name="lcr_phone" id="lcr_phone" value="<?php echo !empty($echoVal) ? $row['phone'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>      
             <?php if (isset($phone_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1"><?php echo $phone_err; ?></span>
@@ -580,15 +577,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="lcr_rec_name_lbl"
                                             for="lcr_rec_name">Receiver
                                             Name<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="lcr_rec_name" id="lcr_rec_name"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_name']) && !isset($lcr_rec_name)) {
-                                                echo $row['ship_rec_name'];
-                                            } else if (isset($lcr_rec_name)) {
-                                                echo $lcr_rec_name;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                            unset($echoVal);
+                                            if (isset($row['ship_rec_name']))
+                                            $echoVal = $row['ship_rec_name'];
+                                            ?>
+                                            <input class="form-control" type="text" name="lcr_rec_name" id="lcr_rec_name" value="<?php echo !empty($echoVal) ? $row['ship_rec_name'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
                                         <?php if (isset($rec_name_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">
@@ -601,15 +595,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="lcr_rec_ctc_lbl"
                                             for="lcr_rec_ctc">Receiver
                                             Contact<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="number" name="lcr_rec_ctc" id="lcr_rec_ctc"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_contact']) && !isset($lcr_rec_ctc)) {
-                                                echo $row['ship_rec_contact'];
-                                            } else if (isset($lcr_rec_ctc)) {
-                                                echo $lcr_rec_ctc;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                            unset($echoVal);
+                                            if (isset($row['ship_rec_contact']))
+                                            $echoVal = $row['ship_rec_contact'];
+                                            ?>
+                                            <input class="form-control" type="text" name="lcr_rec_ctc" id="lcr_rec_ctc" value="<?php echo !empty($echoVal) ? $row['ship_rec_contact'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
                                         <?php if (isset($rec_ctc_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">
@@ -622,15 +613,12 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         <label class="form-label form_lbl" id="lcr_rec_add_lbl"
                                             for="lcr_rec_add">Receiver
                                             Address<span class="requireRed">*</span></label>
-                                        <input class="form-control" type="text" name="lcr_rec_add" id="lcr_rec_add"
-                                            value="<?php
-                                            if (isset($dataExisted) && isset($row['ship_rec_add']) && !isset($lcr_rec_add)) {
-                                                echo $row['ship_rec_add'];
-                                            } else if (isset($lcr_rec_add)) {
-                                                echo $lcr_rec_add;
-                                            }
-                                            ?>" <?php if ($act == '')
-                                                echo 'disabled' ?>>
+                                            <?php 
+                                            unset($echoVal);
+                                            if (isset($row['ship_rec_add']))
+                                            $echoVal = $row['ship_rec_add'];
+                                            ?>
+                                            <input class="form-control" type="text" name="lcr_rec_add" id="lcr_rec_add" value="<?php echo !empty($echoVal) ? $row['ship_rec_add'] : '' ?>" <?php if ($act == '')echo 'disabled' ?>>       
                                         <?php if (isset($rec_add_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">

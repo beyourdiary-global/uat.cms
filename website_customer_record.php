@@ -175,6 +175,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName . "(cust_id,name,contact,cust_email,cust_birthday,sales_pic,country,brand,series,ship_rec_name,ship_rec_add,ship_rec_contact,remark,create_by,create_date,create_time) VALUES ('$wcr_cust_id','$wcr_name','$wcr_ctc','$wcr_cust_email','$wcr_cust_birthday','$wcr_pic','$wcr_country','$wcr_brand','$wcr_series','$wcr_rec_name','$wcr_rec_add','$wcr_rec_ctc','$wcr_remark','" . USER_ID . "',curdate(),curtime())";
                     // Execute the query
                     $returnData = mysqli_query($connect, $query);
+                    
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();

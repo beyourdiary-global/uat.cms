@@ -297,14 +297,11 @@ function updateOrderStatus(id, newStatus, tableName) {
         url: 'order_process_list.php',
         type: 'POST',
         data: { id: id, order_status: newStatus, table_name: tableName },
-        success: function(response) {
-            if (response.success) {
-                $('#order_status_' + id).text(newStatus);
-                // You can add more logic here, like showing a success message
-            } else {
-                // Handle the case where the update failed
-            }
-        },
+
+        success: function(data) {
+                console.log('TEST7');
+                window.location.href = 'order_process_list.php';
+            },
         error: function() {
             // Handle the AJAX error
         }
