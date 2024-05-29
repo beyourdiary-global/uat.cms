@@ -99,10 +99,13 @@ if (post('actionBtn')) {
 
                     $query = "INSERT INTO " . $tblName  . "(id,name,country,taxable,create_by,create_date,create_time,tracking_link) VALUES ('$courier_id','$courier_name','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime(),'$courier_tracking_link')";
                     // Execute the query
-                    var_dump($courier_tracking_link);
-                    var_dump($query);
+                   
+                    var_dump($courier_country);
+                    var_dump($courier_tax);
+                   
                     $returnData = mysqli_query($connect, $query);
                     var_dump($returnData);
+                    
                     generateDBData(COURIER, $connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {

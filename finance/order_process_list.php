@@ -27,17 +27,13 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
     $tableName = $_POST['table_name'];
 
 $query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
-$acc_result = $finance_connect->query($query);
+
 if ($tableName == 'LAZADA_ORDER_REQ') {
     $acc_result = $connect->query($query);
 } else {
     $acc_result = $finance_connect->query($query);
 }
-if ($acc_result) {
-    $response = array('success' => true);
-} else {
-    $response = array('success' => false, 'error' => $connect->error);
-}
+
 } else {
     $response = array('success' => false, 'error' => 'Missing id, order_status, or table_name in POST request');
 }
