@@ -246,9 +246,16 @@ if ($acc_result) {
                               
                                 echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
                                
-                                echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                                echo '<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
 
-                                echo '<a class="btn btn-danger me-1" href="javascript:void(0)" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>';?>
+                                // Echo the form for processing shipment
+                                echo '<form method="POST" action="order_process_list.php" style="display:inline;margin-left:-4px;">
+                                        <input type="hidden" name="id" value="'.$row['id'].'">
+                                        <input type="hidden" name="order_status" value="WP">
+                                        <input type="hidden" name="table_name" value="'.$tableKey.'">
+                                        <button class="btn btn-danger" type="submit" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></button>
+                                    </form>';
+                                ?>
                                 </td>
                                 <td scope="row">
                                     <?= $orderId ?>

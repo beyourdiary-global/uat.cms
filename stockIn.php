@@ -98,7 +98,16 @@ if (post('usrBtn')) {
                     $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
 
                     $result = mysqli_query($connect, $insertQuery);
+                    $tblName2 = STK_COST;
+                    $rst_check_prod = getData('*', "id='$prod_id'", '', $tblname, $connect);
+                    if (count($rst_check_prod) == 0) {
+                        $shipping_cost = 0;
+                        $update_sql = "UPDATE $tblname SET shipping_cost = $shipping_cost WHERE prod_id = '$prod_id' AND brand_id = '$brand_id'";
+                        $result2 = mysqli_query($connect, $update_sql);
+                    }else{
+                        $quantity = count($rst_check_prod);
 
+                    }
                     if ($result) {
                         $logMessage = "$usr_name added a data <b>Stock In - [ Barcode: $barcode ], [ Product ID: $productId ], [ Warehouse ID: $warehouseId ], [ User ID: $createBy ] </b> under <i><b>$tblname</b></i>." ;
                       
