@@ -118,6 +118,7 @@ define('WEB_CUST_RCD', 'customer_website_deals_transaction');
 define('LAZADA_CUST_RCD', 'customer_lazada_deals_transaction');
 define('LAZADA_ORDER_REQ', 'lazada_order_request');
 define('OFFICIAL_PROCESS_ORDER','official_process_order');
+define('STK_COST','stock_costing_record');
 
 //finance
 define('MERCHANT', 'merchant');

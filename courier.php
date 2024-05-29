@@ -97,9 +97,12 @@ if (post('actionBtn')) {
                         array_push($datafield, 'tracking link');
                     }
 
-                    $query = "INSERT INTO " . $tblName  . "(id,name,tracking_link,country,taxable,create_by,create_date,create_time) VALUES ('$courier_id','$courier_name','$courier_tracking_link','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime())";
+                    $query = "INSERT INTO " . $tblName  . "(id,name,country,taxable,create_by,create_date,create_time,tracking_link) VALUES ('$courier_id','$courier_name','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime(),'$courier_tracking_link')";
                     // Execute the query
+                    var_dump($courier_tracking_link);
+                    var_dump($query);
                     $returnData = mysqli_query($connect, $query);
+                    var_dump($returnData);
                     generateDBData(COURIER, $connect);
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
@@ -328,7 +331,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 Tracking Link<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_tracking_link" id="courier_tracking_link" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['tracking_link']) && !isset($courier_tracking_link)) {
-                                                                                                                echo $row['tracking_link'];
+                                                                                                                echo $row['name'];
                                                                                                             } else if (isset($dataExisted) && isset($row['tracking_link']) && isset($courier_tracking_link)) {
                                                                                                                 echo $courier_tracking_link;
                                                                                                             } else {
