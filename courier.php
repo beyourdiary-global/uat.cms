@@ -100,9 +100,7 @@ if (post('actionBtn')) {
                     $query = "INSERT INTO " . $tblName  . "(id,name,country,taxable,create_by,create_date,create_time,tracking_link) VALUES ('$courier_id','$courier_name','$courier_country','$courier_tax','" . USER_ID . "',curdate(),curtime(),'$courier_tracking_link')";
                     // Execute the query
                    
-                    var_dump($courier_country);
-                    var_dump($courier_tax);
-                   
+                    var_dump($query);
                     $returnData = mysqli_query($connect, $query);
                     var_dump($returnData);
                     
@@ -157,6 +155,8 @@ if (post('actionBtn')) {
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET id = '$courier_id',name = '$courier_name',country = '$courier_country',taxable = '$courier_tax', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
+                        var_dump($query);
+                        var_dump($returnData);
                         generateDBData(COURIER, $connect);
                     } else {
                         $act = 'NC';
