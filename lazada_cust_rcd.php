@@ -461,6 +461,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="col-md-3 mb-3 autocomplete">
     <label class="form-label form_lbl" id="lcr_pic_lbl" for="lcr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
     <?php
+     if(($act == 'E')){
+        unset($echoVal);
+
+        if (isset($row['sales_pic']))
+            $echoVal = $row['sales_pic'];
+
+        if (isset($echoVal)) {
+            $user_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+            if (!$user_rst) {
+                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+            }
+            $user_row = $user_rst->fetch_assoc();
+        }
+    ?>
+    <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
+    <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="<?php echo (isset($row['sales_pic'])) ? $row['sales_pic'] : ''; ?>">
+    <?php }?>
+    <?php
+     if(($act == 'I')){
     $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
     $defaultUser = '';
 
@@ -473,6 +493,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ?>
     <input class="form-control" type="text" name="lcr_pic" id="lcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
     <input type="hidden" name="lcr_pic_hidden" id="lcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
+    <?php } ?>
     <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
             <span class="mt-n1">

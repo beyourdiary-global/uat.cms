@@ -128,11 +128,7 @@ if (post('actionBtn')) {
             } else if (!$wor_shipping) {
                 $shipping_err = "Shipping cannot be empty.";
                 break;
-            } else if (!$wor_discount) {
-                $discount_err = "Discount cannot be empty.";
-                break;
-
-            } else if (!$wor_pic) {
+            }  else if (!$wor_pic) {
                 $pic_err = "Person In Charge cannot be empty.";
                 break;
 

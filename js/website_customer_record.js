@@ -42,6 +42,18 @@ $(document).ready(function() {
         });
 
     }
+    if (!($("#wcr_series").attr('disabled'))) {
+        $("#wcr_series").keyup(function() {
+            var param = {
+                search: $(this).val(),
+                searchType: 'name', // column of the table
+                elementID: $(this).attr('id'), // id of the input
+                hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                dbTable: '<?= BRD_SERIES ?>', // json filename (generated when login)
+            }
+            searchInput(param, '<?= $SITEURL ?>');
+        });
+    }
  
 })
 

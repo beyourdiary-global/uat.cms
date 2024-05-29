@@ -32,7 +32,7 @@ if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
     $id = $_POST['id'];
     $newStatus = $_POST['order_status'];
     $tableName = $_POST['table_name'];
-
+    $_SESSION['tempValConfirmBox'] = true;
 $query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
 
 if ($tableName == 'LAZADA_ORDER_REQ') {
@@ -42,13 +42,6 @@ if ($tableName == 'LAZADA_ORDER_REQ') {
     $returnData = mysqli_query($finance_connect, $query);
   
 }
-if ($returnData) {
-    $response = array('success' => true);
-} else {
-    $response = array('success' => false, 'error' => $connect->error);
-}
-} else {
-    $response = array('success' => false, 'error' => 'Missing id, order_status, or table_name in POST request');
 }
 
 ?>
@@ -308,21 +301,12 @@ if ($returnData) {
 
 </body>
 <script>
-function updateOrderStatus(id, newStatus, tableName) {
-    $.ajax({
-        url: 'order_process_list.php',
-        type: 'POST',
-        data: { id: id, order_status: newStatus, table_name: tableName },
+      if (isset($_SESSION['tempValConfirmBox'])) {
+        unset($_SESSION['tempValConfirmBox']);
+        echo $clearLocalStorage;
+        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+    }
 
-        success: function(data) {
-                console.log('TEST7');
-                window.location.href = 'order_process_list.php';
-            },
-        error: function() {
-            // Handle the AJAX error
-        }
-    });
-}
     /**
   oufei 20231014
   common.fun.js
