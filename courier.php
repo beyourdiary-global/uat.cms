@@ -152,8 +152,7 @@ if (post('actionBtn')) {
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET id = '$courier_id',name = '$courier_name',country = '$courier_country','tracking_link ='$courier_tracking_link,taxable = '$courier_tax', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
                         $returnData = mysqli_query($connect, $query);
-                        var_dump($query);
-                        var_dump($returnData);
+                       
                         generateDBData(COURIER, $connect);
                     } else {
                         $act = 'NC';
