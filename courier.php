@@ -151,8 +151,9 @@ if (post('actionBtn')) {
 
                     if (count($oldvalarr) > 0 && count($chgvalarr) > 0) {
                         $query = "UPDATE " . $tblName  . " SET id = '$courier_id',name = '$courier_name',country = '$courier_country','tracking_link ='$courier_tracking_link,taxable = '$courier_tax', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        var_dump( $query);
                         $returnData = mysqli_query($connect, $query);
-                       
+                        var_dump( $returnData);
                         generateDBData(COURIER, $connect);
                     } else {
                         $act = 'NC';
@@ -330,7 +331,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 Tracking Link<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="courier_tracking_link" id="courier_tracking_link" value="<?php
                                                                                                             if (isset($dataExisted) && isset($row['tracking_link']) && !isset($courier_tracking_link)) {
-                                                                                                                echo $row['name'];
+                                                                                                                echo $row['tracking_link'];
                                                                                                             } else if (isset($dataExisted) && isset($row['tracking_link']) && isset($courier_tracking_link)) {
                                                                                                                 echo $courier_tracking_link;
                                                                                                             } else {

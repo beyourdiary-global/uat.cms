@@ -529,7 +529,6 @@ $img_path = SITEURL . img_server . 'finance/atome_trans_backup/';
 
 </body>
 <script>
-     <?php include "../js/fb_ads_topup_table.js" ?>
     //Initial Page And Action Value
     var page = "<?= $pageTitle ?>";
     var action = "<?php echo isset($act) ? $act : ' '; ?>";

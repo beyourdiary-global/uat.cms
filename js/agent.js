@@ -68,11 +68,17 @@ $("#agt_country").on("input", function() {
 });
 
 
+function isValidEmail(email) {
+    // Simple regex for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 $('.submitBtn').on('click', () => {
     $(".error-message").remove();
     //event.preventDefault();
     
     var name_chk = 0;
+    var email_chk = 0;
     var brand_chk = 0;
     var pic_chk = 0;
     var country_chk = 0;
@@ -85,6 +91,20 @@ $('.submitBtn').on('click', () => {
     } else {
         $(".name-err").remove();
         name_chk = 1;
+    }
+    const emailField = $('#email');
+    const emailValue = emailField.val();
+    if (($('#email').val() === '' || $('#email').val() === null || $('#email')
+        .val() === undefined)) {
+            email_chk = 0;
+        $("#email").after(
+            '<span class="error-message email-err">Email is required!</span>');
+    }else if (!isValidEmail(emailValue)) {
+        email_chk = 0;
+        $("#email").after('<span class="error-message email-err">Invalid email format!</span>');
+    }else {
+        $(".email-err").remove();
+        email_chk = 1;
     }
 
     if (($('#agt_brand').val() === '' || $('#agt_brand').val() === null || $('#agt_brand')
@@ -118,7 +138,7 @@ $('.submitBtn').on('click', () => {
     }
 
 
-    if ( name_chk == 1 && brand_chk == 1 && pic_chk == 1 && country_chk == 1)
+    if ( name_chk == 1 && brand_chk == 1 && pic_chk == 1 && country_chk == 1 &&  email_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

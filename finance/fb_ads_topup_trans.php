@@ -557,6 +557,8 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
+
+    
     <?php include "../js/fb_ads_topup_trans.js" ?>
     </script>
 

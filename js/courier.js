@@ -42,6 +42,7 @@ $('.submitBtn').on('click', () => {
     var name_chk = 0;
     var country_chk = 0;
     var tax_chk = 0;
+    var tracking_chk = 1;
 
     if (($('#courier_id').val() == '' ||  $('#courier_id').val() == '0' || $('#courier_id').val() === null || $('#courier_id')
     .val() === undefined)) {
@@ -73,6 +74,16 @@ $('.submitBtn').on('click', () => {
         country_chk = 1;
     }
 
+    if (($('#courier_tracking_link').val() === '' || $('#courier_tracking_link').val() === null || $('#courier_tracking_link')
+        .val() === undefined)) {
+        tracking_chk = 0;
+    $("#courier_tracking_link").after(
+        '<span class="error-message courier_tracking_link-err">Tracking Link is required!</span>');
+    } else {
+        $(".ccourier_tracking_link-err").remove();
+        tracking_chk = 1;
+    }
+
     if (($('#courier_tax').val() === '' || $('#courier_tax').val() === null || $('#courier_tax')
             .val() === undefined)) {
         tax_chk = 0;
@@ -83,7 +94,7 @@ $('.submitBtn').on('click', () => {
         tax_chk = 1;
     }
 
-    if (id_chk == 1 && name_chk == 1 && country_chk == 1 && tax_chk == 1)
+    if (id_chk == 1 && name_chk == 1 && country_chk == 1 && tax_chk == 1 && tracking_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

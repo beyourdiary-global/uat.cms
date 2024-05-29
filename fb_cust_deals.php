@@ -463,6 +463,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <label class="form-label form_lbl" id="fcb_pic_lbl" for="fcb_pic">Sales Person In
                                     Charge<span class="requireRed">*</span></label>
                                 <?php
+                                if(($act == 'E')){
                                 unset($echoVal);
 
                                 if (isset($row['sales_pic']))
@@ -481,7 +482,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
                                 <input type="hidden" name="fcb_pic_hidden" id="fcb_pic_hidden"
                                     value="<?php echo (isset($row['sales_pic'])) ? $row['sales_pic'] : ''; ?>">
-
+                                <?php }?>
+                                <?php
+                                if(($act == 'I')){
+                           
+                                    $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
+                                    $defaultUser = '';
+                                
+                                    // Retrieve details of the logged-in user
+                                    $user_rst = getData('name', "id = '$loggedInUserId'", '', USR_USER, $connect);
+                                    if ($user_rst && $user_rst->num_rows > 0) {
+                                        $user_row = $user_rst->fetch_assoc();
+                                        $defaultUser = $user_row['name'];
+                                    }
+                                    
+                                ?>
+                                <input class="form-control" type="text" name="fcb_pic" id="fcb_pic" <?php if ($act == '')
+                                    echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+                                <input type="hidden" name="fcb_pic_hidden" id="fcb_pic_hidden"
+                                    value="<?php echo $loggedInUserId ?>">
+                                <?php }?>
 
                                 <?php if (isset($pic_err)) { ?>
                                     <div id="err_msg">

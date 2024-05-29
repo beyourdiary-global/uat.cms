@@ -507,6 +507,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="col-md-3 mb-3 autocomplete">
     <label class="form-label form_lbl" id="wcr_pic_lbl" for="wcr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
     <?php
+    if(($act == 'I')){
     $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
     $defaultUser = '';
 
@@ -517,9 +518,35 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
         $defaultUser = $user_row['name'];
     }
     ?>
-    <input class="form-control" type="text" name="wcr_pic" id="wcr_pic" <?php if ($act == '') echo 'disabled' ?> value="">
-    <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden" value="">
-    <?php if (isset($pic_err)) { ?>
+    <input class="form-control" type="text" name="wcr_pic" id="wcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+    <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
+    <?php } ?>
+    <?php
+                                 if(($act == 'E')){
+                                unset($echoVal);
+
+                                if (isset($row['sales_pic']))
+                                    $echoVal = $row['sales_pic'];
+
+                                if (isset($echoVal)) {
+                                    
+                                    $pic_rst = getData('name', "id = '$echoVal'", '', USR_USER, $connect);
+                                    if (!$pic_rst) {
+                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                    }
+                                    $pic_row = $pic_rst->fetch_assoc();
+                           
+                                }
+                                ?>
+
+                                <input class="form-control" type="text" name="wcr_pic" id="wcr_pic" <?php if ($act == '')
+                                    echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $pic_row['name'] : '' ?>">
+
+                                <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden"
+                                    value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+                                <?php } ?>
+        <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
             <span class="mt-n1">
                 <?php echo $pic_err; ?>
@@ -586,27 +613,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <div class="col-md-3 mb-3 autocomplete">
         <label class="form-label form_lbl" id="wcr_series_lbl" for="wcr_series">Series<span class="requireRed">*</span></label>
-            <select class="form-select" id="wcr_series" name="wcr_series" <?php if ($act == '') echo 'disabled' ?>>
-                <option value="0" disabled selected>Select Series</option>
-                <?php
-                if ($series_list_result->num_rows >= 1) {
-                    $series_list_result->data_seek(0);
-                    while ($series = $series_list_result->fetch_assoc()) {
-                        $selected = "";
-                        if (isset($dataExisted, $row['series']) && (!isset($wcr_series))) {
-                            $selected = $row['series'] == $series['id'] ? "selected" : "";
-                        } else if (isset($wcr_series)) {
-                            list($wcr_series_id, $wcr_series) = explode(':', $wcr_series);
-                            $selected = $wcr_series == $series['id'] ? "selected" : "";
-                        }
-                        echo "<option value=\"" . $series['id'] . "\" $selected>" . $series['name'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=\"0\">None</option>";
-                }
-                ?>
-            </select>
+        <?php
+        unset($echoVal);
 
+        if (isset($row['series']))
+            $echoVal = $row['series'];
+
+        if (isset($echoVal)) {
+            $series_rst = getData('name', "id = '$echoVal'", '', BRD_SERIES, $connect);
+        if (!$series_rst) {
+            echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+            echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+        }
+            $series_row = $series_rst->fetch_assoc();
+        }
+        ?>
+
+        <input class="form-control" type="text" name="wcr_series" id="wcr_series" <?php if ($act == '')
+            echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $series_row['name'] : '' ?>">
+
+        <input type="hidden" name="wcr_series_hidden" id="wcr_series_hidden" value="<?php echo (isset($row['series'])) ? $row['series'] : ''; ?>">
             <?php if (isset($wcr_series_err)) { ?>
                 <div id="err_msg">
                     <span class="mt-n1"><?php echo $wcr_series_err; ?></span>
