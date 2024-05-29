@@ -11,6 +11,13 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
+$act = input('act');
+if($act){
+    $pageAction = getPageAction($act);
+    
+}
+
+
 $redirect_page2 = $SITEURL . '/update_shipment_info.php';
 $deleteRedirectPage = $SITEURL . '/finance/order_process_list.php';
 $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ,$finance_connect
@@ -19,7 +26,7 @@ $result2 = getData('*', '', '', FB_ORDER_REQ,$finance_connect
 );
 $result3 = getData('*', '', '', WEB_ORDER_REQ ,$finance_connect);
 $result4 = getData('*', '', '', LAZADA_ORDER_REQ ,$finance_connect);
- 
+
 if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
     // Assuming you have a database connection established
     $id = $_POST['id'];
@@ -251,7 +258,7 @@ if ($returnData) {
                                 echo '<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
 
                                 // Echo the form for processing shipment
-                                echo '<form method="POST" action="order_process_list.php" style="display:inline;margin-left:-4px;">
+                                echo '<form method="POST" action="order_process_list.php?id=' . $row['id'] . '&act=E" style="display:inline;margin-left:-4px;">
                                         <input type="hidden" name="id" value="'.$row['id'].'">
                                         <input type="hidden" name="order_status" value="WP">
                                         <input type="hidden" name="table_name" value="'.$tableKey.'">
