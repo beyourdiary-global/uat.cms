@@ -96,9 +96,7 @@ $('.submitBtn').on('click', () => {
     const emailValue = emailField.val();
     if (($('#email').val() === '' || $('#email').val() === null || $('#email')
         .val() === undefined)) {
-            email_chk = 0;
-        $("#email").after(
-            '<span class="error-message email-err">Email is required!</span>');
+            email_chk = 1;
     }else if (!isValidEmail(emailValue)) {
         email_chk = 0;
         $("#email").after('<span class="error-message email-err">Invalid email format!</span>');

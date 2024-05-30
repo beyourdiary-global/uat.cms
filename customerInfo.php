@@ -307,7 +307,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 <div class="row">
 
                                     <div class="col-sm-3 autocomplete">
-                                        <label class="form-label" for="cusPhoneCode">Phone Code <span
+                                        <label class="form-label form_lbl" id='cusPhoneCode_lbl'for="cusPhoneCode">Phone Code<span
                                         class="requireRed">*</span></label>
                                         <?php
                                             unset($echoVal);
@@ -325,12 +325,10 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 $rowPhoneCode = $resultPhoneCode->fetch_assoc();
                                             }
                                             ?>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">+</span>
-                                                </div>
+
+                                           
                                                 <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
-                                            </div>
+                                            
                                     </div>
 
                                     <div class="col-sm-9">

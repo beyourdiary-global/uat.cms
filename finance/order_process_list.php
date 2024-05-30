@@ -285,7 +285,7 @@ if (post('order_status')) {
                               
                               
                                 echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
-                                echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $orderId . '&act=' . $act_1 .'&channel=' . $channelid .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                                echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
                                 echo '<a class="btn btn-danger me-1" href="#" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>'
                                  ?>
                                 </td>
