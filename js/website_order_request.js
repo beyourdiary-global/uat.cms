@@ -390,11 +390,11 @@ $('.submitBtn').on('click', () => {
         price_chk = 1;
     }
 
-    if (($('#wor_shipping').val() == '' || $('#wor_price').val() == '0' || $('#wor_shipping').val() === null || $('#wor_shipping')
+    if (($('#wor_shipping').val() == '' || $('#wor_shipping').val() === null || $('#wor_shipping')
             .val() === undefined)) {
-        shipping_chk = 0;
-        $("#wor_shipping").after(
-            '<span class="error-message wor-price-err">Shipping is required!</span>');
+        $('#wor_shipping').val() == 0;
+        shipping_chk = 1;
+     
     } else {
         $(".wor-shipping-err").remove();
         shipping_chk = 1;
@@ -402,9 +402,9 @@ $('.submitBtn').on('click', () => {
 
     if (($('#wor_discount').val() == '' || $('#wor_discount').val() === null || $('#wor_discount')
             .val() === undefined)) {
-        discount_chk = 0;
-        $("#wor_discount").after(
-            '<span class="error-message wor-discount-err">Discount is required!</span>');
+        $('#wor_discount').val() == 0;
+        discount_chk = 1;
+       
     } else {
         $(".wor-discount-err").remove();
         discount_chk = 1;

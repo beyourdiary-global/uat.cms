@@ -125,9 +125,6 @@ if (post('actionBtn')) {
             } else if (!$wor_price) {
                 $price_err = "Price cannot be empty.";
                 break;
-            } else if (!$wor_shipping) {
-                $shipping_err = "Shipping cannot be empty.";
-                break;
             }  else if (!$wor_pic) {
                 $pic_err = "Person In Charge cannot be empty.";
                 break;
@@ -1121,7 +1118,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                             }
                             ?>
                             
-                            <a href="<?php echo $tracking_link; ?>" id="trackOrderBtn" class="track-order-btn" data-tracking-id="<?php echo $tracking_id; ?>" >Track Order</a>
+                            <a href="<?php echo $tracking_link; ?>" id="trackOrderBtn" class="track-order-btn" data-tracking-id="<?php echo $tracking_id; ?>" target="_blank">Track Order</a>
                             
                         </div>
                     </div>

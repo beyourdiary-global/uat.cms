@@ -20,7 +20,7 @@ $clearLocalStorage = '<script>localStorage.clear();</script>';
 $pageAction = getPageAction($act);
 $pageActionTitle = $pageAction . " " . $pageTitle;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
+generateDBData(PROD, $connect);
 //Checking The Page ID , Action , Pin Access Exist Or Not
 if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
     echo $redirectLink;
@@ -97,7 +97,7 @@ if (post('actionBtn')) {
                 && isDuplicateRecord("currency_unit", $prod_cur_unit, $tblName, $connect, $dataID)
                 && isDuplicateRecord("barcode_status", $prod_barcode_status, $tblName, $connect, $dataID)
                 && isDuplicateRecord("barcode_slot", $prod_barcode_slot, $tblName, $connect, $dataID)
-                && isDuplicateRecord("prod_category", $prod_category, $tblName, $connect, $dataID);
+                && isDuplicateRecord("product_category", $prod_category, $tblName, $connect, $dataID);
 
             if ($check_duplicate_record) {
                 $err = "Duplicate record found for current " . $pageTitle;
@@ -243,8 +243,11 @@ if (post('actionBtn')) {
                     $_SESSION['tempValConfirmBox'] = true;
 
                     if ($oldvalarr && $chgvalarr) {
-                        $query = "UPDATE " . $tblName . " SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot',prod_category ='$prod_category', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        $query = "UPDATE " . $tblName . " SET name ='$prod_name', brand ='$prod_brand', weight ='$prod_wgt', weight_unit ='$prod_wgt_unit', cost ='$prod_cost', currency_unit ='$prod_cur_unit', barcode_status ='$prod_barcode_status', barcode_slot ='$prod_barcode_slot',product_category ='$prod_category', expire_date ='$prod_expire_date', parent_product ='$parent_prod', update_date = curdate(), update_time = curtime(), update_by ='" . USER_ID . "' WHERE id = '$dataID'";
+                        
                         $returnData = mysqli_query($connect, $query);
+                        generateDBData(PROD, $connect);
+                        
                     } else {
                         $act = 'NC';
                     }
@@ -359,7 +362,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                         echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
                                     }
                                     $brand_row = $brand_rst->fetch_assoc();
-                                    echo $brand_row['name'];
+                                 
                                 }
                                 ?>
 
@@ -473,7 +476,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 } 
                                 ?>
                                 <input class="form-control" type="text" name="prod_category" id="prod_category" <?php if ($act == '') echo 'readonly' ?> value="<?php echo !empty($echoVal) ? $product_row['name'] : ''  ?>">
-                                <input type="hidden" name="prod_category_hidden" id="prod_category_hidden" value="<?php echo (isset($row['prod_category'])) ? $row['prod_category'] : ''; ?>">
+                                <input type="hidden" name="prod_category_hidden" id="prod_category_hidden" value="<?php echo (isset($row['product_category'])) ? $row['product_category'] : ''; ?>">
 
                             </div>
                         </div>

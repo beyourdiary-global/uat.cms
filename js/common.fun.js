@@ -1408,7 +1408,18 @@ function setText(element, val, val2) {
 
 document.addEventListener("DOMContentLoaded", function () {
   var actionBtn = document.getElementById("actionBtn");
+  retrieveDataFromLocalStorage();
 
+  // Attach input event listener to each input field
+  var inputFields = document.querySelectorAll("input, textarea ,select");
+  inputFields.forEach(function (input) {
+    if (!input.readOnly) {
+      input.addEventListener("input", function () {
+        // Save form data to localStorage when user types
+        saveFormDataToLocalStorage();
+      });
+    }
+  });
   if (actionBtn) {
     actionBtn.addEventListener("click", function (event) {
       if (!validateForm()) {

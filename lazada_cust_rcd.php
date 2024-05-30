@@ -461,7 +461,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <div class="col-md-3 mb-3 autocomplete">
     <label class="form-label form_lbl" id="lcr_pic_lbl" for="lcr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
     <?php
-     if(($act == 'E')){
+     if(($act == 'E' || $act == '')){
         unset($echoVal);
 
         if (isset($row['sales_pic']))

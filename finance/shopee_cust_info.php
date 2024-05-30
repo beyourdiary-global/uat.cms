@@ -356,7 +356,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <input type="hidden" name="scr_pic_hidden" id="scr_pic_hidden" value="<?php echo $loggedInUserId ?>">
                                 <?php } ?>
                                 <?php
-                                 if(($act == 'E')){
+                                 if(($act == 'E' || $act == '')){
                                 unset($echoVal);
 
                                 if (isset($row['pic']))

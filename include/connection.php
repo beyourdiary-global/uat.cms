@@ -6,7 +6,7 @@ if (isset($isFinance) && ($isFinance ==1)) {
 }
 $path =  $_SERVER['PHP_SELF'];
 $path = explode("/", $path);
-$login_url = ROOT."/index.php";
+$login_url = $SITEURL."/index.php";
 
 if(!($path[sizeof($path)-1] == 'forgotPassword.php'))
     if(!(isset($_SESSION['userid'])))
