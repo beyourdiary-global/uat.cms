@@ -4,6 +4,7 @@ include "include/connection.php";
 
 if (isset($_POST['ids'])) {
     try {
+       
         $ids = $_POST['ids'];
         $tblName = $_POST['tblName'];
         echo($ids);
@@ -28,7 +29,7 @@ if (isset($_POST['ids'])) {
         // Log the error message
         $errorLog = [
             'log_act' => 'export',
-            'act_msg' => 'Failed to export data: ' . $e->getMessage(),
+            'act_msg' =>  USER_NAME . 'failed to export data: ' . $e->getMessage(),
             'cdate'   => $cdate,
             'ctime'   => $ctime,
             'uid'     => $_SESSION['userid'],

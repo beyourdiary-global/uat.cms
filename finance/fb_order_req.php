@@ -244,10 +244,16 @@ if (post('actionBtn')) {
 
                     $tblName2 = FB_CUST_DEALS;
                     $query = "INSERT INTO " . $tblName . " (name,fb_link,contact,sales_pic,country,brand,series,package,fb_page,channel,price,pay_method,ship_rec_name,ship_rec_add,ship_rec_contact,remark,attachment,create_by,create_date,create_time) VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_series','$for_pkg','$for_fbpage','$for_channel','$for_price','$for_pay','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','$for_attach','" . USER_ID . "',curdate(),curtime())";
-                    $query2 = "INSERT INTO " . $tblName2 . " (name, fb_link, contact, sales_pic, country, brand, fb_page, channel, series,ship_rec_name, ship_rec_add, ship_rec_contact, remark, create_by, create_date,create_time)  VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_fbpage','$for_channel','$for_series','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','" . USER_ID . "',curdate(),curtime())";
+                   
+                    $result2 = getData('*', "name = '$for_name' AND fb_link = '$for_link'", '', $tblName2, $connect);
+                    
+                    if($result2->num_rows == 0){
+                        $query2 = "INSERT INTO " . $tblName2 . " (name, fb_link, contact, sales_pic, country, brand, fb_page, channel, series,ship_rec_name, ship_rec_add, ship_rec_contact, remark, create_by, create_date,create_time)  VALUES ('$for_name','$for_link','$for_ctc','$for_pic','$for_country','$for_brand','$for_fbpage','$for_channel','$for_series','$for_rec_name','$for_rec_add','$for_rec_ctc','$for_remark','" . USER_ID . "',curdate(),curtime())";
+                        $returnData2 = mysqli_query($connect, $query2);
+                    }
                     // Execute the query
                     $returnData = mysqli_query($finance_connect, $query);
-                    $returnData = mysqli_query($connect, $query2);
+                    
                     $_SESSION['tempValConfirmBox'] = true;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
@@ -574,6 +580,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <label class="form-label form_lbl" id="for_pic_lbl" for="for_pic">Sales Person In
                                     Charge<span class="requireRed">*</span></label>
                                 <?php
+                                   if(($act == 'E')){
                                 unset($echoVal);
 
                                 if (isset($row['sales_pic']))
@@ -592,8 +599,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $user_row['name'] : '' ?>">
                                 <input type="hidden" name="for_pic_hidden" id="for_pic_hidden"
                                     value="<?php echo (isset($row['sales_pic'])) ? $row['sales_pic'] : ''; ?>">
-
-
+                                <?php } ?>
+                                <?php
+                                if(($act == 'I')){
+                           
+                                    $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
+                                    $defaultUser = '';
+                                
+                                    // Retrieve details of the logged-in user
+                                    $user_rst = getData('name', "id = '$loggedInUserId'", '', USR_USER, $connect);
+                                    if ($user_rst && $user_rst->num_rows > 0) {
+                                        $user_row = $user_rst->fetch_assoc();
+                                        $defaultUser = $user_row['name'];
+                                    }
+                                    
+                                ?>
+                                <input class="form-control" type="text" name="for_pic" id="for_pic" <?php if ($act == '')
+                                    echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+                                <input type="hidden" name="for_pic_hidden" id="for_pic_hidden"
+                                    value="<?php echo $loggedInUserId ?>">
+                                <?php }?>
                                 <?php if (isset($pic_err)) { ?>
                                     <div id="err_msg">
                                         <span class="mt-n1">

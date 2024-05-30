@@ -11,13 +11,6 @@ $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
 
-$act = input('act');
-if($act){
-    $pageAction = getPageAction($act);
-    
-}
-
-
 $redirect_page2 = $SITEURL . '/update_shipment_info.php';
 $deleteRedirectPage = $SITEURL . '/finance/order_process_list.php';
 $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ,$finance_connect
@@ -25,23 +18,67 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ,$finance_connect
 $result2 = getData('*', '', '', FB_ORDER_REQ,$finance_connect
 );
 $result3 = getData('*', '', '', WEB_ORDER_REQ ,$finance_connect);
-$result4 = getData('*', '', '', LAZADA_ORDER_REQ ,$finance_connect);
-
-if (isset($_POST['id'], $_POST['order_status'], $_POST['table_name'])) {
+$result4 = getData('*', '', '', LAZADA_ORDER_REQ ,$connect);
+ 
+if (post('order_status')) {
     // Assuming you have a database connection established
-    $id = $_POST['id'];
-    $newStatus = $_POST['order_status'];
-    $tableName = $_POST['table_name'];
-    $_SESSION['tempValConfirmBox'] = true;
-$query = "UPDATE $tableName SET order_status = '$newStatus' WHERE id = $id";
+    $id = post('orderid');
+    $newStatus = post('order_status');
+    $tableName = post('table_name');
 
-if ($tableName == 'LAZADA_ORDER_REQ') {
-    $returnData = mysqli_query($connect, $query);
-   
-} else {
-    $returnData = mysqli_query($finance_connect, $query);
-  
-}
+    $datafield = $oldvalarr = $chgvalarr = array();
+    if ($tableName == 'lazada_order_request') {
+        $rst = getData('*', "id = '$id'", '', $tableName, $connect);
+    } else {
+        $rst = getData('*', "id = '$id'", '', $tableName, $finance_connect);
+    
+    }
+    $rowInv = $rst->fetch_assoc();
+    if ($rowInv['order_status'] !== $newStatus) {
+        array_push($oldvalarr, $rowInv['order_status']);
+        array_push($chgvalarr, $newStatus);
+        array_push($datafield, 'order_status');
+    }
+
+    if ($oldvalarr && $chgvalarr) {
+        try {
+            $query = "UPDATE " . $tableName . " SET order_status = '$newStatus' WHERE id = '$id'";
+            if ($tableName == 'lazada_order_request') {
+                mysqli_query($connect, $query);
+                 
+                generateDBData($tableName, $connect);
+            }else{
+                mysqli_query($finance_connect, $query);
+                 
+                generateDBData($tableName, $finance_connect);
+            }
+           
+        } catch (Exception $e) {
+            $errorMsg = $e->getMessage();
+        }
+
+        // audit log
+        $log = [
+            'log_act'      => 'edit',
+            'cdate'        => $cdate,
+            'ctime'        => $ctime,
+            'uid'          => USER_ID,
+            'cby'          => USER_ID,
+            'query_rec'    => $query,
+            'query_table'  => $tblName,
+            'page'         => $pageTitle,
+            'connect'      => $connect,
+            'oldval'       => implodeWithComma($oldvalarr),
+            'changes'      => implodeWithComma($chgvalarr),
+            'act_msg'      => actMsgLog($id, $datafield, '', $oldvalarr, $chgvalarr, $tableName, 'edit', (isset($returnData) ? '' : $errorMsg))
+        ];
+        echo "<script>console.log('TEST5')</script>";
+
+        audit_log($log);
+    } else {
+        echo "<script>console.log('TEST6')</script>";
+    }
+
 }
 
 ?>
@@ -156,8 +193,10 @@ if ($tableName == 'LAZADA_ORDER_REQ') {
                                     break;
                             }
                             $channel_rst = getData('*', "name = '$channel'", '', CHANEL_SC_MD, $finance_connect);
+                            
                             $channel_row = $channel_rst->fetch_assoc();
                             $channelid = $channel_row['id'];
+                   
                             $cust = null;
 
                             if (isset($row['order_id'])) {
@@ -210,7 +249,6 @@ if ($tableName == 'LAZADA_ORDER_REQ') {
                             ?>
 
                             <tr>
-                                
                                 <th class="hideColumn" scope="row">
                                     <?= $row['id'] ?>
                                 </th>
@@ -247,17 +285,9 @@ if ($tableName == 'LAZADA_ORDER_REQ') {
                               
                               
                                 echo'<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '" title="View order"><i class="fas fa-eye" title="View order"></i></a>';
-                               
-                                echo '<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $row['id'] . '&act=' . $act_1 .'&channel=' . $channelid .'&orderid=' . $orderId .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
-
-                                // Echo the form for processing shipment
-                                echo '<form method="POST" action="order_process_list.php?id=' . $row['id'] . '&act=E" style="display:inline;margin-left:-4px;">
-                                        <input type="hidden" name="id" value="'.$row['id'].'">
-                                        <input type="hidden" name="order_status" value="WP">
-                                        <input type="hidden" name="table_name" value="'.$tableKey.'">
-                                        <button class="btn btn-danger" type="submit" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></button>
-                                    </form>';
-                                ?>
+                                echo'<a class="btn btn-warning me-1" href="' . $redirect_page2 . '?id=' . $orderId . '&act=' . $act_1 .'&channel=' . $channelid .'" title="Update shipment"><i class="fas fa-edit" title="Update shipment"></i></a>';
+                                echo '<a class="btn btn-danger me-1" href="#" onclick="updateOrderStatus('.$row['id'].', \'WP\', \''.$tableKey.'\')" title="Process shipment"><i class="fa fa-cog" title="Process shipment"></i></a>'
+                                 ?>
                                 </td>
                                 <td scope="row">
                                     <?= $orderId ?>
@@ -301,12 +331,30 @@ if ($tableName == 'LAZADA_ORDER_REQ') {
 
 </body>
 <script>
-      if (isset($_SESSION['tempValConfirmBox'])) {
-        unset($_SESSION['tempValConfirmBox']);
-        echo $clearLocalStorage;
-        echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
-    }
-
+function updateOrderStatus(id, status, tableName) {
+    console.log('Data sent:', { orderid: id, order_status: status,table_name: tableName});
+    $.ajax({
+        url: 'order_process_list.php',
+        type: 'post',
+        data: { 
+            orderid: id, 
+            order_status: status, 
+            table_name: tableName 
+        },
+        success: function(data) {
+           
+            console.log('AJAX Success:', data);
+            // Reload the page after successful update
+            document.querySelector(`#status-${id}`).textContent = status;
+        },
+        error: function(xhr, status, error) {
+            console.log('AJAX Error:', error);
+            // Handle error gracefully
+            // For example, display an alert message
+            alert('An error occurred while updating payment status. Please try again later.');
+        }
+    });
+}
     /**
   oufei 20231014
   common.fun.js
