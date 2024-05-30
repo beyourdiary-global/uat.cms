@@ -306,26 +306,31 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="form-group mb-3">
                                 <div class="row">
 
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3 autocomplete">
                                         <label class="form-label" for="cusPhoneCode">Phone Code <span
                                         class="requireRed">*</span></label>
-                                        <select class="form-select" aria-label="Default select example" name="cusPhoneCode" id="cusPhoneCode" required <?php if ($act == '') echo 'disabled' ?>>
-                                            <?php
-                                            $resultPhoneCode = getData('*', '', '', 'countries', $connect);
+                                        <?php
+                                            unset($echoVal);
 
-                                            if (!$resultPhoneCode) {
-                                                echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                                echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                            }
+                                            if (isset($row['phone_country']))
+                                                $echoVal = $row['phone_country'];
 
-                                            echo "<option value='' disabled selected>Select Phone Code</option>";
+                                            if (isset($echoVal)) {
+                                                $resultPhoneCode = getData('*', "id = '$echoVal'", '', 'countries', $connect);
 
-                                            while ($rowPhoneCode = $resultPhoneCode->fetch_assoc()) {
-                                                $selected = isset($row['phone_country']) && $rowPhoneCode['id'] == $row['phone_country'] ? "selected" : "";
-                                                echo "<option value='{$rowPhoneCode['id']}' $selected>+{$rowPhoneCode['phonecode']}</option>";
+                                                if (!$resultPhoneCode) {
+                                                    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+                                                    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+                                                }
+                                                $rowPhoneCode = $resultPhoneCode->fetch_assoc();
                                             }
                                             ?>
-                                        </select>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">+</span>
+                                                </div>
+                                                <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
+                                            </div>
                                     </div>
 
                                     <div class="col-sm-9">
@@ -482,8 +487,23 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                     <div class="col-sm-4 autocomplete">
                                         <label class="form-label" for="personIncharges">Person in charges </label>
-                                       
+                                        <?php
+                                            if(($act == 'I')){
+                                            $loggedInUserId = USER_ID; // Assuming USER_ID contains the ID of the logged-in user
+                                            $defaultUser = '';
+
+                                            // Retrieve details of the logged-in user
+                                            $user_rst = getData('name', "id = '$loggedInUserId'", '', USR_USER, $connect);
+                                            if ($user_rst && $user_rst->num_rows > 0) {
+                                                $user_row = $user_rst->fetch_assoc();
+                                                $defaultUser = $user_row['name'];
+                                            }
+                                            ?>
+                                            <input class="form-control" type="text" name="personIncharges" id="personIncharges" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
+                                            <input type="hidden" name="personIncharges_hidden" id="personIncharges_hidden" value="<?php echo $loggedInUserId ?>">
+                                            <?php } ?>
                                             <?php
+                                             if(($act == 'E')){
                                             unset($echoVal);
 
                                             if (isset($row['person_in_charges']))
@@ -504,7 +524,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                                         <input type="hidden" name="personIncharges_hidden" id="personIncharges_hidden"
                                             value="<?php echo (isset($row['person_in_charges'])) ? $row['person_in_charges'] : ''; ?>">
-
+                                            <?php } ?>
                                         <?php if (isset($pic_err)) { ?>
                                             <div id="err_msg">
                                                 <span class="mt-n1">
@@ -556,6 +576,18 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                     var param = {
                         search: $(this).val(),
                         searchType: 'nicename', // column of the table
+                        elementID: $(this).attr('id'), // id of the input
+                        hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                        dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+                    }
+                    searchInput(param, '<?= $SITEURL ?>');
+                });
+            }
+            if (!($("#cusPhoneCode").attr('disabled'))) {
+                $("#cusPhoneCode").keyup(function() {
+                    var param = {
+                        search: $(this).val(),
+                        searchType: 'phonecode', // column of the table
                         elementID: $(this).attr('id'), // id of the input
                         hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                         dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)

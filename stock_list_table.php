@@ -77,7 +77,7 @@ if (!$result) {
                     <tr>
                         <th class="hideColumn" scope="col">ID</th>
                         <th scope="col" width="60px">S/N</th>
-                        <th scope="col" id="action_col" width="100px">Action</th>
+                       
                         <th scope="col">Brand</th>
                         <th scope="col">Product</th>
                         <th scope="col">Stock In Date</th>
@@ -162,11 +162,7 @@ if (!$result) {
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row" class="btn-container">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $brd_name, $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
-                                    </td>
+                                   
                                     <td scope="row"><?php if (isset($brd_name)) echo $brd_name ?></td>
                                     <td scope="row"><?php if (isset($prod_name)) echo $prod_name ?></td>
                                     <td scope="row"><?php if (isset($row['stock_in_date'])) echo $row['stock_in_date'] ?></td>
@@ -200,7 +196,7 @@ if (!$result) {
                         <tr>
                             <th class="hideColumn" scope="col">ID</th>
                             <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
+                           
                             <th scope="col">Brand ID</th>
                             <th scope="col">Product ID</th>
                             <th scope="col">Stock In Date</th>

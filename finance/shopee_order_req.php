@@ -815,7 +815,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <div class="col-md-4 mb-3">
                     <button type="button" onclick="toggleNewBuyer()">Create New Customer ID</button>
                 </div>
-                <form id="myForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <form id="myForm" method="POST">
                 <div id="new_customer_section" style="display: none;">
 
                 <div class="row">
@@ -1202,7 +1202,26 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     }
     ?>
     <script>
-      
+    $(document).ready(function() {
+    $('#myForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the traditional way
+
+        var formData = $(this).serialize(); // Serialize the form data
+
+        $.ajax({
+            url: 'shopee_order_req.php', // The URL to your PHP script
+            type: 'post',
+            data: formData,
+            success: function(response) {
+                var responseObject = JSON.parse(response);
+            },
+            error: function(xhr, status, error) {
+                $('#responseMessage').html('<p>An error occurred: ' + error + '</p>');
+            }
+        });
+    });
+});
+
 
         var page = "<?= $pageTitle ?>";
         var action = "<?php echo isset($act) ? $act : ' '; ?>";

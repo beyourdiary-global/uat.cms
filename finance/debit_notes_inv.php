@@ -965,7 +965,7 @@ span.input-group-text{
                                         <input type="hidden" name="createInvoice" id="createInvoice" value="0">
                                         <button class="btn btn-primary d-grid w-100 mb-2 submitBtn createInvoiceButton"
                                             name="actionBtn" id="actionBtn" onclick="createInvoice();"
-                                            value="<?= $actionValue ?>">Create Invoice</button>
+                                            value="<?= $actionValue ?>"><?php if ($act == 'I' ) { ?>Create Invoice <?php } ?><?php if ($act == 'E' ) { ?>Edit Invoice <?php } ?></button>
                                         <?php if ($act == 'I' || $act == 'E') { ?>
                                             <button class="btn btn-primary d-grid w-100 mb-2 submitBtn" name="actionBtn"
                                                 id="actionBtn" value="<?= $actionValue ?>">Save As Draft</button>
