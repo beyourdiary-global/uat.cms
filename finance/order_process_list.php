@@ -345,7 +345,7 @@ function updateOrderStatus(id, status, tableName) {
            
             console.log('AJAX Success:', data);
             // Reload the page after successful update
-            document.querySelector(`#status-${id}`).textContent = status;
+            window.location.href = 'order_process_list.php';
         },
         error: function(xhr, status, error) {
             console.log('AJAX Error:', error);
