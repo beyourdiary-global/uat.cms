@@ -347,6 +347,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                                                     
                                     <div class="phone-code-container autocomplete">
                                         <label class="form-label form_lbl" id="cusPhoneCode_lbl" for="cusPhoneCode" style="display: none;">Phone Code<span class="requireRed">*</span></label>
+                                        <input class="input-group-text" <?php if ($act == '') echo 'disabled' ?> value="+" disabled>
                                         <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
                                     </div>
                                             
