@@ -18,7 +18,7 @@ function calculateTotal() {
     var shipping = parseFloat(document.getElementById("wor_shipping").value) || 0;
     var discount = parseFloat(document.getElementById("wor_discount").value) || 0;
 
-    var total = price - shipping - discount;
+    var total = price + shipping - discount;
 
     document.getElementById("wor_total").value = total.toFixed(2);
 }
