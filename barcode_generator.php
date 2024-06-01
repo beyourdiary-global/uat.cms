@@ -73,6 +73,11 @@ if (post('actionBtn')) {
                     echo '<div id="printArea" class="container2">';
                     for ($x = 1; $x <= $page_no; $x++) {
                         $usr_id = $_SESSION['userid'];
+                        $_SESSION['barcode_next_number'] = $barcode_next_number;
+                        $_SESSION['x'] = $x;
+                        $_SESSION['product'] = $product;
+                        $_SESSION['warehouse'] = $warehouse;
+                        $_SESSION['qr_scanned'] = true;
                         $qrCode_url = $SITEURL . "/stockRecord.php?barcode=" . ($barcode_next_number + $x) . "&prdid=" . $product . "&whseid=" . $warehouse . "&usr_id=" . $usr_id;
                         $filename = $PNG_TEMP_DIR . 'barcode' . md5($qrCode_url . '|' . $errorCorrectionLevel . '|' . $matrixPointSize) . '.png';
                         QRcode::png($qrCode_url, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
