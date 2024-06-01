@@ -80,7 +80,8 @@ if (post('actionBtn')) {
             $cusGender = postSpaceFilter('cusGender');
             $cusEmail = postSpaceFilter('cusEmail');
             $cusBirthday = (!empty(postSpaceFilter('cusBirthday'))) ? postSpaceFilter('cusBirthday') : '0000-00-00';
-            $cusPhoneCode = postSpaceFilter('cusPhoneCode');
+            $cusPhoneCode2 = postSpaceFilter('cusPhoneCode');
+            $cusPhoneCode = str_replace('+', '', $cusPhoneCode2);
             $cusPhoneNum = postSpaceFilter('cusPhoneNum');
             $shippingFirstName = postSpaceFilter('shippingFirstName');
             $shippingLastName = postSpaceFilter('shippingLastName');
@@ -148,6 +149,7 @@ if (post('actionBtn')) {
                     }
 
                     $query = "INSERT INTO " . $tblName . "(name,last_name,gender,email,birthday,phone_country,phone_number,shipping_name,shipping_last_name,shipping_contact_number,shipping_company,shipping_address_1,shipping_address_2,shipping_country_region,shipping_city,shipping_state_province,shipping_zip_code,default_segmentation,tags,person_in_charges,create_by,create_date,create_time) VALUES ('$cusFirstName','$cusLastName','$cusGender','$cusEmail','$cusBirthday','$cusPhoneCode','$cusPhoneNum','$shippingFirstName','$shippingLastName','$shippingContactNum','$company','$address1','$address2','$country','$city','$state','$zipcode','$curSegmentation','$tag','$personIncharges','" . USER_ID . "',curdate(),curtime())";
+                 
                     $returnData = mysqli_query($connect, $query);
                     $dataID = $connect->insert_id;
                 } catch (Exception $e) {
@@ -230,22 +232,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 <style>
-      .phone-code-container {
-        position: relative;
-        display: inline-block;
-    }
-    .phone-code-container input {
-        padding-left: 20px; /* Adjust this value based on the width of the + sign */
-    }
-    .phone-code-container::before {
-        content: "+";
-        position: absolute;
-        left: 5px; /* Adjust this value based on the padding of the input */
-        top: 50%;
-        transform: translateY(-50%);
-        pointer-events: none;
-        color: #000; /* Adjust the color as needed */
-    }
+
     
 </style>
 <body>
@@ -324,7 +311,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="form-group mb-3">
                                 <div class="row">
 
-                                    <div class="col-sm-3 ">
+                                    <div class="col-sm-3 autocomplete">
                                         <label class="form-label form_lbl" id='cusPhoneCode_lbl'for="cusPhoneCode">Phone Code<span
                                         class="requireRed">*</span></label>
                                         <?php
@@ -343,13 +330,9 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                                 $rowPhoneCode = $resultPhoneCode->fetch_assoc();
                                             }
                                             ?>
+<input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> placeholder="<?php echo ($act != '') ? '+' : '' ?>" value="<?php echo (!empty($echoVal) ? $rowPhoneCode['phonecode'] : '') ?>">
 
-                                                                                    
-                                    <div class="phone-code-container autocomplete">
-                                        <label class="form-label form_lbl" id="cusPhoneCode_lbl" for="cusPhoneCode" style="display: none;">Phone Code<span class="requireRed">*</span></label>
-                                        <input class="input-group-text" <?php if ($act == '') echo 'disabled' ?> value="+" disabled>
-                                        <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
-                                    </div>
+                                
                                             
                                     </div>
 
@@ -577,6 +560,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
         preloader(300, action);
 
         $(document).ready(function() {
+            document.getElementById('cusPhoneCode').addEventListener('input', function() {
+                if (!(/^\+/.test(this.value))) {
+                    this.value = '+' + this.value;
+                }
+                });
             if (!($("#personIncharges").attr('disabled'))) { 
                 $("#personIncharges").keyup(function() { 
                     var param = { 
@@ -604,17 +592,19 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                 });
             }
             if (!($("#cusPhoneCode").attr('disabled'))) {
-                $("#cusPhoneCode").keyup(function() {
-                    var param = {
-                        search: $(this).val(),
-                        searchType: 'phonecode', // column of the table
-                        elementID: $(this).attr('id'), // id of the input
-                        hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
-                        dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
-                    }
-                    searchInput(param, '<?= $SITEURL ?>');
-                });
-            }
+                    $("#cusPhoneCode").keyup(function() {
+                        var searchValue = $(this).val().replace(/^\+/, ''); // Remove leading plus sign
+                        var param = {
+                            search: searchValue,
+                            searchType: 'phonecode', // column of the table
+                            elementID: $(this).attr('id'), // id of the input
+                            hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
+                            dbTable: '<?= COUNTRIES ?>', // json filename (generated when login)
+                        }
+                        searchInput(param, '<?= $SITEURL ?>');
+                    });
+                }
+
             function validateEmail() {
             // get value of input email
             var email = $("#cusEmail").val();

@@ -103,16 +103,7 @@ if (!$result) {
                                     </td>
                                     <td scope="row"><?php if (isset($row['name'],$row['last_name'])) echo $row['name'] . " " . $row['last_name'] ?></td>
                                     <td scope="row"><?php if (isset($row['email'])) echo $row['email'] ?></td>
-                                    <?php
-                                    $resultPhoneCode = getData('*', 'id="' . $row['phone_country'] . '"', '', 'countries', $connect);
-
-                                    if (!$resultPhoneCode) {
-                                        echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-                                        echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-                                    }
-                                    $rowPhoneCode = $resultPhoneCode->fetch_assoc()
-                                    ?>
-                                    <td scope="row"><?php if (isset($rowPhoneCode['phonecode'], $row['phone_number'])) echo $rowPhoneCode['phonecode'] . $row['phone_number'] ?></td>
+                                    <td scope="row"><?php if (isset($row['phone_country'], $row['phone_number'])) echo $row['phone_country'] . $row['phone_number'] ?></td>
                                     <td scope="row"><?php if (isset($row['gender'])) echo$row['gender'] ?></td>
                                     <td scope="row"><?php if (isset($row['birthday'])) echo $row['birthday'] ?></td>                    
                                 </tr>
