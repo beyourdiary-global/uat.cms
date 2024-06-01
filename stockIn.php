@@ -98,16 +98,27 @@ if (post('usrBtn')) {
                     $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
 
                     $result = mysqli_query($connect, $insertQuery);
-                    $tblName2 = STK_COST;
-                    $rst_check_prod = getData('*', "id='$prod_id'", '', $tblname, $connect);
-                    if (count($rst_check_prod) == 0) {
-                        $shipping_cost = 0;
-                        $update_sql = "UPDATE $tblname SET shipping_cost = $shipping_cost WHERE prod_id = '$prod_id' AND brand_id = '$brand_id'";
-                        $result2 = mysqli_query($connect, $update_sql);
+                    $tblname2 = STK_COST;
+                    $stockCosting = getData('*', "brand_id='$brandId' AND product_id='$productId'", '', $tblname2, $connect);
+                    if($stockCosting != false){
+                    if(mysqli_num_rows($stockCosting) == 0){
+                        $updateQuery = "UPDATE $tblname SET shipping_cost = 0 WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                        mysqli_query($connect, $updateQuery);
                     }else{
-                        $quantity = count($rst_check_prod);
-
-                    }
+                        $rst_stockCosting = $stockCosting ? $stockCosting->fetch_assoc() : null;
+                        $shippingcost = $rst_stockCosting['shipping_cost'];
+                        $quantity = $rst_stockCosting['quantity'];
+                        $balance_quantity = $rst_stockCosting['balance_quantity'];
+                        if ($quantity != 0 && $balance_quantity != 0) {
+                            $stock_shipping = $shippingcost / $quantity;
+                            $updateQuery = "UPDATE $tblname SET shipping_cost = '$stock_shipping' WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                            mysqli_query($connect, $updateQuery);
+                            $balance_quantity = $balance_quantity-1;
+                            $updateQuery2 = "UPDATE $tblname2 SET balance_quantity = '$balance_quantity' WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                            mysqli_query($connect, $updateQuery2);
+                        }
+                    }}
+                  
                     if ($result) {
                         $logMessage = "$usr_name added a data <b>Stock In - [ Barcode: $barcode ], [ Product ID: $productId ], [ Warehouse ID: $warehouseId ], [ User ID: $createBy ] </b> under <i><b>$tblname</b></i>." ;
                       
@@ -169,10 +180,32 @@ if (post('usrBtn')) {
                 $createDate = date("Y-m-d");
                 $createTime = date("H:i:s");
                 $createBy = $usrBtn;
-
+                $tblname2 = STK_COST;
+                
                 $insertQuery = "INSERT INTO $tblname (brand_id, product_id, stock_in_date, barcode, product_batch_code, product_status_id, product_category_id, warehouse_id, stock_in_person_in_charges, remark, create_date, create_time, create_by, `status`) VALUES ('$brandId', '$productId', '$stockInDate', '$barcode', '$productBatchCode', '$productStatusId', '$productCategoryId', '$warehouseId', '$stockInPersonInCharges', '$remark', '$createDate', '$createTime', '$createBy', 'active')";
-
                 $result = mysqli_query($connect, $insertQuery);
+                $stockCosting = getData('*', "brand_id='$brandId' AND product_id='$productId'", '', $tblname2, $connect);
+
+                var_dump(mysqli_num_rows($stockCosting));
+                if($stockCosting != false){
+                    if(mysqli_num_rows($stockCosting) == 0){
+                        $updateQuery = "UPDATE $tblname SET shipping_cost = 0 WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                        mysqli_query($connect, $updateQuery);
+                    }else{
+                        $rst_stockCosting = $stockCosting ? $stockCosting->fetch_assoc() : null;
+                        $shippingcost = $rst_stockCosting['shipping_cost'];
+                        $quantity = $rst_stockCosting['quantity'];
+                        $balance_quantity = $rst_stockCosting['balance_quantity'];
+                        if ($quantity != 0 && $balance_quantity != 0) {
+                            $stock_shipping = $shippingcost / $quantity;
+                            $updateQuery = "UPDATE $tblname SET shipping_cost = '$stock_shipping' WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                            mysqli_query($connect, $updateQuery);
+                            $balance_quantity = $balance_quantity-1;
+                            $updateQuery2 = "UPDATE $tblname2 SET balance_quantity = '$balance_quantity' WHERE brand_id = '$brandId' AND product_id = '$productId'";
+                            mysqli_query($connect, $updateQuery2);
+                        }
+                    }}
+               
 
                 if ($result) {
                     $logMessage = "$usr_name added a data <b>Stock In - [ Barcode: $barcode ], [ Product ID: $productId ], [ Warehouse ID: $warehouseId ], [ User ID: $createBy ] </b> under <i><b>$tblname</b></i>." ;
