@@ -50,7 +50,7 @@ if (post('actionBtn')) {
     $wcr_pic = postSpaceFilter('wcr_pic_hidden');
     $wcr_country = postSpaceFilter('wcr_country_hidden');
     $wcr_brand = postSpaceFilter('wcr_brand_hidden');
-    $wcr_series = postSpaceFilter('wcr_series');
+    $wcr_series = postSpaceFilter('wcr_series_hidden');
     $wcr_rec_name = postSpaceFilter('wcr_rec_name');
     $wcr_rec_ctc = postSpaceFilter('wcr_rec_ctc');
     $wcr_rec_add = postSpaceFilter('wcr_rec_add');
@@ -521,7 +521,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     <input class="form-control" type="text" name="wcr_pic" id="wcr_pic" <?php if ($act == '') echo 'disabled' ?> value="<?php echo $defaultUser ?>">
     <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden" value="<?php echo $loggedInUserId ?>">
     <?php } ?>
-    <?php
+                            <?php
                                  if(($act == 'E'|| $act == '')){
                                 unset($echoVal);
 
@@ -544,7 +544,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                     echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $pic_row['name'] : '' ?>">
 
                                 <input type="hidden" name="wcr_pic_hidden" id="wcr_pic_hidden"
-                                    value="<?php echo (isset($row['pic'])) ? $row['pic'] : ''; ?>">
+                                    value="<?php echo (isset($row['sales_pic'])) ? $row['sales_pic'] : ''; ?>">
                                 <?php } ?>
         <?php if (isset($pic_err)) { ?>
         <div id="err_msg">
