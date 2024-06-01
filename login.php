@@ -93,6 +93,7 @@ if ($email && $password) {
                          $warehouse = $_SESSION['warehouse'];
                          $qrCode_url = $SITEURL . "/stockRecord.php?barcode=" . ($barcode_next_number + $x) . "&prdid=" . $product . "&whseid=" . $warehouse;
                          $_SESSION['qr_scanned'] = false;
+                         var_dump($_SESSION['qr_scanned']);
                          header("Location: $qrCode_url");
                          exit(); 
                      }
