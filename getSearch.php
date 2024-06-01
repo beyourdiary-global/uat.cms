@@ -16,15 +16,26 @@ $cArr = json_decode($c,true);
 $rstArr = array();
 
 if($searchText != '')
-{
-    foreach($cArr as $x)
-    {
+{  if ($searchType == 'phonecode') {
+    foreach ($cArr as $x) {
         $bool = stripos($x[$searchType], $searchText);
-        if($bool !== false)
-        {
-            array_push($rstArr,$x);
+        if ($bool !== false) {
+            $x[$searchType] = '+' . $x[$searchType]; // Add plus sign to the result
+            array_push($rstArr, $x);
         }
     }
+    }
+    else{
+        foreach($cArr as $x)
+        {
+            $bool = stripos($x[$searchType], $searchText);
+            if($bool !== false)
+            {
+                array_push($rstArr,$x);
+            }
+        }
+    }
+   
 }
 
 
