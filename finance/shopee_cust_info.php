@@ -447,7 +447,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                         value="<?php echo !empty($echoVal) ? $brand_row['name'] : '' ?>">
 
                                 <input type="hidden" name="scr_brand_hidden" id="scr_brand_hidden"
-                                    value="<?php echo (isset($row['country'])) ? $row['country'] : ''; ?>">
+                                    value="<?php echo (isset($row['brand'])) ? $row['brand'] : ''; ?>">
 
                                 <?php if (isset($brand_err)) { ?>
                                     <div id="err_msg">
