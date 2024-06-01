@@ -109,13 +109,8 @@ if (post('actionBtn')) {
                     </div>
                 </div>
                 <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
-                    <?php
-                    switch ($act) {
-                        case 'I':
-                        echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addRecord">Add Stock Costing</button>';
-                        break;
-                    }
-                    ?>
+                    
+                   <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addRecord">Add Stock Costing</button>
                     <button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 cancel" name="actionBtn" id="actionBtn" value="back">Back</button>
                 </div>
             </form>
