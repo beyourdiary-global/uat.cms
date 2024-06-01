@@ -86,21 +86,8 @@ if ($email && $password) {
                     generateDBData(WEB_CUST_RCD, $connect);
                     generateDBData(LAZADA_ACC, $finance_connect);
                     generateDBData(LAZADA_CUST_RCD, $connect);
-                    var_dump($_SESSION['qr_scanned']);
-                    if (isset($_SESSION['qr_scanned']) && $_SESSION['qr_scanned'] === true) {
-                         $barcode_next_number = $_SESSION['barcode_next_number'];
-                         $x = $_SESSION['x'];
-                         $product = $_SESSION['product'];
-                         $warehouse = $_SESSION['warehouse'];
-                         $qrCode_url = $SITEURL . "/stockRecord.php?barcode=" . ($barcode_next_number + $x) . "&prdid=" . $product . "&whseid=" . $warehouse;
-                         $_SESSION['qr_scanned'] = false;
-                         
-                         header("Location: $qrCode_url");
-                         exit(); 
-                     }else{
-                         return header('Location: dashboard.php');
-                     }
-                 
+
+                    return header('Location: dashboard.php');
                } else {
                     return header('Location: index.php?err=4');
                }
