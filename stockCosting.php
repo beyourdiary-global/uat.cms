@@ -5,13 +5,19 @@ include_once 'menuHeader.php';
 include_once 'checkCurrentPagePin.php';
 
 
+$act = input('act');
 $tblname = STK_COST;
 $pageAction = getPageAction($act);
 
 $redirect_page = $SITEURL . '/stockCosting.php';
 $redirectLink = ("<script>location.href = '$redirect_page';</script>");
 $clearLocalStorage = '<script>localStorage.clear();</script>';
-
+if (!($act)) {
+    echo '<script>
+    alert("Invalid action.");
+    window.location.href = "' . $redirect_page . '"; // Redirect to previous page
+    </script>';
+}
 $stock_cost = getData('*', '', '', $tblname, $connect);
 
 if (post('actionBtn')) {
