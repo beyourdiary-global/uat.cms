@@ -46,11 +46,12 @@ $(document).ready(function() {
         return urlParams.get(name);
     }
     var act = getParameterByName('act');
-    if (act != 'I'){
-        document.getElementById('trackOrderBtn').addEventListener('click', function() {
+    var trackOrderBtn = document.getElementById('trackOrderBtn');
+    if (act !== 'I' && trackOrderBtn) {
+        trackOrderBtn.addEventListener('click', function() {
             // Copy tracking number to clipboard
             var trackingNumber = this.getAttribute('data-tracking-id');
-            navigator.clipboard.writeText(trackingNumber);    
+            navigator.clipboard.writeText(trackingNumber);
         });
     }
     //package

@@ -1072,9 +1072,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         echo 'disabled' ?>><?php if (isset($dataExisted) && isset($row['remark']))
                         echo $row['remark'] ?></textarea>
                     </div>
-                    <?php
-                    if(isset($row['order_status'])){
-                    if($row['order_status'] == 'SP'){
+                <?php
+                if(isset($row['order_status'])){
+                if($row['order_status'] == 'SP'){
                     ?>
                 <div class="form-group mb-4">
                     <h3>
