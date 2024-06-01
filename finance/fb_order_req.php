@@ -580,7 +580,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                                 <label class="form-label form_lbl" id="for_pic_lbl" for="for_pic">Sales Person In
                                     Charge<span class="requireRed">*</span></label>
                                 <?php
-                                   if(($act == 'E')){
+                                   if(($act == 'E' || $act == '')){
                                 unset($echoVal);
 
                                 if (isset($row['sales_pic']))
