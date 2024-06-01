@@ -463,8 +463,8 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                 <?php
                                 unset($echoVal);
 
-                                if (isset($row['prod_category']))
-                                    $echoVal = $row['prod_category'];
+                                if (isset($row['product_category']))
+                                    $echoVal = $row['product_category'];
 
                                 if (!empty($echoVal)) {
                                     $product_rst = getData('name', "id = '$echoVal'", '', PROD_CATEGORY, $connect);
