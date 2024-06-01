@@ -229,7 +229,25 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 <head>
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
-
+<style>
+      .phone-code-container {
+        position: relative;
+        display: inline-block;
+    }
+    .phone-code-container input {
+        padding-left: 20px; /* Adjust this value based on the width of the + sign */
+    }
+    .phone-code-container::before {
+        content: "+";
+        position: absolute;
+        left: 5px; /* Adjust this value based on the padding of the input */
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #000; /* Adjust the color as needed */
+    }
+    
+</style>
 <body>
     <div class="pre-load-center">
         <div class="preloader"></div>
@@ -306,7 +324,7 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                             <div class="form-group mb-3">
                                 <div class="row">
 
-                                    <div class="col-sm-3 autocomplete">
+                                    <div class="col-sm-3 ">
                                         <label class="form-label form_lbl" id='cusPhoneCode_lbl'for="cusPhoneCode">Phone Code<span
                                         class="requireRed">*</span></label>
                                         <?php
@@ -326,8 +344,11 @@ if (isset($_SESSION['tempValConfirmBox'])) {
                                             }
                                             ?>
 
-                                           
-                                                <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
+                                                                                    
+                                    <div class="phone-code-container autocomplete">
+                                        <label class="form-label form_lbl" id="cusPhoneCode_lbl" for="cusPhoneCode" style="display: none;">Phone Code<span class="requireRed">*</span></label>
+                                        <input class="form-control" type="text" name="cusPhoneCode" id="cusPhoneCode" <?php if ($act == '') echo 'disabled' ?> value="<?php echo !empty($echoVal) ? $rowPhoneCode['phonecode'] : '' ?>">
+                                    </div>
                                             
                                     </div>
 
