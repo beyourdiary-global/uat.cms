@@ -33,7 +33,7 @@ $(document).ready(function () {
                 hiddenElementID: $(this).attr('id') + '_hidden', // hidden input for storing the value
                 dbTable: '<?= USR_USER ?>', // json filename (generated when login)
             }
-            searchInput(param, '<?= $SITEURL ?>');  console.log(searchInput);
+            searchInput(param, '<?= $SITEURL ?>');  console.log(param);
         });
         
        
@@ -555,7 +555,6 @@ $('.submitBtn').on('click', () => {
         $(".sor-user-err").remove();
         user_chk = 1;
     }
-
     if (($('#sor_brand_hidden').val() == '' || $('#sor_brand_hidden').val() == '0' || $('#sor_brand_hidden').val() === null || $('#sor_brand_hidden')
         .val() === undefined)) {
         brand_chk = 0;
@@ -605,7 +604,7 @@ $('.submitBtn').on('click', () => {
         final_chk = 1;
     }
 
-    if (acc_chk == 1 && price_curr_chk == 1 && curr_chk == 1 && order_chk == 1 && date_chk == 1 && time_chk == 1 && pkg_chk == 1 && brand_chk == 1 && user_chk == 1 && pay_chk == 1 && pic_chk == 1 && price_chk == 1 && final_chk == 1)
+    if (acc_chk == 1 && curr_chk == 1  && order_chk == 1  && date_chk == 1 && time_chk==1  &&pkg_chk == 1 && brand_chk == 1 && user_chk == 1 && pay_chk == 1 && pic_chk == 1 && price_chk == 1 && final_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

@@ -1,0 +1,14 @@
+[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(): Failed opening 'include/dashboardPanel.php' for inclusion (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:28 Asia/Singapore] PHP Fatal error:  Uncaught Error: Call to undefined function generateDashboard() in /home/beyourdi/public_html/cms/dashboard.php:172
+Stack trace:
+#0 {main}
+  thrown in /home/beyourdi/public_html/cms/dashboard.php on line 172
+[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(): Failed opening 'include/dashboardPanel.php' for inclusion (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/beyourdi/public_html/cms/dashboard.php on line 5
+[03-Jan-2025 14:51:32 Asia/Singapore] PHP Fatal error:  Uncaught Error: Call to undefined function generateDashboard() in /home/beyourdi/public_html/cms/dashboard.php:172
+Stack trace:
+#0 {main}
+  thrown in /home/beyourdi/public_html/cms/dashboard.php on line 172
