@@ -234,122 +234,132 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 </head>
 
 <script>
-    $(document).ready(() => {
-        createSortingTable('lazada_order_req');
-    });
+$(document).ready(() => {
+    createSortingTable('lazada_order_req');
+});
 </script>
 
 <style>
-    .btn {
-        padding: 0.2rem 0.5rem;
-        font-size: 0.75rem;
-        margin: 3px;
-    }
-    .btn-container {
-        white-space: nowrap;
-    }
+.btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    margin: 3px;
+}
+
+.btn-container {
+    white-space: nowrap;
+}
 </style>
 
 <body>
 
-<div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
+    <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
 
-<div class="col-12 col-md-11">
+        <div class="col-12 col-md-11">
 
-    <div class="d-flex flex-column mb-3">
-        <div class="row">
-            <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
-                    class="fa-solid fa-chevron-right fa-xs"></i>
-                <?php echo $pageTitle ?>
-            </p>
-        </div>
+            <div class="d-flex flex-column mb-3">
+                <div class="row">
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
+                            class="fa-solid fa-chevron-right fa-xs"></i>
+                        <?php echo $pageTitle ?>
+                    </p>
+                </div>
 
-        <div class="row">
-            <div class="col-12 d-flex justify-content-between flex-wrap">
-                <h2>
-                    <?php echo $pageTitle ?>
-                </h2>
-                <?php if ($result) { ?>
-                    <div class="mt-auto mb-auto">
-                        <?php if (isActionAllowed('Add', $pinAccess)): ?>
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between flex-wrap">
+                        <h2>
+                            <?php echo $pageTitle ?>
+                        </h2>
+                        <?php if ($result) { ?>
+                        <div class="mt-auto mb-auto">
+                            <?php if (isActionAllowed('Add', $pinAccess)): ?>
                             <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
                                 href="<?= $redirect_page . '?act=' . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
                                 Record </a>
-                        <?php endif; ?>
-                        <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="captureAndExport('<?php echo $tblName; ?>')"><i class="fa-solid fa-file-export"></i> Export</a>
+                            <?php endif; ?>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"
+                                onclick="captureAndExport('<?php echo $tblName; ?>')"><i
+                                    class="fa-solid fa-file-export"></i> Export</a>
+                        </div>
+                        <?php } ?>
                     </div>
-                <?php } ?>
+                </div>
             </div>
-        </div>
-    </div>
-    <?php
+            <?php
         if (!$result) {
             echo '<div class="text-center"><h4>No Result!</h4></div>';
         } else {
             ?>
-                <div class="row mb-3">
-                    <div class="col-md-3 dateFilters">
-                        <label for="timeInterval" class="form-label">Filter by:</label>
-                       <select class="form-select" id="timeInterval" >
+            <div class="row mb-3">
+                <div class="col-md-3 dateFilters">
+                    <label for="timeInterval" class="form-label">Filter by:</label>
+                    <select class="form-select" id="timeInterval">
 
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 dateFilters">
-                        <label for="dateFilter" class="form-label">Filter by Date:</label>
-                        <div class="input-group date" id="datepicker"> 
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="col-md-4 dateFilters">
+                    <label for="dateFilter" class="form-label">Filter by Date:</label>
+                    <div class="input-group date" id="datepicker">
                         <input type="text" class="form-control" placeholder="Select date" autocomplete="off">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-th"></span>
-                            </div>
-                        </div>
-                        <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date" autocomplete="off"/>
-                        </div>
-                        <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month" autocomplete="off"/>
-                            
-                            </div>
-                        <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
-                            
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                    <label class="form-label">Group by:</label>
-                        <select class="form-select" id="group">
-                            <option value="brand" selected>Brand</option>
-                            <option value="series" >Series</option>
-                            <option value="package" >Package</option>
-                            <option value="person" >Sales Person In Charge</option>
-                            <option value="method" >Payment Method</option>
-                            <option value="currency" >Currency</option>
-                            <option value="country" >Country</option>
-                        </select>
+                    <div class="input-daterange input-group" id="datepicker2" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start date"
+                            autocomplete="off" />
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End date"
+                            autocomplete="off" />
                     </div>
-                    <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=/lazada_order_req_income_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <div class="input-group input-daterange" id="datepicker3" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start month"
+                            autocomplete="off" />
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End month"
+                            autocomplete="off" />
+
+                    </div>
+                    <div class="input-group input-daterange" id="datepicker4" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start year"
+                            autocomplete="off" />
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End year"
+                            autocomplete="off" />
+
                     </div>
                 </div>
-        <table class="table table-striped" id="lazada_order_req">
-            <thead>
-                <tr>
-                    <th class="hideColumn" scope="col">ID</th>
-                    <th class="text-center">
-                        <input type="checkbox" class="exportAll">
-                    </th>
-                    <th scope="col">S/N</th>
-                    <th id="group_header" scope="col">
-                        <?php
+                <div class="col-md-3">
+                    <label class="form-label">Group by:</label>
+                    <select class="form-select" id="group">
+                        <option value="brand" selected>Brand</option>
+                        <option value="series">Series</option>
+                        <option value="package">Package</option>
+                        <option value="person">Sales Person In Charge</option>
+                        <option value="method">Payment Method</option>
+                        <option value="currency">Currency</option>
+                        <option value="country">Country</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-center justify-content-center">
+                    <a id='resetButton' href="../reset.php?redirect=/lazada_order_req_income_table.php"
+                        class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                </div>
+            </div>
+            <table class="table table-striped" id="lazada_order_req">
+                <thead>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th class="text-center">
+                            <input type="checkbox" class="exportAll">
+                        </th>
+                        <th scope="col">S/N</th>
+                        <th id="group_header" scope="col">
+                            <?php
                         if (isset($_GET['group'])) {
                             if ($_GET['group'] == 'brand') {
                                 echo "Brand";
@@ -368,12 +378,12 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                             }
                         }
                         ?>
-                    </th>
-                    <th scope="col">Total Income</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
+                        </th>
+                        <th scope="col">Total Income</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                  $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
                  $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
                  $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
@@ -546,18 +556,18 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                                 echo '</tr>';
                             }  
                             ?>
-              
-                <?php } ?>
-            </tbody>
-            <tfoot>
-            <tr>
-                    <th class="hideColumn" scope="col">ID</th>
-                    <th class="text-center">
-                        <input type="checkbox" class="exportAll">
-                    </th>
-                    <th scope="col">S/N</th>
-                    <th id="group_header" scope="col">
-                        <?php
+
+                    <?php } ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th class="text-center">
+                            <input type="checkbox" class="exportAll">
+                        </th>
+                        <th scope="col">S/N</th>
+                        <th id="group_header" scope="col">
+                            <?php
                         if (isset($_GET['group'])) {
                             if ($_GET['group'] == 'brand') {
                                 echo "Brand";
@@ -576,21 +586,21 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
                             }
                         }
                         ?>
-                    </th>
-                    <th scope="col">Total Income</th>
-                </tr>
-            </tfoot>
-        </table>
-    <?php } ?>
-</div>
+                        </th>
+                        <th scope="col">Total Income</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <?php } ?>
+        </div>
 
 
-</div>
+    </div>
 
 </body>
 <script>
-    $(document).ready(function ($) {
-    $(document).on("change", ".exportAll", function (event) { //checkbox handling
+$(document).ready(function($) {
+    $(document).on("change", ".exportAll", function(event) { //checkbox handling
         event.preventDefault();
 
         var isChecked = $(this).prop("checked");
@@ -600,14 +610,16 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
         updateCheckboxesOnOtherPages(isChecked);
     });
 
-    $('a[name="exportBtn"]').on("click", function () {
+    $('a[name="exportBtn"]').on("click", function() {
         var checkboxValues = [];
 
         // Loop through all pages to collect checked checkboxes
-        $('#website_order_request_table').DataTable().$('tr', { "filter": "applied" }).each(function () {
+        $('#website_order_request_table').DataTable().$('tr', {
+            "filter": "applied"
+        }).each(function() {
             var checkbox = $(this).find('.export:checked');
             if (checkbox.length > 0) {
-                checkbox.each(function () {
+                checkbox.each(function() {
                     checkboxValues.push($(this).val());
                 });
             }
@@ -620,7 +632,7 @@ $result = getData('*', '', '', LAZADA_ORDER_REQ, $connect);
 
             //uncheck checkboxes
             var checkboxes = document.querySelectorAll('.export');
-            checkboxes.forEach(function (checkbox) {
+            checkboxes.forEach(function(checkbox) {
                 checkbox.checked = false;
             });
 

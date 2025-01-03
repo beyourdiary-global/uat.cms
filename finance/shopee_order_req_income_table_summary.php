@@ -400,7 +400,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                          $counters = 1;
                      
                         while ($row = $result->fetch_assoc()) {
-                            
                             $viewActMsg = '';
                             $sql = '';
                             $q1 = getData('*', "id='" . $row['shopee_acc'] . "'", '', SHOPEE_ACC, $finance_connect);
@@ -640,7 +639,6 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                             }
                          
                             echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
-                             $total += $groupedRow['totalTopupAmount'];
                             echo '</tr>';
                         }  
                             ?>
@@ -699,7 +697,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                     echo '</th>';
                                 }
                                 ?>
-                            <th scope="col"><?php echo number_format($total, 2, '.', ''); ?></th>
+                            <th scope="col">Total Price</th>
                         </tr>
                     </tfoot>
                 </table>
