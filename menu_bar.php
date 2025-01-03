@@ -74,7 +74,7 @@ $menuList = array(
         'y',
         'expand' => array(
             array('Facebook Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/fb_order_req_table.php', '69'),
-            array('Shopee SG Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/shopee_order_req_table.php', '86'),
+            array('Shopee Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/shopee_order_req_table.php', '86'),
             array('Website Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/website_order_request_table.php', '92'),
             array('Lazada Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_table.php', '93'),
             array('Order Process List', 'mdi mdi-note-text-outline', $SITEURL . '/finance/order_process_list.php', '95'),
@@ -146,10 +146,9 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
-                    array('Shopee Account Management', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
+                   
                 ),
-                'pin' => array('46', '58'),
+                'pin' => array(''),
             ),
            
 
@@ -159,23 +158,10 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-                    array('Lazada Account Management', 'mdi storefront-outline', $SITEURL . '/finance/lazada_acc_table.php', '81'),
+                   
                 ),
-                'pin' => array('81'),
+                'pin' => array(''),
             ),
-
-            array(
-                'Shopee',
-                'mdi mdi-finance',
-                'javascript:void(0)',
-                'y',
-                'expand' => array(
-                    array('Shopee Service Charges Rate Setting', 'mdi storefront-outline', $SITEURL . '/finance/shopee_service_charges_rate_setting_table.php', '83'),
-                    
-                ),
-                'pin' => array('83'),
-            ),
-
             array(
                 'Record',
                 'mdi mdi-finance',
@@ -188,7 +174,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '46', '47','51', '58', '68','70','81','83','87','88','89','94','95')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '47','51', '68','70','87','88','89','94','95')
 
     ),
     array(
@@ -378,8 +364,11 @@ $menuList = array(
                 'y',
                 'expand' => array(
                     array('Facebook Page Account', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fb_page_acc_table.php', '76'),
+                    array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
+                   
+
                 ),
-                'pin' => array('76'),
+                'pin' => array('46','76'),
             ),
 
             array(
@@ -390,11 +379,14 @@ $menuList = array(
                 'expand' => array(
                     array('Payment Method (Shopee)', 'mdi mdi-contactless-payment-circle', $SITEURL . '/finance/payment_method_shopee_table.php', '80'),
                     array('Shopee SG Setting', 'mdi mdi-contactless-payment-circle', $SITEURL . '/finance/shopee_sg_setting_table.php', '82'),
+                    array('Shopee Service Charges Rate Setting', 'mdi storefront-outline', $SITEURL . '/finance/shopee_service_charges_rate_setting_table.php', '83'),
+                    array('Shopee Account Management', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
+                    array('Lazada Account Management', 'mdi storefront-outline', $SITEURL . '/finance/lazada_acc_table.php', '81'),
                 ),
-                'pin' => array('80','82'),
+                'pin' => array('80','82','83','58','81'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '60', '63', '65', '66', '67', '68', '69','70','72','74','75','76','77','78','79','80','82','84','85','86','87','88','89','91','92','93','94')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57','58','60', '63', '65', '66', '67', '68', '69','70','72','74','75','76','77','78','79','80','81','82','83','84','85','86','87','88','89','91','92','93','94')
     ),
     array(
         'Warehouse',

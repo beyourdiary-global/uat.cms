@@ -1,0 +1,67 @@
+.thisyearContainer {
+  padding: 10px 0 20px;
+  border-radius: 12px;
+  background-color: antiquewhite;
+  margin-top: 10px !important;
+}
+.dashboardSubtitle {
+  font-size: 24px;
+  color: black;
+  font-weight: bold;
+  padding-bottom: 10px;
+  padding-left: 17px;
+}
+
+.thisMonthContainer {
+  padding: 10px 0 20px;
+  border-radius: 12px;
+  background-color: #b181ff;
+  .dashboardSubtitle {
+    color: #ffffff;
+  }
+}
+
+.separatorContainer {
+  padding: 10px 0 20px;
+  background-color: #dbcaf6;
+  border-radius: 12px;
+}
+.separatorContainer2 {
+  padding: 10px 0 20px;
+  background-color: #caf6d7;
+  border-radius: 12px;
+}
+
+/* .platformMainDashboard {
+  display: flex;
+  gap: 10px;
+} */
+
+.card-body {
+  --mdb-card-spacer-y: 12px;
+  --mdb-card-spacer-x: 12px;
+}
+
+.endNode {
+  color: red !important;
+}
+
+.platformsepearatorLine {
+  display: flex;
+  padding: 15px 0 0;
+}
+
+.dropdownContainer {
+  text-align: right;
+  display: flex;
+  margin: 10px 0;
+  justify-content: end;
+}
+
+.dropdownSelectContainer {
+  border-radius: 12px;
+  padding: 10px 20px;
+  background-color: blue;
+  color: white;
+  border-color: white;
+}

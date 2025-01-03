@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Shopee SG Order Request";
+$pageTitle = "Shopee Order Request";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
@@ -40,28 +40,70 @@ if (!($dataID) && !($act)) {
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
     $scr_username = $_POST['scr_username']; 
-    $scr_pic = $_POST['scr_pic'];
-    $scr_country = $_POST['scr_country'];
-    $scr_brand = $_POST['scr_brand'];
-    $scr_series = $_POST['scr_series'];
-    
+    $scr_pic = $_POST['scr_pic_hidden'];
+    $scr_country = $_POST['scr_country_hidden'];
+    $scr_brand = $_POST['scr_brand_hidden'];
+    $scr_series = $_POST['scr_series_hidden'];
     $duplicate_check_query = "SELECT * FROM shopee_customer_info WHERE buyer_username = '$scr_username'";
     $duplicate_result = mysqli_query($finance_connect, $duplicate_check_query);
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+
     if( $scr_username != ''){
-       
-    if (mysqli_num_rows($duplicate_result) > 0) {
-        echo "<script>alert('Error: Duplicate Customer ID found!');</script>";
-    } else {
-        $insert_query = "INSERT INTO shopee_customer_info (buyer_username, pic, country, brand, series) 
-                         VALUES ('$scr_username', '$scr_pic', '$scr_country', '$scr_brand', '$scr_series')";
-    
-        if (mysqli_query($finance_connect, $insert_query)) {
-            echo "<script>alert('New record created successfully');</script>";
-            generateDBData(SHOPEE_CUST_INFO, $finance_connect);
+        if (mysqli_num_rows($duplicate_result) > 0) {
+            echo "<script>alert('Error: Duplicate Customer ID found!');</script>";
         } else {
-            echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
+           $insert_query = "INSERT INTO ".SHOPEE_CUST_INFO." (buyer_username, pic, country, brand, series,create_by,create_date,create_time) 
+                             VALUES ('$scr_username', '$scr_pic', '$scr_country', '$scr_brand', '$scr_series','" . USER_ID . "',curdate(),curtime())";
+    
+    
+            if (mysqli_query($finance_connect, $insert_query)) {
+                echo "<script>alert('New record created successfully');</script>";
+                generateDBData(SHOPEE_CUST_INFO, $finance_connect);
+            } else {
+                echo "<script>alert('Error: " . $insert_query . "<br>" . mysqli_error($connect) . "');</script>";
+            }
+            
+           
+            //check values
+            if ($scr_username) {
+                array_push($newvalarr, $scr_username);
+                array_push($datafield, 'Shopee Buyer Username');
+            }
+            if ($scr_pic) {
+                array_push($newvalarr, $scr_pic);
+                array_push($datafield, 'Sales Person In Charge');
+            }
+            if ($scr_country) {
+                array_push($newvalarr, $scr_country);
+                array_push($datafield, 'Country');
+            }
+            if ($scr_brand) {
+                array_push($newvalarr, $scr_brand);
+                array_push($datafield, 'Brand');
+            }
+            if ($scr_series) {
+                array_push($newvalarr, $scr_series);
+                array_push($datafield, 'Series');
+            }
+
+             if (isset($insert_query)) {
+                $log = [
+                    'log_act' => $pageAction,
+                    'cdate' => $cdate,
+                    'ctime' => $ctime,
+                    'uid' => USER_ID,
+                    'cby' => USER_ID,
+                    'query_rec' => $query,
+                    'query_table' => $tblName,
+                    'page' => $pageTitle,
+                    'connect' => $connect,
+                ];
+            $log['newval'] = implodeWithComma($newvalarr);
+            $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
+            
+             audit_log($log);
+             }
         }
-    }
     }
 }
 if (post('actionBtn')) {
@@ -826,21 +868,24 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
                     <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_pic">Sales Person In Charge<span class="requireRed">*</span></label>
-                        <input class="form-control" type="text" id="scr_pic" name="scr_pic">
+                        <input class="form-control" type="text" id="scr_pic" name="scr_pic">                        
+                        <input class="form-control" type="hidden" id="scr_pic_hidden" name="scr_pic_hidden">
+
                     </div>
 
                     <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_country">Country<span class="requireRed">*</span></label>
                         <input class="form-control" type="text" id="scr_country" name="scr_country">
+                        <input class="form-control" type="hidden" id="scr_country_hidden" name="scr_country_hidden">
                     </div>
                     <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_brand">Brand<span class="requireRed">*</span></label>
-                        <input class="form-control" type="text" id="scr_brand" name="scr_brand">
+                        <input class="form-control" type="text" id="scr_brand" name="scr_brand"> <input class="form-control" type="hidden" id="scr_brand_hidden" name="scr_brand_hidden">
                     </div>
 
                     <div class="col-md-4 mb-3 autocomplete">
                         <label class="form-label form_lbl" for="scr_series">Series<span class="requireRed">*</span></label>
-                        <input class="form-control" type="text" id="scr_series" name="scr_series">
+                        <input class="form-control" type="text" id="scr_series" name="scr_series"><input class="form-control" type="hidden" id="scr_series_hidden" name="scr_series_hidden">
                     </div>
                 </div>
                 <input type="submit" name="submit" value="Submit">

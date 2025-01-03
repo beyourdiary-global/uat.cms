@@ -24,10 +24,10 @@ $pinAccess = checkCurrentPin($connect, $pageTitle);
 // to display data to input
 if ($dataID) { //edit/remove/view
     $rst = getData('*', "id = '$dataID'", 'LIMIT 1', $tblName, $finance_connect);
-
     if ($rst != false && $rst->num_rows > 0) {
         $dataExisted = 1;
         $row = $rst->fetch_assoc();
+
     } else {
         // If $rst is false or no data found ($act==null)
         $errorExist = 1;
@@ -225,7 +225,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
     ];
 
     audit_log($log);
-}
+} 
 ?>
 
 <!DOCTYPE html>
@@ -270,6 +270,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         <div class="col-md-12">
                         <label class="form-label form_lbl" id="sa_name_lbl" for="sa_name">Account Name<span class="requireRed">*</span></label>
                             <input class="form-control" type="text" name="sa_name" id="sa_name" value="<?php 
+                           
                                     if (isset($dataExisted) && isset($row['name']) && !isset($sa_name)) {
                                         echo $row['name'];
                                         } else if (isset($dataExisted) && isset($row['name']) && isset($sa_name)) {

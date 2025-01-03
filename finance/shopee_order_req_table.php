@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Shopee SG Order Request";
+$pageTitle = "Shopee Order Request";
 $isFinance = 1;
 
 include_once '../menuHeader.php';
