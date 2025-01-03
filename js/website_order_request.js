@@ -530,7 +530,7 @@ $('.submitBtn').on('click', () => {
         $(".wor-cust-name-err").remove();
         cust_name_chk = 1;
     }
-   /*  const emailField = $('#wor_cust_email');
+    const emailField = $('#wor_cust_email');
     const emailValue = emailField.val();
     if (($('#wor_cust_email').val() == '' || $('#wor_cust_email').val() == '0' || $('#wor_cust_email').val() === null || $('#wor_cust_email')
             .val() === undefined)) {
@@ -543,9 +543,9 @@ $('.submitBtn').on('click', () => {
     }else {
         $(".wor-cust-email-err").remove();
         cust_email_chk = 1;
-    } */
+    }
 
-    /*  if (($('#wor_cust_birthday').val() == '' || $('#wor_cust_birthday').val() == '0' || $('#wor_cust_birthday').val() === null || $('#wor_cust_birthday')
+     if (($('#wor_cust_birthday').val() == '' || $('#wor_cust_birthday').val() == '0' || $('#wor_cust_birthday').val() === null || $('#wor_cust_birthday')
             .val() === undefined)) {
         cust_birthday_chk = 0;
         $("#wor_cust_birthday").after(
@@ -553,7 +553,7 @@ $('.submitBtn').on('click', () => {
     } else {
         $(".wor-cust-birthday-err").remove();
         cust_birthday_chk = 1;
-    } */
+    }
 
      if (($('#wor_shipping_name').val() == '' || $('#wor_shipping_name').val() == '0' || $('#wor_shipping_name').val() === null || $('#wor_shipping_name')
             .val() === undefined)) {
@@ -585,7 +585,7 @@ $('.submitBtn').on('click', () => {
         shipping_contact_chk = 1;
     }
 
-    if (order_id_chk == 1 && brand_chk == 1 && series_chk == 1 && country_chk == 1 && currency_chk == 1 && price_chk == 1 && pkg_chk == 1 && pic_chk == 1 && shipping_chk == 1 && discount_chk == 1 && cust_id_chk == 1 && pay_chk == 1 && customer_id_chk == 1 && cust_brand_chk == 1 && cust_series_chk == 1 && cust_ship_name_chk == 1 && cust_ship_address_chk == 1 && cust_ship_contact_chk == 1 && cust_name_chk == 1 && shipping_name_chk == 1 && shipping_address_chk == 1 && shipping_contact_chk == 1)
+    if (order_id_chk == 1 && brand_chk == 1 && series_chk == 1 && country_chk == 1 && currency_chk == 1 && price_chk == 1 && pkg_chk == 1 && pic_chk == 1 && shipping_chk == 1 && discount_chk == 1 && cust_id_chk == 1 && pay_chk == 1 && customer_id_chk == 1 && cust_brand_chk == 1 && cust_series_chk == 1 && cust_ship_name_chk == 1 && cust_ship_address_chk == 1 && cust_ship_contact_chk == 1 && cust_name_chk == 1 && cust_email_chk == 1 && cust_birthday_chk == 1 && shipping_name_chk == 1 && shipping_address_chk == 1 && shipping_contact_chk == 1)
         $(this).closest('form').submit();
     else
         return false;

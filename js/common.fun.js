@@ -801,7 +801,7 @@ function createSortingTable(tableid) {
     /* info: false, */
     order: [[1, "asc"]], // 0 = db id column; 1 = numbering column
     /* responsive: true, */
-    autoWidth: false
+    autoWidth: false,
   });
 }
 
@@ -811,9 +811,10 @@ function createSortingMyLeaveTransactionTable(tableid) {
     autoWidth: false,
     columnDefs: [
       {
-        "searchable": false, "targets": [8]
-      }
-    ]
+        searchable: false,
+        targets: [8],
+      },
+    ],
   });
 }
 
@@ -823,9 +824,10 @@ function createSortingLeaveTransactionTable(tableid) {
     autoWidth: false,
     columnDefs: [
       {
-        "searchable": false, "targets": [12]
-      }
-    ]
+        searchable: false,
+        targets: [12],
+      },
+    ],
   });
 }
 
@@ -951,24 +953,26 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     case "LD":
     case "LC":
       var action;
-      if (act === 'LA') {
+      if (act === "LA") {
         action = "approval";
-      } else if (act === 'LD') {
+      } else if (act === "LD") {
         action = "declined";
-      } else if (act === 'LC') {
+      } else if (act === "LC") {
         action = "Cancel";
       }
 
       var title = `Leave transaction ${action}`;
       var title2 = `<span style="color:#FF9B44" class="mdi mdi-alert-circle-outline"></span> Confirm Action`;
-      var msg = [`This leave transaction cannot modify once it has been ${action}. Do you still want to proceed ?`];
+      var msg = [
+        `This leave transaction cannot modify once it has been ${action}. Do you still want to proceed ?`,
+      ];
       var btn = "Confirm";
       break;
     default:
       var title = "Error";
   }
 
-  if (act !== 'ErrMO') {
+  if (act !== "ErrMO") {
     localStorage.clear();
   }
 
@@ -978,7 +982,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
       message += `<p class="mt-n3" style="text-align:center; font-weight:bold;">${msg[i]}</p>`;
   }
 
-  if (act == 'D' || act == 'LD' || act == 'LA' || act == 'LC') {
+  if (act == "D" || act == "LD" || act == "LA" || act == "LC") {
     var firstContent = title2;
   } else {
     var firstContent = title;
@@ -1024,7 +1028,7 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         </div>
     </div>
     `;
-  if (act == 'D' || act == 'LD' || act == 'LA' || act == 'LC') {
+  if (act == "D" || act == "LD" || act == "LA" || act == "LC") {
     const myModal = new bootstrap.Modal(modalElem, {
       keyboard: false,
       backdrop: "static",
@@ -1096,8 +1100,15 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
     } else console.log("Operation Cancelled.");
   }
 
-
-  if (act == "I" || act == "E" || act == "MO" || act == "NC" || act == "PC" || act == "F" || act == "ErrMO") {
+  if (
+    act == "I" ||
+    act == "E" ||
+    act == "MO" ||
+    act == "NC" ||
+    act == "PC" ||
+    act == "F" ||
+    act == "ErrMO"
+  ) {
     const myModal2 = new bootstrap.Modal(modelResult, {
       keyboard: false,
       backdrop: "static",
@@ -1113,7 +1124,6 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         modelResult.remove();
         resolve(true);
         window.location.href = pathreturn;
-
       }, 5000);
 
       function response(e) {
@@ -1129,7 +1139,6 @@ async function confirmationDialog(id, msg, pagename, path, pathreturn, act) {
         document.body.querySelector(".modal-backdrop").remove();
         resolve(bool);
         window.location.href = pathreturn;
-
       }
     });
   }
@@ -1172,8 +1181,8 @@ function searchInput(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
-  var type = param["searchType"]; 
-  var dbTable = param["dbTable"]; 
+  var type = param["searchType"];
+  var dbTable = param["dbTable"];
   if (param["addSelection"]) {
     var addSelection = param["addSelection"];
   }
@@ -1190,7 +1199,7 @@ function searchInput(param, siteURL) {
       },
       dataType: "json",
       success: (result) => {
-        console.log(result);
+        // console.log(result);
         if (
           !(
             ($("#searchResult_" + elementID).length &&
@@ -1199,8 +1208,8 @@ function searchInput(param, siteURL) {
         )
           $("#" + elementID).after(
             '<ul class="searchResult" id="searchResult_' +
-            elementID +
-            '"></ul>',
+              elementID +
+              '"></ul>',
             '<div id="clear_' + elementID + '" class="clear"></div>'
           );
 
@@ -1250,38 +1259,34 @@ function searchInput(param, siteURL) {
     $("#searchResult_" + elementID).remove();
     $("#clear_" + elementID).remove();
   }
-
 }
 function searchInput2(param, siteURL) {
   var elementID = param["elementID"];
   var hiddenElementID = param["hiddenElementID"];
   var search = param["search"];
-  var type = param["searchTypes"]; 
-  var pkg = param['pkgID'];
-  var usr = param['usrID'];
-  var whse = param['whseID'];
-
+  var type = param["searchTypes"];
+  var pkg = param["pkgID"];
+  var usr = param["usrID"];
+  var whse = param["whseID"];
 
   if (param["addSelection"]) {
     var addSelection = param["addSelection"];
   }
 
   if (search != "") {
-    
     $.ajax({
       url: siteURL + "/getSearch2.php",
       type: "post",
       data: {
         searchText: search,
         searchType: type,
-        tblname: 'orderid',
-        pkg:pkg,
-        usr:usr,
-        whse:whse,
+        tblname: "orderid",
+        pkg: pkg,
+        usr: usr,
+        whse: whse,
       },
       dataType: "json",
       success: (result) => {
-
         // create div
         if (
           !(
@@ -1291,8 +1296,8 @@ function searchInput2(param, siteURL) {
         )
           $("#" + elementID).after(
             '<ul class="searchResult" id="searchResult_' +
-            elementID +
-            '"></ul>',
+              elementID +
+              '"></ul>',
             '<div id="clear_' + elementID + '" class="clear"></div>'
           );
 
@@ -1342,7 +1347,6 @@ function searchInput2(param, siteURL) {
     $("#searchResult_" + elementID).remove();
     $("#clear_" + elementID).remove();
   }
-
 }
 function retrieveDBData(param, siteURL, callback) {
   var search = param["search"];
@@ -1353,8 +1357,8 @@ function retrieveDBData(param, siteURL, callback) {
 
   if (search != "") {
     $.ajax({
-      url: siteURL + '/searchData.php',
-      type: 'post',
+      url: siteURL + "/searchData.php",
+      type: "post",
       data: {
         searchText: search,
         searchType: type,
@@ -1362,16 +1366,16 @@ function retrieveDBData(param, siteURL, callback) {
         searchCol: col,
         isFin: fin,
       },
-      dataType: 'json',
+      dataType: "json",
       success: (result) => {
         callback(result);
       },
       error: function (xhr, status, error) {
-        console.error('Error fetching data:', error);
-        console.log('XHR Status:', status);
-        console.log('XHR Response Text:', xhr.responseText);
-        console.log('XHR Response JSON:', xhr.responseJSON);
-      }
+        console.error("Error fetching data:", error);
+        console.log("XHR Status:", status);
+        console.log("XHR Response Text:", xhr.responseText);
+        console.log("XHR Response JSON:", xhr.responseJSON);
+      },
     });
   }
 }
@@ -1436,10 +1440,15 @@ document.addEventListener("DOMContentLoaded", function () {
     var inputFields = document.querySelectorAll("input, textarea ,select");
     var page = localStorage.getItem("page");
 
-    if (page !== 'invalid') {
+    if (page !== "invalid") {
       inputFields.forEach(function (input) {
         // Check if the input is not readonly and has stored data
-        if (!input.readOnly && localStorage.getItem(input.id) && input.id && input.type !== 'file') {
+        if (
+          !input.readOnly &&
+          localStorage.getItem(input.id) &&
+          input.id &&
+          input.type !== "file"
+        ) {
           input.value = localStorage.getItem(input.id);
         }
       });
@@ -1450,9 +1459,14 @@ document.addEventListener("DOMContentLoaded", function () {
     var inputFields = document.querySelectorAll("input, textarea ,select");
     var page = localStorage.getItem("page");
 
-    if (page !== 'invalid') {
+    if (page !== "invalid") {
       inputFields.forEach(function (input) {
-        if (!input.readOnly && input.id && !input.multiple && input.type !== 'file') {
+        if (
+          !input.readOnly &&
+          input.id &&
+          !input.multiple &&
+          input.type !== "file"
+        ) {
           localStorage.setItem(input.id, input.value);
         }
       });
@@ -1464,7 +1478,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var inputFields = document.querySelectorAll("input, textarea,select");
     inputFields.forEach(function (input) {
       // Check if the input is not readonly and has previous data
-      if (!input.readOnly && localStorage.getItem(input.id) && input.type !== 'file') {
+      if (
+        !input.readOnly &&
+        localStorage.getItem(input.id) &&
+        input.type !== "file"
+      ) {
         input.value = localStorage.getItem(input.id);
       }
     });
@@ -1492,7 +1510,7 @@ document.addEventListener("DOMContentLoaded", function () {
           'label[for="' + input.id + '"]'
         ).textContent;
 
-        labelContent = labelContent.replace(/\*/g, '');
+        labelContent = labelContent.replace(/\*/g, "");
 
         var alertMessage = document.createElement("span");
         alertMessage.textContent = labelContent + " is required!";
@@ -1520,7 +1538,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var inputValue = currentDataNameInput.value.trim();
       errorSpan.style.display =
         inputValue !== "" &&
-          inputValue !== localStorage.getItem("currentDataName")
+        inputValue !== localStorage.getItem("currentDataName")
           ? "none"
           : "block";
     }
@@ -1562,11 +1580,15 @@ function preloader(additionalDelay, action) {
   });
 }
 
-function setAutofocus(action) { 
+function setAutofocus(action) {
   if (action === "I" || action === "E") {
-    var firstInput = $("input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])").filter(function () {
-      return $.trim($(this).val()) === '';
-    }).first();
+    var firstInput = $(
+      "input[type='text']:visible:enabled:not(:checkbox,:radio,:hidden,[readonly]), textarea:visible:enabled:not(:hidden,[readonly]), input[type='number']:visible:enabled:not(:hidden,[readonly])"
+    )
+      .filter(function () {
+        return $.trim($(this).val()) === "";
+      })
+      .first();
 
     if (firstInput.length > 0) {
       firstInput.focus();
@@ -1578,27 +1600,28 @@ function setAutofocus(action) {
         if (lastSpaceIndex !== -1) {
           var input = firstInput.get(0);
           var lastWordIndex = inputValue.indexOf(" ", lastSpaceIndex + 1);
-          var cursorPosition = lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
+          var cursorPosition =
+            lastWordIndex !== -1 ? lastWordIndex : inputValue.length;
           input.setSelectionRange(cursorPosition, cursorPosition);
         } else {
-          firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd = inputValue.length;
+          firstInput.get(0).selectionStart = firstInput.get(0).selectionEnd =
+            inputValue.length;
         }
       }
     }
   }
-
 }
 
 //export notification
 function exportData() {
-  var checkboxes = document.querySelectorAll('.export:checked');
+  var checkboxes = document.querySelectorAll(".export:checked");
   if (checkboxes.length === 0) {
-      alert('Please select data to export.');
-      return false;
+    alert("Please select data to export.");
+    return false;
   }
   return true;
 }
 
 function showExportNotification() {
-  alert('Export successful!'); 
+  alert("Export successful!");
 }

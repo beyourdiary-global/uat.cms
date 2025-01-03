@@ -1,16 +1,19 @@
 <?php
-session_start(); 
+session_start();
 // $livemode = false; // true = test link, false = live link
-$siteOrlocalMode = true;  //true = live site, false = localhost
+$siteOrlocalMode = false;  //true = live site, false = localhost
 
 date_default_timezone_set('Asia/Singapore');
 
-define('dbuser', 'beyourdi_cms');
-define('dbpwd', 'Byd1234@Global');
-define('dbhost', '127.0.0.1');
+
+$dbUser = $siteOrlocalMode ? 'beyourdi_cms' : 'root';
+
+define('dbuser', $dbUser);
+define('dbpwd', $siteOrlocalMode ? 'Byd1234@Global' : '');
+define('dbhost', $siteOrlocalMode ? '127.0.0.1:3306' : 'localhost');
 define('dbname', 'beyourdi_cms');
 define('dbFinance', 'beyourdi_financial');
-define('SITEURL', 'https://cms.beyourdiary.com');
+define('SITEURL', $siteOrlocalMode ? 'https://cms.beyourdiary.com' : 'http://localhost/cms');
 $SITEURL = SITEURL;
 define('ROOT', dirname(__FILE__));
 define('email_cc', "report@beyourdiary.com	");
@@ -30,9 +33,9 @@ $ctime = time_dis;
 $comYMD = comYMD;
 /* $cby = $_SESSION['userid']; */
 
-$act_1    = 'I'; //Insert/ Add
-$act_2    = 'E'; //Edit/ Update
-$act_3    = 'D'; //Delete
+$act_1 = 'I'; //Insert/ Add
+$act_2 = 'E'; //Edit/ Update
+$act_3 = 'D'; //Delete
 
 // //session define
 // $displayName = $_SESSION['login_name'];
@@ -92,24 +95,24 @@ define('PKG', 'package');
 define('PROJ', 'projects');
 define('STK_REC', 'stock_record');
 define('L_TYPE', 'leave_type');
-define('CUR_SEGMENTATION','customer_segmentation');
-define('RACE','race');
-define('L_STS','leave_status');
-define('ID_TYPE','identity_type');
-define('SOCSO_CATH','socso_category');
-define('EMPLOYEE_EPF','employee_epf_rate');
-define('EMPLOYER_EPF','employer_epf_rate');
-define('PAY_METH','payment_method');
-define('EMPINFO','employee_info');
-define('EMPPERSONALINFO','employee_personal_info');
-define('TAG','tag');
-define('EMPLEAVE','employee_leave');
-define('CUS_INFO','customer_info');
-define('L_PENDING','leave_pending');
-define('BRD_SERIES','brand_series');
+define('CUR_SEGMENTATION', 'customer_segmentation');
+define('RACE', 'race');
+define('L_STS', 'leave_status');
+define('ID_TYPE', 'identity_type');
+define('SOCSO_CATH', 'socso_category');
+define('EMPLOYEE_EPF', 'employee_epf_rate');
+define('EMPLOYER_EPF', 'employer_epf_rate');
+define('PAY_METH', 'payment_method');
+define('EMPINFO', 'employee_info');
+define('EMPPERSONALINFO', 'employee_personal_info');
+define('TAG', 'tag');
+define('EMPLEAVE', 'employee_leave');
+define('CUS_INFO', 'customer_info');
+define('L_PENDING', 'leave_pending');
+define('BRD_SERIES', 'brand_series');
 define('FB_CUST_DEALS', 'customer_facebook_deals_transaction');
 define('URBAN_CUST_REG', 'urbanism_customer_register_info');
-define('OFFICIAL_PROCESS_ORDER','official_process_order');
+define('OFFICIAL_PROCESS_ORDER', 'official_process_order');
 
 
 //finance
@@ -124,35 +127,35 @@ define('CAONHD', 'asset_cash_on_hand_transaction');
 define('META_ADS_ACC', 'meta_ads_account');
 define('EXPENSE_TYPE', 'expense_type');
 define('FB_ADS_TOPUP', 'facebook_ads_topup_transaction');
-define('COUNTRIES','countries');
+define('COUNTRIES', 'countries');
 define('MRCHT_COMM', 'merchant_commission');
 define('BANK_TRANS_BACKUP', 'bank_transaction_backup');
 define('FIN_PAY_METH', 'finance_payment_method');
-define('PROD_CATEGORY','product_category');
-define('TAX_SETT','tax_setting');
+define('PROD_CATEGORY', 'product_category');
+define('TAX_SETT', 'tax_setting');
 define('INTERNAL_CONSUME', 'internal_consume_ticket_credit_transaction');
 define('DEL_FEES_CLAIM', 'delivery_fees_claim_transaction');
 define('FIN_PAY_TERMS', 'payment_terms');
 define('ITL_CSM_ITEM', 'internal_consume_item');
-define('SHOPEE_WDL_TRANS','shopee_withdrawal_transactions');
+define('SHOPEE_WDL_TRANS', 'shopee_withdrawal_transactions');
 define('DW_TOP_UP_RECORD', 'downline_top_up_record');
-define('AGENT','agent');
+define('AGENT', 'agent');
 define('SHOPEE_ACC', 'shopee_account');
 define('FB_ORDER_REQ', 'facebook_order_request');
 define('FB_PAGE_ACC', 'facebook_page_account');
 define('SHOPEE_ADS_TOPUP', 'shopee_ads_topup_transaction');
 define('STK_CDT_TOPUP_RCD', 'stock_credit_topup_record');
 define('CHANEL_SC_MD', 'chanel_social_media');
-define('PAY_MTHD_SHOPEE','shopee_payment_method');
-define('LAZADA_ACC','lazada_account');
+define('PAY_MTHD_SHOPEE', 'shopee_payment_method');
+define('LAZADA_ACC', 'lazada_account');
 define('CRED_NOTES_INV', 'credit_notes_invoice');
-define('SHOPEE_SG_SETT','shopee_sg_fees_setting');
-define('SHOPEE_SCR_SETT','shopee_service_charges_rate_setting');
+define('SHOPEE_SG_SETT', 'shopee_sg_fees_setting');
+define('SHOPEE_SCR_SETT', 'shopee_service_charges_rate_setting');
 define('WEB_CUST_RCD', 'customer_website_deals_transaction');
-define('SHOPEE_CUST_INFO','shopee_customer_info');
+define('SHOPEE_CUST_INFO', 'shopee_customer_info');
 define('ATOME_TRANS_BACKUP', 'atome_transaction_backup');
 define('SHOPEE_SG_ORDER_REQ', 'shopee_sg_order_request');
-define('JT_TRANS_BACKUP','jt_transaction_backup');
+define('JT_TRANS_BACKUP', 'jt_transaction_backup');
 define('STRIPE_TRANS_BACKUP', 'stripe_transaction_backup');
 define('LAZADA_CUST_RCD', 'customer_lazada_deals_transaction');
 define('WEB_ORDER_REQ', 'website_order_request');
@@ -163,8 +166,6 @@ define('DEBIT_INV_PROD', 'debit_inv_products');
 define('LAZADA_ORDER_REQ', 'lazada_order_request');
 
 $connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbname);
-
-
 $finance_connect = @mysqli_connect(dbhost, dbuser, dbpwd, dbFinance);
 
 //define session

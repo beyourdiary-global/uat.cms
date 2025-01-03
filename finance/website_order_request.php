@@ -813,7 +813,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label class="form-label form_lbl" id="wor_cust_email_lbl" for="wor_cust_email">Customer Email</label>
+                <label class="form-label form_lbl" id="wor_cust_email_lbl" for="wor_cust_email">Customer Email<span class="requireRed">*</span></label>
                 <input class="form-control" type="text" name="wor_cust_email" id="wor_cust_email" value="<?php
                 if (isset($dataExisted) && isset($row['cust_email']) && !isset($wor_cust_email)) {
                     echo $row['cust_email'];
@@ -832,7 +832,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
 
             <div class="col-md-6">
                 <div class="form-group mb-3">
-                    <label class="form-label form_lbl" id="wor_cust_birthday_label" for="wor_cust_birthday">Customer Birthday</label>
+                    <label class="form-label form_lbl" id="wor_cust_birthday_label" for="wor_cust_birthday">Customer Birthday<span class="requireRed">*</span></label>
                     <input class="form-control" type="date" name="wor_cust_birthday" id="wor_cust_birthday" value="<?php
                         if (isset($dataExisted) && isset($row['cust_birthday']) && !isset($wor_cust_birthday)) {
                             echo $row['cust_birthday'];
