@@ -9,7 +9,7 @@ $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
 $num = 1;   // numbering
-$deleteRedirectPage = $SITEURL . '/finance/meta_ads_acc_table.php';
+$deleteRedirectPage  = $SITEURL . '/finance/meta_ads_acc_table.php';
 $redirect_page = $SITEURL . '/finance/meta_ads_acc.php';
 $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
 ?>
@@ -35,69 +35,61 @@ $result = getData('*', '', '', META_ADS_ACC, $finance_connect);
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
-                            class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
                         <div class="mt-auto mb-auto">
-                            <?php if (isActionAllowed("Add", $pinAccess)): ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
-                                    href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                    Account </a>
+                            <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Account </a>
                             <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
-            <?php
-            if (!$result) {
-                echo '<div class="text-center"><h4>No Result!</h4></div>';
-            } else {
-                ?>
-                <table class="table table-striped" id="meta_ads_acc_table">
-                    <thead>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                            <th scope="col">Account ID</th>
-                            <th scope="col">Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result->fetch_assoc()) {
-                            if (isset($row['accID'], $row['id'], $row['accName']) && !empty($row['accID'])) {
-                                ?>
-                                <tr>
-                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                    <th scope="row"><?= $num++; ?></th>
-                                    <td scope="row" class="btn-container">
-                                        <div class="d-flex align-items-center">
-                                            <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                            <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
-                                            <?php renderDeleteButton($pinAccess, $row['id'], $row['accID'], $row['accName'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
-                                        </div>
-                                    </td>
-                                    <td scope="row"><?= $row['accID'] ?></td>
-                                    <td scope="row"><?= $row['accName'] ?></td>
-                                </tr>
-                            <?php }
-                        } ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th class="hideColumn" scope="col">ID</th>
-                            <th scope="col" width="60px">S/N</th>
-                            <th scope="col" id="action_col" width="100px">Action</th>
-                            <th scope="col">Account ID</th>
-                            <th scope="col">Name</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            <?php } ?>
+
+            <table class="table table-striped" id="meta_ads_acc_table">
+                <thead>
+                    <tr>
+                        <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
+                        <th scope="col">Account ID</th>
+                        <th scope="col">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()) {
+                        if (isset($row['accID'], $row['id'], $row['accName']) && !empty($row['accID'])) {
+                    ?>
+                            <tr>
+                                <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                <th scope="row"><?= $num++; ?></th>
+                                <td scope="row" class="btn-container">
+                                <div class="d-flex align-items-center">
+                                <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
+                                <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                <?php renderDeleteButton($pinAccess, $row['id'], $row['accID'], $row['accName'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                </div>
+                                </td>
+                                <td scope="row"><?= $row['accID'] ?></td>
+                                <td scope="row"><?= $row['accName'] ?></td>
+                            </tr>
+                    <?php }
+                    } ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                    <th class="hideColumn" scope="col">ID</th>
+                        <th scope="col" width="60px">S/N</th>
+                        <th scope="col" id="action_col" width="100px">Action</th>
+                        <th scope="col">Account ID</th>
+                        <th scope="col">Name</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
 
     </div>

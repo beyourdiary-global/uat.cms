@@ -65,7 +65,7 @@ $menuList = array(
             array('Shopee Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/finance/shopee_cust_info_table.php', '85'),
             array('Lazada Customer Record (Deals)', 'mdi mdi-deal-outline', $SITEURL . '/lazada_cust_rcd_table.php', '91'),
         ),
-        'pin' => array('38', '75', '84', '85', '91')
+        'pin' => array('38','75','84','85','91')
     ),
     array(
         'Orders',
@@ -79,7 +79,7 @@ $menuList = array(
             array('Lazada Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_table.php', '93'),
             array('Order Process List', 'mdi mdi-note-text-outline', $SITEURL . '/finance/order_process_list.php', '95'),
         ),
-        'pin' => array('69', '86', '92', '93', '95')
+        'pin' => array('69','86','92','93','95')
     ),
     array(
         'Distributor',
@@ -118,7 +118,7 @@ $menuList = array(
                     array('Credit Notes (Invoice)', 'mdi storefront-outline', $SITEURL . '/finance/cred_notes_inv_table.php', '70'),
                     array('Debit Notes (Invoice)', 'mdi storefront-outline', $SITEURL . '/finance/debit_notes_inv_table.php', '94'),
                 ),
-                'pin' => array('36', '70', '94'),
+                'pin' => array('36','70','94'),
             ),
             array(
                 'Assets and Liabilities List',
@@ -134,7 +134,7 @@ $menuList = array(
                     array('Initial Capital Transaction', 'mdi storefront-outline', $SITEURL . '/finance/initial_capital_trans_table.php', '46'),
                     array('Cash On Hand Transaction', 'mdi storefront-outline', $SITEURL . '/finance/cash_on_hand_trans_table.php', '45'),
                     array('Monthly Bank Transaction Backup Record', 'mdi storefront-outline', $SITEURL . '/finance/bank_trans_backup_table.php', '51'),
-
+                   
                 ),
                 'pin' => array('37', '40', '41', '42', '43', '44', '45', '46', '51'),
 
@@ -146,11 +146,11 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-
+                   
                 ),
                 'pin' => array(''),
             ),
-
+           
 
             array(
                 'Lazada',
@@ -158,7 +158,7 @@ $menuList = array(
                 'javascript:void(0)',
                 'y',
                 'expand' => array(
-
+                   
                 ),
                 'pin' => array(''),
             ),
@@ -174,7 +174,7 @@ $menuList = array(
             ),
         ),
 
-        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '47', '51', '68', '70', '87', '88', '89', '94', '95')
+        'pin' => array('36', '37', '40', '41', '42', '43', '44', '45', '47','51', '68','70','87','88','89','94','95')
 
     ),
     array(
@@ -196,7 +196,7 @@ $menuList = array(
                     array('Internal Consume Ticket/Credit', 'mdi storefront-outline', $SITEURL . '/finance/internal_consume_ticket_credit_table.php', '62'),
                     array('Stock Credit Top Up Record', 'mdi storefront-outline', $SITEURL . '/finance/stock_credit_top_up_request_table.php', '78'),
                 ),
-                'pin' => array('48', '66', '77', '67', '62', '78'),
+                'pin' => array('48','66','77','67','62','78'),
             ),
             array(
                 'Income',
@@ -213,9 +213,9 @@ $menuList = array(
                     array('Shopee SG Order Request', 'mdi storefront-outline', $SITEURL . '/finance/shopee_order_req_income_table.php', '97'),
                     array('Website Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/finance/website_order_request_income_table.php', '98'),
                     array('Lazada Order Request', 'mdi mdi-note-text-outline', $SITEURL . '/lazada_order_req_income_table.php', '99'),
-
+                
                 ),
-                'pin' => array('48', '66', '77', '51', '67', '62', '78', '49', '68', '89', '87', '96', '97', '98', '99'),
+                'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99'),
             ),
             array(
                 'Group by',
@@ -229,10 +229,10 @@ $menuList = array(
                     array('Brand Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/brand_report_table.php', '103'),
                     array('Stock Report', 'mdi mdi-note-text-outline', $SITEURL . '/finance/stock_report.php', '105'),
                 ),
-                'pin' => array('100', '101', '102', '103', '105'),
+                'pin' => array('100','101','102','103','105'),
             ),
         ),
-        'pin' => array('48', '66', '77', '51', '67', '62', '78', '49', '68', '89', '87', '96', '97', '98', '99', '100', '101')
+        'pin' => array('48','66','77','51','67','62','78','49','68','89','87','96','97','98','99','100','101')
     ),
     array(
         'Other',
@@ -264,9 +264,9 @@ $menuList = array(
                     array('Pin Group', 'mdi mdi-ungroup', $SITEURL . '/pin_group_table.php', '2'),
                     array('User', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_table.php', '90'),
                     array('User Group', 'mdi mdi-account-wrench-outline', $SITEURL . '/user_group_table.php', '3'),
-
+                   
                 ),
-                'pin' => array('1', '2', '90', '3'),
+                'pin' => array('1', '2', '90','3'),
 
             ),
             array(
@@ -284,7 +284,7 @@ $menuList = array(
                     array('Change Password', 'mdi mdi-key-change', $SITEURL . '/changePassword.php', '25'),
                     array('Chanel (Social Media)', 'mdi storefront-outline', $SITEURL . '/finance/chanel_social_media_table.php', '79'),
                 ),
-                'pin' => array('8', '11', '10', '14', '16', '19', '25', '79'),
+                'pin' => array('8', '11', '10', '14', '16', '19', '25','79'),
             ),
             array(
                 'Product Administration Setting',
@@ -365,10 +365,10 @@ $menuList = array(
                 'expand' => array(
                     array('Facebook Page Account', 'mdimdi-account-wrench-outline', $SITEURL . '/finance/fb_page_acc_table.php', '76'),
                     array('Meta Ads Account', 'mdi storefront-outline', $SITEURL . '/finance/meta_ads_acc_table.php', '46'),
-
+                   
 
                 ),
-                'pin' => array('46', '76'),
+                'pin' => array('46','76'),
             ),
 
             array(
@@ -383,10 +383,10 @@ $menuList = array(
                     array('Shopee Account Management', 'mdi storefront-outline', $SITEURL . '/finance/shopee_acc_table.php', '58'),
                     array('Lazada Account Management', 'mdi storefront-outline', $SITEURL . '/finance/lazada_acc_table.php', '81'),
                 ),
-                'pin' => array('80', '82', '83', '58', '81'),
+                'pin' => array('80','82','83','58','81'),
             ),
         ),
-        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57', '58', '60', '63', '65', '66', '67', '68', '69', '70', '72', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '91', '92', '93', '94')
+        'pin' => array('1', '2', '3', '6', '8', '9', '10', '11', '12', '13', '14', '15', '16', '19', '24', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '56', '57','58','60', '63', '65', '66', '67', '68', '69','70','72','74','75','76','77','78','79','80','81','82','83','84','85','86','87','88','89','91','92','93','94')
     ),
     array(
         'Warehouse',
@@ -556,8 +556,8 @@ $menuList = array(
     var sidebar_toggleBtn = $("#sidebarCollapse"); // variable from menuHeader
     var opacityBackground = $('div#filter_screen');
 
-    (function ($) {
-        sidebar_toggleBtn.on("click", function () {
+    (function($) {
+        sidebar_toggleBtn.on("click", function() {
             if (sidebar.hasClass("active")) {
                 sidebar.toggleClass("close", true);
                 opacityBackground.hide();
@@ -574,7 +574,7 @@ $menuList = array(
             }
         });
 
-        opacityBackground.on('click', function (e) {
+        opacityBackground.on('click', function(e) {
             var sidebar2 = $("#sidebar, #sidebarCollapse");
             if (!sidebar2.is(e.target) && sidebar2.has(e.target).length === 0) {
                 sidebar.toggleClass('close', true);

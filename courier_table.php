@@ -33,7 +33,6 @@ $result = getData('*', '', '', COURIER, $connect);
         font-size: 0.75rem;
         margin: 3px;
     }
-
     .btn-container {
         white-space: nowrap;
     }
@@ -47,20 +46,20 @@ $result = getData('*', '', '', COURIER, $connect);
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
-                            class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
-                        <div class="mt-auto mb-auto">
-                            <?php if (isActionAllowed("Add", $pinAccess)): ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
-                                    href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                    Courier </a>
-                            <?php endif; ?>
-                        </div>
+                        <?php if ($result) { ?>
+                            <div class="mt-auto mb-auto">
+                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                        Courier </a>
+                                <?php endif; ?>
+                            </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -68,7 +67,7 @@ $result = getData('*', '', '', COURIER, $connect);
             if (!$result) {
                 echo '<div class="text-center"><h4>No Result!</h4></div>';
             } else {
-                ?>
+            ?>
                 <table class="table table-striped" id="courier_table">
                     <thead>
                         <tr>
@@ -87,27 +86,25 @@ $result = getData('*', '', '', COURIER, $connect);
                             if (isset($row['name'], $row['id']) && !empty($row['name'])) {
                                 $row2 = getData('nicename', "id='" . $row['country'] . "'", '', COUNTRIES, $connect);
                                 $countries = $row2->fetch_assoc();
-                                ?>
+                        ?>
 
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                        <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                        <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                        <?php renderDeleteButton($pinAccess, $row['id'], $row['id'], $row['name'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['id'], $row['name'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
                                     </td>
-                                    <td scope="row"><?php if (isset($row['id']))
-                                        echo $row['id'] ?></td>
-                                        <td scope="row"><?= $row['tracking_link'] ?></td>
+                                    <td scope="row"><?php if (isset($row['id'])) echo $row['id'] ?></td>
+                                    <td scope="row"><?= $row['tracking_link'] ?></td>
                                     <td scope="row"><?= $row['name'] ?></td>
-                                    <td scope="row"><?php if (isset($countries['nicename']))
-                                        echo $countries['nicename'] ?></td>
-                                        <td scope="row"><?php if (isset($row['taxable'])) {
-                                        echo ($row['taxable'] == 'Y') ? 'Yes' : 'No';
-                                    } ?></td>
+                                    <td scope="row"><?php if (isset($countries['nicename'])) echo $countries['nicename'] ?></td>
+                                    <td scope="row"><?php if (isset($row['taxable'])) {
+                                                        echo ($row['taxable'] == 'Y') ? 'Yes' : 'No';
+                                                    } ?></td>
                                 </tr>
-                            <?php }
+                        <?php }
                         } ?>
                     </tbody>
                     <tfoot>
