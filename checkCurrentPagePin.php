@@ -1,3 +1,4 @@
+
 <?php
 function getUserPinGroup($connect) //check if user pin is in pin group, if yes, return, if no, skip
 {
@@ -112,16 +113,10 @@ function checkPin($connect, $currentPage)
 
 function isActionAllowed($action, $allowedActions)
 {
-    // Ensure $allowedActions is an array
-    if (!is_array($allowedActions)) {
-        return false; // Or handle as per your requirements
-    }
-
     $action = strtolower($action);
 
-    foreach ($allowedActions as &$value) {
+    foreach ($allowedActions as &$value)
         $value = strtolower($value);
-    }
 
     return in_array($action, $allowedActions);
 }

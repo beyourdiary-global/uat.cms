@@ -219,6 +219,8 @@ $tblName = SHOPEE_SG_ORDER_REQ;
 $redirect_page = $SITEURL . '/finance/shopee_order_req.php';
 $deleteRedirectPage = $SITEURL . '/finance/shopee_order_req_table.php';
 $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$dateRange = explode('to', $groupOption3);
+
 ?>
 
 <!DOCTYPE html>
@@ -560,7 +562,8 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                               echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
                               echo '<th scope="row">' . $counters++ . '</th>';
                               echo '<td scope="row">' . $key . '</td>';
-                              echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
+                              echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';  
+                              $total += $groupedRow['totalTopupAmount'];
                               echo '</tr>';
                             }  
                             ?>
@@ -597,7 +600,7 @@ $result = getData('*', '', '', SHOPEE_SG_ORDER_REQ, $finance_connect);
                                     }
                                 ?>
                             </th>
-                            <th scope="col">Total Price</th>
+                            <th scope="col"><?php echo number_format($total, 2, '.', ''); ?></th>
                         </tr>
                     </tfoot>
                 </table>

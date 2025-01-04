@@ -5,10 +5,10 @@ include "include/connection.php";
 $email = post('email-addr');
 $password = md5(post('password'));
 
+
 if ($email && $password) {
      $loginquery = "SELECT * FROM " . USR_USER . " WHERE email='" . $email . "'";
      $loginresult = mysqli_query($connect, $loginquery);
-
      if (!(mysqli_num_rows($loginresult) == 1)) {
           return header('Location: index.php?err=1');
      } else {
@@ -59,9 +59,9 @@ if ($email && $password) {
                          'uid' => $loginrows['id'],
                          'cby' => $loginrows['id'],
                          'connect' => $connect,
-                    ];
-
-                    audit_log($log);
+                     ];
+                     
+                     audit_log($log);
 
                     // json file
                     generateDBData(BRAND, $connect);

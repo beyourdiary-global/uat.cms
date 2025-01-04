@@ -56,18 +56,18 @@ if (post('l_status_option')) {
 
         // audit log
         $log = [
-            'log_act' => 'edit',
-            'cdate' => $cdate,
-            'ctime' => $ctime,
-            'uid' => USER_ID,
-            'cby' => USER_ID,
-            'query_rec' => $query,
-            'query_table' => $tblName,
-            'page' => $pageTitle,
-            'connect' => $connect,
-            'oldval' => implodeWithComma($oldvalarr),
-            'changes' => implodeWithComma($chgvalarr),
-            'act_msg' => actMsgLog($leave_type_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
+            'log_act'      => 'edit',
+            'cdate'        => $cdate,
+            'ctime'        => $ctime,
+            'uid'          => USER_ID,
+            'cby'          => USER_ID,
+            'query_rec'    => $query,
+            'query_table'  => $tblName,
+            'page'         => $pageTitle,
+            'connect'      => $connect,
+            'oldval'       => implodeWithComma($oldvalarr),
+            'changes'      => implodeWithComma($chgvalarr),
+            'act_msg'      => actMsgLog($leave_type_id, $datafield, '', $oldvalarr, $chgvalarr, $tblName, 'edit', (isset($returnData) ? '' : $errorMsg))
         ];
         echo "<script>console.log('TEST5')</script>";
 
@@ -99,7 +99,6 @@ if (post('l_status_option')) {
         font-size: 0.75rem;
         margin: 3px;
     }
-
     .btn-container {
         white-space: nowrap;
     }
@@ -117,118 +116,97 @@ if (post('l_status_option')) {
 
                 <div class="d-flex flex-column mb-3">
                     <div class="row">
-                        <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
-                                class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                        <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                     </div>
 
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2> <?php echo $pageTitle ?></h2>
                             <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)): ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
-                                        href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                        <?php echo $pageTitle ?> </a>
+                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
+                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                                 <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <?php
-                if (!$result) {
-                    echo '<div class="text-center"><h4>No Result!</h4></div>';
-                } else {
-                    ?>
-                    <table class="table table-striped" id="leave_type_table">
-                        <thead>
-                            <tr>
-                                <th class="hideColumn" scope="col">ID</th>
-                                <th scope="col" width="60px">S/N</th>
-                                <th scope="col" id="action_col" width="100px">Action</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Number Of Days</th>
-                                <th scope="col">Leave Status</th>
-                                <th scope="col">Auto Assign</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = $result->fetch_assoc()) {
-                                if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
-                                    <tr>
-                                        <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
-                                        <th scope="row"><?= $num++ ?></th>
-                                        <td scope="row" class="btn-container">
-                                            <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                            <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                            <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['num_of_days'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
-                                        </td>
-                                        <td scope="row"><?= $row['name'] ?></td>
-                                        <td scope="row"><?php if (isset($row['num_of_days']))
-                                            echo $row['num_of_days'] . ' Days' ?>
-                                            </td>
-                                            <td scope="row">
-                                                <?php
+
+                <table class="table table-striped" id="leave_type_table">
+                    <thead>
+                        <tr>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Number Of Days</th>
+                            <th scope="col">Leave Status</th>
+                            <th scope="col">Auto Assign</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()) {
+                            if (isset($row['name'], $row['id']) && !empty($row['name'])) { ?>
+                                <tr>
+                                    <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
+                                    <th scope="row"><?= $num++ ?></th>
+                                    <td scope="row" class="btn-container">
+                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
+                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['num_of_days'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    </td>
+                                    <td scope="row"><?= $row['name'] ?></td>
+                                    <td scope="row"><?php if (isset($row['num_of_days'])) echo $row['num_of_days'] . ' Days' ?></td>
+                                    <td scope="row">
+                                        <?php
                                         if (isset($row['leave_status'])) {
                                             $leave_status = $row['leave_status'];
-                                            ?>
-                                                <div class="dropdown">
-                                                    <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
-                                                        id="leaveStatusMenu" role="button" data-bs-toggle="dropdown"
-                                                        aria-expanded="false">
-                                                        <button class="roundedSelectionBtn">
-                                                            <span class="mdi mdi-record-circle-outline"
-                                                                style="<?php echo ($leave_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
-                                                            <?php
-                                                            switch ($leave_status) {
-                                                                case 'Active':
-                                                                    echo 'Active';
-                                                                    break;
-                                                                case 'Inactive':
-                                                                    echo 'Inactive';
-                                                                    break;
-                                                                default:
-                                                                    echo 'Error';
-                                                            }
-                                                            ?>
-                                                        </button>
-                                                    </a>
-                                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="leaveStatusMenu">
-                                                        <li>
-                                                            <a class="dropdown-item" id="activeOption" href=""
-                                                                onclick="updateLeaveStatus(<?= $row['id'] ?>,'Active')"><span
-                                                                    class="mdi mdi-record-circle-outline" style="color:#008000"></span>
-                                                                Active</a>
-                                                        </li>
-                                                        <li>
-                                                            <a class="dropdown-item" id="inactiveOption" href=""
-                                                                onclick="updateLeaveStatus(<?= $row['id'] ?>,'Inactive')"><span
-                                                                    class="mdi mdi-record-circle-outline" style="color:#ff0000"></span>
-                                                                Inactive</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            <?php } ?>
-                                        </td>
-                                        <td scope="row" style="text-transform: uppercase;">
-                                            <?php if (isset($row['auto_assign']))
-                                                echo $row['auto_assign'] ?></td>
-                                        </tr>
-                                <?php }
-                            } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th class="hideColumn" scope="col">ID</th>
-                                <th scope="col" width="60px">S/N</th>
-                                <th scope="col" id="action_col" width="100px">Action</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Number Of Days</th>
-                                <th scope="col">Leave Status</th>
-                                <th scope="col">Auto Assign</th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                <?php } ?>
+                                        ?>
+                                            <div class="dropdown">
+                                                <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="leaveStatusMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <button class="roundedSelectionBtn">
+                                                        <span class="mdi mdi-record-circle-outline" style="<?php echo ($leave_status == 'Active') ? 'color:#008000;' : 'color:#ff0000;'; ?>"></span>
+                                                        <?php
+                                                        switch ($leave_status) {
+                                                            case 'Active':
+                                                                echo 'Active';
+                                                                break;
+                                                            case 'Inactive':
+                                                                echo 'Inactive';
+                                                                break;
+                                                            default:
+                                                                echo 'Error';
+                                                        }
+                                                        ?>
+                                                    </button>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="leaveStatusMenu">
+                                                    <li>
+                                                        <a class="dropdown-item" id="activeOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Active')"><span class="mdi mdi-record-circle-outline" style="color:#008000"></span> Active</a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" id="inactiveOption" href="" onclick="updateLeaveStatus(<?= $row['id'] ?>,'Inactive')"><span class="mdi mdi-record-circle-outline" style="color:#ff0000"></span> Inactive</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        <?php } ?>
+                                    </td>
+                                    <td scope="row" style="text-transform: uppercase;"><?php if (isset($row['auto_assign'])) echo $row['auto_assign'] ?></td>
+                                </tr>
+                        <?php }
+                        } ?>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="hideColumn" scope="col">ID</th>
+                            <th scope="col" width="60px">S/N</th>
+                            <th scope="col" id="action_col" width="100px">Action</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Number Of Days</th>
+                            <th scope="col">Leave Status</th>
+                            <th scope="col">Auto Assign</th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
@@ -255,7 +233,7 @@ if (post('l_status_option')) {
                 l_type_id: id,
                 l_status_option: status,
             },
-            success: function (data) {
+            success: function(data) {
                 console.log('TEST7');
                 window.location.href = 'leave_type_table.php';
             },

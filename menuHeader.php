@@ -21,30 +21,27 @@
     include_once "header.php";
 
     ?>
-    <link rel="icon" type="image" href="<?php if (isset($row['meta_logo']))
-        echo $img_path . $row['meta_logo']; ?>">
+    <link rel="icon" type="image" href="<?php if (isset($row['meta_logo'])) echo $img_path . $row['meta_logo']; ?>">
     <link rel="stylesheet" href="<?= $SITEURL ?>/css/main.css">
 </head>
 
 <!-- Navbar -->
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-md topNav p-0" id="topNav" style="background-color:<?php if ($dataExisted)
-        echo $row['themesColor']; ?>;">
+    <nav class="navbar navbar-expand-md topNav p-0" id="topNav" style="background-color:<?php if ($dataExisted) echo $row['themesColor']; ?>;">
         <!-- Container wrapper -->
         <div class="container-fluid p-0">
             <!-- Toggle button -->
-            <button class="navbar-toggler ps-4" style="height:50px;" type="button" data-bs-toggle="collapse"
-                data-bs-target="#sidebar-collapse" aria-expanded="false" id="sidebarCollapse">
+            <button class="navbar-toggler ps-4" style="height:50px;" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-collapse" aria-expanded="false" id="sidebarCollapse">
                 <i class="fas fa-bars"></i>
             </button>
 
             <!-- Navbar brand -->
             <div class="d-flex align-items-center mx-2">
-                <a class="logo_section navbar-brand mx-4" href="<?php echo SITEURL; ?>/dashboard.php">
+                <a class="logo_section navbar-brand mx-4" href="/dashboard.php">
                     <img id="logo" src="
                     <?php
                     if ($dataExisted)
-                        echo $img_path . $row['logo'];
+                        echo $img_path  . $row['logo'];
                     else
                         echo $SITEURL . '/' . img . byd_logo;
                     ?>">
@@ -71,13 +68,10 @@
                     <div class="d-flex align-items-center">
                         <!-- Language -->
                         <div class="dropdown me-3">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
-                                id="navbarDropdownMenuLanguage" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLanguage" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span id="language_name"><i class="flag flag-united-states"></i> English</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-center mt-3"
-                                aria-labelledby="navbarDropdownMenuLanguage">
+                            <ul class="dropdown-menu dropdown-menu-center mt-3" aria-labelledby="navbarDropdownMenuLanguage">
                                 <li>
                                     <a class="dropdown-item" href="#"><i class="flag flag-united-states"></i>English</a>
                                 </li>
@@ -94,14 +88,11 @@
                         </div>
                         <!-- Notifications -->
                         <div class="dropdown me-3">
-                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
-                                id="navbarDropdownNotifMenuLink" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownNotifMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="far fa-bell fa-lg"></i>
                                 <span class="badge rounded-pill badge-notification badge-color ms-1">3</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-right mt-3"
-                                aria-labelledby="navbarDropdownNotifMenuLink">
+                            <ul class="dropdown-menu dropdown-menu-right mt-3" aria-labelledby="navbarDropdownNotifMenuLink">
                                 <li>
                                     <a class="dropdown-item" href="#">Some news</a>
                                 </li>
@@ -114,14 +105,11 @@
                             </ul>
                         </div>
                         <div class="dropdown me-3">
-                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#"
-                                id="navbarDropdownMessageMenuLink" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                            <a class="text-reset me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMessageMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="far fa-comment fa-lg"></i>
                                 <span class="badge rounded-pill badge-notification badge-color ms-1">8</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-right mt-3"
-                                aria-labelledby="navbarDropdownMessageMenuLink">
+                            <ul class="dropdown-menu dropdown-menu-right mt-3" aria-labelledby="navbarDropdownMessageMenuLink">
                                 <li>
                                     <a class="dropdown-item" href="#">Some news</a>
                                 </li>
@@ -135,15 +123,11 @@
                         </div>
                         <!-- Avatar -->
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#"
-                                id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <img id="accpfp" src="<?php echo $SITEURL . '/' . img . defaultpfp ?>"
-                                    class="rounded-circle">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img id="accpfp" src="<?php echo $SITEURL . '/' . img . defaultpfp ?>" class="rounded-circle">
                                 Admin
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-right mt-3"
-                                aria-labelledby="navbarDropdownMenuAvatar">
+                            <ul class="dropdown-menu dropdown-menu-right mt-3" aria-labelledby="navbarDropdownMenuAvatar">
                                 <li>
                                     <a class="dropdown-item" href="#">My profile</a>
                                 </li>
@@ -163,8 +147,7 @@
             <!-- Toggle button -->
             <div class="navbar-toggler pe-4">
                 <div class="dropdown">
-                    <button class="nav-link d-flex align-items-center" href="#" id="navbarTogglerMenuAvatar"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="nav-link d-flex align-items-center" href="#" id="navbarTogglerMenuAvatar" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-ellipsis-vertical fa-lg"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right mt-4" aria-labelledby="navbarTogglerMenuAvatar">
@@ -196,7 +179,7 @@
     function setButtonColor() {
         var buttons = document.querySelectorAll('#actionBtn, #addBtn,#backBtn');
 
-        buttons.forEach(function (button) {
+        buttons.forEach(function(button) {
             button.style.backgroundColor = '<?php echo ($dataExisted ? $row['buttonColor'] : ''); ?>';
         });
     }

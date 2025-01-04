@@ -12,7 +12,7 @@ function postSpaceFilter($key)
 	if (isset($_POST[$key])) {
 		if (is_string($_POST[$key])) {
 			return trim(isset($_POST[$key]) ? $_POST[$key] : '');
-		} else if (is_array($_POST[$key])) {
+		} else  if (is_array($_POST[$key])) {
 			return array_map('trim', isset($_POST[$key]) ? $_POST[$key] : '');
 		}
 	}
@@ -88,7 +88,7 @@ function redirect($addr, $alert = '')
 			$addr = SITEURL;
 	}
 	header("Location:" . $addr);
-	exit();
+
 }
 
 function myCurl($url, $ops = array())
@@ -156,7 +156,7 @@ function googleShortURL($longurl)
 
 	$result = curl_exec($ch);
 
-	$decodeResult = json_decode($result);
+	$decodeResult =  json_decode($result);
 	$firebaseShortURL = isset($decodeResult->shortLink) ? $decodeResult->shortLink : '';
 
 	return $firebaseShortURL;
@@ -247,11 +247,10 @@ function isDuplicateRecordWithConditions($fields, $values, $tbl, $connect, $prim
 
 	$conditions = array_combine($fields, $values);
 	$conditions += ['status' => 'A']; // Add 'status' condition
-	if ($primaryKeyValue)
-		$conditions['id !='] = $primaryKeyValue; // Exclude current record if editing
+	if ($primaryKeyValue) $conditions['id !='] = $primaryKeyValue; // Exclude current record if editing
 
 	$whereClause = implode(' AND ', array_map(
-		fn($key, $value) => "`$key` = '" . mysqli_real_escape_string($connect, $value) . "'",
+		fn ($key, $value) => "`$key` = '" . mysqli_real_escape_string($connect, $value) . "'",
 		array_keys($conditions),
 		$conditions
 	));
@@ -283,10 +282,9 @@ function isRecordExist($tblName, $idType, $id, $connect)
 
 function tableExists($tableName, $conn)
 {
-	if (!$conn) {
-		die("Database connection is not initialized.");
-	}
-	$result = $conn->query("SHOW TABLES LIKE '$tableName'");
+   
+	$result = $conn->query("SHOW TABLES LIKE '$tableName'");  
+
 	if (!$result)
 		return;
 	return $result && $result->num_rows > 0;
@@ -294,10 +292,12 @@ function tableExists($tableName, $conn)
 
 function getData($search_val, $val, $val2, $tbl, $conn)
 {
+   
 	if (!tableExists($tbl, $conn)) {
 		// Display "NO RESULT" message or handle it as needed
 		return false;
-	} else {
+	} else { 
+	   
 		$statusAvailable = isStatusFieldAvailable($tbl, $conn);
 
 		//Checking a status is available in data field or not then check a val is exist or not
@@ -309,12 +309,12 @@ function getData($search_val, $val, $val2, $tbl, $conn)
 
 		//combine together to process a query
 		$query = "SELECT $search_val FROM $tbl " . $chk_val . "order by id desc " . $val2;
-
-		$result = $conn->query($query);
+	
+		$result = $conn->query($query);		
 
 	}
 
-	if (empty($result) || !is_object($result) || $result->num_rows == 0)
+	if (empty($result) && $result->num_rows == 0)
 		return false;
 	else
 		return $result;
@@ -323,34 +323,18 @@ function getData($search_val, $val, $val2, $tbl, $conn)
 function generateDBData($tblname, $conn)
 {
 	$rst = getData('*', '', '', $tblname, $conn);
-
-	// Check if $rst is a valid result set
-	if ($rst === false) {
-		// Log the error or output debug information
-		error_log("Error in getData() for table $tblname: " . $conn->error);
-		return;
-		// die("Failed to fetch data from table $tblname");
-
-	}
-
 	$data = array();
 	while ($row = $rst->fetch_assoc()) {
 		$data[] = $row;
 	}
-
 	$encode_rst = json_encode($data);
 
 	$path = ROOT . "/data/$tblname.json";
 
 	$f = fopen($path, 'w');
-	if ($f === false) {
-		die("Failed to open file for writing: $path");
-	}
-
 	fwrite($f, $encode_rst);
 	fclose($f);
 }
-
 
 function audit_log($data = array())
 {
@@ -487,15 +471,15 @@ function rate_checking($data = array())
 			$api = EASYPARCEL_API_MY;
 			$bulk = array(
 				array(
-					'pick_code' => $data['postcode_from'],
-					'pick_country' => $data['from'],
-					'send_code' => $data['postcode_to'],
-					'send_country' => $data['to'],
-					'weight' => $data['weight'],
-					'width' => '0',
-					'length' => '0',
-					'height' => '0',
-					'date_coll' => '',
+					'pick_code'	=> $data['postcode_from'],
+					'pick_country'	=> $data['from'],
+					'send_code'	=> $data['postcode_to'],
+					'send_country'	=> $data['to'],
+					'weight'	=> $data['weight'],
+					'width'	=> '0',
+					'length'	=> '0',
+					'height'	=> '0',
+					'date_coll'	=> '',
 				),
 			);
 			$ex = `'exclude_fields'	=> array(
@@ -509,15 +493,15 @@ function rate_checking($data = array())
 			$api = EASYPARCEL_API_SG;
 			$bulk = array(
 				array(
-					'pick_code' => $data['postcode_from'],
-					'pick_country' => $data['from'],
-					'send_code' => $data['postcode_to'],
-					'send_country' => $data['to'],
-					'weight' => $data['weight'],
-					'width' => '0',
-					'length' => '0',
-					'height' => '0',
-					'date_coll' => '',
+					'pick_code'	=> $data['postcode_from'],
+					'pick_country'	=> $data['from'],
+					'send_code'	=> $data['postcode_to'],
+					'send_country'	=> $data['to'],
+					'weight'	=> $data['weight'],
+					'width'	=> '0',
+					'length'	=> '0',
+					'height'	=> '0',
+					'date_coll'	=> '',
 				),
 			);
 			$ex = '';
@@ -530,9 +514,9 @@ function rate_checking($data = array())
 	}
 
 	$postparam = array(
-		'authentication' => $auth,
-		'api' => $api,
-		'bulk' => $bulk,
+		'authentication'	=> $auth,
+		'api'	=> $api,
+		'bulk'	=> $bulk,
 		$ex
 	);
 
@@ -565,42 +549,42 @@ function make_order($data = array())
 			$api = EASYPARCEL_API_MY;
 			$bulk = array(
 				array(
-					'weight' => $data['weight'],
-					'width' => '0',
-					'length' => '0',
-					'height' => '0',
-					'content' => $data['content'],
-					'value' => $data['value'],
-					'service_id' => $data['sid'],
-					'pick_point' => $data['pick_point'],
-					'pick_name' => $data['pick_name'],
-					'pick_company' => $data['pick_company'],
-					'pick_contact' => $data['pick_contact'],
-					'pick_mobile' => $data['pick_mobile'],
-					'pick_addr1' => $data['pick_addr1'],
-					'pick_addr2' => $data['pick_addr2'],
-					'pick_addr3' => '',
-					'pick_addr4' => '',
-					'pick_city' => $data['pick_city'],
-					'pick_code' => $data['pick_code'],
-					'pick_country' => $data['pick_country'],
-					'send_point' => $data['send_point'],
-					'send_name' => $data['send_name'],
-					'send_company' => $data['send_company'],
-					'send_contact' => $data['send_contact'],
-					'send_mobile' => $data['send_mobile'],
-					'send_addr1' => $data['send_addr1'],
-					'send_addr2' => $data['send_addr2'],
-					'send_addr3' => '',
-					'send_addr4' => '',
-					'send_city' => $data['send_city'],
-					'send_code' => $data['send_code'],
-					'send_country' => $data['send_country'],
-					'collect_date' => $data['collect_date'],
-					'sms' => '0',
-					'send_email' => $data['send_email'],
-					'hs_code' => '',
-					'reference' => $data['reference']
+					'weight'	=> $data['weight'],
+					'width'	=> '0',
+					'length'	=> '0',
+					'height'	=> '0',
+					'content'	=> $data['content'],
+					'value'	=> $data['value'],
+					'service_id'	=> $data['sid'],
+					'pick_point'	=> $data['pick_point'],
+					'pick_name'	=> $data['pick_name'],
+					'pick_company'	=> $data['pick_company'],
+					'pick_contact'	=> $data['pick_contact'],
+					'pick_mobile'	=> $data['pick_mobile'],
+					'pick_addr1'	=> $data['pick_addr1'],
+					'pick_addr2'	=> $data['pick_addr2'],
+					'pick_addr3'	=> '',
+					'pick_addr4'	=> '',
+					'pick_city'	=> $data['pick_city'],
+					'pick_code'	=> $data['pick_code'],
+					'pick_country'	=> $data['pick_country'],
+					'send_point'	=> $data['send_point'],
+					'send_name'	=> $data['send_name'],
+					'send_company'	=> $data['send_company'],
+					'send_contact'	=> $data['send_contact'],
+					'send_mobile'	=> $data['send_mobile'],
+					'send_addr1'	=> $data['send_addr1'],
+					'send_addr2'	=> $data['send_addr2'],
+					'send_addr3'	=> '',
+					'send_addr4'	=> '',
+					'send_city'	=> $data['send_city'],
+					'send_code'	=> $data['send_code'],
+					'send_country'	=> $data['send_country'],
+					'collect_date'	=> $data['collect_date'],
+					'sms'	=> '0',
+					'send_email'	=> $data['send_email'],
+					'hs_code'	=> '',
+					'reference'	=> $data['reference']
 				)
 			);
 			break;
@@ -611,30 +595,30 @@ function make_order($data = array())
 			$api = EASYPARCEL_API_SG;
 			$bulk = array(
 				array(
-					'weight' => $data['weight'],
-					'width' => '0',
-					'length' => '0',
-					'height' => '0',
-					'content' => $data['content'],
-					'value' => $data['value'],
-					'service_id' => $data['sid'],
-					'pick_name' => $data['pick_name'],
-					'pick_company' => $data['pick_company'],
-					'pick_contact' => $data['pick_contact'],
-					'pick_mobile' => $data['pick_mobile'],
-					'pick_unit' => $data['pick_addr1'],
-					'pick_code' => $data['pick_code'],
-					'pick_country' => $data['pick_country'],
-					'send_name' => $data['send_name'],
-					'send_company' => $data['send_company'],
-					'send_contact' => $data['send_contact'],
-					'send_mobile' => $data['send_mobile'],
-					'send_unit' => $data['send_addr1'],
-					'send_addr1' => $data['send_addr1'],
-					'send_code' => $data['send_code'],
-					'send_country' => $data['send_country'],
-					'collect_date' => $data['collect_date'],
-					'reference' => $data['reference']
+					'weight'	=> $data['weight'],
+					'width'	=> '0',
+					'length'	=> '0',
+					'height'	=> '0',
+					'content'	=> $data['content'],
+					'value'	=> $data['value'],
+					'service_id'	=> $data['sid'],
+					'pick_name'	=> $data['pick_name'],
+					'pick_company'	=> $data['pick_company'],
+					'pick_contact'	=> $data['pick_contact'],
+					'pick_mobile'	=> $data['pick_mobile'],
+					'pick_unit'	=> $data['pick_addr1'],
+					'pick_code'	=> $data['pick_code'],
+					'pick_country'	=> $data['pick_country'],
+					'send_name'	=> $data['send_name'],
+					'send_company'	=> $data['send_company'],
+					'send_contact'	=> $data['send_contact'],
+					'send_mobile'	=> $data['send_mobile'],
+					'send_unit'	=> $data['send_addr1'],
+					'send_addr1'	=> $data['send_addr1'],
+					'send_code'	=> $data['send_code'],
+					'send_country'	=> $data['send_country'],
+					'collect_date'	=> $data['collect_date'],
+					'reference'	=> $data['reference']
 				)
 			);
 			break;
@@ -645,9 +629,9 @@ function make_order($data = array())
 	}
 
 	$postparam = array(
-		'authentication' => $auth,
-		'api' => $api,
-		'bulk' => $bulk,
+		'authentication'	=> $auth,
+		'api'	=> $api,
+		'bulk'	=> $bulk,
 	);
 
 	$url = $domain . $action;
@@ -679,7 +663,7 @@ function make_order_payment($data = array())
 			$api = EASYPARCEL_API_MY;
 			$bulk = array(
 				array(
-					'order_no' => $data['order_number'],
+					'order_no'	=> $data['order_number'],
 				),
 			);
 			break;
@@ -690,16 +674,16 @@ function make_order_payment($data = array())
 			$api = EASYPARCEL_API_SG;
 			$bulk = array(
 				array(
-					'order_no' => $data['order_number'],
+					'order_no'	=> $data['order_number'],
 				),
 			);
 			break;
 	}
 
 	$postparam = array(
-		'authentication' => $auth,
-		'api' => $api,
-		'bulk' => $bulk
+		'authentication'	=> $auth,
+		'api'	=> $api,
+		'bulk'	=> $bulk
 	);
 
 	$url = $domain . $action;
@@ -851,31 +835,33 @@ function monthNumberToString($monthNumber)
 	}
 }
 
-function renderViewEditButton($action, $redirect_page, $row, $pinAccess, $act_2 = null)
-{
-	switch ($action) {
-		case "View":
-			if (isActionAllowed("View", $pinAccess)) {
-				echo '<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '"><i class="fas fa-eye"></i></a>';
-			}
-			break;
-		case "Edit":
-			if (isActionAllowed("Edit", $pinAccess)) {
-				echo '<a class="btn btn-warning me-1" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '"><i class="fas fa-edit"></i></a>';
-			}
-			break;
-	}
-
+function renderViewEditButton($action, $redirect_page, $row, $pinAccess, $act_2 = null) {
+    switch ($action) {
+        case "View":
+            if (isActionAllowed("View", $pinAccess)) {
+                echo '<a class="btn btn-primary me-1" href="' . $redirect_page . '?id=' . $row['id'] . '"><i class="fas fa-eye"></i></a>';
+            }
+            break;
+        case "Edit":
+            if (isActionAllowed("Edit", $pinAccess)) {
+                echo '<a class="btn btn-warning me-1" href="' . $redirect_page . '?id=' . $row['id'] . '&act=' . $act_2 . '"><i class="fas fa-edit"></i></a>';
+            }
+            break;
+    }
+	
 }
 
-function renderDeleteButton($pinAccess, $rowId, $rowName, $rowRemark, $pageTitle, $redirectPage, $deleteRedirectPage)
-{
-	// Check if Delete action is allowed
-	if (isActionAllowed("Delete", $pinAccess)) {
-		// Generate JavaScript onclick function for confirmation dialog with specific parameters
-		$onclick = 'confirmationDialog(\'' . $rowId . '\',[\'' . $rowName . '\',\'' . $rowRemark . '\'],\'' . $pageTitle . '\',\'' . $redirectPage . '\',\'' . $deleteRedirectPage . '\',\'D\')';
-
-		// Output Delete button
-		echo '<a class="btn btn-danger" onclick="' . $onclick . '"><i class="fas fa-trash-alt"></i></a>';
-	}
+function renderDeleteButton($pinAccess, $rowId, $rowName, $rowRemark, $pageTitle, $redirectPage, $deleteRedirectPage) {
+    // Check if Delete action is allowed
+    if (isActionAllowed("Delete", $pinAccess)) {
+        // Generate JavaScript onclick function for confirmation dialog with specific parameters
+        $onclick = 'confirmationDialog(\'' . $rowId . '\',[\'' . $rowName . '\',\'' . $rowRemark . '\'],\'' . $pageTitle . '\',\'' . $redirectPage . '\',\'' . $deleteRedirectPage . '\',\'D\')';
+        
+        // Output Delete button
+        echo '<a class="btn btn-danger" onclick="' . $onclick . '"><i class="fas fa-trash-alt"></i></a>';
+    }
 }
+
+
+
+
