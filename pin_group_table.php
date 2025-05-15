@@ -1,11 +1,12 @@
 <?php
 $pageTitle = "Pin Group";
-
+$currentPagePin = 2;
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
+include ROOT.'/include/access.php';
+
 
 $tblName = PIN_GRP;
-$pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
@@ -17,10 +18,7 @@ $deleteRedirectPage = $SITEURL . '/pin_group_table.php';
 
 $result = getData('*', '', '', $tblName, $connect);
 
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +48,6 @@ if (!$result) {
     <div class="pre-load-center">
         <div class="preloader"></div>
     </div>
-
     <div class="page-load-cover">
 
         <div id="dispTable" class="container-fluid d-flex justify-content-center mt-3">
@@ -74,6 +71,9 @@ if (!$result) {
                     </div>
                 </div>
 
+                <?php if (!$result) {
+                    echo '<div class="text-center"><h4>No Result!</h4></div>';
+                } else { ?>
                 <table class="table table-striped" id="table">
                     <thead>
                         <tr>
@@ -85,7 +85,6 @@ if (!$result) {
                             <th scope="col">Remark</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <?php
                         while ($row = $result->fetch_assoc()) {
@@ -94,9 +93,9 @@ if (!$result) {
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2); ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['name'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
+                                    <?php renderViewEditButtonByPin("1", $redirect_page, $row, $accessActionKey); ?>
+                                    <?php renderViewEditButtonByPin("2", $redirect_page, $row, $accessActionKey, $act_2); ?>
+                                    <?php renderDeleteButtonByPin($accessActionKey, $row['id'], $row['name'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage); ?>
                                     </td>
                                     <td scope="row"><?= $row['name'] ?></td>
                                     <td scope="row">
@@ -105,6 +104,7 @@ if (!$result) {
                                             $pin_arr = explode(",", $row['pins']);
                                             $pinname_arr = array();
                                             foreach ($pin_arr as $val) {
+                                                if ($val === '') continue;
                                                 $pinname_result = getData('name', "id='$val'", '', PIN, $connect);
                                                 if (!$pinname_result) {
                                                     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
@@ -142,6 +142,7 @@ if (!$result) {
                         </tr>
                     </tfoot>
                 </table>
+                <?php } ?>
             </div>
         </div>
     </div>

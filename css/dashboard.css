@@ -48,6 +48,7 @@
 
 .platformsepearatorLine {
   display: flex;
+  margin-left:0 !important;
   padding: 15px 0 0;
 }
 
@@ -65,3 +66,23 @@
   color: white;
   border-color: white;
 }
+
+.platformMainDashboard .separatorContainer,
+.platformMainDashboard .separatorContainer2,
+.platformsepearatorLine .separatorContainer,
+.platformsepearatorLine .separatorContainer2 {
+    flex: 0 0 33.333%; /* 3 items per row */
+    max-width: 33.333%;
+    padding: 10px;
+}
+
+@media (max-width: 768px) {
+    .platformMainDashboard .separatorContainer,
+    .platformMainDashboard .separatorContainer2,
+    .platformsepearatorLine .separatorContainer,
+    .platformsepearatorLine .separatorContainer2 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+

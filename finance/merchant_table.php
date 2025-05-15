@@ -7,7 +7,6 @@ include '../checkCurrentPagePin.php';
 
 $tblName = MERCHANT;
 $pinAccess = checkCurrentPin($connect, $pageTitle);
-
 $_SESSION['act'] = '';
 $_SESSION['viewChk'] = '';
 $_SESSION['delChk'] = '';
@@ -64,13 +63,11 @@ $result = getData('*', '', '', $tblName, $finance_connect);
                     <div class="row">
                         <div class="col-12 d-flex justify-content-between flex-wrap">
                             <h2><?php echo $pageTitle ?></h2>
-                            <?php if ($result) { ?>
                                 <div class="mt-auto mb-auto">
                                     <?php if (isActionAllowed("Add", $pinAccess)) : ?>
                                         <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
                                     <?php endif; ?>
                                 </div>
-                            <?php } ?>
                         </div>
                     </div>
                 </div>

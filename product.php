@@ -294,11 +294,11 @@ if (post('actionBtn')) {
 //Function(title, subtitle, page name, ajax url path, redirect path, action)
 //To show action dialog after finish certain action (eg. edit)
 
-if (isset($_SESSION['tempValConfirmBox'])) {
-    unset($_SESSION['tempValConfirmBox']);
-    echo $clearLocalStorage;
-    echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
-}
+// if (isset($_SESSION['tempValConfirmBox'])) {
+//     unset($_SESSION['tempValConfirmBox']);
+//     echo $clearLocalStorage;
+//     echo '<script>confirmationDialog("","","' . $pageTitle . '","","' . $redirect_page . '","' . $act . '");</script>';
+// }
 
 ?>
 

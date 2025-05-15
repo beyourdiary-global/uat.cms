@@ -4,10 +4,14 @@ include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
 include 'include/dashboardPanel.php';
 
+$currentPagePin = 7;
+
+include ROOT.'/include/access.php';
+
 $currentMonthYear = date('F-Y');
 $currentMonthYearwithSmallerCaseMonth = date('M-Y');
 $currentYear = date("Y");
-
+$sgdExchangeMyrRate = 1;
 $selectedPeriod = input('period') ? input('period') : $currentMonthYearwithSmallerCaseMonth;
 
 // Separate the month and year
@@ -18,7 +22,17 @@ $monthNumber = date('m', strtotime($monthName));
 
 $selectedYear = $year;
 $selectedMonth = $monthNumber;
+$formattedDate = DateTime::createFromFormat('m-Y', sprintf('%02d-%d', $selectedMonth, $selectedYear))
+    ->format('M-Y');
 
+
+$queryCurrencies = "SELECT exchange_currency_rate FROM " . CURRENCIES. " WHERE default_currency_unit = 2";
+$resultCurriency = $connect->query($queryCurrencies);
+if ($resultCurriency->num_rows > 0) {
+    while ($rowCurrencies = $resultCurriency->fetch_assoc()) {
+        $sgdExchangeMyrRate = $rowCurrencies['exchange_currency_rate'];
+    }
+}
 
 $query = "SELECT DISTINCT DATE_FORMAT(date, '%M-%Y') AS month_year FROM " . SHOPEE_SG_ORDER_REQ . " ORDER BY date DESC";
 $result = $finance_connect->query($query);
@@ -29,7 +43,7 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $options[] = $row['month_year'];
     }
-}   
+}
 // Check if current month-year exists in the database, and if not, add it to the options
 if (!in_array($currentMonthYear, $options)) {
     array_unshift($options, $currentMonthYear); // Add current month-year to the beginning of the array
@@ -37,42 +51,46 @@ if (!in_array($currentMonthYear, $options)) {
 
 //shopee my total sales by MONTH
 $sqlQuery = "YEAR(`date`) = $selectedYear AND MONTH(`date`) = $selectedMonth AND currency=1 ";
-$shopeeEveryMonthResult = getData("SUM(price) as price, id,  GROUP_CONCAT(id) AS combined_ids ", $sqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$shopeeEveryMonthResult = getData("SUM(price) as price, SUM(final_amt) as final_amt, id,  GROUP_CONCAT(id) AS combined_ids ", $sqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 if ($shopeeEveryMonthResult->num_rows > 0) {
     $ShopeeTotalIncomeArrr = $shopeeEveryMonthResult->fetch_assoc();
     $ShopeeTotalIncome = $ShopeeTotalIncomeArrr['price'] ? $ShopeeTotalIncomeArrr['price'] : '0';
+    $ShopeeTotalFinalAmtIncome = $ShopeeTotalIncomeArrr['final_amt'] ? $ShopeeTotalIncomeArrr['final_amt'] : '0';
 } else {
-    $ShopeeTotalIncome = '0';
+    $ShopeeTotalIncome = $ShopeeTotalFinalAmtIncome = '0';
 }
 
 //shopee my total sales by YEAR
 $ShopeeByYearsqlQuery = "YEAR(`date`) = $selectedYear AND currency=1 ";
-$shopeeEveryYearResult = getData("SUM(price) as price, id,  GROUP_CONCAT(id) AS combined_ids ", $ShopeeByYearsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$shopeeEveryYearResult = getData("SUM(price) as price, SUM(final_amt) as final_amt, id,  GROUP_CONCAT(id) AS combined_ids ", $ShopeeByYearsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 if ($shopeeEveryYearResult->num_rows > 0) {
     $ShopeeTotalIncomeArrrByYear = $shopeeEveryYearResult->fetch_assoc();
     $ShopeeTotalIncomeByYear = $ShopeeTotalIncomeArrrByYear['price'] ? $ShopeeTotalIncomeArrrByYear['price'] : '0';
+    $ShopeeTotalFinalAmtIncomeByYear = $ShopeeTotalIncomeArrrByYear['final_amt'] ? $ShopeeTotalIncomeArrrByYear['final_amt'] : '0';
 } else {
-    $ShopeeTotalIncomeByYear = '0';
+    $ShopeeTotalIncomeByYear = $ShopeeTotalFinalAmtIncomeByYear = '0';
 }
 
 //shopee SG total sales by MONTH
 $shopeeSGsqlQuery = "YEAR(`date`) = $selectedYear AND MONTH(`date`) = $selectedMonth AND currency=2";
-$shopeeSGEveryMonthResult = getData("SUM(price) as price, id,  GROUP_CONCAT(id) AS combined_ids ", $shopeeSGsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$shopeeSGEveryMonthResult = getData("SUM(price) as price, SUM(final_amt) as final_amt, id,  GROUP_CONCAT(id) AS combined_ids ", $shopeeSGsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 if ($shopeeSGEveryMonthResult->num_rows > 0) {
     $ShopeeSgTotalIncomeArrr = $shopeeSGEveryMonthResult->fetch_assoc();
-    $ShopeeSgTotalIncome = $ShopeeSgTotalIncomeArrr['price'] ? $ShopeeSgTotalIncomeArrr['price'] : '0';
+    $ShopeeSgTotalIncome = $ShopeeSgTotalIncomeArrr['price'] ? $ShopeeSgTotalIncomeArrr['price'] * $sgdExchangeMyrRate : '0';
+    $ShopeeSgTotalFinalAmtIncome = $ShopeeSgTotalIncomeArrr['final_amt'] ? $ShopeeSgTotalIncomeArrr['final_amt'] * $sgdExchangeMyrRate : '0';
 } else {
-    $ShopeeSgTotalIncome = '0';
+    $ShopeeSgTotalIncome = $ShopeeSgTotalFinalAmtIncome = '0';
 }
 
 //shopee SG total sales by YEAR
 $shopeeSGByYearsqlQuery = "YEAR(`date`) = $selectedYear AND currency=2";
-$shopeeSGEveryMonthResultByYear = getData("SUM(price) as price, id,  GROUP_CONCAT(id) AS combined_ids ", $shopeeSGByYearsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
+$shopeeSGEveryMonthResultByYear = getData("SUM(price) as price, SUM(final_amt) as final_amt, id,  GROUP_CONCAT(id) AS combined_ids ", $shopeeSGByYearsqlQuery, '', SHOPEE_SG_ORDER_REQ, $finance_connect);
 if ($shopeeSGEveryMonthResultByYear->num_rows > 0) {
     $ShopeeSgTotalIncomeArrrByYear = $shopeeSGEveryMonthResultByYear->fetch_assoc();
-    $ShopeeSgTotalIncomeByYear = $ShopeeSgTotalIncomeArrrByYear['price'] ? $ShopeeSgTotalIncomeArrrByYear['price'] : '0';
+    $ShopeeSgTotalIncomeByYear = $ShopeeSgTotalIncomeArrrByYear['price'] ? $ShopeeSgTotalIncomeArrrByYear['price'] * $sgdExchangeMyrRate : '0';
+    $ShopeeSgTotalFinalAmtIncomeByYear = $ShopeeSgTotalIncomeArrrByYear['final_amt'] ? $ShopeeSgTotalIncomeArrrByYear['final_amt'] * $sgdExchangeMyrRate : '0';
 } else {
-    $ShopeeSgTotalIncomeByYear = '0';
+    $ShopeeSgTotalIncomeByYear = $ShopeeSgTotalFinalAmtIncomeByYear = '0';
 }
 
 //lazada total sales by MONTH
@@ -148,6 +166,31 @@ if ($getExchangeCurrenciesRate->num_rows > 0) {
 $finalTotalSales = $ShopeeTotalIncome + ($ShopeeSgTotalIncome * $currenciesRate) + $lazadaTotalIncome + $websiteTotalIncome + $facebookTotalIncome;
 
 $finalTotalSalesByYear = $ShopeeTotalIncomeByYear + ($ShopeeSgTotalIncomeByYear * $currenciesRate) + $lazadaTotalIncomeByYear + $websiteTotalIncomeByYear + $facebookTotalIncomeByYear;
+///goal target
+
+$yearGoalTargetArr = $yearlyShopee_sg_goal = $yearlyShopee_my_goal = $yearlyLazada_goal = $yearlyFacebook_goal = $yearlyWebsite_goal = $yearlyTotal_goal = $total_goalByYear = '0';
+
+$finalGoalTargetSqlQuery = "`year` = $selectedYear AND `month` = $selectedMonth";
+$getYearlyGoalTarget = getData("*", $finalGoalTargetSqlQuery, '', YEARLYGOAL, $connect);
+if ($getYearlyGoalTarget != false && $getYearlyGoalTarget->num_rows > 0) {
+    $yearGoalTargetArr = $getYearlyGoalTarget->fetch_assoc();
+    $yearlyShopee_my_goal = $yearGoalTargetArr['shopee_my_goal'] ? $yearGoalTargetArr['shopee_my_goal'] : '0';
+    $yearlyShopee_sg_goal = $yearGoalTargetArr['shopee_sg_goal'] ? $yearGoalTargetArr['shopee_sg_goal'] : '0';
+    $yearlyLazada_goal = $yearGoalTargetArr['lazada_goal'] ? $yearGoalTargetArr['lazada_goal'] : '0';
+    $yearlyFacebook_goal = $yearGoalTargetArr['facebook_goal'] ? $yearGoalTargetArr['facebook_goal'] : '0';
+    $yearlyWebsite_goal = $yearGoalTargetArr['website_goal'] ? $yearGoalTargetArr['website_goal'] : '0';
+    $yearlyTotal_goal = $yearGoalTargetArr['total_goal'] ? $yearGoalTargetArr['total_goal'] : '0';
+
+}
+
+$finalGoalTargetByYearSqlQuery = "`year` = $selectedYear";
+$getYearlyGoalTargetByYear = getData("sum(total_goal) as total_goal", $finalGoalTargetByYearSqlQuery, '', YEARLYGOAL, $connect);
+if ($getYearlyGoalTargetByYear != false && $getYearlyGoalTargetByYear->num_rows > 0) {
+    $row = $getYearlyGoalTargetByYear->fetch_assoc();
+
+    // Access the 'total_goal' value from the associative array
+    $total_goalByYear = isset($row['total_goal']) ? $row['total_goal'] : '0';
+}
 
 ?>
 <!DOCTYPE html>
@@ -161,104 +204,157 @@ $finalTotalSalesByYear = $ShopeeTotalIncomeByYear + ($ShopeeSgTotalIncomeByYear 
 <body>
     <div class="container-xxl">
         <?php
-        $monthlyConclusion = date("M Y") . " Monthy Conclusion";
-        $data = [
-            ['label' => $selectedPeriod . ' Total Sales', 'value' => $finalTotalSales],
-            ['label' => 'Sales Target', 'value' => '0'],
-            ['label' => 'Total Sales', 'value' => '0'],
-            ['label' => 'Total Balance', 'value' => '0'],
-        ];
-        $containerClass = "thisMonthContainer";
-        generateDashboard($monthlyConclusion, $data, $containerClass, true);
+        function generateSalesData($label, $income, $goal) {
+            return [
+                'title' => $label . " (" . $goal . ")",
+                'data' => [
+                    ['label' => 'Current Sales', 'value' => $income],
+                    ['label' => 'Balance Sales', 'value' => $income - $goal],
+                ]
+            ];
+        }
+    
+        $monthlyConclusion = date("M Y") . " Monthly Conclusion";
+        $data = [];
+    
+        if (in_array(17, $accessActionKey)) {
+            if ($currentMonthYearwithSmallerCaseMonth != $formattedDate) {
+                $data[] = ['label' => $selectedPeriod . ' Total Sales', 'value' => $finalTotalSales];
+            }
+    
+            $data[] = ['label' => 'Sales Target', 'value' => $yearlyTotal_goal];
+            $data[] = ['label' => 'Total Sales', 'value' => $finalTotalSales];
+            $data[] = ['label' => 'Total Balance', 'value' => $finalTotalSales - $yearlyTotal_goal];
+    
+            $containerClass = "thisMonthContainer";
+            generateDashboard($monthlyConclusion, $data, $containerClass, true);
+        }
+    
+        if (in_array(16, $accessActionKey)) {
+            $yearlyConclusion = $selectedYear . " Yearly Conclusion";
+            $data = [
+                ['label' => 'Sales Target', 'value' => $total_goalByYear],
+                ['label' => 'Total Sales', 'value' => $finalTotalSalesByYear],
+                ['label' => 'Total Balance', 'value' => $finalTotalSalesByYear - $total_goalByYear]
+            ];
+            $containerClass = "thisyearContainer";
+            generateDashboard($yearlyConclusion, $data, $containerClass);
+        }
+        if (array_intersect([18, 19, 20, 21, 22, 23], $accessActionKey)): ?>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h2 class="mb-0">Sales (Package)</h2>
+                <div class="dropdown dropdownContainer">
+                    <button class="btn-lg dropdown-toggle dropdownSelectContainer" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php echo $currentMonthYear; ?>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <?php foreach ($options as $option): ?>
+                            <li>
+                                <a class="dropdown-item <?php echo $selectedPeriod == $option ? 'active' : ''; ?>"
+                                   href="?period=<?php echo $option; ?>" data-value="<?php echo $option; ?>">
+                                    <?php echo $option; ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+        <?php endif;
 
-
-        $yearlyConclusion = $selectedYear . " Yearly Conclusion";
-        $data = [
-            ['label' => 'Sales Target', 'value' => '0'],
-            ['label' => 'Total Sales', 'value' => $finalTotalSalesByYear],
-            ['label' => 'Total Balance', 'value' => '0']
-        ];
-        $containerClass = "thisyearContainer";
-        generateDashboard($yearlyConclusion, $data, $containerClass);
-        ?>
-        <div class="dropdown dropdownContainer">
-            <button class="btn-lg dropdown-toggle dropdownSelectContainer" type="button" id="dropdownMenuButton"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                <?php echo $currentMonthYear; ?> <!-- Default selected month-year -->
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <?php foreach ($options as $option): ?>
-                    <li><a class="dropdown-item" href="?period=<?php echo $option; ?>" data-value="<?php echo $option; ?>"
-                            <?php echo $selectedPeriod == $option ? "selected" : ""; ?>> <?php echo $option; ?></a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-
-        <?php
+       
         echo '<div class="platformMainDashboard row">';
-        $containerClass = "separatorContainer";
-
-        //shopee SG
-        $shopeeSgTarget = "Shopee SG Target";
-        $shopeeSgTarget_data = [
-            ['label' => 'Current Sales', 'value' => $ShopeeSgTotalIncome],
-            ['label' => 'Balance Sales', 'value' => '0'],
+        
+        $platforms = [
+            18 => [
+                'title' => "Shopee SG Target",
+                'income' => $ShopeeSgTotalIncome,
+                'goal' => $yearlyShopee_sg_goal,
+            ],
+            19 => [
+                'title' => "Shopee MY Target",
+                'income' => $ShopeeTotalIncome,
+                'goal' => $yearlyShopee_my_goal,
+            ],
+            20 => [
+                'title' => "Lazada MY Target",
+                'income' => $lazadaTotalIncome,
+                'goal' => $yearlyLazada_goal,
+            ],
+            21 => [
+                'title' => "Website MY Target",
+                'income' => $websiteTotalIncome,
+                'goal' => $yearlyWebsite_goal,
+            ],
+            22 => [
+                'title' => "Facebook Target",
+                'income' => $facebookTotalIncome,
+                'goal' => $yearlyFacebook_goal,
+            ],
+            23 => [
+                'title' => "Total Expense",
+                'income' => [
+                    ['label' => 'Used Expense', 'value' => '0'],
+                    ['label' => 'Balance Expense', 'value' => '0'],
+                ],
+                'goal' => null, // No goal needed for expenses
+            ],
         ];
-        generateDashboardPlateformAnalysis($shopeeSgTarget, $shopeeSgTarget_data, $containerClass);
-
-        //shopee MY
-        $shopeeMyTarget = "Shopee MY Target";
-        $shopeeMy_data = [
-            ['label' => 'Current Sales', 'value' => $ShopeeTotalIncome],
-            ['label' => 'Balance Sales', 'value' => '0'],
+        
+        // Counter to determine even/odd
+        $counter = 0;
+        
+        foreach ($platforms as $key => $platform) {
+            if (in_array($key, $accessActionKey)) {
+                $counter++;
+                $containerClass = ($counter % 2 == 0) ? "separatorContainer2" : "separatorContainer";
+                
+                // Handle expense separately because no "goal" passed
+                if ($key == 23) {
+                    generateDashboardPlateformAnalysis($platform['title'], $platform['income'], $containerClass);
+                } else {
+                    $salesData = generateSalesData($platform['title'], $platform['income'], $platform['goal']);
+                    generateDashboardPlateformAnalysis($salesData['title'], $salesData['data'], $containerClass);
+                }
+            }
+        }
+        
+        echo '</div>'; // End of main dashboard
+        
+        // Now handle "Sales Final Amount" section
+        echo '<h2 class="mt-2">Sales (Final Amount)</h2>';
+        echo '<div class="platformsepearatorLine row">';
+        
+        $finalAmounts = [
+            24 => [
+                'title' => "Shopee SG Received Final Amount",
+                'income' => $ShopeeSgTotalFinalAmtIncome,
+                'goal' => $yearlyShopee_sg_goal,
+            ],
+            25 => [
+                'title' => "Shopee MY Received Final Amount",
+                'income' => $ShopeeTotalFinalAmtIncome,
+                'goal' => $yearlyShopee_my_goal,
+            ],
         ];
-        $containerClass2 = "separatorContainer2";
-        generateDashboardPlateformAnalysis($shopeeMyTarget, $shopeeMy_data, $containerClass2);
-
-        //lazada MY
-        $lazadaMyTarget = "Lazada MY Target";
-        $lazadaMy_data = [
-            ['label' => 'Current Sales', 'value' => $lazadaTotalIncome],
-            ['label' => 'Balance Sales', 'value' => '0'],
-        ];
-        generateDashboardPlateformAnalysis($lazadaMyTarget, $lazadaMy_data, $containerClass);
-
-        echo '<div class="platformsepearatorLine">';
-        //website
-        $lazadaMyTarget = "Website MY Target";
-        $lazadaMy_data = [
-            ['label' => 'Current Sales', 'value' => $websiteTotalIncome],
-            ['label' => 'Balance Sales', 'value' => '0'],
-        ];
-        generateDashboardPlateformAnalysis($lazadaMyTarget, $lazadaMy_data, $containerClass2);
-
-        //facebook 
-        $facebookMyTarget = "Facebook Target";
-        $facebookMy_data = [
-            ['label' => 'Current Sales', 'value' => $facebookTotalIncome],
-            ['label' => 'Balance Sales', 'value' => '0'],
-        ];
-        generateDashboardPlateformAnalysis($facebookMyTarget, $facebookMy_data, $containerClass);
-
-        //expense
-        $totalExpense = "Total Expense";
-        $totalExpense_data = [
-            ['label' => 'Used Expense', 'value' => '0'],
-            ['label' => 'Balance Expense', 'value' => '0'],
-        ];
-        generateDashboardPlateformAnalysis($totalExpense, $totalExpense_data, $containerClass2);
-        echo '</div>';
-
-        echo "</div>";
+        
+        // Reset counter
+        $counter = 0;
+        
+        foreach ($finalAmounts as $key => $platform) {
+            if (in_array($key, $accessActionKey)) {
+                $counter++;
+                $containerClass = ($counter % 2 == 0) ? "separatorContainer2" : "separatorContainer";
+                
+                $salesData = generateSalesData($platform['title'], $platform['income'], $platform['goal']);
+                generateDashboardPlateformAnalysis($salesData['title'], $salesData['data'], $containerClass);
+            }
+        }
+        
+        echo '</div>'; // End of final amount section
         ?>
-
-
 
     </div>
-
-
-
     </>
 
     <script>
