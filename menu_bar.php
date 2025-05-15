@@ -396,7 +396,7 @@ $menuList = array(
         'y',
         'expand' => array(
             array('Stock List', 'mdi mdi-package-variant', $SITEURL . '/stock_list_table.php', '104'),
-            array('Stock Costing Setting', 'mdi mdi-package-variant', $SITEURL . '/stockCosting.php?act=I', '106'),
+            array('Stock Costing Setting', 'mdi mdi-package-variant', $SITEURL . '/stockCosting.php', '106'),
 
         ),
         'pin' => array('104')
