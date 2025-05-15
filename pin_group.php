@@ -27,13 +27,12 @@ if (!($dataID) && !($act) || !isActionAllowed($pageAction, $pinAccess))
 
 //Get The Data From Database
 $rst = getData('*', "id = '$dataID'", '', $tblName, $connect);
-
-//Checking Data Error When Retrieved From Database
-if (!$rst || !($row = $rst->fetch_assoc()) && $act != 'I') {
-    $errorExist = 1;
-    $_SESSION['tempValConfirmBox'] = true;
-    $act = "F";
+if ($rst && $rst->num_rows > 0) {
+    $row = $rst->fetch_assoc();
+} else {
+    $row = null;
 }
+
 
 //Get pin data
 $pinResult = getData('*', '', '', PIN, $connect);
@@ -62,12 +61,12 @@ if ($dataID && !$act && USER_ID && !$_SESSION['viewChk'] && !$_SESSION['delChk']
 
     $log = [
         'log_act' => $pageAction,
-        'cdate'   => $cdate,
-        'ctime'   => $ctime,
-        'uid'     => USER_ID,
-        'cby'     => USER_ID,
+        'cdate' => $cdate,
+        'ctime' => $ctime,
+        'uid' => USER_ID,
+        'cby' => USER_ID,
         'act_msg' => $viewActMsg,
-        'page'    => $pageTitle,
+        'page' => $pageTitle,
         'connect' => $connect,
     ];
 
@@ -162,22 +161,22 @@ if (post('actionBtn')) {
             if (isset($query)) {
 
                 $log = [
-                    'log_act'      => $pageAction,
-                    'cdate'        => $cdate,
-                    'ctime'        => $ctime,
-                    'uid'          => USER_ID,
-                    'cby'          => USER_ID,
-                    'query_rec'    => $query,
-                    'query_table'  => $tblName,
-                    'page'         => $pageTitle,
-                    'connect'      => $connect,
+                    'log_act' => $pageAction,
+                    'cdate' => $cdate,
+                    'ctime' => $ctime,
+                    'uid' => USER_ID,
+                    'cby' => USER_ID,
+                    'query_rec' => $query,
+                    'query_table' => $tblName,
+                    'page' => $pageTitle,
+                    'connect' => $connect,
                 ];
 
                 if ($pageAction == 'Add') {
                     $log['newval'] = implodeWithComma($newvalarr);
                     $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 } else if ($pageAction == 'Edit') {
-                    $log['oldval']  = implodeWithComma($oldvalarr);
+                    $log['oldval'] = implodeWithComma($oldvalarr);
                     $log['changes'] = implodeWithComma($chgvalarr);
                     $log['act_msg'] = actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
                 }
@@ -234,34 +233,42 @@ if (isset($_SESSION['tempValConfirmBox'])) {
 
                     <div class="form-group mb-3">
                         <label class="form-label" for="currentDataName"><?php echo $pageTitle ?> Name</label>
-                        <input class="form-control" type="text" name="currentDataName" id="currentDataName" value="<?php if (isset($row['name'])) echo $row['name'] ?>" <?php if ($act == '') echo 'readonly' ?> required autocomplete="off">
-                        <div id="err_msg">
-                            <span class="mt-n1" id="errorSpan"><?php if (isset($err)) echo $err; ?></span>
+                        <input class="form-control" type="text" name="currentDataName" id="currentDataName"
+                            value="<?php if (isset($row['name']))
+                                echo $row['name'] ?>" <?php if ($act == '')
+                                echo 'readonly' ?> required autocomplete="off">
+                            <div id="err_msg">
+                                <span class="mt-n1" id="errorSpan"><?php if (isset($err))
+                                echo $err; ?></span>
                         </div>
                     </div>
 
                     <div class="form-group mb-3">
                         <label class="form-label" for="currentDataRemark"><?php echo $pageTitle ?> Remark</label>
-                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '') echo 'readonly' ?>><?php if (isset($row['remark'])) echo $row['remark'] ?></textarea>
-                    </div>
+                        <textarea class="form-control" name="currentDataRemark" id="currentDataRemark" rows="3" <?php if ($act == '')
+                            echo 'readonly' ?>><?php if (isset($row['remark']))
+                            echo $row['remark'] ?></textarea>
+                        </div>
 
-                    <div class="form-group mb-3">
-                        <label class="mb-3" id="pin_lbl" for="">Pin</label>
-                        <?php
+                        <div class="form-group mb-3">
+                            <label class="mb-3" id="pin_lbl" for="">Pin</label>
+                            <?php
                         while ($rowPin = $pinResult->fetch_assoc()) {
-                        ?>
+                            ?>
                             <div class="form-check">
                                 <label class="form-label" for="pin_name"><?php echo $rowPin['name'] ?></label>
-                                <input class="form-check-input" name="pins[]" type="checkbox" value="<?php echo $rowPin['id'] ?>" id="pins[]" <?= (isset($row['pins']) && preg_match("/{$rowPin['id']}/i", $row['pins'])) ? 'checked ' : '' ?><?= ($act == '') ? 'disabled' : '' ?>>
+                                <input class="form-check-input" name="pins[]" type="checkbox"
+                                    value="<?php echo $rowPin['id'] ?>" id="pins[]" <?= (isset($row['pins']) && preg_match("/{$rowPin['id']}/i", $row['pins'])) ? 'checked ' : '' ?><?= ($act == '') ? 'disabled' : '' ?>>
                             </div>
-                        <?php
+                            <?php
                         }
                         ?>
                     </div>
 
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php echo ($act) ? '<button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="' . $actionBtnValue . '">' . $pageActionTitle . '</button>' : ''; ?>
-                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn" value="back">Back</button>
+                        <button class="btn btn-rounded btn-primary mx-2 mb-2" name="actionBtn" id="actionBtn"
+                            value="back">Back</button>
                     </div>
                 </form>
             </div>

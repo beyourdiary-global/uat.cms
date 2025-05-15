@@ -26,17 +26,18 @@ include "header.php";
 <head>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/login.css">
-    <link rel="icon" type="image" href="<?php echo (isset($row['meta_logo'])) ? $img_path . $row['meta_logo'] : $SITEURL . '/image/logo2.png'; ?>">
+    <link rel="icon" type="image"
+        href="<?php echo (isset($row['meta_logo'])) ? $img_path . $row['meta_logo'] : $SITEURL . '/image/logo2.png'; ?>">
 </head>
 
 <body>
-
     <div class="container d-flex justify-content-center mt-2">
         <div class="col-12 col-md-5">
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-center my-4" id="logo_element">
-                        <img id="logo" style="min-height:100px; max-height : 150px; width : auto;" src="<?php echo (isset($row['logo'])) ? $img_path . $row['logo'] : $SITEURL . '/image/logo2.png'; ?>">
+                        <img id="logo" style="min-height:100px; max-height : 150px; width : auto;"
+                            src="<?php echo (isset($row['logo'])) ? $img_path . $row['logo'] : $SITEURL . '/image/logo2.png'; ?>">
                     </div>
                 </div>
             </div>
@@ -82,7 +83,8 @@ include "header.php";
 
                         <div class="col-10">
                             <div class="form-group mb-3">
-                                <button class="btn btn-block btn-primary" name="login_btn" id="login_btn" style="background-color: <?php echo (isset($row['themesColor'])) ? $row['themesColor'] : ''; ?>">Login</button>
+                                <button class="btn btn-block btn-primary" name="login_btn" id="login_btn"
+                                    style="background-color: <?php echo (isset($row['themesColor'])) ? $row['themesColor'] : ''; ?>">Login</button>
                             </div>
 
                             <div id="err_msg" class="d-flex justify-content-center mb-3">
@@ -120,37 +122,51 @@ include "header.php";
 </body>
 
 <script>
-    checkCurrentPage('invalid');
+checkCurrentPage('invalid');
 
-    $(document).ready(() => {
-        $("#row-password-input i").on('click', () => {
-            if ($("#password").attr("type") == "password") {
-                $("#password").attr("type", "text");
-                $("#row-password-input i").addClass("fa-eye");
-                $("#row-password-input i").removeClass("fa-eye-slash");
-            } else if ($("#password").attr("type") == "text") {
-                $("#password").attr("type", "password");
-                $("#row-password-input i").addClass("fa-eye-slash");
-                $("#row-password-input i").removeClass("fa-eye");
-            }
-        })
-    });
-
-    $('#email-addr').on('input', () => {
-        $("#email-addr_error").text("");
-        $("#password_error").text("");
+$(document).ready(() => {
+    $("#row-password-input i").on('click', () => {
+        if ($("#password").attr("type") == "password") {
+            $("#password").attr("type", "text");
+            $("#row-password-input i").addClass("fa-eye");
+            $("#row-password-input i").removeClass("fa-eye-slash");
+        } else if ($("#password").attr("type") == "text") {
+            $("#password").attr("type", "password");
+            $("#row-password-input i").addClass("fa-eye-slash");
+            $("#row-password-input i").removeClass("fa-eye");
+        }
     })
+});
 
-    $('#password').on('input', () => {
+$('#email-addr').on('input', () => {
+    $("#email-addr_error").text("");
+    $("#password_error").text("");
+})
+
+$('#password').on('input', () => {
+    $("#email-addr_error").text("");
+    $("#password_error").text("");
+})
+
+$('#login_btn').on('click', () => {
+    event.preventDefault();
+    var email_chk = 0;
+    var password_chk = 0;
+
+    if (!(isEmail($('#email-addr').val()))) {
+        email_chk = 0;
+        $("#email-addr_error").text("Wrong email format!");
+    } else {
         $("#email-addr_error").text("");
-        $("#password_error").text("");
-    })
+        email_chk = 1;
+    }
 
-    $('#login_btn').on('click', () => {
-        event.preventDefault();
-        var email_chk = 0;
-        var password_chk = 0;
-
+    // Check sequence: Email empty? -> Email format correct?
+    if (($('#email-addr').val() === '' || $('#email-addr').val() === null || $('#email-addr').val() ===
+            undefined)) {
+        email_chk = 0;
+        $("#email-addr_error").text("Please enter your email");
+    } else {
         if (!(isEmail($('#email-addr').val()))) {
             email_chk = 0;
             $("#email-addr_error").text("Wrong email format!");
@@ -158,34 +174,21 @@ include "header.php";
             $("#email-addr_error").text("");
             email_chk = 1;
         }
+    }
 
-        // Check sequence: Email empty? -> Email format correct?
-        if (($('#email-addr').val() === '' || $('#email-addr').val() === null || $('#email-addr').val() === undefined)) {
-            email_chk = 0;
-            $("#email-addr_error").text("Please enter your email");
-        } else {
-            if (!(isEmail($('#email-addr').val()))) {
-                email_chk = 0;
-                $("#email-addr_error").text("Wrong email format!");
-            } else {
-                $("#email-addr_error").text("");
-                email_chk = 1;
-            }
-        }
+    if ($('#password').val() === '' || $('#password').val() === null || $('#password').val() === undefined) {
+        password_chk = 0;
+        $("#password_error").text("Please enter your password");
+    } else {
+        $("#password_error").text("");
+        password_chk = 1;
+    }
 
-        if ($('#password').val() === '' || $('#password').val() === null || $('#password').val() === undefined) {
-            password_chk = 0;
-            $("#password_error").text("Please enter your password");
-        } else {
-            $("#password_error").text("");
-            password_chk = 1;
-        }
-
-        if (email_chk == 1 && password_chk == 1)
-            $("#loginForm").submit();
-        else
-            return false;
-    })
+    if (email_chk == 1 && password_chk == 1)
+        $("#loginForm").submit();
+    else
+        return false;
+})
 </script>
 
 </html>

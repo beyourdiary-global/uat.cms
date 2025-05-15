@@ -97,14 +97,14 @@ if (!empty($checkboxValues)) {
             $zip->close();
 
             header('Content-Type: application/zip');
-            header('Content-Disposition: attachment; filename="' .$zipFile .'"');
+            header('Content-Disposition: attachment; filename="' . $zipFile . '"');
             header('Content-Length: ' . filesize($zipFile));
             header('Pragma: no-cache');
             header('Expires: 0');
             ob_clean();
             readfile($zipFile);
             deleteDir($tempDir);
-            
+
 
         }
 
@@ -134,7 +134,8 @@ function addDirToZip($dir, $zip, $basePath)
     }
 }
 
-function deleteDir($dirPath) {
+function deleteDir($dirPath)
+{
     if (!is_dir($dirPath)) {
         return;
     }
@@ -205,18 +206,16 @@ $img_path = SITEURL . img_server . 'finance/j&t_trans_backup/';
                         <h2>
                             <?php echo $pageTitle ?>
                         </h2>
-                        <?php
-                        if ($result) {
-                            ?>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)): ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
-                                        href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
-                                        Transaction </a>
-                                <?php endif; ?>
-                                <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn" onclick="if (exportData()) { showExportNotification(); }"><i class="fa-solid fa-file-export"></i> Export</a>
-                            </div>
-                        <?php } ?>
+                        <div class="mt-auto mb-auto">
+                            <?php if (isActionAllowed("Add", $pinAccess)): ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
+                                    href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                    Transaction </a>
+                            <?php endif; ?>
+                            <a class="btn btn-sm btn-rounded btn-primary" name="exportBtn" id="addBtn"
+                                onclick="if (exportData()) { showExportNotification(); }"><i
+                                    class="fa-solid fa-file-export"></i> Export</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,17 +255,19 @@ $img_path = SITEURL . img_server . 'finance/j&t_trans_backup/';
                                         <?= $num++; ?>
                                     </th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['number'],$row['date'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
-                                    </div>
+                                        <div class="d-flex align-items-center">
+                                            <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                            <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                            <?php renderDeleteButton($pinAccess, $row['id'], $row['number'], $row['date'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                        </div>
                                     </td>
-                                    <td scope="row"><?php if (isset($row['number'])) echo $row['number'] ?></td>
-                                    
-                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
+                                    <td scope="row"><?php if (isset($row['number']))
+                                        echo $row['number'] ?></td>
 
-                                    <td scope="row">
+                                        <td scope="row"><?php if (isset($row['date']))
+                                        echo $row['date'] ?></td>
+
+                                        <td scope="row">
                                         <?php if (isset($row['attachment'])) { ?><a href="<?= $img_path . $row['attachment'] ?>"
                                                 target="_blank">
                                                 <?= $row['attachment'] ?>

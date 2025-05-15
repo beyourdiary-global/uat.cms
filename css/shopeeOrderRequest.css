@@ -1,0 +1,65 @@
+/* Sticky Action Column */
+#shopee_order_req_table th#action_col,
+#shopee_order_req_table td.sticky-action {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 2;
+  /* stays above other columns */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  /* optional shadow for better separation */
+}
+
+/* Optional: make ID (first column) sticky too if needed */
+#shopee_order_req_table th:first-child,
+#shopee_order_req_table td:first-child {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 1;
+}
+
+.dropdown-style {
+  display: inline-block;
+  position: relative;
+}
+
+.dropdown-style a {
+  display: block;
+  padding: 8px;
+  text-decoration: none;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.dropdown-style:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  border: 1px solid #ccc;
+  background: white;
+}
+
+.dropdown-menu a {
+  padding: 8px 12px;
+  display: block;
+  white-space: nowrap;
+}
+
+.filter-reset {
+  height: 38px;
+  max-width: 100px;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.2;
+  padding: 6px 12px;
+  border-radius: 20px;
+  text-align: center;
+  display: block;
+  align-items: center;
+  align-content: center;
+}

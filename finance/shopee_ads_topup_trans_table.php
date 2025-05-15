@@ -5,11 +5,9 @@ $isFinance = 1;
 include '../menuHeader.php';
 include '../checkCurrentPagePin.php';
 
-
 require_once '../header/PhpXlsxGenerator/PhpXlsxGenerator.php';
 $fileName = date('Y-m-d H:i:s') . "_list.xlsx";
 $img_path = '../' . img_server . 'finance/shopee_ads_topup_trans/';
-
 
 $tempDir = '../' . img_server . "temp/";
 $tempAttachDir = $tempDir . "attachment/";
@@ -28,7 +26,8 @@ if (!empty($checkboxValues)) {
     // Defining column names
     $excelData = array(
         array('S/N', 'SHOPEE ACCOUNT','ORDER ID','DATETIME','CURRENCY UNIT', 'SUBTOTAL','GST(%)','PAYMENT METHOD','REMARK','CREATE BY', 'CREATE DATE', 'CREATE TIME', 'UPDATE BY', 'UPDATE DATE', 'UPDATE TIME')
-    );    // Get the data from the database using the WHERE clause
+    );    
+    // Get the data from the database using the WHERE clause
     $query2 = $finance_connect->query("SELECT * FROM " . SHOPEE_ADS_TOPUP . " WHERE status = 'A' AND id IN ($checkboxValues) ORDER BY shopee_acc ASC, orderID ASC, payment_date ASC, currency ASC, topup_amt ASC,subtotal ASC,gst ASC, pay_meth ASC");
    
     $excelRowNum = 1;
@@ -50,7 +49,6 @@ if (!empty($checkboxValues)) {
                     copy($attachmentSourcePath, $attachmentDestPath);
                 }
             }
-
 
             // Define the column names in the same order as in your database query
             $columnNames = array('shopee_acc' , 'orderID' , 'payment_date' , 'currency' , 'topup_amt' ,'subtotal' ,'gst' , 'pay_meth' ,'remark','create_by', 'create_date', 'create_time', 'update_by', 'update_date', 'update_time');
@@ -85,7 +83,6 @@ if (!empty($checkboxValues)) {
             $zipFile = date('Ymd_His') . ".zip";
             $zip = new ZipArchive();
 
-            $zip = new ZipArchive();
             if ($zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
                 die("Failed to create zip file");
             }
@@ -107,10 +104,7 @@ if (!empty($checkboxValues)) {
             ob_clean();
             readfile($zipFile);
             deleteDir($tempDir);
-            
-
         }
-
     } else {
         echo 'Failed to create temporary Excel file';
     }
@@ -163,6 +157,11 @@ $deleteRedirectPage = $SITEURL . '/shopee_ads_topup_trans_table.php';
 $redirect_page = $SITEURL . '/finance/shopee_ads_topup_trans.php';
 $result = getData('*', '', '', SHOPEE_ADS_TOPUP, $finance_connect);
 $tblName = SHOPEE_ADS_TOPUP;
+
+// Initialize total variables
+$totalTopupAmount = 0;
+$totalSubtotal = 0;
+$totalGST = 0;
 ?>
 
 <!DOCTYPE html>
@@ -203,55 +202,52 @@ $tblName = SHOPEE_ADS_TOPUP;
             </div>
             
             <div class="row mb-3">
-                    <div class="col-md-3 dateFilters">
-                        <label for="timeInterval" class="form-label">Filter by:</label>
-                       <select class="form-select" id="timeInterval" >
-
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4 dateFilters">
-                        <label for="dateFilter" class="form-label">Filter by Date:</label>
-                        <div class="input-group date" id="datepicker"> 
+                <div class="col-md-3 dateFilters">
+                    <label for="timeInterval" class="form-label">Filter by:</label>
+                    <select class="form-select" id="timeInterval">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="col-md-4 dateFilters">
+                    <label for="dateFilter" class="form-label">Filter by Date:</label>
+                    <div class="input-group date" id="datepicker"> 
                         <input type="text" class="form-control" placeholder="Select date" autocomplete="off">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-th"></span>
-                            </div>
-                        </div>
-                        <div class="input-daterange input-group" id="datepicker2" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start date" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End date" autocomplete="off"/>
-                        </div>
-                        <div class="input-group input-daterange" id="datepicker3" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start month" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End month" autocomplete="off"/>
-                            
-                            </div>
-                        <div class="input-group input-daterange" id="datepicker4" style="display: none;">
-                            <input type="text" class="input form-control" name="start" placeholder="Start year" autocomplete="off"/>
-                                <span class="input-group-addon date-separator"> to </span>
-                            <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
-                            
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                      <label class="form-label">Group by:</label>
-                        <select class="form-select" id="group" placeholder="Select a Group">
-                            <option value="" >Select a Group</option>
-                            <option value="shopee">Shopee Account</option>
-                            <option value="currency">Currency</option>
-                            <option value="method">Payment Method</option>
-                        </select>
+                    <div class="input-daterange input-group" id="datepicker2" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start date" autocomplete="off"/>
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End date" autocomplete="off"/>
                     </div>
-                    <div class="col-md-2 d-flex align-items-center justify-content-center">
-                    <a id='resetButton' href="../reset.php?redirect=finance/shopee_ads_topup_trans_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                    <div class="input-group input-daterange" id="datepicker3" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start month" autocomplete="off"/>
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End month" autocomplete="off"/>
+                    </div>
+                    <div class="input-group input-daterange" id="datepicker4" style="display: none;">
+                        <input type="text" class="input form-control" name="start" placeholder="Start year" autocomplete="off"/>
+                        <span class="input-group-addon date-separator"> to </span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End year" autocomplete="off"/>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label">Group by:</label>
+                    <select class="form-select" id="group" placeholder="Select a Group">
+                        <option value="">Select a Group</option>
+                        <option value="shopee">Shopee Account</option>
+                        <option value="currency">Currency</option>
+                        <option value="method">Payment Method</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-center justify-content-center">
+                    <a id='resetButton' href="../reset.php?redirect=finance/shopee_ads_topup_trans_table.php" class="btn btn-sm btn-rounded btn-primary"> <i class="fa fa-refresh"></i> Reset </a>
+                </div>
+            </div>
             <table class="table table-striped" id="shopee_ads_topup_trans_table">
                 <thead>
                     <tr>
@@ -271,8 +267,7 @@ $tblName = SHOPEE_ADS_TOPUP;
                         <th scope="col">GST (%)</th>
                         <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
-                       
-                        <?php else: ?>
+                    <?php else: ?>
                         <th class="hideColumn" scope="col">ID</th>
                         <th class="text-center">
                             <input type="checkbox" class="exportAll">
@@ -292,28 +287,16 @@ $tblName = SHOPEE_ADS_TOPUP;
                             ?>
                         </th>
                         <th scope="col">Total Top-up Amount</th>
-                        <?php endif; ?>
+                    <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
-                     $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
-                     $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
-                     $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
-                     $groupedRows = [];
-                     $counters = 1;
-     
-                     function generateTableRow($id, &$counters, $key, $topupAmt) {
-                         echo '<tr onclick="window.location=\'shopee_ads_topup_trans_table_summary.php?ids=' . urlencode($id) . '\';" style="cursor:pointer;">';
-                         echo '<th class="hideColumn" scope="row">' . $id . '</th>';
-                         echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $id . '"></th>';
-                         echo '<th scope="row">' . $counters++ . '</th>';
-                         echo '<td scope="row">' . $key . '</td>';
-                         echo '<td scope="row">' . number_format($topupAmt, 2, '.', '') . '</td>';
-                         echo '</tr>';
-                     }
-                   
-                     $groupedRows = [];
+                    $groupOption = isset($_GET['group']) ? $_GET['group'] : ''; 
+                    $groupOption3 = isset($_GET['timeRange']) ? $_GET['timeRange'] : ''; 
+                    $groupOption4 = isset($_GET['timeInterval']) ? $_GET['timeInterval'] : ''; 
+                    $groupedRows = [];
+                    $counters = 1;
 
                     while ($row = $result->fetch_assoc()) {
                         $viewActMsg = '';
@@ -326,151 +309,43 @@ $tblName = SHOPEE_ADS_TOPUP;
                             $q3 = getData('name', "id='" . $row['pay_meth'] . "'", 'LIMIT 1', FIN_PAY_METH, $finance_connect);
                             $pay = $q3->fetch_assoc();
 
-                            $shopee = isset($shopee_acc['name']) ? $shopee_acc['name'] : '';;
+                            $shopee = isset($shopee_acc['name']) ? $shopee_acc['name'] : '';
                             $curr = isset($currs['unit']) ? $currs['unit'] : '';
                             $method = isset($pay['name']) ? $pay['name'] : '';
                             $paymentDate = $row['payment_date'];
-                            
                         }
+
+                        // Add to totals
+                        $totalTopupAmount += isset($row['topup_amt']) ? $row['topup_amt'] : 0;
+                        $totalSubtotal += isset($row['subtotal']) ? $row['subtotal'] : 0;
+                        $totalGST += isset($row['gst']) ? $row['gst'] : 0;
+
                         if ($groupOption == '') {
                             echo '<tr>
-                        <th class="hideColumn" scope="row">' . $row['id'] . '</th>
-                        <th class="text-center"><input type="checkbox" class="export" value="'  . $row['id'] . '"></th>
-                        <th scope="row">' . $num++ . '</th>
-                        <td scope="row" class="btn-container">
-                        <div class="d-flex align-items-center">' 
-                        ?>
+                            <th class="hideColumn" scope="row">' . $row['id'] . '</th>
+                            <th class="text-center"><input type="checkbox" class="export" value="'  . $row['id'] . '"></th>
+                            <th scope="row">' . $num++ . '</th>
+                            <td scope="row" class="btn-container">
+                            <div class="d-flex align-items-center">' 
+                            ?>
                             <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
                             <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
                             <?php renderDeleteButton($pinAccess, $row['id'], $row['shopee_acc'], $row['orderID'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
-                        <?php echo'</div>
-                        </td>
-                        <td scope="row">' . (isset($shopee_acc['name']) ? $shopee_acc['name'] : '') . '</td>
-                        <td scope="row">' . $row['orderID'] . '</td>
-                        <td scope="row">' . (isset($row['payment_date']) ? $row['payment_date'] : '') . '</td>
-                        <td scope="row">' . (isset($currs['unit']) ? $currs['unit'] : '') . '</td>
-                        <td scope="row">' . (isset($row['topup_amt']) ? $row['topup_amt'] : '') . '</td>
-                        <td scope="row">' . (isset($row['subtotal']) ? $row['subtotal'] : '') . '</td>
-                        <td scope="row">' . (isset($row['gst']) ? $row['gst'] : '') . '</td>
-                        <td scope="row">' . (isset($pay['name']) ? $pay['name'] : '') . '</td>
-                        <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
-                    
-                    </tr>';
-                    }
-                        if ($groupOption && $groupOption3) {
-                            if (($groupOption === 'shopee' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4 === 'daily') {
-                                $key = $groupOption === 'shopee' ? $shopee : ($groupOption === 'currency' ? $curr : $method);
-                                $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $paymentDate); 
-                                $formattedDate = $dateTime->format('Y-m-d');
-
-                                if ($groupOption3 === $formattedDate) {
-                                if (!isset($groupedRows[$key])) {
-                                    $groupedRows[$key] = [
-                                        'ids' => [$row['id']],
-                                        'totalTopupAmount' => $row['topup_amt']
-                                    ];
-                                } else {
-                                    $groupedRows[$key]['ids'][] = $row['id'];
-                                    $groupedRows[$key]['totalTopupAmount'] += $row['topup_amt'];
-                                }
-                            }
-                            }
-                            else if (($groupOption === 'shopee' || $groupOption === 'currency' || $groupOption === 'method') && $groupOption4) {
-                                $dateRange = explode('to', $groupOption3);
-                                if($groupOption4 == 'weekly'){
-                                    $startDate = strtotime(trim($dateRange[0]));
-                                    $endDate = strtotime(trim($dateRange[1]));
-                                }else if ($groupOption4 == 'monthly'){
-                                    $startDate = strtotime(trim($dateRange[0]));
-                                    $endDate = strtotime('last day of ' . trim($dateRange[1]));
-                                }else if ($groupOption4 == 'yearly'){
-                                    $startDate = strtotime('first day of January ' . trim($dateRange[0]));
-                                    $endDate = strtotime('last day of December ' . trim($dateRange[1]));
-                                }
-
-                               
-                                $createdTimestamp = strtotime($paymentDate);
-                            
-                                if ($createdTimestamp >= $startDate && $createdTimestamp <= $endDate) {
-                                    $key = $groupOption === 'shopee' ? $shopee : ($groupOption === 'currency' ? $curr : $method);
-                            
-                                    if (!isset($groupedRows[$key])) {
-                                        $groupedRows[$key] = [
-                                            'ids' => [$row['id']],
-                                            'totalTopupAmount' => $row['topup_amt']
-                                        ];
-                                    } else {
-                                        $groupedRows[$key]['ids'][] = $row['id'];
-                                        $groupedRows[$key]['totalTopupAmount'] += $row['topup_amt'];
-                                    }
-                                }
-                            }
-                                                   
-                            
-                        }else if ($groupOption === 'currency') {
-                            generateTableRow($row['id'],$counters, $curr, $row['topup_amt']);
-                        }else if ($groupOption === 'shopee') {
-                            generateTableRow($row['id'], $counters, $shopee, $row['topup_amt']);
-                        }else if ($groupOption === 'method') {
-                            generateTableRow($row['id'], $counters, $method, $row['topup_amt']);
-                        }
-                        }
-                        foreach ($groupedRows as $key => $groupedRow) {
-            
-                            if (isset($key)) {
-                                if($groupOption4 == 'daily') {
-                                    if (!isset($groupedRow['displayed'])) {
-                                        $groupedRow['displayed'] = true;
-                                        $viewActMsg = USER_NAME . " searched the data [<b> ID = " . implode(', ', $groupedRow['ids']) . "</b> ] with the date <b>" . $paymentDate. "</b> from <b><i>$tblName Table</i></b>.";
-                                        $idss = implode(', ', $groupedRow['ids']);
-                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
-                                    } else {
-                                        $viewActMsg = '';
-                                        $sql = '';
-                                    }
-                                }else{
-                                    if (!isset($groupedRow['displayed'])) {
-                                        $groupedRow['displayed'] = true;
-                                        
-                                        $idss = is_array($groupedRow['ids']) ? implode(', ', $groupedRow['ids']) : $groupedRow['ids'];
-                                        
-                                        $viewActMsg = USER_NAME . " searched the data [ <b>ID = " . $idss . " </b>] for the period between <b> " . date('Y-m-d', ($startDate)) . " </b> and <b>" . date('Y-m-d', ($endDate)) . "</b> from <b><i>" . $tblName . "Table</i></b> .";
-                                        $sql = "SELECT * FROM $tblName WHERE id IN ($idss)";
-                                  
-                                    } else {
-                                        $viewActMsg = '';
-                                        $sql = '';
-                                    }
-                                }
-                                $log = [
-                                    'log_act' => 'search',
-                                    'cdate'   => $cdate,
-                                    'ctime'   => $ctime,
-                                    'uid'     => USER_ID,
-                                    'cby'     => USER_ID,
-                                    'query_rec'    => $sql,
-                                    'query_table'  => $tblName,
-                                    'act_msg' => $viewActMsg,
-                                    'page'    => $pageTitle,
-                                    'connect' => $connect,
-                                ];
-                                audit_log($log);
-                            $ids = implode(',', $groupedRow['ids']);
-                            $url = $groupOption4 == 'daily' ? "shopee_ads_topup_trans_table_detail.php?ids=" . urlencode($ids) : "shopee_ads_topup_trans_table_summary.php?ids=" . urlencode($ids);
-                            echo "<tr onclick=\"window.location='$url'\" style=\"cursor:pointer;\">";
-                            echo '<th class="hideColumn" scope="row">' . $ids . '</th>'; 
-                            echo ' <th class="text-center"><input type="checkbox" class="export" value="' . $ids . '"></th>';
-                            echo '<th scope="row">' . $counters++ . '</th>';
-                            echo '<td scope="row">' . $key . '</td>';
-                            echo '<td scope="row">' . number_format($groupedRow['totalTopupAmount'], 2, '.', '') . '</td>';
-                            echo '</tr>';
+                            <?php echo'</div>
+                            </td>
+                            <td scope="row">' . (isset($shopee_acc['name']) ? $shopee_acc['name'] : '') . '</td>
+                            <td scope="row">' . $row['orderID'] . '</td>
+                            <td scope="row">' . (isset($row['payment_date']) ? $row['payment_date'] : '') . '</td>
+                            <td scope="row">' . (isset($currs['unit']) ? $currs['unit'] : '') . '</td>
+                            <td scope="row">' . (isset($row['topup_amt']) ? $row['topup_amt'] : '') . '</td>
+                            <td scope="row">' . (isset($row['subtotal']) ? $row['subtotal'] : '') . '</td>
+                            <td scope="row">' . (isset($row['gst']) ? $row['gst'] : '') . '</td>
+                            <td scope="row">' . (isset($pay['name']) ? $pay['name'] : '') . '</td>
+                            <td scope="row">' . (isset($row['remark']) ? $row['remark'] : '') . '</td>
+                            </tr>';
                         }
                     }
-                    
                     ?>      
-                        
-                            
-                   
                 </tbody>
                 <tfoot>
                 <tr>
@@ -490,8 +365,7 @@ $tblName = SHOPEE_ADS_TOPUP;
                         <th scope="col">GST (%)</th>
                         <th scope="col">Payment Method</th>
                         <th scope="col">Remark</th>
-                        
-                        <?php else: ?>
+                    <?php else: ?>
                         <th class="hideColumn" scope="col">ID</th>
                         <th class="text-center">
                             <input type="checkbox" class="exportAll">
@@ -511,8 +385,15 @@ $tblName = SHOPEE_ADS_TOPUP;
                             ?>
                         </th>
                         <th scope="col">Total Top-up Amount</th>
-                        <?php endif; ?>
-                    </tr>
+                    <?php endif; ?>
+                </tr>
+                <tr>
+                    <th colspan="8" class="text-end">Total:</th>
+                    <th scope="col"><?php echo number_format($totalTopupAmount, 2, '.', ''); ?></th>
+                    <th scope="col"><?php echo number_format($totalSubtotal, 2, '.', ''); ?></th>
+                    <th scope="col"><?php echo number_format($totalGST, 2, '.', ''); ?></th>
+                    <th scope="col"></th>
+                </tr>
                 </tfoot>
             </table>
         </div>

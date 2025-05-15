@@ -35,20 +35,20 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
 
             <div class="d-flex flex-column mb-3">
                 <div class="row">
-                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
+                    <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i
+                            class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                 </div>
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-between flex-wrap">
                         <h2><?php echo $pageTitle ?></h2>
-                        <?php if ($result) { ?>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add Transaction </a>
-                                <?php endif; ?>
-                            </div>
-                        <?php } ?>
-
+                        <div class="mt-auto mb-auto">
+                            <?php if (isActionAllowed("Add", $pinAccess)): ?>
+                                <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn"
+                                    href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add
+                                    Transaction </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
             if (!$result) {
                 echo '<div class="text-center"><h4>No Result!</h4></div>';
             } else {
-            ?>
+                ?>
 
                 <table class="table table-striped" id="initial_capital_trans_table">
                     <thead>
@@ -79,27 +79,33 @@ $result = getData('*', '', '', INITCA_TRANS, $finance_connect);
 
                                 $curr = getData('unit', "id='" . $row['currency'] . "'", '', CUR_UNIT, $connect);
                                 $row2 = $curr->fetch_assoc();
-                        ?>
+                                ?>
 
                                 <tr>
                                     <th class="hideColumn" scope="row"><?= $row['id'] ?></th>
                                     <th scope="row"><?= $num++; ?></th>
                                     <td scope="row" class="btn-container">
-                                    <div class="d-flex align-items-center">
-                                    <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess);?>
-                                    <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
-                                    <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
-                                    </div>
+                                        <div class="d-flex align-items-center">
+                                            <?php renderViewEditButton("View", $redirect_page, $row, $pinAccess); ?>
+                                            <?php renderViewEditButton("Edit", $redirect_page, $row, $pinAccess, $act_2) ?>
+                                            <?php renderDeleteButton($pinAccess, $row['id'], $row['transactionID'], $row['remark'], $pageTitle, $redirect_page, $deleteRedirectPage) ?>
+                                        </div>
                                     </td>
                                     <td scope="row"><?= $row['transactionID'] ?></td>
-                                    <td scope="row"><?php if (isset($row['date'])) echo $row['date'] ?></td>
-                                    <td scope="row"><?php if (isset($row2['unit'])) echo $row2['unit'] ?></td>
-                                    <td scope="row"><?php if (isset($row['amount'])) echo $row['amount'] ?></td>
-                                    <td scope="row"><?php if (isset($row['description'])) echo $row['description'] ?></td>
-                                    <td scope="row"><?php if (isset($row['remark'])) echo $row['remark'] ?></td>
-                                    <td scope="row"><?php if (isset($row['attachment'])) echo $row['attachment'] ?></td>
-                                </tr>
-                        <?php }
+                                    <td scope="row"><?php if (isset($row['date']))
+                                        echo $row['date'] ?></td>
+                                        <td scope="row"><?php if (isset($row2['unit']))
+                                        echo $row2['unit'] ?></td>
+                                        <td scope="row"><?php if (isset($row['amount']))
+                                        echo $row['amount'] ?></td>
+                                        <td scope="row"><?php if (isset($row['description']))
+                                        echo $row['description'] ?></td>
+                                        <td scope="row"><?php if (isset($row['remark']))
+                                        echo $row['remark'] ?></td>
+                                        <td scope="row"><?php if (isset($row['attachment']))
+                                        echo $row['attachment'] ?></td>
+                                    </tr>
+                            <?php }
                         } ?>
                     </tbody>
                     <tfoot>

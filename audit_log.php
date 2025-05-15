@@ -1,15 +1,41 @@
 <?php
 $pageTitle = "Audit Log";
+$currentPagePin = 18;
 
 include 'menuHeader.php';
 include 'checkCurrentPagePin.php';
+include ROOT.'/include/access.php';
 
 $tblName = AUDIT_LOG;
-$pinAccess = checkCurrentPin($connect, $pageTitle);
 
 $num = 1;   // numbering
 
-$query = "SELECT *, concat(create_date,' ',create_time) as datetimes FROM " . AUDIT_LOG . " ORDER BY datetimes desc";
+$selectedMonth = $_GET['month'] ?? date('m');
+$selectedYear = $_GET['year'] ?? date('Y');
+$selectedAction = $_GET['action'] ?? '';
+$selectedScreen = $_GET['screen_type'] ?? '';
+
+$query = "SELECT *, concat(create_date,' ',create_time) as datetimes FROM " . AUDIT_LOG . " WHERE 1=1";
+
+if (!empty($selectedMonth)) {
+    $query .= " AND MONTH(create_date) = '" . mysqli_real_escape_string($connect, $selectedMonth) . "'";
+}
+
+if (!empty($selectedYear)) {
+    $query .= " AND YEAR(create_date) = '" . mysqli_real_escape_string($connect, $selectedYear) . "'";
+}
+
+if (!empty($selectedAction)) {
+    $query .= " AND log_action = '" . mysqli_real_escape_string($connect, $selectedAction) . "'";
+}
+
+if (!empty($selectedScreen)) {
+    $query .= " AND screen_type = '" . mysqli_real_escape_string($connect, $selectedScreen) . "'";
+}
+
+
+$query .= " ORDER BY datetimes DESC";
+
 $result = mysqli_query($connect, $query);
 
 if (!$result) {
@@ -47,18 +73,75 @@ if (!$result) {
                     <div class="row">
                         <p><a href="<?= $SITEURL ?>/dashboard.php">Dashboard</a> <i class="fa-solid fa-chevron-right fa-xs"></i> <?php echo $pageTitle ?></p>
                     </div>
-
-                    <div class="row">
-                        <div class="col-12 d-flex justify-content-between flex-wrap">
-                            <h2><?php echo $pageTitle ?></h2>
-                            <div class="mt-auto mb-auto">
-                                <?php if (isActionAllowed("Add", $pinAccess)) : ?>
-                                    <a class="btn btn-sm btn-rounded btn-primary" name="addBtn" id="addBtn" href="<?= $redirect_page . "?act=" . $act_1 ?>"><i class="fa-solid fa-plus"></i> Add <?php echo $pageTitle ?> </a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+                
+                <form method="GET" class="row g-2 mb-3">
+                    <div class="col-md-2">
+                        <select class="form-select" name="month" onchange="this.form.submit()">
+                            <option value="">Select Month</option>
+                            <?php
+                            for ($m = 1; $m <= 12; $m++) {
+                                $monthVal = str_pad($m, 2, '0', STR_PAD_LEFT);
+                                $monthName = date("F", mktime(0, 0, 0, $m, 1));
+                                $selected = ($selectedMonth == $monthVal) ? 'selected' : '';
+                                echo "<option value='$monthVal' $selected>$monthName</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                
+                    <div class="col-md-2">
+                        <select class="form-select" name="year" onchange="this.form.submit()">
+                            <option value="">Select Year</option>
+                            <?php
+                            $currentYear = date('Y');
+                            for ($y = $currentYear; $y >= $currentYear - 5; $y--) {
+                                $selected = ($selectedYear == $y) ? 'selected' : '';
+                                echo "<option value='$y' $selected>$y</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                
+                    <div class="col-md-3">
+                        <select class="form-select" name="action" onchange="this.form.submit()">
+                            <option value="">Filter by Action</option>
+                            <?php
+                            $actionQuery = "SELECT DISTINCT log_action FROM " . AUDIT_LOG;
+                            $actionResult = mysqli_query($connect, $actionQuery);
+                            while ($actionRow = mysqli_fetch_assoc($actionResult)) {
+                                $actionId = (int) $actionRow['log_action']; // e.g., 1, 2, 3
+                                $selected = ($selectedAction == $actionId) ? 'selected' : '';
+                        
+                                // Use get_allowed_audit_actions to convert ID to name
+                                $actionName = get_allowed_audit_actions($actionId); // e.g., 'view', 'edit'
+                        
+                                // Make it nice for display
+                                $label = ucfirst($actionName);
+                        
+                                echo "<option value='" . htmlspecialchars($actionId, ENT_QUOTES) . "' $selected>$label</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="screen_type" onchange="this.form.submit()">
+                            <option value="">Filter by Screen</option>
+                            <?php
+                            $screenQuery = "SELECT DISTINCT screen_type FROM " . AUDIT_LOG . " WHERE screen_type IS NOT NULL AND screen_type != ''";
+                            $screenResult = mysqli_query($connect, $screenQuery);
+                            while ($screenRow = mysqli_fetch_assoc($screenResult)) {
+                                $screenVal = $screenRow['screen_type'];
+                                $selected = ($selectedScreen == $screenVal) ? 'selected' : '';
+                                echo "<option value='" . htmlspecialchars($screenVal, ENT_QUOTES) . "' $selected>" . ucfirst($screenVal) . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center">
+                        <a href="<?= $_SERVER['PHP_SELF'] ?>" class="btn btn-outline-secondary w-100" style="height: 38px; border-radius:20px;display: block;align-content: center;">Reset Filters</a>
+                    </div>
+                </form>
 
                 <table class="table table-striped" id="table">
                     <thead>

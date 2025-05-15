@@ -13,10 +13,10 @@ $num = 1;   // numbering
 $redirect_page = $SITEURL . '/finance/shopee_service_charges_rate_setting.php';
 $deleteRedirectPage = $SITEURL . '/finance/shopee_service_charges_rate_setting_table.php';
 $result = getData('*', '', '', SHOPEE_SCR_SETT, $finance_connect);
-if (!$result) {
-    echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
-    echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
-}
+// if (!$result) {
+//     echo "<script type='text/javascript'>alert('Sorry, currently network temporary fail, please try again later.');</script>";
+//     echo "<script>location.href ='$SITEURL/dashboard.php';</script>";
+// }
 
 ?>
 
@@ -61,7 +61,11 @@ if (!$result) {
                         </div>
                     </div>
                 </div>
-
+                <?php
+                if (!$result) {
+                    echo '<div class="text-center"><h4>No Result!</h4></div>';
+                } else {
+                ?>
                 <table class="table table-striped" id="table">
                     <thead>
                         <tr>
@@ -113,7 +117,7 @@ if (!$result) {
                             <th scope="col">Transaction Fee (%)</th>
                         </tr>
                     </tfoot>
-                </table>
+                </table><?php } ?>
             </div>
         </div>
     </div>

@@ -98,14 +98,84 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
                     'page' => $pageTitle,
                     'connect' => $connect,
                 ];
-            $log['newval'] = implodeWithComma($newvalarr);
-            $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
-            
-             audit_log($log);
+                $log['newval'] = implodeWithComma($newvalarr);
+                $log['act_msg'] = actMsgLog($dataID, $datafield, $newvalarr, '', '', $tblName, $pageAction, (isset($returnData) ? '' : $errorMsg));
+                
+                audit_log($log);
              }
         }
     }
 }
+if (post('actionOrderReceivedBtn')) {
+    $datafield = $oldvalarr = $chgvalarr = $newvalarr = array();
+
+    try {
+        // 1. Get old data before update
+        $getOldQuery = "SELECT order_status FROM " . $tblName . " WHERE id = " . intval($dataID);
+        $oldResult = mysqli_query($finance_connect, $getOldQuery);
+        $oldRow = mysqli_fetch_assoc($oldResult);
+
+        $oldStatus = $oldRow['order_status'];
+
+        // 2. Perform update
+        $queryOrderReceived = "UPDATE " . $tblName . " SET order_status='OC' WHERE id = " . intval($dataID);
+        $returnData = mysqli_query($finance_connect, $queryOrderReceived);
+
+        // 3. Only log if update was successful
+        if ($returnData) {
+            // Prepare audit log details
+            array_push($datafield, 'order_status');
+            array_push($oldvalarr, $oldStatus);
+            array_push($chgvalarr, 'OC');
+
+            $log = [
+                'log_act'      => $pageAction,
+                'cdate'        => $cdate,
+                'ctime'        => $ctime,
+                'uid'          => USER_ID,
+                'cby'          => USER_ID,
+                'query_rec'    => $queryOrderReceived,
+                'query_table'  => $tblName,
+                'page'         => $pageTitle,
+                'connect'      => $finance_connect,
+                'oldval'       => implodeWithComma($oldvalarr),
+                'changes'      => implodeWithComma($chgvalarr),
+                'act_msg'      => actMsgLog($dataID, $datafield, '', $oldvalarr, $chgvalarr, $tblName, $pageAction, '')
+            ];
+
+            audit_log($log);
+
+            echo '<script>
+                alert("Order status updated.");
+                window.location.href = "' . $redirect_page . '";
+            </script>';
+        } else {
+            throw new Exception("Failed to update order status.");
+        }
+    } catch (Exception $e) {
+        // Optional: log failed action
+        $errorMsg = $e->getMessage();
+
+        $log = [
+            'log_act'     => $pageAction,
+            'cdate'       => $cdate,
+            'ctime'       => $ctime,
+            'uid'         => USER_ID,
+            'cby'         => USER_ID,
+            'query_rec'   => $queryOrderReceived ?? '',
+            'query_table' => $tblName,
+            'page'        => $pageTitle,
+            'connect'     => $finance_connect,
+            'oldval'      => '',
+            'changes'     => '',
+            'act_msg'     => "Error: " . $errorMsg
+        ];
+        audit_log($log);
+
+        echo '<script>alert("Error: ' . addslashes($errorMsg) . '");</script>';
+    }
+}
+
 if (post('actionBtn')) {
     $action = post('actionBtn');
 
@@ -561,17 +631,7 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                         ?>
                      
                      <?php if ($act == 'E'): ?>
-                        <?php
-                         $status = $row['order_status'];
-                         if ($status == 'P') {
-                             $status = 'Processing';
-                         }else  if ($status == 'SP') {
-                             $status = 'Shipped';
-                         }else  if ($status == 'WP') {
-                             $status = 'Waiting Packing';
-                         }
-                        ?>
-                        <span style="float: right;" id="order-status">Order Status: <?php echo $status; ?></span>
+                        <span style="float: right;" id="order-status">Order Status: <?= getOrderStatusLabel($row['order_status']) ?></span>
                         
                     <?php endif; ?>
                
@@ -1216,6 +1276,9 @@ if (($dataID) && !($act) && (USER_ID != '') && ($_SESSION['viewChk'] != 1) && ($
                 <?php }} ?>
                     <div class="form-group mt-5 d-flex justify-content-center flex-md-row flex-column">
                         <?php
+                        echo $row['order_status'] == 'P' ? '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn p-2" name="actionOrderReceivedBtn" id="actionOrderReceivedBtn" value="updateOR">Update to Order Received</button>' :"";
+                        
+                        
                     switch ($act) {
                         case 'I':
                             echo '<button class="btn btn-lg btn-rounded btn-primary mx-2 mb-2 submitBtn" name="actionBtn" id="actionBtn" value="addRecord">Add Record</button>';

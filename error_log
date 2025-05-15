@@ -1,14 +1,742 @@
-[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:28 Asia/Singapore] PHP Warning:  include(): Failed opening 'include/dashboardPanel.php' for inclusion (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:28 Asia/Singapore] PHP Fatal error:  Uncaught Error: Call to undefined function generateDashboard() in /home/beyourdi/public_html/cms/dashboard.php:172
+[22-Apr-2025 21:55:05 Asia/Singapore] Query failed: SELECT * FROM product WHERE status = 'A' AND id = ''  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:17 Asia/Singapore] Query failed: SELECT * FROM product WHERE status = 'A' AND id = ''  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM merchant WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table merchant: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM meta_ads_account WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM courier WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table courier: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM agent WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table agent: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM lazada_account WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table lazada_account: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Query failed: SELECT * FROM customer_lazada_deals_transaction WHERE status = 'A'  ORDER BY id DESC  — Error: 
+[22-Apr-2025 21:55:27 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[22-Apr-2025 21:55:33 Asia/Singapore] Query failed: SELECT * FROM package WHERE status = 'A' AND id = ''  ORDER BY id DESC  — Error: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table merchant: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table courier: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table agent: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table lazada_account: 
+[22-Apr-2025 22:00:07 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table merchant: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table courier: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table agent: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table lazada_account: 
+[22-Apr-2025 22:54:02 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 10:09:24 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 10:53:24 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 12:46:41 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 14:53:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 16:20:06 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 16:38:25 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 17:28:41 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 17:38:14 Asia/Singapore] PHP Warning:  array_filter() expects parameter 1 to be array, string given in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:38:14 Asia/Singapore] PHP Warning:  implode(): Invalid arguments passed in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:39:12 Asia/Singapore] PHP Warning:  array_filter() expects parameter 1 to be array, string given in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:39:12 Asia/Singapore] PHP Warning:  implode(): Invalid arguments passed in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:39:27 Asia/Singapore] PHP Warning:  array_filter() expects parameter 1 to be array, string given in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:39:27 Asia/Singapore] PHP Warning:  implode(): Invalid arguments passed in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:40:18 Asia/Singapore] PHP Warning:  array_filter() expects parameter 1 to be array, string given in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 17:40:18 Asia/Singapore] PHP Warning:  implode(): Invalid arguments passed in /home/beyourdi/public_html/cms/package.php on line 91
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 18:00:47 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 20:26:21 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 13:39:47 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 13:39:54 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 21:39:54 Asia/Singapore] audit_log: No data provided
+[23-Apr-2025 13:40:29 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 13:40:34 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 13:58:39 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 13:58:45 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 21:58:45 Asia/Singapore] audit_log: No data provided
+[23-Apr-2025 13:58:56 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 13:58:59 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 21:58:59 Asia/Singapore] audit_log: No data provided
+[23-Apr-2025 14:10:40 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 14:10:44 UTC] PHP Notice:  session_start(): A session had already been started - ignoring in /home/beyourdi/public_html/cms/init.php on line 2
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:13:52 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:20:31 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:20:54 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:38:36 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:38:41 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:38:55 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table merchant: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table courier: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table agent: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table lazada_account: 
+[23-Apr-2025 22:39:01 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[23-Apr-2025 14:41:46 UTC] PHP Parse error:  syntax error, unexpected end of file, expecting elseif (T_ELSEIF) or else (T_ELSE) or endif (T_ENDIF) in /home/beyourdi/public_html/cms/dashboard.php on line 298
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table merchant: 
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table courier: 
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table agent: 
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table lazada_account: 
+[24-Apr-2025 09:57:09 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table merchant: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table courier: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table agent: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table lazada_account: 
+[24-Apr-2025 10:16:52 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table merchant: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table courier: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table agent: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[24-Apr-2025 13:29:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table merchant: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table courier: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table agent: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table lazada_account: 
+[24-Apr-2025 21:32:24 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[24-Apr-2025 21:42:11 Asia/Singapore] PHP Fatal error:  Uncaught Error: Object of class mysqli_result could not be converted to string in /home/beyourdi/public_html/cms/include/common.php:320
+Stack trace:
+#0 /home/beyourdi/public_html/cms/menuHeader.php(11): getData('*', 'id = '1'', '', 'projects', Object(mysqli))
+#1 /home/beyourdi/public_html/cms/dashboard.php(3): include('/home/beyourdi/...')
+#2 {main}
+  thrown in /home/beyourdi/public_html/cms/include/common.php on line 320
+[24-Apr-2025 21:42:14 Asia/Singapore] PHP Fatal error:  Uncaught Error: Object of class mysqli_result could not be converted to string in /home/beyourdi/public_html/cms/include/common.php:320
+Stack trace:
+#0 /home/beyourdi/public_html/cms/menuHeader.php(11): getData('*', 'id = '1'', '', 'projects', Object(mysqli))
+#1 /home/beyourdi/public_html/cms/dashboard.php(3): include('/home/beyourdi/...')
+#2 {main}
+  thrown in /home/beyourdi/public_html/cms/include/common.php on line 320
+[25-Apr-2025 10:24:09 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 10:24:09 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 10:24:09 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 10:24:09 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 10:24:10 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 10:24:10 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 10:59:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 11:23:50 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 11:36:30 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 11:53:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 15:24:21 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 15:52:35 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 15:53:19 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 15:55:02 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 15:55:54 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 21:58:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table merchant: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table courier: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table agent: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table lazada_account: 
+[25-Apr-2025 23:41:25 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[25-Apr-2025 15:43:59 UTC] PHP Parse error:  syntax error, unexpected '--' (T_DEC) in /home/beyourdi/public_html/cms/dashboard.php on line 205
+[25-Apr-2025 15:44:36 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:37 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:45 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:46 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:44:48 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:17 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:18 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:31 UTC] PHP Warning:  include(/home/beyourdi/public_html/cms/dashboard): failed to open stream: No such device in /home/beyourdi/public_html/cms/dashboard.php on line 2
+[25-Apr-2025 15:45:31 UTC] PHP Warning:  include(): Failed opening 'dashboard' for inclusion (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/beyourdi/public_html/cms/dashboard.php on line 2
+[25-Apr-2025 15:45:48 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:48 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:49 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:45:49 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:38 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:41 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:42 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:42 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:42 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:42 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[25-Apr-2025 15:46:42 UTC] PHP Fatal error:  Cannot redeclare generateSalesData() (previously declared in /home/beyourdi/public_html/cms/dashboard/index.php:203) in /home/beyourdi/public_html/cms/dashboard/index.php on line 320
+[26-Apr-2025 13:45:12 Asia/Singapore] Error in getData() for table merchant: 
+[26-Apr-2025 13:45:12 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[26-Apr-2025 13:45:12 Asia/Singapore] Error in getData() for table courier: 
+[26-Apr-2025 13:45:13 Asia/Singapore] Error in getData() for table agent: 
+[26-Apr-2025 13:45:13 Asia/Singapore] Error in getData() for table lazada_account: 
+[26-Apr-2025 13:45:13 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table merchant: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table courier: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table agent: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table lazada_account: 
+[26-Apr-2025 21:08:42 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 10:16:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 10:18:51 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 13:03:07 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 14:00:25 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 14:07:16 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 17:30:39 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 17:44:17 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 18:03:40 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 10:05:14 UTC] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ';' or ',' in /home/beyourdi/public_html/cms/dashboard.php on line 303
+[28-Apr-2025 10:05:19 UTC] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ';' or ',' in /home/beyourdi/public_html/cms/dashboard.php on line 303
+[28-Apr-2025 10:05:20 UTC] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ';' or ',' in /home/beyourdi/public_html/cms/dashboard.php on line 303
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 18:08:28 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table merchant: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table courier: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table agent: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table lazada_account: 
+[28-Apr-2025 20:47:08 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[28-Apr-2025 13:08:19 UTC] PHP Parse error:  syntax error, unexpected '<', expecting end of file in /home/beyourdi/public_html/cms/dashboard.php on line 265
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 09:55:52 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 11:55:16 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 19:22:47 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 20:29:25 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table merchant: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table courier: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table agent: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table lazada_account: 
+[29-Apr-2025 22:35:42 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 10:15:36 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 16:05:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 18:32:40 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 20:57:46 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 21:17:22 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table merchant: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table courier: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table agent: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[30-Apr-2025 22:45:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table merchant: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table courier: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table agent: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table lazada_account: 
+[01-May-2025 17:19:40 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table merchant: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table courier: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table agent: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table lazada_account: 
+[01-May-2025 19:30:39 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[01-May-2025 21:41:48 Asia/Singapore] Error in getData() for table merchant: 
+[01-May-2025 21:41:48 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[01-May-2025 21:41:48 Asia/Singapore] Error in getData() for table courier: 
+[01-May-2025 21:41:49 Asia/Singapore] Error in getData() for table agent: 
+[01-May-2025 21:41:49 Asia/Singapore] Error in getData() for table lazada_account: 
+[01-May-2025 21:41:49 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 08:23:50 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 08:40:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 10:05:47 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 10:06:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 11:04:31 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 13:25:37 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 13:25:37 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 13:25:38 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 13:25:38 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 13:25:38 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 13:25:38 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 17:07:30 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 17:35:31 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 17:50:12 Asia/Singapore] PHP Fatal error:  Uncaught Error: Call to a member function fetch_assoc() on bool in /home/beyourdi/public_html/cms/approvalLeaveTransaction.php:34
 Stack trace:
 #0 {main}
-  thrown in /home/beyourdi/public_html/cms/dashboard.php on line 172
-[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(include/dashboardPanel.php): failed to open stream: No such file or directory in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:32 Asia/Singapore] PHP Warning:  include(): Failed opening 'include/dashboardPanel.php' for inclusion (include_path='.:/opt/cpanel/ea-php74/root/usr/share/pear') in /home/beyourdi/public_html/cms/dashboard.php on line 5
-[03-Jan-2025 14:51:32 Asia/Singapore] PHP Fatal error:  Uncaught Error: Call to undefined function generateDashboard() in /home/beyourdi/public_html/cms/dashboard.php:172
-Stack trace:
-#0 {main}
-  thrown in /home/beyourdi/public_html/cms/dashboard.php on line 172
+  thrown in /home/beyourdi/public_html/cms/approvalLeaveTransaction.php on line 34
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 22:33:22 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 23:04:34 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 23:12:49 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table merchant: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table courier: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table agent: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table lazada_account: 
+[02-May-2025 23:34:23 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table merchant: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table courier: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table agent: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table lazada_account: 
+[03-May-2025 14:44:53 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table merchant: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table courier: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table agent: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table lazada_account: 
+[03-May-2025 14:58:13 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table merchant: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table courier: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table agent: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table lazada_account: 
+[03-May-2025 15:07:00 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table merchant: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table courier: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table agent: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table lazada_account: 
+[04-May-2025 17:25:36 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table merchant: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table courier: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table agent: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table lazada_account: 
+[04-May-2025 19:07:04 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table merchant: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table courier: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table agent: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table lazada_account: 
+[04-May-2025 20:20:02 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table merchant: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table courier: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table agent: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table lazada_account: 
+[04-May-2025 20:29:33 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table merchant: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table courier: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table agent: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table lazada_account: 
+[04-May-2025 20:40:30 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table merchant: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table courier: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table agent: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table lazada_account: 
+[05-May-2025 00:13:15 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table merchant: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table courier: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table agent: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table lazada_account: 
+[05-May-2025 10:07:03 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table merchant: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table courier: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table agent: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[05-May-2025 12:27:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table merchant: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table courier: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table agent: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table lazada_account: 
+[05-May-2025 13:05:36 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table merchant: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table courier: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table agent: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table lazada_account: 
+[06-May-2025 10:16:11 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table merchant: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table courier: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table agent: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table lazada_account: 
+[06-May-2025 10:21:23 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table merchant: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table courier: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table agent: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table lazada_account: 
+[06-May-2025 10:23:12 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table merchant: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table courier: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table agent: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table lazada_account: 
+[07-May-2025 14:00:23 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[08-May-2025 15:59:56 Asia/Singapore] Error in getData() for table merchant: 
+[08-May-2025 15:59:57 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[08-May-2025 15:59:57 Asia/Singapore] Error in getData() for table courier: 
+[08-May-2025 15:59:57 Asia/Singapore] Error in getData() for table agent: 
+[08-May-2025 15:59:57 Asia/Singapore] Error in getData() for table lazada_account: 
+[08-May-2025 15:59:57 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[08-May-2025 16:11:46 Asia/Singapore] Error in getData() for table merchant: 
+[08-May-2025 16:11:46 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[08-May-2025 16:11:46 Asia/Singapore] Error in getData() for table courier: 
+[08-May-2025 16:11:46 Asia/Singapore] Error in getData() for table agent: 
+[08-May-2025 16:11:46 Asia/Singapore] Error in getData() for table lazada_account: 
+[08-May-2025 16:11:47 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table merchant: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table courier: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table agent: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table lazada_account: 
+[08-May-2025 18:48:05 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table merchant: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table courier: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table agent: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table lazada_account: 
+[08-May-2025 18:57:26 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table merchant: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table courier: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table agent: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table lazada_account: 
+[08-May-2025 19:06:38 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[09-May-2025 10:10:10 Asia/Singapore] Error in getData() for table merchant: 
+[09-May-2025 10:10:10 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[09-May-2025 10:10:10 Asia/Singapore] Error in getData() for table courier: 
+[09-May-2025 10:10:10 Asia/Singapore] Error in getData() for table agent: 
+[09-May-2025 10:10:11 Asia/Singapore] Error in getData() for table lazada_account: 
+[09-May-2025 10:10:11 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table merchant: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table courier: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table agent: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table lazada_account: 
+[09-May-2025 12:34:14 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[09-May-2025 17:35:13 Asia/Singapore] Error in getData() for table merchant: 
+[09-May-2025 17:35:13 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[09-May-2025 17:35:13 Asia/Singapore] Error in getData() for table courier: 
+[09-May-2025 17:35:14 Asia/Singapore] Error in getData() for table agent: 
+[09-May-2025 17:35:14 Asia/Singapore] Error in getData() for table lazada_account: 
+[09-May-2025 17:35:14 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table merchant: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table courier: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table agent: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table lazada_account: 
+[09-May-2025 20:17:00 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table merchant: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table courier: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table agent: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table lazada_account: 
+[09-May-2025 22:42:34 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table merchant: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table courier: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table agent: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table lazada_account: 
+[11-May-2025 21:57:14 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table merchant: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table courier: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table agent: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table lazada_account: 
+[13-May-2025 17:37:10 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table merchant: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table courier: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table agent: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table lazada_account: 
+[14-May-2025 10:14:51 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[14-May-2025 14:29:55 Asia/Singapore] Error in getData() for table merchant: 
+[14-May-2025 14:29:55 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[14-May-2025 14:29:55 Asia/Singapore] Error in getData() for table courier: 
+[14-May-2025 14:29:55 Asia/Singapore] Error in getData() for table agent: 
+[14-May-2025 14:29:56 Asia/Singapore] Error in getData() for table lazada_account: 
+[14-May-2025 14:29:56 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table merchant: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table courier: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table agent: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table lazada_account: 
+[14-May-2025 15:34:28 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table merchant: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table courier: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table agent: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table lazada_account: 
+[14-May-2025 21:27:00 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table merchant: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table courier: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table agent: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table lazada_account: 
+[15-May-2025 10:02:32 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table merchant: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table courier: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table agent: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table lazada_account: 
+[15-May-2025 10:20:04 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table merchant: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table courier: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table agent: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table lazada_account: 
+[15-May-2025 12:59:46 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table merchant: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table meta_ads_account: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table courier: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table agent: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table lazada_account: 
+[15-May-2025 14:44:26 Asia/Singapore] Error in getData() for table customer_lazada_deals_transaction: 

@@ -5,10 +5,10 @@ include "include/connection.php";
 $email = post('email-addr');
 $password = md5(post('password'));
 
-
 if ($email && $password) {
      $loginquery = "SELECT * FROM " . USR_USER . " WHERE email='" . $email . "'";
      $loginresult = mysqli_query($connect, $loginquery);
+
      if (!(mysqli_num_rows($loginresult) == 1)) {
           return header('Location: index.php?err=1');
      } else {
@@ -50,7 +50,25 @@ if ($email && $password) {
                     }
                     $permission_grp_keys = array_keys($permission_grp);
                     $_SESSION['usr_pin'] = $permission_grp_keys;
-
+                    
+                    $entries = explode("+", $row['pins']);
+                    
+                    $usr_pin_access = [];
+                    
+                    foreach ($entries as $entry) {
+                        // Remove brackets
+                        $entry = trim($entry, "[]");
+                    
+                        // Separate key and values
+                        list($key, $valueString) = explode(":", $entry);
+                    
+                        $values = explode(",", $valueString);
+                    
+                        // Convert to integers
+                        $usr_pin_access[(int)$key] = array_map('intval', $values);
+                    }
+                    
+                    $_SESSION['usr_pin_access'] = $usr_pin_access;
                     $log = [
                          'log_act' => 'login',
                          'act_msg' => $loginrows['name'] . " has login to the system.",
@@ -59,9 +77,9 @@ if ($email && $password) {
                          'uid' => $loginrows['id'],
                          'cby' => $loginrows['id'],
                          'connect' => $connect,
-                     ];
-                     
-                     audit_log($log);
+                    ];
+
+                    audit_log($log);
 
                     // json file
                     generateDBData(BRAND, $connect);
